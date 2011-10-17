@@ -18,8 +18,9 @@ Stage::Play() {
 	int keypress = 0;
 	int h = 0;
 
-	if (SDL_Init(SDL_INIT_VIDEO) < 0)
+	if (SDL_Init(SDL_INIT_VIDEO) < 0) {
 		return 1;
+	}
 
 	if (!(screen = SDL_SetVideoMode(WIDTH, HEIGHT, DEPTH, SDL_HWSURFACE))) {
 		SDL_Quit();

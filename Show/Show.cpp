@@ -40,6 +40,26 @@ JSBool print(JSContext *cx, uintN argc, jsval *vp) {
 	return JS_TRUE;
 }
 
+JSBool println(JSContext *cx, uintN argc, jsval *vp) {
+	char *str;
+	JSString *msg;
+
+	if (!JS_ConvertArguments(cx, argc, JS_ARGV(cx, vp), "/S", &msg))
+		return JS_FALSE;
+
+	/* If called with no arguments, use the current time as the seed. */
+	if (argc == 0)
+		str = "";
+	else
+		str = JS_EncodeString(cx, msg);
+
+	printf("%s\n", str);
+
+	JS_SET_RVAL(cx, vp, JSVAL_VOID);
+	/* return undefined */
+	return JS_TRUE;
+}
+
 /**
  * Reads a binary file and returns its content as a JS ArrayBuffer.
  */
@@ -78,7 +98,7 @@ JSBool read(JSContext *cx, uintN argc, jsval *vp) {
 
 	JSObject *buffer = buffer = readFile(cx, str);
 
-	fprintf(stderr, "Here %s\n", str);
+	// fprintf(stderr, "Here %s\n", str);
 
 	if (buffer != NULL) {
 		JS_SET_RVAL(cx, vp, OBJECT_TO_JSVAL(buffer));
@@ -91,6 +111,7 @@ JSBool read(JSContext *cx, uintN argc, jsval *vp) {
 
 static JSFunctionSpec globalFunctions[] = {
     JS_FS("print",   print,   0, 0),
+    JS_FS("println",   println,   0, 0),
     JS_FS("read",   read,   1, 0),
     JS_FS_END
 };
