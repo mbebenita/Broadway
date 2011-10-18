@@ -1,0 +1,5 @@
+Build Instructions:
+
+Install SDL
+Install and patch Spidermonkey with https://bugzilla.mozilla.org/show_bug.cgi?id=691446
+Run: ./go.py

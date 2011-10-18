@@ -4,51 +4,49 @@ var ERRORS = 0, WARNINGS = 1, TODOS = 5;
 var verbosity = WARNINGS;
 
 function dump(object) {
-	var output = '{ ';
-	for (var property in object) {
-		output += property + ': ' + object[property] + '; ';
-	}
-	output += '}';
-	log(output);
+    var output = '{ ';
+    for ( var property in object) {
+        output += property + ': ' + object[property] + '; ';
+    }
+    output += '}';
+    log(output);
 }
 
 function getProperties(object, verbose) {
     if (verbose) {
         var output = '{\n';
-        for (var property in object) {
+        for ( var property in object) {
             if (typeof (object[property]) != "function") {
                 output += "   " + property + ': ' + object[property] + '\n';
             }
         }
         return output + '}';
     } else {
-    	var output = '{ ';
-    	for (var property in object) {
-    		if (typeof (object[property]) != "function") {
-    			output += property + ': ' + object[property] + ' ';
-    		}
-    	}
-    	return output + '}';
+        var output = '{ ';
+        for ( var property in object) {
+            if (typeof (object[property]) != "function") {
+                output += property + ': ' + object[property] + ' ';
+            }
+        }
+        return output + '}';
     }
 }
 
 function getPrettyEnumValue(object, value) {
-	return getPropertyByValue(object, value) + " (" + value + ")";
+    return getPropertyByValue(object, value) + " (" + value + ")";
 }
 
 function getPropertyByValue(object, value) {
-	for (var property in object) {
-		if (object[property] == value) {
-			return property;
-		}
-	}
-	return null;
-	// error("Object: " + object + ", does not contain a property with value: " + value);
+    for ( var property in object) {
+        if (object[property] == value) {
+            return property;
+        }
+    }
+    return null;
 }
 
-
 function log(msg) {
-	print(msg);
+    print(msg);
 }
 
 function warn(msg) {
@@ -68,7 +66,7 @@ function backtrace() {
 }
 
 function unexpected() {
-	error("unexpected");
+    error("unexpected");
 }
 
 function error(msg) {
@@ -138,42 +136,42 @@ function getFile(arg, callback) {
 
     xhr.onreadystatechange = function getPdfOnreadystatechange() {
         if (xhr.readyState === 4 && xhr.status === xhr.expected) {
-            var data = (xhr.mozResponseArrayBuffer || xhr.mozResponse || xhr.responseArrayBuffer || xhr.response);
+            var data = (xhr.mozResponseArrayBuffer || xhr.mozResponse
+                    || xhr.responseArrayBuffer || xhr.response);
             callback(data);
         }
     };
     xhr.send(null);
 }
 
-
 function padLeft(str, char, num) {
-	var pad = "";
-	for (var i = 0; i < num - str.length; i++) {
-		pad += char;
-	}
-	return pad + str;
+    var pad = "";
+    for ( var i = 0; i < num - str.length; i++) {
+        pad += char;
+    }
+    return pad + str;
 }
 
 function getHexBytes(number, length) {
-	return padLeft(number.toString(16).toUpperCase(), "0", length);
+    return padLeft(number.toString(16).toUpperCase(), "0", length);
 }
 
 function printArrayBuffer(buffer) {
-	printArray(new Uint8Array(buffer));
+    printArray(new Uint8Array(buffer));
 }
 
 function printArray(uint8View) {
-	var group = 64;
-	var subGroup = 4;
-	print ("Size: " + uint8View.length + ", Buffer: ");
-	for (var i = 0; i < uint8View.length; i++) {
-		if (i % group == 0) {
-			print ("\n");
-			print (getHexBytes(i, 4) + ": ");
-		} else if (i % subGroup == 0) {
-			print (" ");
-		}
-		print (getHexBytes(uint8View[i], 2));
-	}
-	print ("\n");
+    var group = 64;
+    var subGroup = 4;
+    print("Size: " + uint8View.length + ", Buffer: ");
+    for ( var i = 0; i < uint8View.length; i++) {
+        if (i % group == 0) {
+            print("\n");
+            print(getHexBytes(i, 4) + ": ");
+        } else if (i % subGroup == 0) {
+            print(" ");
+        }
+        print(getHexBytes(uint8View[i], 2));
+    }
+    print("\n");
 }

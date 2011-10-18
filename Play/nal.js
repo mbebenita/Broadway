@@ -4,63 +4,72 @@
  */
 var AnnexBNALUnitReader = (function () {
 	var ptr = null;
-	function constructor(ptr) {
-		this.ptr = ptr;
-	}
+    function constructor(ptr) {
+        this.ptr = ptr;
+    }
 
 	constructor.prototype = {
-	
-	ReadNALUnit: function() {
-	    if (this.ptr == null) {
-	        return null;
-	    }
-		var res = this.findNextAnnexBNALUnit(this.ptr);
-		this.ptr = res.next;
-		return new NALUnit(res.nal);
-	},
-	
-    /*
-	 * Finds the next NAL unit from an Annex B byte stream.
-	 */
-    findNextAnnexBNALUnit: function findNextAnnexBNALUnit (ptr) {
-		var i = 0, size = ptr.length;
 
-	    /* look for start_code_prefix */
-	    while (ptr[i] == 0 && i < size) {
-	        i += 1;
-	    }
-	    if (i >= size) {
-	    	error("cannot find any start_code_prefix");
-	    } else if (ptr[i] != 0x1) {
-	    	/* start_code_prefix is not at the beginning, continue */
-	    	i = -1; 
-	    }
-	    i++;
-	    var j = i, start = i, end = start, foundStartCode = 0;
-	    while (!foundStartCode) {
-	        while ((j + 1 < size) && (ptr[j] != 0 || ptr[j + 1] != 0)) { /* see 2 consecutive zero bytes */
-	            j += 1;
-	        }
-	        end = j; /* stop and check for start code */
-	        while (j + 2 < size && ptr[j + 2] == 0) { /* keep reading for zero byte */
-	            j += 1;
-	        }
-	        if (j + 2 >= size) {
-	            size -= start;
-	            return {nal: ptr.subarray(start, start + size), next: null};
-	        }
-	        if (ptr[j + 2] == 0x1) {
-	            foundStartCode = 1;
-	        } else {
-	            /* could be emulation code 0x3 */
-	            j += 2; /* continue the search */
-	        }
-	    }
-	    size = end - start;
-	    return {nal: ptr.subarray(start, start + size), next: ptr.subarray(end)};
-	}};
-	
-	return constructor;
+        ReadNALUnit : function() {
+            if (this.ptr == null) {
+                return null;
+            }
+            var res = this.findNextAnnexBNALUnit(this.ptr);
+            this.ptr = res.next;
+            return new NALUnit(res.nal);
+        },
+
+        /*
+         * Finds the next NAL unit from an Annex B byte stream.
+         */
+        findNextAnnexBNALUnit : function findNextAnnexBNALUnit(ptr) {
+            var i = 0, size = ptr.length;
+
+            /* look for start_code_prefix */
+            while (ptr[i] == 0 && i < size) {
+                i += 1;
+            }
+            if (i >= size) {
+                error("cannot find any start_code_prefix");
+            } else if (ptr[i] != 0x1) {
+                /* start_code_prefix is not at the beginning, continue */
+                i = -1;
+            }
+            i++;
+            var j = i, start = i, end = start, foundStartCode = 0;
+            while (!foundStartCode) {
+                /* see 2 consecutive zero bytes */
+                while ((j + 1 < size) && (ptr[j] != 0 || ptr[j + 1] != 0)) { 
+                    j += 1;
+                }
+                end = j; /* stop and check for start code */
+                /* keep reading for zero byte */
+                while (j + 2 < size && ptr[j + 2] == 0) {
+                    j += 1;
+                }
+                if (j + 2 >= size) {
+                    size -= start;
+                    return {
+                        nal : ptr.subarray(start, start + size),
+                        next : null
+                    };
+                }
+                if (ptr[j + 2] == 0x1) {
+                    foundStartCode = 1;
+                } else {
+                    /* could be emulation code 0x3 */
+                    j += 2; /* continue the search */
+                }
+            }
+            size = end - start;
+            return {
+                nal : ptr.subarray(start, start + size),
+                next : ptr.subarray(end)
+            };
+        }
+    };
+
+    return constructor;
 })();
 
 /*
@@ -176,19 +185,19 @@ var NALUnit = (function () {
     }
 
 	constructor.prototype = {
-		toString: function toString() {
-			return getProperties(this);
-		},
-		decode: function() {
-		    switch (this.type) {
-		        case NALU_TYPE.SPS:
-		            return new SPS(this.rbsp);
-		        default:
-		            return null;
-		            // unexpected();
-		    }
-		}
-	};
+        toString : function toString() {
+            return getProperties(this);
+        },
+        decode : function() {
+            switch (this.type) {
+            case NALU_TYPE.SPS:
+                return new SPS(this.rbsp);
+            default:
+                return null;
+                // unexpected();
+            }
+        }
+    };
 	
 	return constructor;
 })();
@@ -197,7 +206,7 @@ var NALUnit = (function () {
 /*
  * Represents a video decoder capturing all of its internal state. 
  */
-var Decoder = (function () {
+var Decoder = (function() {
     function constructor() {
         this.SequenceParameterSets = [];
         this.PictureParameterSets = [];
@@ -210,22 +219,22 @@ var decoder = new Decoder();
 /*
  * Represents a Sequence Parameter Set (SPS)
  */
-var SPS = (function () {
+var SPS = (function() {
     function constructor(ptr) {
         var stream = new Bitstream(ptr);
-        
+
         this.profile_idc = stream.readBits(8);
         this.constrained_set0_flag = stream.readBit();
         this.constrained_set1_flag = stream.readBit();
         this.constrained_set2_flag = stream.readBit();
-        assert (stream.readBits(5) == 0); 
+        assert(stream.readBits(5) == 0);
         this.level_idc = stream.readBits(8);
-        assert (this.level_idc <= 51);
-        assert (mapLev2Idx[this.level_idc] != 255);
+        assert(this.level_idc <= 51);
+        assert(mapLev2Idx[this.level_idc] != 255);
         this.seq_parameter_set_id = stream.uev();
-        assert (this.seq_parameter_set_id <= 31);
+        assert(this.seq_parameter_set_id <= 31);
         this.log2_max_frame_num_minus4 = stream.uev();
-        assert (this.log2_max_frame_num_minus4 <= 12);
+        assert(this.log2_max_frame_num_minus4 <= 12);
         this.pic_order_cnt_type = stream.uev();
         if (this.pic_order_cnt_type == 0) {
             this.log2_max_pic_order_cnt_lsb_minus4 = stream.uev();
@@ -235,15 +244,15 @@ var SPS = (function () {
             this.offset_for_top_to_bottom_field = stream.sev32();
             this.num_ref_frames_in_pic_order_cnt_cycle = stream.uev();
             this.offset_for_ref_frame = [];
-            for (var i = 0; i < this.num_ref_frames_in_pic_order_cnt_cycle; i++) {
+            for ( var i = 0; i < this.num_ref_frames_in_pic_order_cnt_cycle; i++) {
                 offset_for_ref_frame[i] = stream.sev32();
             }
-        } 
+        }
         this.num_ref_frames = stream.uev();
-        assert (this.num_ref_frames <= 16);
+        assert(this.num_ref_frames <= 16);
         this.gaps_in_frame_num_value_allowed_flag = stream.readBit();
         this.pic_width_in_mbs_minus1 = stream.uev();
-        
+
         this.pic_height_in_map_units_minus1 = stream.uev();
         this.frame_mbs_only_flag = stream.readBit();
         this.mb_adaptive_frame_field_flag = 0;
@@ -257,16 +266,15 @@ var SPS = (function () {
         this.frame_crop_top_offset = 0;
         this.frame_crop_bottom_offset = 0;
         if (this.frame_cropping_flag) {
-            this.frame_crop_left_offset = stream.uev();;
-            this.frame_crop_right_offset = stream.uev();;
-            this.frame_crop_top_offset = stream.uev();;
-            this.frame_crop_bottom_offset = stream.uev();;
+            this.frame_crop_left_offset = stream.uev();
+            this.frame_crop_right_offset = stream.uev();
+            this.frame_crop_top_offset = stream.uev();
+            this.frame_crop_bottom_offset = stream.uev();
         }
         this.vui_parameters_present_flag = stream.readBit();
         if (this.vui_parameters_present_flag) {
             unexpected();
         }
-        
         decoder.SequenceParameterSets[this.seq_parameter_set_id] = this;
         println("SPS: " + getProperties(this, true));
     }
@@ -276,14 +284,14 @@ var SPS = (function () {
 /*
  * Represents a Picture Parameter Set (PPS)
  */
-var PPS = (function () {
+var PPS = (function() {
     function constructor(ptr) {
         var stream = new Bitstream(ptr);
-        
+
         this.pic_parameter_set_id = stream.uev();
-        assert (this.num_ref_frames <= 255);
+        assert(this.num_ref_frames <= 255);
         this.seq_parameter_set_id = stream.uev();
-        assert (this.seq_parameter_set_id <= 31);
+        assert(this.seq_parameter_set_id <= 31);
         this.entropy_coding_mode_flag = stream.readBit();
         if (this.entropy_coding_mode_flag) {
             unexpected();
@@ -295,29 +303,30 @@ var PPS = (function () {
         }
         this.slice_group_change_rate_minus1 = 0;
         if (this.num_slice_groups_minus1 > 0) {
-            this.slice_group_map_type = stream.uev(); 
+            this.slice_group_map_type = stream.uev();
             if (this.slice_group_map_type == 0) {
                 this.run_length_minus1 = [];
-                for (var i = 0; i <= this.num_slice_groups_minus1; i++) {
+                for ( var i = 0; i <= this.num_slice_groups_minus1; i++) {
                     this.run_length_minus1[i] = stream.uev();
                 }
             } else if (this.slice_group_map_type == 2) {
                 this.top_left = [];
                 this.bottom_right = [];
-                for (var i = 0; i < this.num_slice_groups_minus1; i++) {
+                for ( var i = 0; i < this.num_slice_groups_minus1; i++) {
                     this.top_left[i] = stream.uev();
                     this.bottom_right[i] = stream.uev();
                 }
-            } else if (this.slice_group_map_type == 3 ||
-                       this.slice_group_map_type == 4 ||
-                       this.slice_group_map_type == 5) {
-                
+            } else if (this.slice_group_map_type == 3
+                    || this.slice_group_map_type == 4
+                    || this.slice_group_map_type == 5) {
+
                 this.slice_group_change_direction_flag = stream.readBit();
-                this.slice_group_change_rate_minus1 = stream.uev(); 
+                this.slice_group_change_rate_minus1 = stream.uev();
             } else if (this.slice_group_map_type == 6) {
                 this.pic_size_in_map_units_minus1 = stream.uev();
 
-                var numBits = 0; /* ceil(log2(num_slice_groups_minus1+1)) bits */
+                /* ceil(log2(num_slice_groups_minus1+1)) bits */
+                var numBits = 0; 
                 var i = this.num_slice_groups_minus1;
                 while (i > 0) {
                     numBits++;
@@ -330,8 +339,8 @@ var PPS = (function () {
                 }
 
                 var picWidthInMbs = sps.pic_width_in_mbs_minus1 + 1;
-                var picHeightInMapUnits = sps.pic_height_in_map_units_minus1 + 1 ;
-                var picSizeInMapUnits = picWidthInMbs * picHeightInMapUnits ;
+                var picHeightInMapUnits = sps.pic_height_in_map_units_minus1 + 1;
+                var picSizeInMapUnits = picWidthInMbs * picHeightInMapUnits;
 
                 /* information has to be consistent with the seq_param */
                 if (this.pic_size_in_map_units_minus1 != picSizeInMapUnits - 1) {
@@ -340,55 +349,55 @@ var PPS = (function () {
 
                 this.slice_group_id = [];
                 for (i = 0; i < PicSizeInMapUnits; i++) {
-                    this.slice_group_id[i] = stream.readBits(numBits); 
+                    this.slice_group_id[i] = stream.readBits(numBits);
                 }
             }
         }
-        
+
         this.num_ref_idx_l0_active_minus1 = stream.uev();
-        assert (this.num_ref_idx_l0_active_minus1 < 32);
+        assert(this.num_ref_idx_l0_active_minus1 < 32);
 
         this.num_ref_idx_l1_active_minus1 = stream.uev();
-        assert (this.num_ref_idx_l1_active_minus1 < 32);
+        assert(this.num_ref_idx_l1_active_minus1 < 32);
 
         this.weighted_pred_flag = stream.readBit();
         this.weighted_bipred_idc = stream.readBits(2);
-        assert (this.weighted_bipred_idc < 3);
+        assert(this.weighted_bipred_idc < 3);
         this.pic_init_qp_minus26 = stream.sev();
-        assert (!(this.pic_init_qp_minus26 < -26 || this.pic_init_qp_minus26 > 25));
+        assert(!(this.pic_init_qp_minus26 < -26 || this.pic_init_qp_minus26 > 25));
         this.pic_init_qs_minus26 = stream.sev();
-        assert (!(this.pic_init_qs_minus26 < -26 || this.pic_init_qs_minus26 > 25));
+        assert(!(this.pic_init_qs_minus26 < -26 || this.pic_init_qs_minus26 > 25));
 
-        this.chroma_qp_index_offset = stream.sev(); 
-        assert (!(this.chroma_qp_index_offset < -12 || this.chroma_qp_index_offset > 12));
+        this.chroma_qp_index_offset = stream.sev();
+        assert(!(this.chroma_qp_index_offset < -12 || this.chroma_qp_index_offset > 12));
 
         this.pic_parameter_set_id = stream.readBits(3);
         this.deblocking_filter_control_present_flag = this.pic_parameter_set_id >> 2;
         this.constrained_intra_pred_flag = (this.pic_parameter_set_id >> 1) & 1;
         this.redundant_pic_cnt_present_flag = this.pic_parameter_set_id & 1;
-        
+
     }
     return constructor;
 })();
 
 function printNALUnit(nalu) {
-	
+
 }
 
 function getAllAnnexBNALUnits(ptr) {
-	var reader = new AnnexBNALUnitReader(ptr);
-	
-	var i = 0;
-	do {
-		var nal = reader.ReadNALUnit();
-		if (nal != null) {
-		    println ("NAL: " + (i++) + " " + nal.toString());
-		    var pay = nal.decode();
-		    if (pay != null) {
-		        println ("PAY: " + pay.toString());
-		    }
-		}
-	} while (nal != null);
+    var reader = new AnnexBNALUnitReader(ptr);
+
+    var i = 0;
+    do {
+        var nal = reader.ReadNALUnit();
+        if (nal != null) {
+            println("NAL: " + (i++) + " " + nal.toString());
+            var pay = nal.decode();
+            if (pay != null) {
+                println("PAY: " + pay.toString());
+            }
+        }
+    } while (nal != null);
 }
 
 
