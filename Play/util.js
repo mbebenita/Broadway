@@ -12,14 +12,24 @@ function dump(object) {
 	log(output);
 }
 
-function getProperties(object) {
-	var output = '{ ';
-	for (var property in object) {
-		if (typeof (object[property]) != "function") {
-			output += property + ': ' + object[property] + ' ';
-		}
-	}
-	return output + '}';
+function getProperties(object, verbose) {
+    if (verbose) {
+        var output = '{\n';
+        for (var property in object) {
+            if (typeof (object[property]) != "function") {
+                output += "   " + property + ': ' + object[property] + '\n';
+            }
+        }
+        return output + '}';
+    } else {
+    	var output = '{ ';
+    	for (var property in object) {
+    		if (typeof (object[property]) != "function") {
+    			output += property + ': ' + object[property] + ' ';
+    		}
+    	}
+    	return output + '}';
+    }
 }
 
 function getPrettyEnumValue(object, value) {
@@ -155,6 +165,7 @@ function printArrayBuffer(buffer) {
 function printArray(uint8View) {
 	var group = 64;
 	var subGroup = 4;
+	print ("Size: " + uint8View.length + ", Buffer: ");
 	for (var i = 0; i < uint8View.length; i++) {
 		if (i % group == 0) {
 			print ("\n");
