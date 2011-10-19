@@ -37,7 +37,8 @@ print 'Build'
 
 env = os.environ.copy()
 env['CC'] = env['CXX'] = env['RANLIB'] = env['AR'] = emscripten.EMMAKEN
-Popen(['make'], env=env).communicate()
+env['LINUX'] = '1'
+Popen(['make', '-j', '4'], env=env).communicate()
 
 print 'LLVM binary => LL assembly'
 
@@ -67,7 +68,6 @@ src.write(
   '''
     FS.createLazyFile('/', 'admiral.264', 'Media/admiral.264', true, false);
     FS.root.write = true;
-    run(['admiral.264']);
   '''
 )
 src.close()
