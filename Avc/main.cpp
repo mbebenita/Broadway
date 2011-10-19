@@ -79,6 +79,7 @@ int main(int argc, char **argv) {
 #else
 int SDL_main(int argc, char **argv) {
 #endif
+
     decoder.AVCObject = NULL;
 
     decoder.CBAVC_Malloc = my_malloc;
@@ -86,6 +87,7 @@ int SDL_main(int argc, char **argv) {
     decoder.debugEnable = true;
 
     size = 0;
+
 #if LINUX
     buffer = (uint8*) readFile(argc == 2 ? argv[1] : "../Media/admiral.264", &size);
 #else
@@ -176,6 +178,9 @@ mainLoopStatus mainLoopIteration() {
         uint32 *dst = (uint32*) screen->pixels;
         int stride = output.pitch;
         int strideChroma = output.pitch >> 1;
+#if !RENDER
+        int mean = 0;
+#endif
         for (int y = 0; y < output.height; y++) {
             int lineOffLuma = y * stride;
             int lineOffChroma = (y >> 1) * strideChroma;
@@ -195,9 +200,13 @@ mainLoopStatus mainLoopIteration() {
                 dst[lineOffLuma + x] = SDL_MapRGB(screen->format, red & 0xff, green & 0xff, blue & 0xff);
 #else
                 dst[lineOffLuma + x] = ((red & 0xff) << 16) + ((green & 0xff) << 8) + (blue & 0xff);
+                mean += dst[lineOffLuma + x];
 #endif
             }
         }
+#if !RENDER
+        printf("C mean: %d\n", mean/(output.height*output.pitch));
+#endif
 
 #if RENDER
         SDL_UnlockSurface(screen);
@@ -207,8 +216,9 @@ mainLoopStatus mainLoopIteration() {
         printf("\n=== dumping frame %d ===\n\n", frame++);
         int min = output.height < output.pitch ? output.height : output.pitch;
         for (int y = 0; y < min; y++) {
-            printf("%d: %d\n", y, ((char*)screen->pixels)[y*output.pitch + y*y]);
+//            printf("%d: %d\n", y, ((char*)screen->pixels)[y*output.pitch + y*4]);
         }
+        if (frame == 100) exit(0);
 #endif
         status = MLS_FRAMERENDERED;
 
@@ -221,9 +231,11 @@ mainLoopStatus mainLoopIteration() {
             case SDL_QUIT:
                 exit(0);
                 break;
+#if !LINUX
             case SDL_KEYDOWN:
                 exit(0);
                 break;
+#endif
             }
         }
 #endif

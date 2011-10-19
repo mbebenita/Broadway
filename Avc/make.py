@@ -64,23 +64,23 @@ print Popen(['python', os.path.join(EMSCRIPTEN_ROOT, 'emscripten.py')] + EMSCRIP
 print 'Appending filesystem stuff'
 
 src = open('avc.js', 'a')
-if 1: # Console debugging
-  data = open('../Media/admiral.264', 'r').read()
+if 0: # Console debugging
   src.write(
     '''
       FS.createDataFile('/', 'admiral.264', %s, true, false);
-      //print('zz ' + FS.findObject('admiral.264'));
       FS.root.write = true;
+      print('zz go!');
       run(['admiral.264']);
-    ''' % str(map(ord, data[0:1024]))
+      print('zz gone');
+    ''' % open('admiral.264.js').read().replace(' ', '')
   )
   # ~/Dev/mozilla-central/js/src/fast/js -m avc.js
 else:
   src.write(
     '''
-      FS.createLazyFile('/', 'admiral.264', 'Media/admiral.264', true, false);
-      FS.root.write = true;
-    '''
+      //FS.createLazyFile('/', 'admiral.264', 'http://127.0.0.1:8888/Media/admiral.264', true, false);
+      //FS.root.write = true;
+    '''# % open('admiral.264.js').read().replace(' ', '')
   )
 src.close()
 

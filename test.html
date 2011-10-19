@@ -5,12 +5,6 @@
       var Module = {
         noInitialRun: true
       };
-
-      // implement print
-      var print = function(text) {
-        var element = document.getElementById('output')
-        element.innerHTML = text.replace('\n', '<br>', 'g') + element.innerHTML;
-      }
     </script>
     <script src='Avc/avc.js' type='text/javascript'></script>
     <script type='text/javascript'>
@@ -22,9 +16,42 @@
           setInterval(__Z17mainLoopIterationv, 1000/50);
       }
 
+      // DEBUGGING
+
+      var frameCounter = 0;
+      var zzzzzzzzz_SDL_Flip = function(surf) {
+        alert('pause'); return;
+        var surfData = SDL.surfaces[surf];
+        var num = surfData.image.data.length;
+        var data = surfData.image.data;
+        var buffer = surfData.buffer;
+        alert("\n=== dumping frame " + [frameCounter, num, buffer] + " ===\n\n");
+        frameCounter++;
+        var minn = Math.min(surfData.height, surfData.width);
+        for (var y = 0; y < minn; y++) {
+          console.log(y + ': ' + HEAP8[buffer + y*surfData.width + y*4]);
+        }
+      }
+
       // Start everything on load
 
       function onLoad() {
+
+        // Get the file
+        var xhr = new XMLHttpRequest();
+        xhr.open("GET", 'Media/admiral.264', false);
+        xhr.responseType = "arraybuffer";
+        xhr.send(null);
+        var arrayBuffer = xhr.response;
+        if (arrayBuffer) {
+          var byteArray = new Uint8Array(arrayBuffer);
+          var array = Array.prototype.slice.apply(byteArray);
+          FS.createDataFile('/', 'admiral.264', array, true, false);
+          assert(array[0] == 0 && array[4] == 103); // sanity
+        } else alert('load fail :(');
+
+        FS.root.write = true;
+
         // Pass canvas and context to the generated code, and do the actual run() here
         Module.canvas = document.getElementById('canvas');
         Module.ctx2D = Module.canvas.getContext('2d');
