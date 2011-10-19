@@ -84,9 +84,9 @@ int SDL_main(int argc, char **argv) {
 
     size = 0;
 #if LINUX
-    buffer = (uint8*) readFile("../Media/admiral.264", &size);
+    buffer = (uint8*) readFile(argc == 2 ? argv[1] : "../Media/admiral.264", &size);
 #else
-    buffer = (uint8*) readFile("../Media/tomb.mpg", &size);
+    buffer = (uint8*) readFile(argc == 2 ? argv[1] : "../Media/tomb.mpg", &size);
 #endif
     stream = buffer;
 
