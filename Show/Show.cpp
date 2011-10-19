@@ -98,8 +98,6 @@ JSBool read(JSContext *cx, uintN argc, jsval *vp) {
 
 	JSObject *buffer = buffer = readFile(cx, str);
 
-	// fprintf(stderr, "Here %s\n", str);
-
 	if (buffer != NULL) {
 		JS_SET_RVAL(cx, vp, OBJECT_TO_JSVAL(buffer));
 	} else {

@@ -1,4 +1,4 @@
-CXXFLAGS =	-O2 -g -Wall -fmessage-length=0
+CXXFLAGS =	-m32 -O2 -g -Wall -fmessage-length=0
 
 OBJS =		Show.o SDLMain.o Stage.o
 

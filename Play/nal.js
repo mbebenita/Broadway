@@ -194,6 +194,9 @@ var NALUnit = (function () {
                 return new SPS(this.rbsp);
             case NALU_TYPE.PPS:
                 return new PPS(this.rbsp);
+            case NALU_TYPE.SLICE:
+            case NALU_TYPE.IDR:
+                return new SliceHeader(this.rbsp);
             default:
                 return null;
                 // unexpected();
@@ -204,21 +207,28 @@ var NALUnit = (function () {
 	return constructor;
 })();
 
+var Video = (function() {
+    function constructor() {
+    }
+    return constructor;
+})();
 
-/*
+
+/**
  * Represents a video decoder capturing all of its internal state. 
  */
 var Decoder = (function() {
     function constructor() {
         this.SequenceParameterSets = [];
         this.PictureParameterSets = [];
+        this.Video = new Video();
     }
     return constructor;
 })();
 
 var decoder = new Decoder();
 
-/*
+/**
  * Represents a Sequence Parameter Set (SPS)
  * 
  * Clause 7.4.2.2
@@ -284,6 +294,212 @@ var SPS = (function() {
     
     constructor.prototype.toString = function () {
         return "SPS: " + getProperties(this, true);
+    };
+    
+    return constructor;
+})();
+
+/**
+ * Represents a Slice Header
+ * 
+ * Clause 7.4.3
+ */
+var SliceHeader = (function() {
+    function constructor(ptr) {
+        var stream = new Bitstream(ptr);
+        
+        this.first_mb_in_slice = stream.uev();
+        this.slice_type = stream.uev();
+        if (this.first_mb_in_slice != 0) {
+            notImplemented();
+        }
+        this.pic_parameter_set_id = stream.uev();
+        assertRange(this.pic_parameter_set_id, 0, 255);
+        
+        var currentPPS = decoder.Video.CurrentPPS = decoder.PictureParameterSets[this.pic_parameter_set_id];
+        if (currentPPS == null) {
+            unexpected();
+        }
+        
+        var currentSPS = decoder.Video.CurrentSPS = decoder.PictureParameterSets[currentPPS.seq_parameter_set_id];
+        if (currentSPS == null) {
+            unexpected();
+        }
+        
+        if (currentPPS.seq_parameter_set_id != video.seq_parameter_set_id) {
+            notImplemented();
+        }
+        
+        /* derived variables from SPS */
+        video.MaxFrameNum = 1 << (currentSPS.log2_max_frame_num_minus4 + 4);
+        // MC_OPTIMIZE
+        video.PicWidthInMbs = currentSPS.pic_width_in_mbs_minus1 + 1;
+        video.PicWidthInSamplesL = video.PicWidthInMbs * 16;
+        video.PicWidthInSamplesC = video.PicWidthInMbs * 8;
+        video.PicHeightInMapUnits = currentSPS.pic_height_in_map_units_minus1 + 1;
+        video.PicSizeInMapUnits = video.PicWidthInMbs * video.PicHeightInMapUnits;
+        video.FrameHeightInMbs = (2 - currentSPS.frame_mbs_only_flag) * video.PicHeightInMapUnits;
+
+        /* derived from PPS */
+        video.SliceGroupChangeRate = currentPPS.slice_group_change_rate_minus1 + 1;
+
+        this.frame_num = stream.readBits(currentSPS.log2_max_frame_num_minus4 + 4);
+        
+        if (!currentSPS.frame_mbs_only_flag) {
+            this.field_pic_flag = stream.readBit();
+            assert (this.field_pic_flag == false);
+            if (this.field_pic_flag) {
+                unexpected();
+            }
+        }
+        
+        /* derived variables from slice header*/
+        video.PicHeightInMbs = video.FrameHeightInMbs;
+        video.PicHeightInSamplesL = video.PicHeightInMbs * 16;
+        video.PicHeightInSamplesC = video.PicHeightInMbs * 8;
+        video.PicSizeInMbs = video.PicWidthInMbs * video.PicHeightInMbs;
+        
+        if (this.first_mb_in_slice >= video.PicSizeInMbs) {
+            unexpected();
+        }
+        video.MaxPicNum = video.MaxFrameNum;
+        video.CurrPicNum = this.frame_num;
+
+        if (video.nal_unit_type == NALTYPE.IDR) {
+            if (this.frame_num != 0) {
+                unexpected();
+            }
+            this.idr_pic_id = stream.ue_v();
+        }
+        
+        this.delta_pic_order_cnt_bottom = 0; /* default value */
+        this.delta_pic_order_cnt[0] = 0; /* default value */
+        this.delta_pic_order_cnt[1] = 0; /* default value */
+        
+        if (currentSPS.pic_order_cnt_type == 0) {
+            this.pic_order_cnt_lsb = stream.readBits(currentSPS.log2_max_pic_order_cnt_lsb_minus4 + 4);
+            video.MaxPicOrderCntLsb = 1 << (currentSPS.log2_max_pic_order_cnt_lsb_minus4 + 4);
+            if (this.pic_order_cnt_lsb > video.MaxPicOrderCntLsb - 1) {
+                unexpected();
+            }
+
+            if (currentPPS.pic_order_present_flag) {
+                notImplemented();
+                this.delta_pic_order_cnt_bottom = stream.sev32();
+            }
+        }
+        
+        if (currentSPS.pic_order_cnt_type == 1 && !currentSPS.delta_pic_order_always_zero_flag) {
+            this.delta_pic_order_cnt[0] = stream.sev32(); 
+            if (currentPPS.pic_order_present_flag) {
+                this.delta_pic_order_cnt[1] = stream.sev32(); 
+            }
+        }
+
+        this.redundant_pic_cnt = 0; /* default value */
+        if (currentPPS.redundant_pic_cnt_present_flag) {
+            // MC_CHECK
+            this.redundant_pic_cnt = stream.uev();
+            if (this.redundant_pic_cnt > 127) /* out of range */
+                unexpected();
+
+            if (this.redundant_pic_cnt > 0) /* redundant picture */
+                unexpected(); /* not supported */
+        }
+        
+        this.num_ref_idx_l0_active_minus1 = currentPPS.num_ref_idx_l0_active_minus1;
+        this.num_ref_idx_l1_active_minus1 = currentPPS.num_ref_idx_l1_active_minus1;
+
+        if (slice_type == P_SLICE) {
+            this.num_ref_idx_active_override_flag = stream.readBit();
+            if (this.num_ref_idx_active_override_flag) {
+                this.num_ref_idx_l0_active_minus1 = stream.uev();
+            } else   {
+                /* the following condition is not allowed if the flag is zero */
+                if ((slice_type == P_SLICE) && currentPPS.num_ref_idx_l0_active_minus1 > 15) {
+                    unexpected(); /* not allowed */
+                }
+            }
+        }
+
+        if (this.num_ref_idx_l0_active_minus1 > 15 || this.num_ref_idx_l1_active_minus1 > 15) {
+            unexpected(); /* not allowed */
+        }
+        
+        /* if MbaffFrameFlag =1,
+        max value of index is num_ref_idx_l0_active_minus1 for frame MBs and
+        2*this.num_ref_idx_l0_active_minus1 + 1 for field MBs */
+
+        /* ref_pic_list_reordering() */
+        status = ref_pic_list_reordering(video, stream, this, slice_type);
+        if (status != AVCDEC_SUCCESS) {
+            return status;
+        }
+
+
+        if (video.nal_ref_idc != 0) {
+            dec_ref_pic_marking(video, stream, this);
+        }
+        this.slice_qp_delta = stream.sev();
+
+        video.QPy = 26 + currentPPS.pic_init_qp_minus26 + this.slice_qp_delta;
+        if (video.QPy > 51 || video.QPy < 0) {
+            video.QPy = AVC_CLIP3(0, 51, video.QPy);
+        }
+        video.QPc = mapQPi2QPc[AVC_CLIP3(0, 51, video.QPy + video.currPicParams.chroma_qp_index_offset)];
+
+        video.QPy_div_6 = (video.QPy * 43) >> 8;
+        video.QPy_mod_6 = video.QPy - 6 * video.QPy_div_6;
+
+        video.QPc_div_6 = (video.QPc * 43) >> 8;
+        video.QPc_mod_6 = video.QPc - 6 * video.QPc_div_6;
+
+        this.slice_alpha_c0_offset_div2 = 0;
+        this.slice_beta_offset_div_2 = 0;
+        this.disable_deblocking_filter_idc = 0;
+        video.FilterOffsetA = video.FilterOffsetB = 0;
+
+        if (currentPPS.deblocking_filter_control_present_flag) {
+            this.disable_deblocking_filter_idc = stream.uev();
+            if (this.disable_deblocking_filter_idc > 2) {
+                unexpected(); /* out of range */
+            }
+            if (this.disable_deblocking_filter_idc != 1) {
+                this.slice_alpha_c0_offset_div2 = stream.sev();
+                if (this.slice_alpha_c0_offset_div2 < -6 || this.slice_alpha_c0_offset_div2 > 6) {
+                    unexpected();
+                }
+                video.FilterOffsetA = this.slice_alpha_c0_offset_div2 << 1;
+                this.slice_beta_offset_div_2 = stream.sev(); 
+                if (this.slice_beta_offset_div_2 < -6 || this.slice_beta_offset_div_2 > 6) {
+                    unexpected();
+                }
+                video.FilterOffsetB = this.slice_beta_offset_div_2 << 1;
+            }
+        }
+
+        if (currentPPS.num_slice_groups_minus1 > 0 && 
+            currentPPS.slice_group_map_type >= 3 &&
+            currentPPS.slice_group_map_type <= 5) {
+            /* Ceil(Log2(PicSizeInMapUnits/(float)SliceGroupChangeRate + 1)) */
+            temp = video.PicSizeInMapUnits / video.SliceGroupChangeRate;
+            if (video.PicSizeInMapUnits % video.SliceGroupChangeRate) {
+                temp++;
+            }
+            i = 0;
+            temp++;
+            while (temp)
+            {
+                temp >>= 1;
+                i++;
+            }
+            this.slice_group_change_cycle = stream.readBits(i); 
+            video.MapUnitsInSliceGroup0 = AVC_MIN(this.slice_group_change_cycle * video.SliceGroupChangeRate, video.PicSizeInMapUnits);
+        }
+    }
+    
+    constructor.prototype.toString = function () {
+        return "SliceHeader: " + getProperties(this, true);
     };
     
     return constructor;

@@ -69,6 +69,10 @@ function backtrace() {
     return stackStr.split('\n').slice(1).join('\n');
 }
 
+function notImplemented() {
+    error("not implemented");
+}
+
 function unexpected() {
     error("unexpected");
 }

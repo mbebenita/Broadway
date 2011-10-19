@@ -1,0 +1,19 @@
+import pprint
+
+env = Environment()
+
+sourceFiles = Glob('Show/*.cpp') + Glob('Show/avc/*.cpp') + Glob('Show/*.m')
+# sourceFiles = Glob('Show/*.m')
+
+pprint.pprint (sourceFiles)
+
+# LIBS =      -L/usr/local/lib -lmozjs -framework Cocoa -framework SDL
+
+env.Append(CCFLAGS='-m32 -DOSCL_IMPORT_REF= -DOSCL_UNUSED_ARG= -DOSCL_EXPORT_REF=');
+
+env.Append(LINKFLAGS='-m32');
+
+env['FRAMEWORKS'] = ['Cocoa', 'SDL'];
+env.Program('player', sourceFiles, LIBS=['mozjs'], LIBPATH='/usr/local/lib');
+
+print env
