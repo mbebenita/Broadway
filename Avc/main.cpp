@@ -48,7 +48,11 @@ void my_free(void *userData, int mem) {
     free((void *) mem);
 }
 
+#ifdef LINUX
+int main(int argc, char **argv) {
+#else
 int SDL_main(int argc, char **argv) {
+#endif
     AVCHandle decoder;
     decoder.AVCObject = NULL;
 
@@ -56,7 +60,11 @@ int SDL_main(int argc, char **argv) {
     decoder.debugEnable = true;
 
     int size = 0;
+#if LINUX
+    uint8* buffer = (uint8*) readFile("../Media/admiral.264", &size);
+#else
     uint8* buffer = (uint8*) readFile("../Media/tomb.mpg", &size);
+#endif
     uint8* stream = buffer;
 
     uint8 *nal_unit = NULL;
