@@ -9,7 +9,7 @@ sys.path.append(EMSCRIPTEN_ROOT)
 import tools.shared as emscripten
 
 EMSCRIPTEN_SETTINGS = {
-  'SKIP_STACK_IN_SMALL': 1,
+  'SKIP_STACK_IN_SMALL': 0,
   'INIT_STACK': 1,
   'AUTO_OPTIMIZE': 0,
   'CHECK_OVERFLOWS': 0,
@@ -24,8 +24,8 @@ EMSCRIPTEN_SETTINGS = {
   'PROFILE': 0,
   'OPTIMIZE': 1,
   'RELOOP': 0,
-  'USE_TYPED_ARRAYS': 0,
-  'SAFE_HEAP': 1,
+  'USE_TYPED_ARRAYS': 2,
+  'SAFE_HEAP': 0,
   #'SAFE_HEAP_LINES': '["./libavutil/dict.c:41", "./libavcodec/get_bits.h:285"]', # (./?)libavutil/, ./libavcodec/
   'ASSERTIONS': 1,
   'QUANTUM_SIZE': 4,
@@ -64,11 +64,23 @@ print Popen(['python', os.path.join(EMSCRIPTEN_ROOT, 'emscripten.py')] + EMSCRIP
 print 'Appending filesystem stuff'
 
 src = open('avc.js', 'a')
-src.write(
-  '''
-    FS.createLazyFile('/', 'admiral.264', 'Media/admiral.264', true, false);
-    FS.root.write = true;
-  '''
-)
+if 1: # Console debugging
+  data = open('../Media/admiral.264', 'r').read()
+  src.write(
+    '''
+      FS.createDataFile('/', 'admiral.264', %s, true, false);
+      //print('zz ' + FS.findObject('admiral.264'));
+      FS.root.write = true;
+      run(['admiral.264']);
+    ''' % str(map(ord, data[0:1024]))
+  )
+  # ~/Dev/mozilla-central/js/src/fast/js -m avc.js
+else:
+  src.write(
+    '''
+      FS.createLazyFile('/', 'admiral.264', 'Media/admiral.264', true, false);
+      FS.root.write = true;
+    '''
+  )
 src.close()
 

@@ -70,7 +70,7 @@ uintptr_t my_malloc(void *userData, int32 size, int attribute) {
     return (uintptr_t) malloc(size);
 }
 
-void my_free(void *userData, int mem) {
+void my_free(void *userData, uintptr_t mem) {
     free((void *) mem);
 }
 
@@ -82,6 +82,7 @@ int SDL_main(int argc, char **argv) {
     decoder.AVCObject = NULL;
 
     decoder.CBAVC_Malloc = my_malloc;
+    decoder.CBAVC_Free = my_free;
     decoder.debugEnable = true;
 
     size = 0;
@@ -202,9 +203,11 @@ mainLoopStatus mainLoopIteration() {
         SDL_UnlockSurface(screen);
         SDL_Flip(screen);
 #else
-        printf("\n=== dumping frame ===\n\n");
-        for (int i = 0; i < output.pitch * output.height * 32; i++) {
-            printf("%d: %d\n", i, ((char*)screen->pixels)[i]);
+        static int frame = 0;
+        printf("\n=== dumping frame %d ===\n\n", frame++);
+        int min = output.height < output.pitch ? output.height : output.pitch;
+        for (int y = 0; y < min; y++) {
+            printf("%d: %d\n", y, ((char*)screen->pixels)[y*output.pitch + y*y]);
         }
 #endif
         status = MLS_FRAMERENDERED;
