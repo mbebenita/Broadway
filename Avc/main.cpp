@@ -14,6 +14,8 @@
   #define DLOG(...)
 #endif
 
+#define RENDER 1
+
 // Globals
 
 SDL_Surface* screen = NULL;
@@ -94,7 +96,9 @@ int SDL_main(int argc, char **argv) {
     remaining = size;
     nal_size = remaining;
 
+#if RENDER
     SDL_Init(SDL_INIT_VIDEO);
+#endif
 
     runMainLoop();
 
@@ -105,7 +109,9 @@ void runMainLoop() {
     mainLoopStatus status;
     while ((status = mainLoopIteration()) != MLS_STOP) {
         if (status == MLS_FRAMERENDERED) {
+#if RENDER
             SDL_Delay(1000/50);
+#endif
         }
     }
 }
@@ -115,7 +121,9 @@ mainLoopStatus mainLoopIteration() {
     if (PVAVCAnnexBGetNALUnit(stream, &nal_unit, &nal_size) != AVCDEC_SUCCESS) {
         // PVAVCAnnexBGetNALUnit(b)
 
+#if RENDER
         SDL_Quit();
+#endif
 
         PVAVCCleanUpDecoder(&decoder);
 
@@ -148,11 +156,18 @@ mainLoopStatus mainLoopIteration() {
         AVCFrameIO output;
         PVAVCDecGetOutput(&decoder, &indx, &release, &output);
 
+#if RENDER
         if (!screen) {
             screen = SDL_SetVideoMode(output.pitch, output.height, 32, SDL_HWSURFACE | SDL_RESIZABLE);
         }
 
         SDL_LockSurface(screen);
+#else
+        if (!screen) {
+            screen = (SDL_Surface*)malloc(sizeof(SDL_Surface));
+            screen->pixels = malloc(output.pitch * output.height * 32);
+        }
+#endif
 
         uint8 *luma = output.YCbCr[0];
         uint8 *cb = output.YCbCr[1];
@@ -175,16 +190,28 @@ mainLoopStatus mainLoopIteration() {
                 int blue = (298 * c + 516 * d + 128) >> 8;
                 blue = blue < 0 ? 0 : (blue > 255 ? 255 : blue);
                 int alpha = 255;
+#if RENDER
                 dst[lineOffLuma + x] = SDL_MapRGB(screen->format, red & 0xff, green & 0xff, blue & 0xff);
+#else
+                dst[lineOffLuma + x] = ((red & 0xff) << 16) + ((green & 0xff) << 8) + (blue & 0xff);
+#endif
             }
         }
 
+#if RENDER
         SDL_UnlockSurface(screen);
         SDL_Flip(screen);
+#else
+        printf("\n=== dumping frame ===\n\n");
+        for (int i = 0; i < output.pitch * output.height * 32; i++) {
+            printf("%d: %d\n", i, ((char*)screen->pixels)[i]);
+        }
+#endif
         status = MLS_FRAMERENDERED;
 
         DLOG("  DECODED %d\n", indx);
 
+#if RENDER
         SDL_Event event;
         while (SDL_PollEvent(&event)) {
             switch (event.type) {
@@ -196,6 +223,7 @@ mainLoopStatus mainLoopIteration() {
                 break;
             }
         }
+#endif
     }
 
     stream = nal_unit + nal_size;
