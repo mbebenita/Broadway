@@ -6,6 +6,13 @@
 
 #include "SDL/SDL.h"
 
+#define DEBUG_LOGGING 0
+#if DEBUG_LOGGING
+  #define DLOG printf
+#else
+  #define DLOG(...)
+#endif
+
 SDL_Surface* screen = NULL;
 
 char *readFile(const char* filename, int *size) {
@@ -48,7 +55,7 @@ int main(int argc, char **argv) {
 	decoder.debugEnable = true;
 
 	int size = 0;
-	uint8* buffer = (uint8*) readFile("../Media/admiral.264", &size);
+	uint8* buffer = (uint8*) readFile(argc >= 2 ? argv[1] : "../Media/admiral.264", &size);
 	uint8* stream = buffer;
 
 	uint8 *nal_unit = NULL;
@@ -59,24 +66,24 @@ int main(int argc, char **argv) {
 
 	int nal = 0;
 	while (PVAVCAnnexBGetNALUnit(stream, &nal_unit, &nal_size) == AVCDEC_SUCCESS) {
-		printf("Decoded NAL Unit %d Size: %d\n", nal++, nal_size);
+		DLOG("Decoded NAL Unit %d Size: %d\n", nal++, nal_size);
 		int nal_type = 0;
 		int nal_ref_idc = 0;
 
 		PVAVCDecGetNALType(nal_unit, nal_size, &nal_type, &nal_ref_idc);
-		printf("  nal_type: %d\n", nal_type);
-		printf("  nal_ref_idc: %d\n", nal_ref_idc);
+		DLOG("  nal_type: %d\n", nal_type);
+		DLOG("  nal_ref_idc: %d\n", nal_ref_idc);
 
 		if (nal_type == AVC_NALTYPE_SPS) {
-			printf("  SPS\n");
+			DLOG("  SPS\n");
 			PVAVCDecSeqParamSet(&decoder, nal_unit, nal_size);
 		} else if (nal_type == AVC_NALTYPE_PPS) {
-			printf("  PPS\n");
+			DLOG("  PPS\n");
 			PVAVCDecPicParamSet(&decoder, nal_unit, nal_size);
 		} else if (nal_type == AVC_NALTYPE_SLICE) {
-			printf("  SLICE\n");
+			DLOG("  SLICE\n");
 			int ret = PVAVCDecodeSlice(&decoder, nal_unit, nal_size);
-			printf("  SLICE %d\n", ret);
+			DLOG("  SLICE %d\n", ret);
 
 			int indx;
 			int release;
@@ -103,7 +110,7 @@ int main(int argc, char **argv) {
       SDL_Flip(screen); 
       //SDL_Delay(1000/50);
 
-			printf("  DECODED %d\n", indx);
+			DLOG("  DECODED %d\n", indx);
 		}
 
 		stream = nal_unit + nal_size;

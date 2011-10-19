@@ -1,5 +1,4 @@
 # Compiler
-CC = g++
 OPTS = -m32 -c -g -Wall -DOSCL_IMPORT_REF= -DOSCL_UNUSED_ARG= -DOSCL_EXPORT_REF=
 LDFLAGS = -m32 
 
