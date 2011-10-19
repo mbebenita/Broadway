@@ -2127,15 +2127,18 @@ var _llvm_dbg_declare; // stub for _llvm_dbg_declare
       if (!surfData.colors) {
         var data = surfData.image.data;
         var buffer = surfData.buffer;
-        var mean = 0;
-        for (var i = 0; i < num; i++) {
-          // We may need to correct signs here. Potentially you can hardcode a write of 255 to alpha, say, and
-          // the compiler may decide to write -1 in the llvm bitcode...
-          data[i] = HEAP8[((buffer+i)>>0)]&0xff;
-          mean += data[i];
-          if (i % 4 == 3) data[i] = 0x77;
+        assert(buffer % 4 == 0, 'Invalid buffer offset: ' + buffer);
+        var src = buffer >> 2;
+        var dst = 0;
+        while (dst < num) {
+          var val = HEAP32[src]; // This is optimized. Instead, we could do HEAP32[((buffer+dst)>>2)];
+          data[dst]   = val & 0xff;
+          data[dst+1] = (val >> 8) & 0xff;
+          data[dst+2] = (val >> 16) & 0xff;
+          data[dst+3] = 0xff;
+          src++;
+          dst += 4;
         }
-        console.log('sdl mean: ' + (mean/num));
       } else {
         var width = Module['canvas'].width;
         var height = Module['canvas'].height;
