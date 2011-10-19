@@ -19,7 +19,7 @@ OBJS    = $(patsubst $(SRCDIR)/%.cpp,$(OBJDIR)/%.o,$(SRCS))
 
 # Targets
 $(PROJECT): build-dirs $(OBJS)
-	$(CC) $(LDFLAGS) $(OBJS) $(LIBS) -o $@
+	$(CC) $(LDFLAGS) $(OBJS) $(LIBS) -lSDL -o $@
 
 # $(OBJDIR)/SDLMain.o: SDLMain.m
 #	$(CC) $(OPTS) -c $< -o $@

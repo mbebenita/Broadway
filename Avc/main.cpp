@@ -4,6 +4,10 @@
 #include "avcdec_int.h"
 #include "avcdec_api.h"
 
+#include "SDL/SDL.h"
+
+SDL_Surface* screen = NULL;
+
 char *readFile(const char* filename, int *size) {
 	FILE *file = fopen(filename, "rb");
 	if (!file) {
@@ -38,17 +42,20 @@ void my_free(void *userData, int mem) {
 
 int main(int argc, char **argv) {
 	AVCHandle decoder;
+  decoder.AVCObject = NULL;
 
 	decoder.CBAVC_Malloc = my_malloc;
 	decoder.debugEnable = true;
 
 	int size = 0;
-	uint8* buffer = (uint8*) readFile("/Users/mbebenita/Workspaces/Broadway/Media/admiral.264", &size);
+	uint8* buffer = (uint8*) readFile("../Media/admiral.264", &size);
 	uint8* stream = buffer;
 
 	uint8 *nal_unit = NULL;
 	int remaining = size;
 	int nal_size = remaining;
+
+  SDL_Init(SDL_INIT_VIDEO);
 
 	int nal = 0;
 	while (PVAVCAnnexBGetNALUnit(stream, &nal_unit, &nal_size) == AVCDEC_SUCCESS) {
@@ -76,6 +83,26 @@ int main(int argc, char **argv) {
 			AVCFrameIO output;
 			PVAVCDecGetOutput(&decoder, &indx, &release, &output);
 
+      if (!screen) {
+        screen = SDL_SetVideoMode(output.pitch, output.height, 32, SDL_SWSURFACE);
+      }
+
+      SDL_LockSurface(screen);
+      for (int y = 0; y < output.height; y++) {
+        uint8 *src = output.YCbCr[0] + output.pitch*y;
+        uint8 *dst = (uint8*)screen->pixels + output.pitch*y*4;
+        for (int x = 0; x < output.pitch; x++) {
+          uint8 val = src[x];
+          dst[x*4 + 0] = val;
+          dst[x*4 + 1] = val;
+          dst[x*4 + 2] = val;
+          dst[x*4 + 3] = 0x7f;
+        }
+      }
+      SDL_UnlockSurface(screen);
+      SDL_Flip(screen); 
+      //SDL_Delay(1000/50);
+
 			printf("  DECODED %d\n", indx);
 		}
 
@@ -85,6 +112,7 @@ int main(int argc, char **argv) {
 	
 	// PVAVCAnnexBGetNALUnit(b)
 
+  SDL_Quit();
 
 	PVAVCCleanUpDecoder(&decoder);
 
