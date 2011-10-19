@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <SDL/SDL.h>
 
 #include "avcdec_int.h"
 #include "avcdec_api.h"
@@ -36,7 +37,7 @@ void my_free(void *userData, int mem) {
 	free((void *)mem);
 }
 
-int main(int argc, char **argv) {
+int SDL_main(int argc, char **argv) {
 	AVCHandle decoder;
 
 	decoder.CBAVC_Malloc = my_malloc;
