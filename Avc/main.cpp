@@ -14,7 +14,31 @@
   #define DLOG(...)
 #endif
 
+// Globals
+
 SDL_Surface* screen = NULL;
+AVCHandle decoder;
+int size = 0;
+uint8* stream = NULL;
+uint8* buffer = NULL;
+uint8 *nal_unit = NULL;
+int remaining;
+int nal_size;
+
+// Main loop handling
+
+enum mainLoopStatus {
+  MLS_STOP = 0,
+  MLS_CONTINUE = 1,
+  MLS_FRAMERENDERED = 2
+};
+
+// Runs the main loop. This is replaced in JavaScript with an asynchronous loop
+// that calls mainLoopIteration
+void runMainLoop();
+mainLoopStatus mainLoopIteration();
+
+// Utilities
 
 char *readFile(const char* filename, int *size) {
     FILE *file = fopen(filename, "rb");
@@ -53,111 +77,129 @@ int main(int argc, char **argv) {
 #else
 int SDL_main(int argc, char **argv) {
 #endif
-    AVCHandle decoder;
     decoder.AVCObject = NULL;
 
     decoder.CBAVC_Malloc = my_malloc;
     decoder.debugEnable = true;
 
-    int size = 0;
+    size = 0;
 #if LINUX
-    uint8* buffer = (uint8*) readFile("../Media/admiral.264", &size);
+    buffer = (uint8*) readFile("../Media/admiral.264", &size);
 #else
-    uint8* buffer = (uint8*) readFile("../Media/tomb.mpg", &size);
+    buffer = (uint8*) readFile("../Media/tomb.mpg", &size);
 #endif
-    uint8* stream = buffer;
+    stream = buffer;
 
-    uint8 *nal_unit = NULL;
-    int remaining = size;
-    int nal_size = remaining;
+    nal_unit = NULL;
+    remaining = size;
+    nal_size = remaining;
 
     SDL_Init(SDL_INIT_VIDEO);
 
+    runMainLoop();
+
+    return 0;
+}
+
+void runMainLoop() {
+    mainLoopStatus status;
+    while ((status = mainLoopIteration()) != MLS_STOP) {
+        if (status == MLS_FRAMERENDERED) {
+            SDL_Delay(1000/50);
+        }
+    }
+}
+
+mainLoopStatus mainLoopIteration() {
     int nal = 0;
-    while (PVAVCAnnexBGetNALUnit(stream, &nal_unit, &nal_size) == AVCDEC_SUCCESS) {
-        DLOG("Decoded NAL Unit %d Size: %d\n", nal++, nal_size);
-        int nal_type = 0;
-        int nal_ref_idc = 0;
+    if (PVAVCAnnexBGetNALUnit(stream, &nal_unit, &nal_size) != AVCDEC_SUCCESS) {
+        // PVAVCAnnexBGetNALUnit(b)
 
-        PVAVCDecGetNALType(nal_unit, nal_size, &nal_type, &nal_ref_idc);
-        DLOG("  nal_type: %d\n", nal_type);
-        DLOG("  nal_ref_idc: %d\n", nal_ref_idc);
+        SDL_Quit();
 
-        if (nal_type == AVC_NALTYPE_SPS) {
-            DLOG("  SPS\n");
-            PVAVCDecSeqParamSet(&decoder, nal_unit, nal_size);
-        } else if (nal_type == AVC_NALTYPE_PPS) {
-            DLOG("  PPS\n");
-            PVAVCDecPicParamSet(&decoder, nal_unit, nal_size);
-        } else if (nal_type == AVC_NALTYPE_SLICE) {
-            DLOG("  SLICE\n");
-            int ret = PVAVCDecodeSlice(&decoder, nal_unit, nal_size);
-            DLOG("  SLICE %d\n", ret);
+        PVAVCCleanUpDecoder(&decoder);
 
-            int indx;
-            int release;
-            AVCFrameIO output;
-            PVAVCDecGetOutput(&decoder, &indx, &release, &output);
+        return MLS_STOP;
+    }
 
-            if (!screen) {
-                screen = SDL_SetVideoMode(output.pitch, output.height, 32, SDL_HWSURFACE | SDL_RESIZABLE);
-            }
+    mainLoopStatus status = MLS_CONTINUE;
 
-            SDL_LockSurface(screen);
+    DLOG("Decoded NAL Unit %d Size: %d\n", nal++, nal_size);
+    int nal_type = 0;
+    int nal_ref_idc = 0;
 
-            uint8 *luma = output.YCbCr[0];
-            uint8 *cb = output.YCbCr[1];
-            uint8 *cr = output.YCbCr[2];
-            uint32 *dst = (uint32*) screen->pixels;
-            int stride = output.pitch;
-            int strideChroma = output.pitch >> 1;
-            for (int y = 0; y < output.height; y++) {
-                int lineOffLuma = y * stride;
-                int lineOffChroma = (y >> 1) * strideChroma;
-                for (int x = 0; x < output.pitch; x++) {
-                    int c = luma[lineOffLuma + x] - 16;
-                    int d = cb[lineOffChroma + (x >> 1)] - 128;
-                    int e = cr[lineOffChroma + (x >> 1)] - 128;
+    PVAVCDecGetNALType(nal_unit, nal_size, &nal_type, &nal_ref_idc);
+    DLOG("  nal_type: %d\n", nal_type);
+    DLOG("  nal_ref_idc: %d\n", nal_ref_idc);
 
-                    int red = (298 * c + 409 * e + 128) >> 8;
-                    red = red < 0 ? 0 : (red > 255 ? 255 : red);
-                    int green = (298 * c - 100 * d - 208 * e + 128) >> 8;
-                    green = green < 0 ? 0 : (green > 255 ? 255 : green);
-                    int blue = (298 * c + 516 * d + 128) >> 8;
-                    blue = blue < 0 ? 0 : (blue > 255 ? 255 : blue);
-                    int alpha = 255;
-                    dst[lineOffLuma + x] = SDL_MapRGB(screen->format, red & 0xff, green & 0xff, blue & 0xff);
-                }
-            }
+    if (nal_type == AVC_NALTYPE_SPS) {
+        DLOG("  SPS\n");
+        PVAVCDecSeqParamSet(&decoder, nal_unit, nal_size);
+    } else if (nal_type == AVC_NALTYPE_PPS) {
+        DLOG("  PPS\n");
+        PVAVCDecPicParamSet(&decoder, nal_unit, nal_size);
+    } else if (nal_type == AVC_NALTYPE_SLICE) {
+        DLOG("  SLICE\n");
+        int ret = PVAVCDecodeSlice(&decoder, nal_unit, nal_size);
+        DLOG("  SLICE %d\n", ret);
 
-            SDL_UnlockSurface(screen);
-            SDL_Flip(screen);
-            SDL_Delay(1000 / 50);
+        int indx;
+        int release;
+        AVCFrameIO output;
+        PVAVCDecGetOutput(&decoder, &indx, &release, &output);
 
-            DLOG("  DECODED %d\n", indx);
+        if (!screen) {
+            screen = SDL_SetVideoMode(output.pitch, output.height, 32, SDL_HWSURFACE | SDL_RESIZABLE);
+        }
 
-            SDL_Event event;
-            while (SDL_PollEvent(&event)) {
-                switch (event.type) {
-                case SDL_QUIT:
-                    exit(0);
-                    break;
-                case SDL_KEYDOWN:
-                    exit(0);
-                    break;
-                }
+        SDL_LockSurface(screen);
+
+        uint8 *luma = output.YCbCr[0];
+        uint8 *cb = output.YCbCr[1];
+        uint8 *cr = output.YCbCr[2];
+        uint32 *dst = (uint32*) screen->pixels;
+        int stride = output.pitch;
+        int strideChroma = output.pitch >> 1;
+        for (int y = 0; y < output.height; y++) {
+            int lineOffLuma = y * stride;
+            int lineOffChroma = (y >> 1) * strideChroma;
+            for (int x = 0; x < output.pitch; x++) {
+                int c = luma[lineOffLuma + x] - 16;
+                int d = cb[lineOffChroma + (x >> 1)] - 128;
+                int e = cr[lineOffChroma + (x >> 1)] - 128;
+
+                int red = (298 * c + 409 * e + 128) >> 8;
+                red = red < 0 ? 0 : (red > 255 ? 255 : red);
+                int green = (298 * c - 100 * d - 208 * e + 128) >> 8;
+                green = green < 0 ? 0 : (green > 255 ? 255 : green);
+                int blue = (298 * c + 516 * d + 128) >> 8;
+                blue = blue < 0 ? 0 : (blue > 255 ? 255 : blue);
+                int alpha = 255;
+                dst[lineOffLuma + x] = SDL_MapRGB(screen->format, red & 0xff, green & 0xff, blue & 0xff);
             }
         }
 
-        stream = nal_unit + nal_size;
-        nal_size = size - (stream - buffer);
+        SDL_UnlockSurface(screen);
+        SDL_Flip(screen);
+        status = MLS_FRAMERENDERED;
+
+        DLOG("  DECODED %d\n", indx);
+
+        SDL_Event event;
+        while (SDL_PollEvent(&event)) {
+            switch (event.type) {
+            case SDL_QUIT:
+                exit(0);
+                break;
+            case SDL_KEYDOWN:
+                exit(0);
+                break;
+            }
+        }
     }
 
-    // PVAVCAnnexBGetNALUnit(b)
+    stream = nal_unit + nal_size;
+    nal_size = size - (stream - buffer);
 
-    SDL_Quit();
-
-    PVAVCCleanUpDecoder(&decoder);
-
-    return 0;
+    return status;
 }
