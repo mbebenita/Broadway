@@ -23,7 +23,7 @@ function drawLine(screen, x0, y0, x1, y1) {
     }
 }
 
-var lastTime = new Date()
+var lastTime = new Date();
 
 var frame = 0;
 

@@ -17,7 +17,11 @@ function getProperties(object, verbose) {
         var output = '{\n';
         for ( var property in object) {
             if (typeof (object[property]) != "function") {
-                output += "   " + property + ': ' + object[property] + '\n';
+                if (typeof (object[property]) == "number" && (property.toString().indexOf("word") >= 0)) {
+                    output += "   " + property + ': ' + getNumberInfo(object[property]) + '\n';
+                } else {
+                    output += "   " + property + ': ' + object[property] + '\n';
+                }
             }
         }
         return output + '}';
@@ -86,6 +90,12 @@ function assert(cond, msg) {
     }
 }
 
+function assertRange(value, min, max) {
+    if (value < min || value > max) {
+        error("Value " + value + " is out of range [" + min + "," + max + "]");
+    }
+}
+
 function bytesToString(bytes) {
     var str = '';
     var length = bytes.length;
@@ -144,6 +154,16 @@ function getFile(arg, callback) {
     xhr.send(null);
 }
 
+function getBinaryDigits(x, digits, withLeadingZeros) {
+    var t = "";
+    var z = withLeadingZeros ? 0 : countLeadingZeros32(x);
+    for (var i = digits - z - 1; i >= 0; i--) {
+        t += x & (1 << i) ? "1" : "0";
+    }
+    return t;
+}
+
+
 function padLeft(str, char, num) {
     var pad = "";
     for ( var i = 0; i < num - str.length; i++) {
@@ -152,7 +172,19 @@ function padLeft(str, char, num) {
     return pad + str;
 }
 
+function getNumberInfo(x) {
+    return "0x" + getHexBytes(x, 8) + 
+           ", 0b" + getBinaryDigits(x, 16, true) + " (" + countLeadingZeros16(x) + ")" +
+           ", 0b" + getBinaryDigits(x, 32, true) + " (" + countLeadingZeros32(x) + ") " + 
+           x.toString(); 
+}
+
 function getHexBytes(number, length) {
+    if (number < 0) {
+        var u = 0xFFFFFFFF + number + 1;
+        var hex = u.toString(16).toUpperCase();
+        return padLeft(hex, "0", length);
+    }
     return padLeft(number.toString(16).toUpperCase(), "0", length);
 }
 
@@ -163,7 +195,7 @@ function printArrayBuffer(buffer) {
 function printArray(uint8View) {
     var group = 64;
     var subGroup = 4;
-    print("Size: " + uint8View.length + ", Buffer: ");
+    print("Size: " + uint8View.length + " (" + (uint8View.length * 8) + ")" + ", Buffer: ");
     for ( var i = 0; i < uint8View.length; i++) {
         if (i % group == 0) {
             print("\n");

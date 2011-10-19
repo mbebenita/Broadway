@@ -192,6 +192,8 @@ var NALUnit = (function () {
             switch (this.type) {
             case NALU_TYPE.SPS:
                 return new SPS(this.rbsp);
+            case NALU_TYPE.PPS:
+                return new PPS(this.rbsp);
             default:
                 return null;
                 // unexpected();
@@ -218,6 +220,8 @@ var decoder = new Decoder();
 
 /*
  * Represents a Sequence Parameter Set (SPS)
+ * 
+ * Clause 7.4.2.2
  */
 var SPS = (function() {
     function constructor(ptr) {
@@ -229,12 +233,12 @@ var SPS = (function() {
         this.constrained_set2_flag = stream.readBit();
         assert(stream.readBits(5) == 0);
         this.level_idc = stream.readBits(8);
-        assert(this.level_idc <= 51);
+        assertRange(this.level_idc, 0, 51);
         assert(mapLev2Idx[this.level_idc] != 255);
         this.seq_parameter_set_id = stream.uev();
-        assert(this.seq_parameter_set_id <= 31);
+        assertRange(this.seq_parameter_set_id, 0, 31);
         this.log2_max_frame_num_minus4 = stream.uev();
-        assert(this.log2_max_frame_num_minus4 <= 12);
+        assertRange(this.log2_max_frame_num_minus4, 0, 12);
         this.pic_order_cnt_type = stream.uev();
         if (this.pic_order_cnt_type == 0) {
             this.log2_max_pic_order_cnt_lsb_minus4 = stream.uev();
@@ -249,7 +253,7 @@ var SPS = (function() {
             }
         }
         this.num_ref_frames = stream.uev();
-        assert(this.num_ref_frames <= 16);
+        assertRange(this.num_ref_frames, 0, 16);
         this.gaps_in_frame_num_value_allowed_flag = stream.readBit();
         this.pic_width_in_mbs_minus1 = stream.uev();
 
@@ -276,22 +280,27 @@ var SPS = (function() {
             unexpected();
         }
         decoder.SequenceParameterSets[this.seq_parameter_set_id] = this;
-        println("SPS: " + getProperties(this, true));
     }
+    
+    constructor.prototype.toString = function () {
+        return "SPS: " + getProperties(this, true);
+    };
+    
     return constructor;
 })();
 
-/*
+/**
  * Represents a Picture Parameter Set (PPS)
+ * 
+ * Clause 7.4.2.2
  */
 var PPS = (function() {
     function constructor(ptr) {
         var stream = new Bitstream(ptr);
-
         this.pic_parameter_set_id = stream.uev();
-        assert(this.num_ref_frames <= 255);
+        assertRange(this.pic_parameter_set_id, 0, 255);
         this.seq_parameter_set_id = stream.uev();
-        assert(this.seq_parameter_set_id <= 31);
+        assertRange(this.seq_parameter_set_id, 0, 31);
         this.entropy_coding_mode_flag = stream.readBit();
         if (this.entropy_coding_mode_flag) {
             unexpected();
@@ -348,35 +357,37 @@ var PPS = (function() {
                 }
 
                 this.slice_group_id = [];
-                for (i = 0; i < PicSizeInMapUnits; i++) {
+                for (i = 0; i < picSizeInMapUnits; i++) {
                     this.slice_group_id[i] = stream.readBits(numBits);
                 }
             }
         }
 
         this.num_ref_idx_l0_active_minus1 = stream.uev();
-        assert(this.num_ref_idx_l0_active_minus1 < 32);
+        assertRange(this.num_ref_idx_l0_active_minus1, 0, 31);
 
         this.num_ref_idx_l1_active_minus1 = stream.uev();
-        assert(this.num_ref_idx_l1_active_minus1 < 32);
+        assertRange(this.num_ref_idx_l1_active_minus1, 0, 31);
 
         this.weighted_pred_flag = stream.readBit();
         this.weighted_bipred_idc = stream.readBits(2);
-        assert(this.weighted_bipred_idc < 3);
+        assertRange(this.weighted_bipred_idc, 0, 3);
         this.pic_init_qp_minus26 = stream.sev();
-        assert(!(this.pic_init_qp_minus26 < -26 || this.pic_init_qp_minus26 > 25));
+        assertRange(this.pic_init_qp_minus26, -26, 25);
         this.pic_init_qs_minus26 = stream.sev();
-        assert(!(this.pic_init_qs_minus26 < -26 || this.pic_init_qs_minus26 > 25));
-
+        assertRange(this.pic_init_qs_minus26, -26, 25);
         this.chroma_qp_index_offset = stream.sev();
-        assert(!(this.chroma_qp_index_offset < -12 || this.chroma_qp_index_offset > 12));
-
+        assertRange(this.chroma_qp_index_offset, -12, 12);
         this.pic_parameter_set_id = stream.readBits(3);
         this.deblocking_filter_control_present_flag = this.pic_parameter_set_id >> 2;
         this.constrained_intra_pred_flag = (this.pic_parameter_set_id >> 1) & 1;
         this.redundant_pic_cnt_present_flag = this.pic_parameter_set_id & 1;
-
     }
+    
+    constructor.prototype.toString = function () {
+        return "PPS: " + getProperties(this, true);
+    };
+    
     return constructor;
 })();
 
@@ -394,7 +405,7 @@ function getAllAnnexBNALUnits(ptr) {
             println("NAL: " + (i++) + " " + nal.toString());
             var pay = nal.decode();
             if (pay != null) {
-                println("PAY: " + pay.toString());
+                println(pay.toString());
             }
         }
     } while (nal != null);

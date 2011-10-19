@@ -1,7 +1,14 @@
-/*
+'use strict';
+
+var trace = false;
+
+/**
  * Represents a bit stream view over a RBSP buffer. 
  */
 var Bitstream = (function () {
+    /**
+     * @param {Uint8Array} ptr A pointer to a buffer underlying this bitstream.
+     */
     function constructor(ptr) {
         this.incnt = 0;
         this.incnt_next = 0;
@@ -9,17 +16,20 @@ var Bitstream = (function () {
         this.curr_word = this.next_word = 0;
         this.read_pos = 0;
         this.buffer = ptr;
-        
-        printArray(ptr);
+        if (trace) printArray(ptr);
     }
     
-    constructor.prototype.flushBits = function (n) {
+    constructor.prototype.flush = function (n) {
         this.bitcnt += n;
         this.incnt -= n;
         this.curr_word <<= n;
     };
     
-    constructor.prototype.fillCache = function () {
+    /**
+     * Reads up to 32 bits.
+     */
+    constructor.prototype.fill = function () {
+        if (trace) println("Before Fill: " + this.toString());
         var buffer = this.buffer;
         var num_bits;
 
@@ -35,15 +45,15 @@ var Bitstream = (function () {
         var pos = this.read_pos;
         
         if (this.read_pos > buffer.length - 4) {
-            if (this.data_end_pos <= this.read_pos) {
+            if (buffer.length <= this.read_pos) {
                 this.incnt = num_bits;
                 this.incnt_next = 0;
             }
             this.next_word = 0;
-            for (var i = 0; i < this.data_end_pos - this.read_pos; i++) {
-                this.next_word |= (v[pos + i] << ((3 - i) << 3));
+            for (var i = 0; i < buffer.length - this.read_pos; i++) {
+                this.next_word |= (buffer[pos + i] << ((3 - i) << 3));
             }
-            this.read_pos = this.data_end_pos;
+            this.read_pos = buffer.length;
             this.curr_word |= (this.next_word >> num_bits);
             this.next_word <<= (31 - num_bits);
             this.next_word <<= 1;
@@ -56,6 +66,7 @@ var Bitstream = (function () {
             } else {
                 this.incnt = 32;
             }
+            if (trace) println("After Fill: " + this.toString());
             return;
         }
         
@@ -67,6 +78,7 @@ var Bitstream = (function () {
         this.next_word <<= 1;
         this.incnt_next += this.incnt;
         this.incnt = 32;
+        if (trace) println("After Fill: " + this.toString());
     };
     
     /*
@@ -74,10 +86,10 @@ var Bitstream = (function () {
      */
     constructor.prototype.readBits = function (n) {
         if (this.incnt < n) {
-            this.fillCache();
+            this.fill();
         }
         var bits = this.curr_word >>> (32 - n);
-        this.flushBits(n);
+        this.flush(n);
         return bits;
     };
     
@@ -86,7 +98,7 @@ var Bitstream = (function () {
      */
     constructor.prototype.peekBits = function (n) {
         if (this.incnt < n) {
-            this.fillCache();
+            this.fill();
         }
         return this.curr_word >>> (32 - n);
     };
@@ -96,10 +108,10 @@ var Bitstream = (function () {
      */
     constructor.prototype.readBit = function () {
         if (this.incnt < 1) {
-            this.fillCache();
+            this.fill();
         }
         var bit = this.curr_word >>> 31;
-        this.flushBits(1);
+        this.flush(1);
         return bit;
     };
     
@@ -121,19 +133,26 @@ var Bitstream = (function () {
      * 
      */
     
-    /* Unsigned Exponential-Golomb Coding for 16 bit values. */ 
+
+    /**
+     * Unsigned Exponential-Golomb Coding for 16 bit values.
+     */ 
     constructor.prototype.uev = function () {
         var temp = this.peekBits(16);
+        // if (trace) println("uev bits: " + getNumberInfo(temp));
         var leading_zeros = countLeadingZeros16(temp | 0x1);
+        // if (trace) println("uev lzs: " + leading_zeros);
         if (leading_zeros < 8) {
             var code = (temp >>> (15 - (leading_zeros << 1))) - 1;
-            this.flushBits((leading_zeros << 1) + 1);
+            this.flush((leading_zeros << 1) + 1);
             return code;
         }
         return this.readBits((leading_zeros << 1) + 1) - 1;
     };
     
-    /* Signed Exponential-Golomb Coding for 16 bit values. */
+    /**
+     *  Signed Exponential-Golomb Coding for 16 bit values. 
+     */
     constructor.prototype.sev = function () {
         var temp = this.peekBits(16);
         var leading_zeros = countLeadingZeros16(temp | 0x1);
@@ -150,7 +169,9 @@ var Bitstream = (function () {
         return ret;
     };
     
-    /* Read Exponential-Golomb 32 bit values with range from -2^31 to 2^31-1. */
+    /**
+     * Read Exponential-Golomb 32 bit values with range from -2^31 to 2^31-1. 
+     */
     constructor.prototype.readEBBits32 = function () {
         var bit = this.readBit();
         var leading_zeros = 0;
@@ -165,7 +186,9 @@ var Bitstream = (function () {
         return 0;
     };
 
-    /* Signed Exponential-Golomb Coding for 32 bit values. */
+    /*
+     * Signed Exponential-Golomb Coding for 32 bit values. 
+     */
     constructor.prototype.sev32 = function () {
         var bit = this.readBit();
         var leading_zeros = 0;
@@ -188,5 +211,8 @@ var Bitstream = (function () {
         return value;
     };
 
+    constructor.prototype.toString = function () {
+        return getProperties(this, true);
+    };
     return constructor;
 })();
