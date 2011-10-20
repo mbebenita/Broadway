@@ -1,0 +1,2 @@
+# content SConstruct
+SConscript('Show.scons', variant_dir='build', duplicate=0)

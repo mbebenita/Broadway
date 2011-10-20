@@ -1,0 +1,11 @@
+import pprint
+
+env = Environment()
+sourceFiles = Glob('*.cpp') + Glob('avc/*.cpp') + Glob('*.m')
+env.Append(CCFLAGS='-g -m32 -DOSCL_IMPORT_REF= -DOSCL_UNUSED_ARG= -DOSCL_EXPORT_REF=');
+env.Append(LINKFLAGS='-m32');
+
+env['FRAMEWORKS'] = ['Cocoa', 'SDL'];
+env.Program('../bin/player', sourceFiles, LIBS=['mozjs'], LIBPATH='/usr/local/lib');
+
+print env
