@@ -701,6 +701,7 @@ var _stderr;
 var __str1;
 var __str2;
 var __str3;
+var __str4;
 var __ZL10mapLev2Idx19;
 var __ZL6MapCBP;
 var __ZZ25ce_TotalCoeffTrailingOnesP15tagDecBitstreamPiS1_iE13TotCofNTrail1;
@@ -2087,6 +2088,10 @@ function __exit(status) {
 }
 function _exit(status) {
   __exit(status);
+}
+function _printf(format, varargs) {
+  var stdout = HEAP32[_stdout >> 2];
+  return _fprintf(stdout, format, varargs);
 }
 function __Z7InitDPBP12tagAVCHandleP12tagCommonObjiib($avcHandle, $video, $FrameHeightInMbs, $PicWidthInMbs, $padding) {
   var __stackBase__ = STACKTOP;
@@ -41524,33 +41529,47 @@ function __Z17mainLoopIterationv() {
         
         
         if ((HEAP32[$nal_type >> 2] | 0) == 1) {
-          __label__ = 7;
+          __label__ = 8;
         } else {
-          __label__ = 41;
+          __label__ = 7;
         }
-        if (__label__ == 7) {
-          var $10 = HEAP32[_nal_unit >> 2];
-          var $11 = HEAP32[_nal_size >> 2];
-          var $call11 = _PVAVCDecodeSlice(_decoder, $10, $11);
-          $ret = $call11;
-          var $call12 = _PVAVCDecGetOutput(_decoder, $indx, $release, $output);
+        $if_then11$$lor_lhs_false$11 : do {
+          if (__label__ == 7) {
+            
+            
+            if ((HEAP32[$nal_type >> 2] | 0) == 5) {
+              __label__ = 8;
+              break $if_then11$$lor_lhs_false$11;
+            }
+            var $74 = HEAP32[$nal_type >> 2];
+            var $call102 = _printf(__str4, allocate([ $74, 0, 0, 0 ], [ "i32", 0, 0, 0 ], ALLOC_STACK));
+            __label__ = 43;
+            break $if_then11$$lor_lhs_false$11;
+          }
+        } while (0);
+        if (__label__ == 8) {
+          var $11 = HEAP32[_nal_unit >> 2];
+          var $12 = HEAP32[_nal_size >> 2];
+          var $call12 = _PVAVCDecodeSlice(_decoder, $11, $12);
+          $ret = $call12;
+          var $call13 = _PVAVCDecGetOutput(_decoder, $indx, $release, $output);
           
           
           if ((HEAP32[_screen >> 2] | 0) != 0) {
-            __label__ = 9;
+            __label__ = 10;
           } else {
-            __label__ = 8;
+            __label__ = 9;
           }
-          if (__label__ == 8) {
+          if (__label__ == 9) {
             
-            var $13 = HEAP32[$output + 16 >> 2];
+            var $14 = HEAP32[$output + 16 >> 2];
             
-            var $14 = HEAP32[$output + 20 >> 2];
-            var $call14 = _SDL_SetVideoMode($13, $14, 32, 17);
-            HEAP32[_screen >> 2] = $call14;
+            var $15 = HEAP32[$output + 20 >> 2];
+            var $call15 = _SDL_SetVideoMode($14, $15, 32, 17);
+            HEAP32[_screen >> 2] = $call15;
           }
-          var $15 = HEAP32[_screen >> 2];
-          var $call16 = _SDL_LockSurface($15);
+          var $16 = HEAP32[_screen >> 2];
+          var $call17 = _SDL_LockSurface($16);
           
           
           
@@ -41576,14 +41595,14 @@ function __Z17mainLoopIterationv() {
           
           $strideChroma = HEAP32[$output + 16 >> 2] >> 1;
           $y = 0;
-          $for_cond$16 : while (1) {
+          $for_cond$19 : while (1) {
             
             
             
-            var $cmp24 = ($y | 0) < (HEAP32[$output + 20 >> 2] | 0);
-            if (!$cmp24) {
-              __label__ = 35;
-              break $for_cond$16;
+            var $cmp25 = ($y | 0) < (HEAP32[$output + 20 >> 2] | 0);
+            if (!$cmp25) {
+              __label__ = 36;
+              break $for_cond$19;
             }
             
             
@@ -41599,9 +41618,9 @@ function __Z17mainLoopIterationv() {
               
               
               
-              var $cmp29 = ($x | 0) < (HEAP32[$output + 16 >> 2] | 0);
-              if (!$cmp29) {
-                __label__ = 33;
+              var $cmp30 = ($x | 0) < (HEAP32[$output + 16 >> 2] | 0);
+              if (!$cmp30) {
+                __label__ = 34;
                 break;
               }
               
@@ -41644,31 +41663,31 @@ function __Z17mainLoopIterationv() {
               
               
               if (($red | 0) < 0) {
-                __label__ = 14;
-              } else {
                 __label__ = 15;
+              } else {
+                __label__ = 16;
               }
-              if (__label__ == 14) {
-                __lastLabel__ = 14;
-              } else if (__label__ == 15) {
+              if (__label__ == 15) {
+                __lastLabel__ = 15;
+              } else if (__label__ == 16) {
                 
                 
                 if (($red | 0) > 255) {
-                  __label__ = 16;
-                } else {
                   __label__ = 17;
+                } else {
+                  __label__ = 18;
                 }
-                if (__label__ == 16) {
-                  __lastLabel__ = 16;
-                } else if (__label__ == 17) {
-                  var $48 = $red;
+                if (__label__ == 17) {
                   __lastLabel__ = 17;
+                } else if (__label__ == 18) {
+                  var $49 = $red;
+                  __lastLabel__ = 18;
                 }
-                var $cond = __lastLabel__ == 16 ? 255 : $48;
-                __lastLabel__ = 18;
+                var $cond = __lastLabel__ == 17 ? 255 : $49;
+                __lastLabel__ = 19;
               }
-              var $cond52 = __lastLabel__ == 14 ? 0 : $cond;
-              $red = $cond52;
+              var $cond53 = __lastLabel__ == 15 ? 0 : $cond;
+              $red = $cond53;
               
               
               
@@ -41683,31 +41702,31 @@ function __Z17mainLoopIterationv() {
               
               
               if (($green | 0) < 0) {
-                __label__ = 20;
-              } else {
                 __label__ = 21;
+              } else {
+                __label__ = 22;
               }
-              if (__label__ == 20) {
-                __lastLabel__ = 20;
-              } else if (__label__ == 21) {
+              if (__label__ == 21) {
+                __lastLabel__ = 21;
+              } else if (__label__ == 22) {
                 
                 
                 if (($green | 0) > 255) {
-                  __label__ = 22;
-                } else {
                   __label__ = 23;
+                } else {
+                  __label__ = 24;
                 }
-                if (__label__ == 22) {
-                  __lastLabel__ = 22;
-                } else if (__label__ == 23) {
-                  var $54 = $green;
+                if (__label__ == 23) {
                   __lastLabel__ = 23;
+                } else if (__label__ == 24) {
+                  var $55 = $green;
+                  __lastLabel__ = 24;
                 }
-                var $cond67 = __lastLabel__ == 22 ? 255 : $54;
-                __lastLabel__ = 24;
+                var $cond68 = __lastLabel__ == 23 ? 255 : $55;
+                __lastLabel__ = 25;
               }
-              var $cond69 = __lastLabel__ == 20 ? 0 : $cond67;
-              $green = $cond69;
+              var $cond70 = __lastLabel__ == 21 ? 0 : $cond68;
+              $green = $cond70;
               
               
               
@@ -41719,35 +41738,35 @@ function __Z17mainLoopIterationv() {
               
               
               if (($blue | 0) < 0) {
-                __label__ = 26;
-              } else {
                 __label__ = 27;
+              } else {
+                __label__ = 28;
               }
-              if (__label__ == 26) {
-                __lastLabel__ = 26;
-              } else if (__label__ == 27) {
+              if (__label__ == 27) {
+                __lastLabel__ = 27;
+              } else if (__label__ == 28) {
                 
                 
                 if (($blue | 0) > 255) {
-                  __label__ = 28;
-                } else {
                   __label__ = 29;
+                } else {
+                  __label__ = 30;
                 }
-                if (__label__ == 28) {
-                  __lastLabel__ = 28;
-                } else if (__label__ == 29) {
-                  var $59 = $blue;
+                if (__label__ == 29) {
                   __lastLabel__ = 29;
+                } else if (__label__ == 30) {
+                  var $60 = $blue;
+                  __lastLabel__ = 30;
                 }
-                var $cond82 = __lastLabel__ == 28 ? 255 : $59;
-                __lastLabel__ = 30;
+                var $cond83 = __lastLabel__ == 29 ? 255 : $60;
+                __lastLabel__ = 31;
               }
-              var $cond84 = __lastLabel__ == 26 ? 0 : $cond82;
-              $blue = $cond84;
+              var $cond85 = __lastLabel__ == 27 ? 0 : $cond83;
+              $blue = $cond85;
               $alpha = 255;
               
               
-              var $61 = HEAP32[HEAP32[_screen >> 2] + 4 >> 2];
+              var $62 = HEAP32[HEAP32[_screen >> 2] + 4 >> 2];
               
               
               
@@ -41757,52 +41776,52 @@ function __Z17mainLoopIterationv() {
               
               
               
-              var $call90 = _SDL_MapRGB($61, $red & 255 & 255, $green & 255 & 255, $blue & 255 & 255);
+              var $call91 = _SDL_MapRGB($62, $red & 255 & 255, $green & 255 & 255, $blue & 255 & 255);
               
               
               
               
               
-              HEAP32[$dst + 4 * ($lineOffLuma + $x) >> 2] = $call90;
+              HEAP32[$dst + 4 * ($lineOffLuma + $x) >> 2] = $call91;
               
               var $inc = $x + 1;
               $x = $inc;
-              __label__ = 12;
+              __label__ = 13;
               continue;
             }
             
-            var $inc94 = $y + 1;
-            $y = $inc94;
-            __label__ = 10;
-            continue $for_cond$16;
+            var $inc95 = $y + 1;
+            $y = $inc95;
+            __label__ = 11;
+            continue $for_cond$19;
           }
-          var $70 = HEAP32[_screen >> 2];
-          _SDL_UnlockSurface($70);
           var $71 = HEAP32[_screen >> 2];
-          var $call96 = _SDL_Flip($71);
+          _SDL_UnlockSurface($71);
+          var $72 = HEAP32[_screen >> 2];
+          var $call97 = _SDL_Flip($72);
           $status = 2;
           while (1) {
-            var $call97 = _SDL_PollEvent($event);
-            var $tobool98 = ($call97 | 0) != 0;
-            if (!$tobool98) {
-              __label__ = 40;
+            var $call98 = _SDL_PollEvent($event);
+            var $tobool99 = ($call98 | 0) != 0;
+            if (!$tobool99) {
+              __label__ = 41;
               break;
             }
             
             
             
             if ((HEAPU8[$event >> 0] & 255) == 12) {
-              __label__ = 38;
+              __label__ = 39;
               break;
             } else {
 
             }
-            __label__ = 36;
+            __label__ = 37;
             continue;
           }
-          if (__label__ == 40) {
+          if (__label__ == 41) {
 
-          } else if (__label__ == 38) {
+          } else if (__label__ == 39) {
             _exit(0);
             throw "Reached an unreachable!";
           }
@@ -41819,14 +41838,14 @@ function __Z17mainLoopIterationv() {
     
     
     
-    var $sub103 = HEAP32[_size >> 2] - (HEAP32[_stream >> 2] - HEAP32[_buffer >> 2]);
-    HEAP32[_nal_size >> 2] = $sub103;
+    var $sub106 = HEAP32[_size >> 2] - (HEAP32[_stream >> 2] - HEAP32[_buffer >> 2]);
+    HEAP32[_nal_size >> 2] = $sub106;
     
     $retval = $status;
   }
-  var $79 = $retval;
+  var $81 = $retval;
   STACKTOP = __stackBase__;
-  return $79;
+  return $81;
   return null;
 }
 function __Z4ue_vP15tagDecBitstreamPj($bitstream, $codeNum) {
@@ -46685,7 +46704,8 @@ function run(args) {
   __str = allocate([ 114, 98, 0 ], "i8", ALLOC_STATIC);
   __str1 = allocate([ 85, 110, 97, 98, 108, 101, 32, 116, 111, 32, 111, 112, 101, 110, 32, 102, 105, 108, 101, 32, 37, 115, 10, 0 ], "i8", ALLOC_STATIC);
   __str2 = allocate([ 77, 101, 109, 111, 114, 121, 32, 101, 114, 114, 111, 114, 33, 10, 0 ], "i8", ALLOC_STATIC);
-  __str3 = allocate([ 46, 46, 47, 77, 101, 100, 105, 97, 47, 97, 100, 109, 105, 114, 97, 108, 46, 50, 54, 52, 0 ], "i8", ALLOC_STATIC);
+  __str3 = allocate([ 46, 46, 47, 77, 101, 100, 105, 97, 47, 109, 111, 122, 105, 108, 108, 97, 46, 50, 54, 52, 0 ], "i8", ALLOC_STATIC);
+  __str4 = allocate([ 77, 105, 115, 115, 101, 100, 32, 37, 100, 10, 0 ], "i8", ALLOC_STATIC);
   __ZL10mapLev2Idx19 = allocate([ 255, 255, 255, 255, 255, 255, 255, 255, 255, 1, 0, 1, 2, 3, 255, 255, 255, 255, 255, 255, 4, 5, 6, 255, 255, 255, 255, 255, 255, 255, 7, 8, 9, 255, 255, 255, 255, 255, 255, 255, 10, 11, 12, 255, 255, 255, 255, 255, 255, 255, 13, 14, 255, 255, 255, 255, 255, 255, 255, 255, 0 ], "i8", ALLOC_STATIC);
   __ZL6MapCBP = allocate([ 47, 0, 31, 16, 15, 1, 0, 2, 23, 4, 27, 8, 29, 32, 30, 3, 7, 5, 11, 10, 13, 12, 14, 15, 39, 47, 43, 7, 45, 11, 46, 13, 16, 14, 3, 6, 5, 9, 10, 31, 12, 35, 19, 37, 21, 42, 26, 44, 28, 33, 35, 34, 37, 36, 42, 40, 44, 39, 1, 43, 2, 45, 4, 46, 8, 17, 17, 18, 18, 20, 20, 24, 24, 19, 6, 21, 9, 26, 22, 28, 25, 23, 32, 27, 33, 29, 34, 30, 36, 22, 40, 25, 38, 38, 41, 41 ], "i8", ALLOC_STATIC);
   __ZZ25ce_TotalCoeffTrailingOnesP15tagDecBitstreamPiS1_iE13TotCofNTrail1 = allocate([ 0, 0, 16, 0, 0, 16, 1, 13, 15, 1, 13, 15, 0, 16, 16, 2, 16, 16, 1, 16, 16, 0, 15, 16, 3, 16, 16, 2, 15, 16, 1, 15, 16, 0, 14, 16, 3, 15, 16, 2, 14, 16, 1, 14, 16, 0, 13, 16, 3, 14, 15, 2, 13, 15, 1, 12, 15, 0, 12, 15, 3, 13, 15, 2, 12, 15, 1, 11, 15, 0, 11, 15, 3, 12, 14, 2, 11, 14, 1, 10, 14, 0, 10, 14, 3, 11, 14, 2, 10, 14, 1, 9, 14, 0, 9, 14, 0, 8, 13, 2, 9, 13, 1, 8, 13, 0, 7, 13, 3, 10, 13, 2, 8, 13, 1, 7, 13, 0, 6, 13, 3, 9, 11, 2, 7, 11, 1, 6, 11, 0, 5, 11, 3, 8, 10, 2, 6, 10, 1, 5, 10, 0, 4, 10, 3, 7, 9, 2, 5, 9, 1, 4, 9, 0, 3, 9, 3, 6, 8, 2, 4, 8, 1, 3, 8, 0, 2, 8, 3, 5, 7, 2, 3, 7, 3, 4, 6, 3, 4, 6, 1, 2, 6, 1, 2, 6, 0, 1, 6, 0, 1, 6, 3, 3, 5, 3, 3, 5, 3, 3, 5, 3, 3, 5, 2, 2, 3, 1, 1, 2, 1, 1, 2, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1 ], "i8", ALLOC_STATIC);
