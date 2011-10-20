@@ -23,7 +23,7 @@ EMSCRIPTEN_SETTINGS = {
   'FAST_MEMORY': 12*1024*1024,
   'PROFILE': 0,
   'OPTIMIZE': 1,
-  'RELOOP': 0, # XXX 1 makes compilation slower!
+  'RELOOP': 1, # XXX 1 makes compilation slower!
   'USE_TYPED_ARRAYS': 2,
   'SAFE_HEAP': 0,
   'ASSERTIONS': 0,
@@ -117,6 +117,9 @@ else:
   )
 src.close()
 
-# Optional: closure compiler, something like
+# Optional: eliminator, something like
+# ~/Dev/emscripten/tools/eliminator/node_modules/coffee-script/bin/coffee  ~/Dev/emscripten/tools/eliminator/eliminator.coffee < avc.js > avc.elim.js
+#
+# TODO: figure out why closure compiler fails,
 # java -Xmx1024m -jar ~/Dev/closure-compiler-read-only/build/compiler.jar --compilation_level ADVANCED_OPTIMIZATIONS --js avc.js --js_output_file avc.cc.js
 
