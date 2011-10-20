@@ -124,3 +124,9 @@ f = open('avc.elim.js', 'w')
 f.write(eliminatoed)
 f.close()
 
+print 'Closure compiler'
+
+Popen(['java', '-jar', emscripten.CLOSURE_COMPILER,
+               '--compilation_level', 'ADVANCED_OPTIMIZATIONS',
+               '--js', 'avc.elim.js', '--js_output_file', 'avc.elim.cc.js'], stdout=PIPE, stderr=STDOUT).communicate()
+
