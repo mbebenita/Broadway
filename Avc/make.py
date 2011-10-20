@@ -31,7 +31,7 @@ EMSCRIPTEN_SETTINGS = {
   'INVOKE_RUN': 0, # we do it ourselves
   'EXPORTED_FUNCTIONS': ['_main', '__Z11runMainLoopv'],
 }
-EMSCRIPTEN_ARGS = []#['--dlmalloc']
+EMSCRIPTEN_ARGS = []#['--dlmalloc'] # Optimize does not appear to help
 
 print 'Build'
 
@@ -117,9 +117,16 @@ else:
   )
 src.close()
 
-# Optional: eliminator, something like
-# ~/Dev/emscripten/tools/eliminator/node_modules/coffee-script/bin/coffee  ~/Dev/emscripten/tools/eliminator/eliminator.coffee < avc.js > avc.elim.js
-#
-# TODO: figure out why closure compiler fails,
-# java -Xmx1024m -jar ~/Dev/closure-compiler-read-only/build/compiler.jar --compilation_level ADVANCED_OPTIMIZATIONS --js avc.js --js_output_file avc.cc.js
+print 'Eliminating unneeded variables'
+
+eliminatoed = Popen([emscripten.COFFEESCRIPT, emscripten.VARIABLE_ELIMINATOR], stdin=PIPE, stdout=PIPE).communicate(open('avc.js', 'r').read())[0]
+f = open('avc.elim.js', 'w')
+f.write(eliminatoed)
+f.close()
+
+print 'Closure compiler'
+
+Popen(['java', '-jar', emscripten.CLOSURE_COMPILER,
+               '--compilation_level', 'ADVANCED_OPTIMIZATIONS',
+               '--js', 'avc.elim.js', '--js_output_file', 'avc.elim.cc.js'], stdout=PIPE, stderr=STDOUT).communicate()
 

@@ -1025,7 +1025,7 @@ var FS = {
     return FS.createFile(parent, name, ops, Boolean(input), Boolean(output));
   }),
   forceLoadFile: (function(obj) {
-    if (obj.isDevice || obj.isFolder || obj.link || "contents" in obj) return true;
+    if (obj.isDevice || obj.isFolder || obj.link || obj.contents) return true;
     var success = true;
     if (typeof XMLHttpRequest !== "undefined") {
       var xhr = new XMLHttpRequest;
