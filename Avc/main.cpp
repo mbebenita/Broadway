@@ -89,9 +89,9 @@ int SDL_main(int argc, char **argv) {
     size = 0;
 
 #if LINUX
-    buffer = (uint8*) readFile(argc == 2 ? argv[1] : "../Media/admiral.264", &size);
+    buffer = (uint8*) readFile(argc == 2 ? argv[1] : "../Media/mozilla.264", &size);
 #else
-    buffer = (uint8*) readFile(argc == 2 ? argv[1] : "../Media/tomb.mpg", &size);
+    buffer = (uint8*) readFile(argc == 2 ? argv[1] : "../Media/mozilla.264", &size);
 #endif
     stream = buffer;
 
@@ -149,7 +149,7 @@ mainLoopStatus mainLoopIteration() {
     } else if (nal_type == AVC_NALTYPE_PPS) {
         DLOG("  PPS\n");
         PVAVCDecPicParamSet(&decoder, nal_unit, nal_size);
-    } else if (nal_type == AVC_NALTYPE_SLICE) {
+    } else if (nal_type == AVC_NALTYPE_SLICE || nal_type == AVC_NALTYPE_IDR) {
         DLOG("  SLICE\n");
         int ret = PVAVCDecodeSlice(&decoder, nal_unit, nal_size);
         DLOG("  SLICE %d\n", ret);
@@ -239,6 +239,8 @@ mainLoopStatus mainLoopIteration() {
             }
         }
 #endif
+    } else {
+        printf("Missed %d\n", nal_type);
     }
 
     stream = nal_unit + nal_size;
