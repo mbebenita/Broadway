@@ -2115,7 +2115,7 @@ function __Z7InitDPBP12tagAVCHandleP12tagCommonObjiib($avcHandle, $video, $Frame
   $FrameHeightInMbs_addr = $FrameHeightInMbs;
   $PicWidthInMbs_addr = $PicWidthInMbs;
   
-  $padding_addr = $padding & 1;
+  $padding_addr = $padding;
   
   
   
@@ -2134,7 +2134,7 @@ function __Z7InitDPBP12tagAVCHandleP12tagCommonObjiib($avcHandle, $video, $Frame
   $num_fs = 0;
   $for_cond$2 : while (1) {
     
-    var $cmp = ($num_fs | 0) < 17;
+    var $cmp = $num_fs < 17;
     if (!$cmp) {
       __label__ = 4;
       break $for_cond$2;
@@ -2185,7 +2185,7 @@ function __Z7InitDPBP12tagAVCHandleP12tagCommonObjiib($avcHandle, $video, $Frame
   
   
   
-  if ((HEAP32[$dpb >> 2] | 0) != 0) {
+  if (HEAP32[$dpb >> 2] != 0) {
     __label__ = 8;
   } else {
     __label__ = 9;
@@ -2210,12 +2210,12 @@ function __Z7InitDPBP12tagAVCHandleP12tagCommonObjiib($avcHandle, $video, $Frame
   
   
   
-  var $shl15 = HEAP32[__ZL8MaxDPBX2 + (HEAPU8[__ZL10mapLev2Idx + $level >> 0] & 255) * 4 >> 2] << 2;
+  var $shl15 = HEAP32[__ZL8MaxDPBX2 + HEAPU8[__ZL10mapLev2Idx + $level >> 0] * 4 >> 2] << 2;
   
   
   
   
-  var $div = Math.floor(($shl15 >>> 0) / (3 * $FrameHeightInMbs_addr * $PicWidthInMbs_addr >>> 0));
+  var $div = Math.floor($shl15 / (3 * $FrameHeightInMbs_addr * $PicWidthInMbs_addr));
   var $add18 = $div + 1;
   
   
@@ -2224,7 +2224,7 @@ function __Z7InitDPBP12tagAVCHandleP12tagCommonObjiib($avcHandle, $video, $Frame
   
   
   
-  if ((HEAP32[$dpb + 80 >> 2] | 0) > 17) {
+  if (HEAP32[$dpb + 80 >> 2] > 17) {
     __label__ = 10;
   } else {
     __label__ = 11;
@@ -2244,7 +2244,7 @@ function __Z7InitDPBP12tagAVCHandleP12tagCommonObjiib($avcHandle, $video, $Frame
   
   
   
-  if (HEAP32[HEAP32[$video_addr + 868 >> 2] + 1080 >> 2] + 1 >>> 0 > HEAPU32[$dpb + 80 >> 2] >>> 0) {
+  if (HEAP32[HEAP32[$video_addr + 868 >> 2] + 1080 >> 2] + 1 > HEAPU32[$dpb + 80 >> 2]) {
     __label__ = 12;
   } else {
     __label__ = 13;
@@ -2288,7 +2288,7 @@ function __Z7InitDPBP12tagAVCHandleP12tagCommonObjiib($avcHandle, $video, $Frame
   
   
   
-  if ((HEAP32[$dpb >> 2] | 0) == 0) {
+  if (HEAP32[$dpb >> 2] == 0) {
     __label__ = 15;
   } else {
     __label__ = 14;
@@ -2301,7 +2301,7 @@ function __Z7InitDPBP12tagAVCHandleP12tagCommonObjiib($avcHandle, $video, $Frame
       
       
       
-      if ((HEAP32[$dpb >> 2] & 3 | 0) != 0) {
+      if ((HEAP32[$dpb >> 2] & 3) != 0) {
         __label__ = 15;
         break $if_then45$$lor_lhs_false$20;
       }
@@ -2314,7 +2314,7 @@ function __Z7InitDPBP12tagAVCHandleP12tagCommonObjiib($avcHandle, $video, $Frame
         
         
         
-        var $cmp48 = ($num_fs | 0) < (HEAP32[$dpb + 80 >> 2] | 0);
+        var $cmp48 = $num_fs < HEAP32[$dpb + 80 >> 2];
         if (!$cmp48) {
           __label__ = 21;
           break;
@@ -2336,7 +2336,7 @@ function __Z7InitDPBP12tagAVCHandleP12tagCommonObjiib($avcHandle, $video, $Frame
         
         
         
-        if ((HEAP32[$dpb + 12 + $num_fs * 4 >> 2] | 0) == 0) {
+        if (HEAP32[$dpb + 12 + $num_fs * 4 >> 2] == 0) {
           __label__ = 19;
           break;
         }
@@ -2484,7 +2484,7 @@ function __Z20AVCConfigureSequenceP12tagAVCHandleP12tagCommonObjb($avcHandle, $v
   $avcHandle_addr = $avcHandle;
   $video_addr = $video;
   
-  $padding_addr = $padding & 1;
+  $padding_addr = $padding;
   
   
   
@@ -2525,7 +2525,7 @@ function __Z20AVCConfigureSequenceP12tagAVCHandleP12tagCommonObjb($avcHandle, $v
   
   
   
-  if ((HEAP32[$video_addr + 1264 >> 2] | 0) != ($PicSizeInMapUnits | 0)) {
+  if (HEAP32[$video_addr + 1264 >> 2] != $PicSizeInMapUnits) {
     __label__ = 2;
   } else {
     __label__ = 1;
@@ -2541,7 +2541,7 @@ function __Z20AVCConfigureSequenceP12tagAVCHandleP12tagCommonObjb($avcHandle, $v
       
       
       
-      if ((HEAP32[HEAP32[$video_addr + 868 >> 2] + 24 >> 2] | 0) != (HEAP32[$video_addr + 1312 >> 2] | 0)) {
+      if (HEAP32[HEAP32[$video_addr + 868 >> 2] + 24 >> 2] != HEAP32[$video_addr + 1312 >> 2]) {
         __label__ = 2;
         break $if_then$$lor_lhs_false$2;
       } else {
@@ -2558,7 +2558,7 @@ function __Z20AVCConfigureSequenceP12tagAVCHandleP12tagCommonObjb($avcHandle, $v
         
         
         
-        var $cmp11 = ($ii | 0) < (HEAP32[$dpb + 80 >> 2] | 0);
+        var $cmp11 = $ii < HEAP32[$dpb + 80 >> 2];
         if (!$cmp11) {
           __label__ = 6;
           break $for_cond$6;
@@ -2595,15 +2595,15 @@ function __Z20AVCConfigureSequenceP12tagAVCHandleP12tagCommonObjb($avcHandle, $v
       
       
       
-      var $shl = HEAP32[__ZL8MaxDPBX2 + (HEAPU8[__ZL10mapLev2Idx + HEAP32[HEAP32[$video_addr + 868 >> 2] + 24 >> 2] >> 0] & 255) * 4 >> 2] << 2;
+      var $shl = HEAP32[__ZL8MaxDPBX2 + HEAPU8[__ZL10mapLev2Idx + HEAP32[HEAP32[$video_addr + 868 >> 2] + 24 >> 2] >> 0] * 4 >> 2] << 2;
       
       
-      var $div = Math.floor(($shl >>> 0) / (3 * $PicSizeInMapUnits >>> 0));
+      var $div = Math.floor($shl / (3 * $PicSizeInMapUnits));
       
       $num_fs = $div + 1;
       
       
-      if ($num_fs >>> 0 >= 17) {
+      if ($num_fs >= 17) {
         __label__ = 7;
       } else {
         __label__ = 8;
@@ -2622,7 +2622,7 @@ function __Z20AVCConfigureSequenceP12tagAVCHandleP12tagCommonObjb($avcHandle, $v
       
       var $call22 = __Z7InitDPBP12tagAVCHandleP12tagCommonObjiib($avcHandle_addr, $video_addr, $FrameHeightInMbs, $PicWidthInMbs, $padding_addr & 1);
       
-      if (($call22 | 0) != 1) {
+      if ($call22 != 1) {
         __label__ = 9;
       } else {
         __label__ = 10;
@@ -2640,7 +2640,7 @@ function __Z20AVCConfigureSequenceP12tagAVCHandleP12tagCommonObjb($avcHandle, $v
         
         
         
-        if ((HEAP32[$video_addr + 908 >> 2] | 0) != 0) {
+        if (HEAP32[$video_addr + 908 >> 2] != 0) {
           __label__ = 11;
         } else {
           __label__ = 12;
@@ -2674,7 +2674,7 @@ function __Z20AVCConfigureSequenceP12tagAVCHandleP12tagCommonObjb($avcHandle, $v
         
         
         
-        if ((HEAP32[$video_addr + 908 >> 2] | 0) == 0) {
+        if (HEAP32[$video_addr + 908 >> 2] == 0) {
           __label__ = 13;
         } else {
           __label__ = 14;
@@ -2688,7 +2688,7 @@ function __Z20AVCConfigureSequenceP12tagAVCHandleP12tagCommonObjb($avcHandle, $v
           while (1) {
             
             
-            var $cmp40 = ($ii | 0) < ($framesize | 0);
+            var $cmp40 = $ii < $framesize;
             if (!$cmp40) {
               __label__ = 18;
               break;
@@ -2710,7 +2710,7 @@ function __Z20AVCConfigureSequenceP12tagAVCHandleP12tagCommonObjb($avcHandle, $v
           
           
           
-          if ((HEAP32[$video_addr + 1412 >> 2] | 0) != 0) {
+          if (HEAP32[$video_addr + 1412 >> 2] != 0) {
             __label__ = 19;
           } else {
             __label__ = 20;
@@ -2745,7 +2745,7 @@ function __Z20AVCConfigureSequenceP12tagAVCHandleP12tagCommonObjb($avcHandle, $v
           
           
           
-          if ((HEAP32[$video_addr + 1412 >> 2] | 0) == 0) {
+          if (HEAP32[$video_addr + 1412 >> 2] == 0) {
             __label__ = 21;
           } else {
             __label__ = 22;
@@ -2804,7 +2804,7 @@ function __Z10CleanUpDPBP12tagAVCHandleP12tagCommonObj($avcHandle, $video) {
   $ii = 0;
   while (1) {
     
-    var $cmp = ($ii | 0) < 17;
+    var $cmp = $ii < 17;
     if (!$cmp) {
       __label__ = 6;
       break;
@@ -2815,7 +2815,7 @@ function __Z10CleanUpDPBP12tagAVCHandleP12tagCommonObj($avcHandle, $video) {
     
     
     
-    if ((HEAP32[$dpb + 12 + $ii * 4 >> 2] | 0) != 0) {
+    if (HEAP32[$dpb + 12 + $ii * 4 >> 2] != 0) {
       __label__ = 3;
     } else {
       __label__ = 4;
@@ -2848,7 +2848,7 @@ function __Z10CleanUpDPBP12tagAVCHandleP12tagCommonObj($avcHandle, $video) {
   
   
   
-  if ((HEAP32[$dpb >> 2] | 0) != 0) {
+  if (HEAP32[$dpb >> 2] != 0) {
     __label__ = 7;
   } else {
     __label__ = 8;
@@ -2899,7 +2899,7 @@ function __Z13DPBInitBufferP12tagAVCHandleP12tagCommonObj($avcHandle, $video) {
     
     
     
-    var $cmp = ($ii | 0) < (HEAP32[$dpb + 80 >> 2] | 0);
+    var $cmp = $ii < HEAP32[$dpb + 80 >> 2];
     if (!$cmp) {
       __label__ = 7;
       break;
@@ -2912,7 +2912,7 @@ function __Z13DPBInitBufferP12tagAVCHandleP12tagCommonObj($avcHandle, $video) {
     
     
     
-    if ((HEAP32[HEAP32[$dpb + 12 + $ii * 4 >> 2] + 4 >> 2] | 0) == 0) {
+    if (HEAP32[HEAP32[$dpb + 12 + $ii * 4 >> 2] + 4 >> 2] == 0) {
       __label__ = 3;
     } else {
       __label__ = 5;
@@ -2926,7 +2926,7 @@ function __Z13DPBInitBufferP12tagAVCHandleP12tagCommonObj($avcHandle, $video) {
       
       
       
-      if ((HEAP32[HEAP32[$dpb + 12 + $ii * 4 >> 2] + 12 >> 2] | 0) == 3) {
+      if (HEAP32[HEAP32[$dpb + 12 + $ii * 4 >> 2] + 12 >> 2] == 3) {
         __label__ = 4;
         break;
       }
@@ -2952,7 +2952,7 @@ function __Z13DPBInitBufferP12tagAVCHandleP12tagCommonObj($avcHandle, $video) {
   
   
   
-  if (($ii | 0) == (HEAP32[$dpb + 80 >> 2] | 0)) {
+  if ($ii == HEAP32[$dpb + 80 >> 2]) {
     __label__ = 8;
   } else {
     __label__ = 9;
@@ -3065,7 +3065,7 @@ function __Z10DPBInitPicP12tagCommonObji($video, $CurrPicNum) {
   
   
   
-  if ((HEAP32[$video_addr + 1236 >> 2] | 0) != 0) {
+  if (HEAP32[$video_addr + 1236 >> 2] != 0) {
     __label__ = 1;
   } else {
     __label__ = 2;
@@ -3146,7 +3146,7 @@ function __Z10DPBInitPicP12tagCommonObji($video, $CurrPicNum) {
   
   
   
-  var $cond = (HEAP32[$video_addr + 1236 >> 2] | 0) == 0 ? 0 : 32;
+  var $cond = HEAP32[$video_addr + 1236 >> 2] == 0 ? 0 : 32;
   var $add42 = HEAP32[$video_addr + 1252 >> 2] + $cond;
   
   
@@ -3228,7 +3228,7 @@ function __Z17StorePictureInDPBP12tagAVCHandleP12tagCommonObj($avcHandle, $video
   
   
   
-  if ((HEAP32[$video_addr + 848 >> 2] | 0) == 5) {
+  if (HEAP32[$video_addr + 848 >> 2] == 5) {
     __label__ = 1;
   } else {
     __label__ = 19;
@@ -3241,7 +3241,7 @@ function __Z17StorePictureInDPBP12tagAVCHandleP12tagCommonObj($avcHandle, $video
         
         
         
-        var $cmp2 = ($ii | 0) < (HEAP32[$dpb + 80 >> 2] | 0);
+        var $cmp2 = $ii < HEAP32[$dpb + 80 >> 2];
         if (!$cmp2) {
           __label__ = 7;
           break $for_cond$4;
@@ -3255,7 +3255,7 @@ function __Z17StorePictureInDPBP12tagAVCHandleP12tagCommonObj($avcHandle, $video
         
         
         
-        if ((HEAP32[$dpb + 12 + $ii * 4 >> 2] | 0) != (HEAP32[$video_addr + 888 >> 2] | 0)) {
+        if (HEAP32[$dpb + 12 + $ii * 4 >> 2] != HEAP32[$video_addr + 888 >> 2]) {
           __label__ = 4;
         } else {
           __label__ = 5;
@@ -3305,7 +3305,7 @@ function __Z17StorePictureInDPBP12tagAVCHandleP12tagCommonObj($avcHandle, $video
       
       
       
-      if ((HEAP32[$sliceHdr + 844 >> 2] | 0) == 0) {
+      if (HEAP32[$sliceHdr + 844 >> 2] == 0) {
         __label__ = 8;
       } else {
         __label__ = 9;
@@ -3348,7 +3348,7 @@ function __Z17StorePictureInDPBP12tagAVCHandleP12tagCommonObj($avcHandle, $video
       
       
       
-      if ((HEAP32[$sliceHdr + 840 >> 2] | 0) != 0) {
+      if (HEAP32[$sliceHdr + 840 >> 2] != 0) {
         __label__ = 11;
       } else {
         __label__ = 18;
@@ -3360,7 +3360,7 @@ function __Z17StorePictureInDPBP12tagAVCHandleP12tagCommonObj($avcHandle, $video
           
           
           
-          var $cmp28 = ($ii | 0) < (HEAP32[$dpb + 80 >> 2] | 0);
+          var $cmp28 = $ii < HEAP32[$dpb + 80 >> 2];
           if (!$cmp28) {
             __label__ = 17;
             break;
@@ -3374,7 +3374,7 @@ function __Z17StorePictureInDPBP12tagAVCHandleP12tagCommonObj($avcHandle, $video
           
           
           
-          if ((HEAP32[$dpb + 12 + $ii * 4 >> 2] | 0) != (HEAP32[$video_addr + 888 >> 2] | 0)) {
+          if (HEAP32[$dpb + 12 + $ii * 4 >> 2] != HEAP32[$video_addr + 888 >> 2]) {
             __label__ = 14;
           } else {
             __label__ = 15;
@@ -3407,7 +3407,7 @@ function __Z17StorePictureInDPBP12tagAVCHandleP12tagCommonObj($avcHandle, $video
       
       
       
-      if ((HEAP32[HEAP32[$video_addr + 884 >> 2] + 20 >> 2] | 0) == 1) {
+      if (HEAP32[HEAP32[$video_addr + 884 >> 2] + 20 >> 2] == 1) {
         __label__ = 20;
       } else {
         __label__ = 26;
@@ -3417,7 +3417,7 @@ function __Z17StorePictureInDPBP12tagAVCHandleP12tagCommonObj($avcHandle, $video
         
         
         
-        if ((HEAP32[$sliceHdr + 848 >> 2] | 0) == 0) {
+        if (HEAP32[$sliceHdr + 848 >> 2] == 0) {
           __label__ = 21;
         } else {
           __label__ = 22;
@@ -3438,7 +3438,7 @@ function __Z17StorePictureInDPBP12tagAVCHandleP12tagCommonObj($avcHandle, $video
         }
         
         
-        if (($status | 0) != 1) {
+        if ($status != 1) {
           __label__ = 24;
         } else {
           __label__ = 25;
@@ -3461,7 +3461,7 @@ function __Z17StorePictureInDPBP12tagAVCHandleP12tagCommonObj($avcHandle, $video
     
     
     
-    if ((HEAP32[$video_addr + 848 >> 2] | 0) != 5) {
+    if (HEAP32[$video_addr + 848 >> 2] != 5) {
       __label__ = 28;
     } else {
       __label__ = 33;
@@ -3473,7 +3473,7 @@ function __Z17StorePictureInDPBP12tagAVCHandleP12tagCommonObj($avcHandle, $video
         
         
         
-        var $cmp62 = (HEAP32[HEAP32[$video_addr + 884 >> 2] + 24 >> 2] | 0) == 0;
+        var $cmp62 = HEAP32[HEAP32[$video_addr + 884 >> 2] + 24 >> 2] == 0;
         if (!$cmp62) {
           __label__ = 33;
           break $land_lhs_true$$if_end76$40;
@@ -3484,7 +3484,7 @@ function __Z17StorePictureInDPBP12tagAVCHandleP12tagCommonObj($avcHandle, $video
         
         
         
-        if ((HEAP32[HEAP32[$video_addr + 884 >> 2] + 20 >> 2] | 0) != 0) {
+        if (HEAP32[HEAP32[$video_addr + 884 >> 2] + 20 >> 2] != 0) {
           __label__ = 30;
         } else {
           __label__ = 31;
@@ -3516,7 +3516,7 @@ function __Z17StorePictureInDPBP12tagAVCHandleP12tagCommonObj($avcHandle, $video
       
       
       
-      var $cmp79 = ($ii | 0) < (HEAP32[$dpb + 80 >> 2] | 0);
+      var $cmp79 = $ii < HEAP32[$dpb + 80 >> 2];
       if (!$cmp79) {
         __label__ = 39;
         break;
@@ -3529,7 +3529,7 @@ function __Z17StorePictureInDPBP12tagAVCHandleP12tagCommonObj($avcHandle, $video
       
       
       
-      if ((HEAP32[HEAP32[$dpb + 12 + $ii * 4 >> 2] + 4 >> 2] | 0) != 0) {
+      if (HEAP32[HEAP32[$dpb + 12 + $ii * 4 >> 2] + 4 >> 2] != 0) {
         __label__ = 36;
       } else {
         __label__ = 37;
@@ -3552,7 +3552,7 @@ function __Z17StorePictureInDPBP12tagAVCHandleP12tagCommonObj($avcHandle, $video
     
     
     
-    if (($num_ref | 0) > (HEAP32[HEAP32[$video_addr + 868 >> 2] + 1080 >> 2] | 0)) {
+    if ($num_ref > HEAP32[HEAP32[$video_addr + 868 >> 2] + 1080 >> 2]) {
       __label__ = 40;
     } else {
       __label__ = 41;
@@ -3592,7 +3592,7 @@ function __Z22sliding_window_processP12tagAVCHandleP12tagCommonObjP15tagDecPicBu
     
     
     
-    var $cmp = ($ii | 0) < (HEAP32[$dpb_addr + 80 >> 2] | 0);
+    var $cmp = $ii < HEAP32[$dpb_addr + 80 >> 2];
     if (!$cmp) {
       __label__ = 11;
       break $for_cond$2;
@@ -3606,7 +3606,7 @@ function __Z22sliding_window_processP12tagAVCHandleP12tagCommonObjP15tagDecPicBu
     
     
     
-    if ((HEAP32[$dpb_addr + 12 + $ii * 4 >> 2] | 0) != (HEAP32[$video_addr + 888 >> 2] | 0)) {
+    if (HEAP32[$dpb_addr + 12 + $ii * 4 >> 2] != HEAP32[$video_addr + 888 >> 2]) {
       __label__ = 3;
     } else {
       __label__ = 9;
@@ -3620,7 +3620,7 @@ function __Z22sliding_window_processP12tagAVCHandleP12tagCommonObjP15tagDecPicBu
       
       
       
-      if ((HEAP32[HEAP32[$dpb_addr + 12 + $ii * 4 >> 2] + 8 >> 2] | 0) != 0) {
+      if (HEAP32[HEAP32[$dpb_addr + 12 + $ii * 4 >> 2] + 8 >> 2] != 0) {
         __label__ = 4;
       } else {
         __label__ = 5;
@@ -3638,7 +3638,7 @@ function __Z22sliding_window_processP12tagAVCHandleP12tagCommonObjP15tagDecPicBu
         
         
         
-        if ((HEAP32[HEAP32[$dpb_addr + 12 + $ii * 4 >> 2] + 4 >> 2] | 0) != 0) {
+        if (HEAP32[HEAP32[$dpb_addr + 12 + $ii * 4 >> 2] + 4 >> 2] != 0) {
           __label__ = 6;
         } else {
           __label__ = 7;
@@ -3665,7 +3665,7 @@ function __Z22sliding_window_processP12tagAVCHandleP12tagCommonObjP15tagDecPicBu
     
     
     
-    var $cmp13 = ($numShortTerm + $numLongTerm | 0) >= (HEAP32[HEAP32[$video_addr + 868 >> 2] + 1080 >> 2] | 0);
+    var $cmp13 = $numShortTerm + $numLongTerm >= HEAP32[HEAP32[$video_addr + 868 >> 2] + 1080 >> 2];
     if (!$cmp13) {
       __label__ = 25;
       break $while_cond$17;
@@ -3678,7 +3678,7 @@ function __Z22sliding_window_processP12tagAVCHandleP12tagCommonObjP15tagDecPicBu
       
       
       
-      var $cmp16 = ($ii | 0) < (HEAP32[$dpb_addr + 80 >> 2] | 0);
+      var $cmp16 = $ii < HEAP32[$dpb_addr + 80 >> 2];
       if (!$cmp16) {
         __label__ = 22;
         break $for_cond14$20;
@@ -3691,7 +3691,7 @@ function __Z22sliding_window_processP12tagAVCHandleP12tagCommonObjP15tagDecPicBu
       
       
       
-      if ((HEAP32[HEAP32[$dpb_addr + 12 + $ii * 4 >> 2] + 4 >> 2] | 0) != 0) {
+      if (HEAP32[HEAP32[$dpb_addr + 12 + $ii * 4 >> 2] + 4 >> 2] != 0) {
         __label__ = 16;
       } else {
         __label__ = 20;
@@ -3706,7 +3706,7 @@ function __Z22sliding_window_processP12tagAVCHandleP12tagCommonObjP15tagDecPicBu
           
           
           
-          if ((HEAP32[HEAP32[$dpb_addr + 12 + $ii * 4 >> 2] + 8 >> 2] | 0) != 0) {
+          if (HEAP32[HEAP32[$dpb_addr + 12 + $ii * 4 >> 2] + 8 >> 2] != 0) {
             __label__ = 20;
             break $land_lhs_true$$if_end35$23;
           }
@@ -3719,7 +3719,7 @@ function __Z22sliding_window_processP12tagAVCHandleP12tagCommonObjP15tagDecPicBu
           
           
           
-          if ((HEAP32[HEAP32[$dpb_addr + 12 + $ii * 4 >> 2] + 76 >> 2] | 0) < ($MinFrameNumWrap | 0)) {
+          if (HEAP32[HEAP32[$dpb_addr + 12 + $ii * 4 >> 2] + 76 >> 2] < $MinFrameNumWrap) {
             __label__ = 18;
           } else {
             __label__ = 19;
@@ -3746,7 +3746,7 @@ function __Z22sliding_window_processP12tagAVCHandleP12tagCommonObjP15tagDecPicBu
     }
     
     
-    if (($MinIdx | 0) < 0) {
+    if ($MinIdx < 0) {
       __label__ = 23;
       break $while_cond$17;
     }
@@ -3824,7 +3824,7 @@ function __Z23adaptive_memory_markingP12tagAVCHandleP12tagCommonObjP15tagDecPicB
   while (1) {
     
     
-    if (($ii | 0) < 64) {
+    if ($ii < 64) {
       __lastLabel__ = 1;
       __label__ = 2;
     } else {
@@ -3837,7 +3837,7 @@ function __Z23adaptive_memory_markingP12tagAVCHandleP12tagCommonObjP15tagDecPicB
       
       
       
-      var $cmp1 = (HEAP32[$sliceHdr_addr + 852 + $ii * 4 >> 2] | 0) != 0;
+      var $cmp1 = HEAP32[$sliceHdr_addr + 852 + $ii * 4 >> 2] != 0;
       __lastLabel__ = 2;
     }
     var $4 = __lastLabel__ == 1 ? 0 : $cmp1;
@@ -3943,7 +3943,7 @@ function __Z23adaptive_memory_markingP12tagAVCHandleP12tagCommonObjP15tagDecPicB
   }
   
   
-  if (($ii | 0) == 64) {
+  if ($ii == 64) {
     __label__ = 13;
   } else {
     __label__ = 14;
@@ -3985,7 +3985,7 @@ function __Z13MemMgrCtrlOp1P12tagAVCHandleP12tagCommonObjP15tagDecPicBufferi($av
     
     
     
-    var $cmp = ($ii | 0) < (HEAP32[$dpb_addr + 80 >> 2] | 0);
+    var $cmp = $ii < HEAP32[$dpb_addr + 80 >> 2];
     if (!$cmp) {
       __label__ = 9;
       break $for_cond$2;
@@ -3998,7 +3998,7 @@ function __Z13MemMgrCtrlOp1P12tagAVCHandleP12tagCommonObjP15tagDecPicBufferi($av
     
     
     
-    if ((HEAP32[HEAP32[$dpb_addr + 12 + $ii * 4 >> 2] + 4 >> 2] | 0) == 3) {
+    if (HEAP32[HEAP32[$dpb_addr + 12 + $ii * 4 >> 2] + 4 >> 2] == 3) {
       __label__ = 3;
     } else {
       __label__ = 7;
@@ -4012,7 +4012,7 @@ function __Z13MemMgrCtrlOp1P12tagAVCHandleP12tagCommonObjP15tagDecPicBufferi($av
         
         
         
-        var $cmp4 = (HEAP32[HEAP32[$dpb_addr + 12 + $ii * 4 >> 2] + 8 >> 2] | 0) == 0;
+        var $cmp4 = HEAP32[HEAP32[$dpb_addr + 12 + $ii * 4 >> 2] + 8 >> 2] == 0;
         if (!$cmp4) {
           __label__ = 7;
           break $land_lhs_true$$if_end9$5;
@@ -4027,7 +4027,7 @@ function __Z13MemMgrCtrlOp1P12tagAVCHandleP12tagCommonObjP15tagDecPicBufferi($av
         
         
         
-        if ((HEAP32[HEAP32[$dpb_addr + 12 + $ii * 4 >> 2] + 16 + 32 >> 2] | 0) == ($picNumX | 0)) {
+        if (HEAP32[HEAP32[$dpb_addr + 12 + $ii * 4 >> 2] + 16 + 32 >> 2] == $picNumX) {
           __label__ = 5;
           break $for_cond$2;
         }
@@ -4068,7 +4068,7 @@ function __Z13MemMgrCtrlOp2P12tagAVCHandleP15tagDecPicBufferi($avcHandle, $dpb, 
     
     
     
-    var $cmp = ($ii | 0) < (HEAP32[$dpb_addr + 80 >> 2] | 0);
+    var $cmp = $ii < HEAP32[$dpb_addr + 80 >> 2];
     if (!$cmp) {
       __label__ = 8;
       break;
@@ -4081,7 +4081,7 @@ function __Z13MemMgrCtrlOp2P12tagAVCHandleP15tagDecPicBufferi($avcHandle, $dpb, 
     
     
     
-    if ((HEAP32[HEAP32[$dpb_addr + 12 + $ii * 4 >> 2] + 8 >> 2] | 0) == 3) {
+    if (HEAP32[HEAP32[$dpb_addr + 12 + $ii * 4 >> 2] + 8 >> 2] == 3) {
       __label__ = 3;
     } else {
       __label__ = 6;
@@ -4097,7 +4097,7 @@ function __Z13MemMgrCtrlOp2P12tagAVCHandleP15tagDecPicBufferi($avcHandle, $dpb, 
       
       
       
-      if ((HEAP32[HEAP32[$dpb_addr + 12 + $ii * 4 >> 2] + 16 + 36 >> 2] | 0) == ($long_term_pic_num_addr | 0)) {
+      if (HEAP32[HEAP32[$dpb_addr + 12 + $ii * 4 >> 2] + 16 + 36 >> 2] == $long_term_pic_num_addr) {
         __label__ = 4;
       } else {
         __label__ = 5;
@@ -4152,7 +4152,7 @@ function __Z13MemMgrCtrlOp3P12tagAVCHandleP12tagCommonObjP15tagDecPicBufferjj($a
     
     
     
-    var $cmp = ($ii | 0) < (HEAP32[$dpb_addr + 80 >> 2] | 0);
+    var $cmp = $ii < HEAP32[$dpb_addr + 80 >> 2];
     if (!$cmp) {
       __label__ = 9;
       break;
@@ -4165,7 +4165,7 @@ function __Z13MemMgrCtrlOp3P12tagAVCHandleP12tagCommonObjP15tagDecPicBufferjj($a
     
     
     
-    if ((HEAP32[HEAP32[$dpb_addr + 12 + $ii * 4 >> 2] + 4 >> 2] | 0) == 3) {
+    if (HEAP32[HEAP32[$dpb_addr + 12 + $ii * 4 >> 2] + 4 >> 2] == 3) {
       __label__ = 3;
     } else {
       __label__ = 7;
@@ -4180,7 +4180,7 @@ function __Z13MemMgrCtrlOp3P12tagAVCHandleP12tagCommonObjP15tagDecPicBufferjj($a
       
       
       
-      if ((HEAP32[HEAP32[$dpb_addr + 12 + $ii * 4 >> 2] + 16 + 24 >> 2] | 0) == 0) {
+      if (HEAP32[HEAP32[$dpb_addr + 12 + $ii * 4 >> 2] + 16 + 24 >> 2] == 0) {
         __label__ = 4;
       } else {
         __label__ = 6;
@@ -4196,7 +4196,7 @@ function __Z13MemMgrCtrlOp3P12tagAVCHandleP12tagCommonObjP15tagDecPicBufferjj($a
         
         
         
-        if ((HEAP32[HEAP32[$dpb_addr + 12 + $ii * 4 >> 2] + 16 + 32 >> 2] | 0) == ($picNumX | 0)) {
+        if (HEAP32[HEAP32[$dpb_addr + 12 + $ii * 4 >> 2] + 16 + 32 >> 2] == $picNumX) {
           __label__ = 5;
           break;
         }
@@ -4270,7 +4270,7 @@ function __Z13MemMgrCtrlOp4P12tagAVCHandleP12tagCommonObjP15tagDecPicBufferj($av
     
     
     
-    var $cmp = ($ii | 0) < (HEAP32[$dpb_addr + 80 >> 2] | 0);
+    var $cmp = $ii < HEAP32[$dpb_addr + 80 >> 2];
     if (!$cmp) {
       __label__ = 9;
       break $for_cond$2;
@@ -4283,7 +4283,7 @@ function __Z13MemMgrCtrlOp4P12tagAVCHandleP12tagCommonObjP15tagDecPicBufferj($av
     
     
     
-    if ((HEAP32[HEAP32[$dpb_addr + 12 + $ii * 4 >> 2] + 8 >> 2] | 0) != 0) {
+    if (HEAP32[HEAP32[$dpb_addr + 12 + $ii * 4 >> 2] + 8 >> 2] != 0) {
       __label__ = 3;
     } else {
       __label__ = 7;
@@ -4298,7 +4298,7 @@ function __Z13MemMgrCtrlOp4P12tagAVCHandleP12tagCommonObjP15tagDecPicBufferj($av
         
         
         
-        var $cmp3 = (HEAP32[$dpb_addr + 12 + $ii * 4 >> 2] | 0) != (HEAP32[$video_addr + 888 >> 2] | 0);
+        var $cmp3 = HEAP32[$dpb_addr + 12 + $ii * 4 >> 2] != HEAP32[$video_addr + 888 >> 2];
         if (!$cmp3) {
           __label__ = 7;
           break $land_lhs_true$$if_end9$5;
@@ -4314,7 +4314,7 @@ function __Z13MemMgrCtrlOp4P12tagAVCHandleP12tagCommonObjP15tagDecPicBufferj($av
         
         
         
-        if ((HEAP32[HEAP32[$dpb_addr + 12 + $ii * 4 >> 2] + 80 >> 2] | 0) > (HEAP32[$video_addr + 1344 >> 2] | 0)) {
+        if (HEAP32[HEAP32[$dpb_addr + 12 + $ii * 4 >> 2] + 80 >> 2] > HEAP32[$video_addr + 1344 >> 2]) {
           __label__ = 5;
         } else {
           __label__ = 6;
@@ -4357,7 +4357,7 @@ function __Z13MemMgrCtrlOp5P12tagAVCHandleP12tagCommonObjP15tagDecPicBuffer($avc
     
     
     
-    var $cmp = ($ii | 0) < (HEAP32[$dpb_addr + 80 >> 2] | 0);
+    var $cmp = $ii < HEAP32[$dpb_addr + 80 >> 2];
     if (!$cmp) {
       __label__ = 6;
       break;
@@ -4371,7 +4371,7 @@ function __Z13MemMgrCtrlOp5P12tagAVCHandleP12tagCommonObjP15tagDecPicBuffer($avc
     
     
     
-    if ((HEAP32[$dpb_addr + 12 + $ii * 4 >> 2] | 0) != (HEAP32[$video_addr + 888 >> 2] | 0)) {
+    if (HEAP32[$dpb_addr + 12 + $ii * 4 >> 2] != HEAP32[$video_addr + 888 >> 2]) {
       __label__ = 3;
     } else {
       __label__ = 4;
@@ -4498,7 +4498,7 @@ function __Z49unmark_long_term_frame_for_reference_by_frame_idxP12tagAVCHandleP1
     
     
     
-    var $cmp = ($ii | 0) < (HEAP32[$dpb_addr + 80 >> 2] | 0);
+    var $cmp = $ii < HEAP32[$dpb_addr + 80 >> 2];
     if (!$cmp) {
       __label__ = 7;
       break $for_cond$2;
@@ -4511,7 +4511,7 @@ function __Z49unmark_long_term_frame_for_reference_by_frame_idxP12tagAVCHandleP1
     
     
     
-    if ((HEAP32[HEAP32[$dpb_addr + 12 + $ii * 4 >> 2] + 8 >> 2] | 0) != 0) {
+    if (HEAP32[HEAP32[$dpb_addr + 12 + $ii * 4 >> 2] + 8 >> 2] != 0) {
       __label__ = 3;
     } else {
       __label__ = 5;
@@ -4526,7 +4526,7 @@ function __Z49unmark_long_term_frame_for_reference_by_frame_idxP12tagAVCHandleP1
         
         
         
-        var $cmp3 = (HEAP32[HEAP32[$dpb_addr + 12 + $ii * 4 >> 2] + 80 >> 2] | 0) == ($long_term_frame_idx_addr | 0);
+        var $cmp3 = HEAP32[HEAP32[$dpb_addr + 12 + $ii * 4 >> 2] + 80 >> 2] == $long_term_frame_idx_addr;
         if (!$cmp3) {
           __label__ = 5;
           break $land_lhs_true$$if_end$5;
@@ -4618,7 +4618,7 @@ function _AVC_BitstreamFillCache($stream) {
   
   
   
-  var $or = HEAP32[$stream_addr + 16 >> 2] | HEAPU32[$stream_addr + 24 >> 2] >>> (HEAPU32[$stream_addr + 28 >> 2] >>> 0);
+  var $or = HEAP32[$stream_addr + 16 >> 2] | HEAPU32[$stream_addr + 24 >> 2] >>> HEAPU32[$stream_addr + 28 >> 2];
   HEAP32[$stream_addr + 16 >> 2] = $or;
   
   
@@ -4644,7 +4644,7 @@ function _AVC_BitstreamFillCache($stream) {
   $num_bits = HEAP32[$stream_addr + 32 >> 2] + HEAP32[$stream_addr + 28 >> 2];
   
   
-  if (($num_bits | 0) >= 32) {
+  if ($num_bits >= 32) {
     __label__ = 1;
   } else {
     __label__ = 2;
@@ -4678,7 +4678,7 @@ function _AVC_BitstreamFillCache($stream) {
     
     
     
-    if ((HEAP32[$stream_addr + 12 >> 2] | 0) > (HEAP32[$stream_addr + 8 >> 2] - 4 | 0)) {
+    if (HEAP32[$stream_addr + 12 >> 2] > HEAP32[$stream_addr + 8 >> 2] - 4) {
       __label__ = 3;
     } else {
       __label__ = 13;
@@ -4691,7 +4691,7 @@ function _AVC_BitstreamFillCache($stream) {
       
       
       
-      if ((HEAP32[$stream_addr + 8 >> 2] | 0) <= (HEAP32[$stream_addr + 12 >> 2] | 0)) {
+      if (HEAP32[$stream_addr + 8 >> 2] <= HEAP32[$stream_addr + 12 >> 2]) {
         __label__ = 4;
       } else {
         __label__ = 5;
@@ -4719,7 +4719,7 @@ function _AVC_BitstreamFillCache($stream) {
           
           
           
-          var $cmp27 = ($i | 0) < (HEAP32[$stream_addr + 8 >> 2] - HEAP32[$stream_addr + 12 >> 2] | 0);
+          var $cmp27 = $i < HEAP32[$stream_addr + 8 >> 2] - HEAP32[$stream_addr + 12 >> 2];
           if (!$cmp27) {
             __label__ = 9;
             break;
@@ -4736,7 +4736,7 @@ function _AVC_BitstreamFillCache($stream) {
           
           
           
-          var $or32 = HEAP32[$stream_addr + 24 >> 2] | (HEAPU8[$v + $i >> 0] & 255) << (3 - $i << 3);
+          var $or32 = HEAP32[$stream_addr + 24 >> 2] | HEAPU8[$v + $i >> 0] << (3 - $i << 3);
           HEAP32[$stream_addr + 24 >> 2] = $or32;
           
           var $inc = $i + 1;
@@ -4758,7 +4758,7 @@ function _AVC_BitstreamFillCache($stream) {
         
         
         
-        var $or38 = HEAP32[$stream_addr + 16 >> 2] | HEAPU32[$stream_addr + 24 >> 2] >>> ($num_bits >>> 0);
+        var $or38 = HEAP32[$stream_addr + 16 >> 2] | HEAPU32[$stream_addr + 24 >> 2] >>> $num_bits;
         HEAP32[$stream_addr + 16 >> 2] = $or38;
         
         
@@ -4796,7 +4796,7 @@ function _AVC_BitstreamFillCache($stream) {
         
         
         
-        if ((HEAP32[$stream_addr + 32 >> 2] | 0) < 0) {
+        if (HEAP32[$stream_addr + 32 >> 2] < 0) {
           __label__ = 10;
         } else {
           __label__ = 11;
@@ -4843,7 +4843,7 @@ function _AVC_BitstreamFillCache($stream) {
       
       
       
-      HEAP32[$stream_addr + 24 >> 2] = (HEAPU8[$v >> 0] & 255) << 24 | (HEAPU8[$v + 1 >> 0] & 255) << 16 | (HEAPU8[$v + 2 >> 0] & 255) << 8 | HEAPU8[$v + 3 >> 0] & 255;
+      HEAP32[$stream_addr + 24 >> 2] = HEAPU8[$v >> 0] << 24 | HEAPU8[$v + 1 >> 0] << 16 | HEAPU8[$v + 2 >> 0] << 8 | HEAPU8[$v + 3 >> 0];
       
       
       
@@ -4857,7 +4857,7 @@ function _AVC_BitstreamFillCache($stream) {
       
       
       
-      var $or81 = HEAP32[$stream_addr + 16 >> 2] | HEAPU32[$stream_addr + 24 >> 2] >>> ($num_bits >>> 0);
+      var $or81 = HEAP32[$stream_addr + 16 >> 2] | HEAPU32[$stream_addr + 24 >> 2] >>> $num_bits;
       HEAP32[$stream_addr + 16 >> 2] = $or81;
       
       
@@ -4905,7 +4905,7 @@ function _BitstreamReadBits($stream, $nBits, $code) {
   
   
   
-  if ((HEAP32[$stream_addr + 28 >> 2] | 0) < ($nBits_addr | 0)) {
+  if (HEAP32[$stream_addr + 28 >> 2] < $nBits_addr) {
     __label__ = 1;
   } else {
     __label__ = 2;
@@ -4921,7 +4921,7 @@ function _BitstreamReadBits($stream, $nBits, $code) {
   
   
   
-  HEAP32[$code_addr >> 2] = HEAPU32[$stream_addr + 16 >> 2] >>> (32 - $nBits_addr >>> 0);
+  HEAP32[$code_addr >> 2] = HEAPU32[$stream_addr + 16 >> 2] >>> 32 - $nBits_addr;
   
   
   
@@ -4959,7 +4959,7 @@ function _BitstreamShowBits($stream, $nBits, $code) {
   
   
   
-  if ((HEAP32[$stream_addr + 28 >> 2] | 0) < ($nBits_addr | 0)) {
+  if (HEAP32[$stream_addr + 28 >> 2] < $nBits_addr) {
     __label__ = 1;
   } else {
     __label__ = 2;
@@ -4975,7 +4975,7 @@ function _BitstreamShowBits($stream, $nBits, $code) {
   
   
   
-  HEAP32[$code_addr >> 2] = HEAPU32[$stream_addr + 16 >> 2] >>> (32 - $nBits_addr >>> 0);
+  HEAP32[$code_addr >> 2] = HEAPU32[$stream_addr + 16 >> 2] >>> 32 - $nBits_addr;
   STACKTOP = __stackBase__;
   return 1;
   return null;
@@ -4992,7 +4992,7 @@ function _BitstreamRead1Bit($stream, $code) {
   
   
   
-  if ((HEAP32[$stream_addr + 28 >> 2] | 0) < 1) {
+  if (HEAP32[$stream_addr + 28 >> 2] < 1) {
     __label__ = 1;
   } else {
     __label__ = 2;
@@ -5056,7 +5056,7 @@ function _BitstreamByteAlign($stream) {
   
   
   
-  if ((HEAP32[$stream_addr + 28 >> 2] | 0) < 0) {
+  if (HEAP32[$stream_addr + 28 >> 2] < 0) {
     __label__ = 1;
   } else {
     __label__ = 2;
@@ -5100,7 +5100,7 @@ function _more_rbsp_data($stream) {
   
   
   
-  if ((HEAP32[$stream_addr + 12 >> 2] | 0) >= (HEAP32[$stream_addr + 4 >> 2] | 0)) {
+  if (HEAP32[$stream_addr + 12 >> 2] >= HEAP32[$stream_addr + 4 >> 2]) {
     __label__ = 1;
   } else {
     __label__ = 9;
@@ -5117,7 +5117,7 @@ function _more_rbsp_data($stream) {
       $total_bit_left = HEAP32[$stream_addr + 32 >> 2] + HEAP32[$stream_addr + 28 >> 2];
       
       
-      if (($total_bit_left | 0) <= 0) {
+      if ($total_bit_left <= 0) {
         __label__ = 2;
       } else {
         __label__ = 3;
@@ -5129,7 +5129,7 @@ function _more_rbsp_data($stream) {
       } else if (__label__ == 3) {
         
         
-        if (($total_bit_left | 0) <= 8) {
+        if ($total_bit_left <= 8) {
           __label__ = 4;
         } else {
           __label__ = 7;
@@ -5144,7 +5144,7 @@ function _more_rbsp_data($stream) {
           
           
           
-          if ((HEAP32[$code >> 2] | 0) == (HEAPU8[__ZL13trailing_bits + $total_bit_left >> 0] & 255 | 0)) {
+          if (HEAP32[$code >> 2] == HEAPU8[__ZL13trailing_bits + $total_bit_left >> 0]) {
             __label__ = 5;
           } else {
             __label__ = 6;
@@ -5216,7 +5216,7 @@ function __Z9DecodeSPSP12tagDecObjectP15tagDecBitstream($decvid, $stream) {
   var $call8 = _BitstreamReadBits($stream_addr, 8, $level_idc);
   
   
-  if (HEAPU32[$level_idc >> 2] >>> 0 > 51) {
+  if (HEAPU32[$level_idc >> 2] > 51) {
     __label__ = 1;
   } else {
     __label__ = 2;
@@ -5230,7 +5230,7 @@ function __Z9DecodeSPSP12tagDecObjectP15tagDecBitstream($decvid, $stream) {
       
       
       
-      if ((HEAPU8[__ZL10mapLev2Idx2 + HEAP32[$level_idc >> 2] >> 0] & 255 | 0) == 255) {
+      if (HEAPU8[__ZL10mapLev2Idx2 + HEAP32[$level_idc >> 2] >> 0] == 255) {
         __label__ = 3;
       } else {
         __label__ = 4;
@@ -5242,7 +5242,7 @@ function __Z9DecodeSPSP12tagDecObjectP15tagDecBitstream($decvid, $stream) {
         var $call12 = __Z4ue_vP15tagDecBitstreamPj($stream_addr, $seq_parameter_set_id);
         
         
-        if (HEAPU32[$seq_parameter_set_id >> 2] >>> 0 > 31) {
+        if (HEAPU32[$seq_parameter_set_id >> 2] > 31) {
           __label__ = 5;
         } else {
           __label__ = 6;
@@ -5256,7 +5256,7 @@ function __Z9DecodeSPSP12tagDecObjectP15tagDecBitstream($decvid, $stream) {
           
           
           
-          if ((HEAP32[$decvid_addr + 8 + HEAP32[$seq_parameter_set_id >> 2] * 4 >> 2] | 0) == 0) {
+          if (HEAP32[$decvid_addr + 8 + HEAP32[$seq_parameter_set_id >> 2] * 4 >> 2] == 0) {
             __label__ = 7;
           } else {
             __label__ = 10;
@@ -5279,7 +5279,7 @@ function __Z9DecodeSPSP12tagDecObjectP15tagDecBitstream($decvid, $stream) {
             
             
             
-            if ((HEAP32[$decvid_addr + 8 + HEAP32[$seq_parameter_set_id >> 2] * 4 >> 2] | 0) == 0) {
+            if (HEAP32[$decvid_addr + 8 + HEAP32[$seq_parameter_set_id >> 2] * 4 >> 2] == 0) {
               __label__ = 8;
             } else {
               __label__ = 9;
@@ -5330,7 +5330,7 @@ function __Z9DecodeSPSP12tagDecObjectP15tagDecBitstream($decvid, $stream) {
           
           
           
-          if (HEAPU32[$seqParam + 32 >> 2] >>> 0 > 12) {
+          if (HEAPU32[$seqParam + 32 >> 2] > 12) {
             __label__ = 11;
           } else {
             __label__ = 12;
@@ -5346,7 +5346,7 @@ function __Z9DecodeSPSP12tagDecObjectP15tagDecBitstream($decvid, $stream) {
             
             
             
-            if ((HEAP32[$seqParam + 36 >> 2] | 0) == 0) {
+            if (HEAP32[$seqParam + 36 >> 2] == 0) {
               __label__ = 13;
             } else {
               __label__ = 14;
@@ -5361,7 +5361,7 @@ function __Z9DecodeSPSP12tagDecObjectP15tagDecBitstream($decvid, $stream) {
               
               
               
-              if ((HEAP32[$seqParam + 36 >> 2] | 0) == 1) {
+              if (HEAP32[$seqParam + 36 >> 2] == 1) {
                 __label__ = 15;
               } else {
                 __label__ = 20;
@@ -5389,7 +5389,7 @@ function __Z9DecodeSPSP12tagDecObjectP15tagDecBitstream($decvid, $stream) {
                   
                   
                   
-                  var $cmp54 = ($i | 0) < (HEAP32[$seqParam + 56 >> 2] | 0);
+                  var $cmp54 = $i < HEAP32[$seqParam + 56 >> 2];
                   if (!$cmp54) {
                     __label__ = 19;
                     break;
@@ -5416,7 +5416,7 @@ function __Z9DecodeSPSP12tagDecObjectP15tagDecBitstream($decvid, $stream) {
             
             
             
-            if (HEAPU32[$seqParam + 1080 >> 2] >>> 0 > 16) {
+            if (HEAPU32[$seqParam + 1080 >> 2] > 16) {
               __label__ = 22;
             } else {
               __label__ = 23;
@@ -5447,7 +5447,7 @@ function __Z9DecodeSPSP12tagDecObjectP15tagDecBitstream($decvid, $stream) {
               
               
               
-              if ((HEAP32[$seqParam + 1096 >> 2] | 0) != 0) {
+              if (HEAP32[$seqParam + 1096 >> 2] != 0) {
                 __label__ = 25;
               } else {
                 __label__ = 24;
@@ -5482,7 +5482,7 @@ function __Z9DecodeSPSP12tagDecObjectP15tagDecBitstream($decvid, $stream) {
               
               
               
-              if ((HEAP32[$seqParam + 1108 >> 2] | 0) != 0) {
+              if (HEAP32[$seqParam + 1108 >> 2] != 0) {
                 __label__ = 26;
               } else {
                 __label__ = 27;
@@ -5513,7 +5513,7 @@ function __Z9DecodeSPSP12tagDecObjectP15tagDecBitstream($decvid, $stream) {
               
               
               
-              if ((HEAP32[$seqParam + 1128 >> 2] | 0) != 0) {
+              if (HEAP32[$seqParam + 1128 >> 2] != 0) {
                 __label__ = 28;
               } else {
                 __label__ = 31;
@@ -5526,7 +5526,7 @@ function __Z9DecodeSPSP12tagDecObjectP15tagDecBitstream($decvid, $stream) {
                 $status = $call91;
                 
                 
-                if (($status | 0) != 1) {
+                if ($status != 1) {
                   __label__ = 29;
                 } else {
                   __label__ = 30;
@@ -5572,7 +5572,7 @@ function __Z14vui_parametersP12tagDecObjectP15tagDecBitstreamP14tagSeqParamSet($
   var $call = _BitstreamRead1Bit($stream_addr, $temp);
   
   
-  if ((HEAP32[$temp >> 2] | 0) != 0) {
+  if (HEAP32[$temp >> 2] != 0) {
     __label__ = 1;
   } else {
     __label__ = 4;
@@ -5582,7 +5582,7 @@ function __Z14vui_parametersP12tagDecObjectP15tagDecBitstreamP14tagSeqParamSet($
     var $call1 = _BitstreamReadBits($stream_addr, 8, $aspect_ratio_idc);
     
     
-    if ((HEAP32[$aspect_ratio_idc >> 2] | 0) == 255) {
+    if (HEAP32[$aspect_ratio_idc >> 2] == 255) {
       __label__ = 2;
     } else {
       __label__ = 3;
@@ -5598,7 +5598,7 @@ function __Z14vui_parametersP12tagDecObjectP15tagDecBitstreamP14tagSeqParamSet($
   var $call6 = _BitstreamRead1Bit($stream_addr, $temp);
   
   
-  if ((HEAP32[$temp >> 2] | 0) != 0) {
+  if (HEAP32[$temp >> 2] != 0) {
     __label__ = 5;
   } else {
     __label__ = 6;
@@ -5611,7 +5611,7 @@ function __Z14vui_parametersP12tagDecObjectP15tagDecBitstreamP14tagSeqParamSet($
   var $call11 = _BitstreamRead1Bit($stream_addr, $temp);
   
   
-  if ((HEAP32[$temp >> 2] | 0) != 0) {
+  if (HEAP32[$temp >> 2] != 0) {
     __label__ = 7;
   } else {
     __label__ = 10;
@@ -5625,7 +5625,7 @@ function __Z14vui_parametersP12tagDecObjectP15tagDecBitstreamP14tagSeqParamSet($
     var $call16 = _BitstreamRead1Bit($stream_addr, $temp);
     
     
-    if ((HEAP32[$temp >> 2] | 0) != 0) {
+    if (HEAP32[$temp >> 2] != 0) {
       __label__ = 8;
     } else {
       __label__ = 9;
@@ -5643,7 +5643,7 @@ function __Z14vui_parametersP12tagDecObjectP15tagDecBitstreamP14tagSeqParamSet($
   var $call24 = _BitstreamRead1Bit($stream_addr, $temp);
   
   
-  if ((HEAP32[$temp >> 2] | 0) != 0) {
+  if (HEAP32[$temp >> 2] != 0) {
     __label__ = 11;
   } else {
     __label__ = 12;
@@ -5658,7 +5658,7 @@ function __Z14vui_parametersP12tagDecObjectP15tagDecBitstreamP14tagSeqParamSet($
   var $call30 = _BitstreamRead1Bit($stream_addr, $temp);
   
   
-  if ((HEAP32[$temp >> 2] | 0) != 0) {
+  if (HEAP32[$temp >> 2] != 0) {
     __label__ = 13;
   } else {
     __label__ = 14;
@@ -5680,7 +5680,7 @@ function __Z14vui_parametersP12tagDecObjectP15tagDecBitstreamP14tagSeqParamSet($
   HEAP32[$currSPS_addr + 1132 + 80 >> 2] = $28;
   
   
-  if ((HEAP32[$temp >> 2] | 0) != 0) {
+  if (HEAP32[$temp >> 2] != 0) {
     __label__ = 15;
   } else {
     __label__ = 16;
@@ -5702,7 +5702,7 @@ function __Z14vui_parametersP12tagDecObjectP15tagDecBitstreamP14tagSeqParamSet($
   HEAP32[$currSPS_addr + 1132 + 496 >> 2] = $35;
   
   
-  if ((HEAP32[$temp >> 2] | 0) != 0) {
+  if (HEAP32[$temp >> 2] != 0) {
     __label__ = 17;
   } else {
     __label__ = 18;
@@ -5720,7 +5720,7 @@ function __Z14vui_parametersP12tagDecObjectP15tagDecBitstreamP14tagSeqParamSet($
   
   
   
-  if ((HEAP32[$currSPS_addr + 1132 + 80 >> 2] | 0) != 0) {
+  if (HEAP32[$currSPS_addr + 1132 + 80 >> 2] != 0) {
     __label__ = 20;
   } else {
     __label__ = 19;
@@ -5732,7 +5732,7 @@ function __Z14vui_parametersP12tagDecObjectP15tagDecBitstreamP14tagSeqParamSet($
       
       
       
-      if ((HEAP32[$currSPS_addr + 1132 + 496 >> 2] | 0) != 0) {
+      if (HEAP32[$currSPS_addr + 1132 + 496 >> 2] != 0) {
         __label__ = 20;
         break $if_then56$$lor_lhs_false$29;
       } else {
@@ -5756,7 +5756,7 @@ function __Z14vui_parametersP12tagDecObjectP15tagDecBitstreamP14tagSeqParamSet($
   var $call61 = _BitstreamRead1Bit($stream_addr, $temp);
   
   
-  if ((HEAP32[$temp >> 2] | 0) != 0) {
+  if (HEAP32[$temp >> 2] != 0) {
     __label__ = 22;
   } else {
     __label__ = 23;
@@ -5808,7 +5808,7 @@ function __Z14hrd_parametersP12tagDecObjectP15tagDecBitstreamP12tagHRDParams($de
   while (1) {
     
     
-    var $cmp = $i >>> 0 <= HEAPU32[$cpb_cnt_minus1 >> 2] >>> 0;
+    var $cmp = $i <= HEAPU32[$cpb_cnt_minus1 >> 2];
     if (!$cmp) {
       __label__ = 4;
       break;
@@ -5886,7 +5886,7 @@ function __Z9DecodePPSP12tagDecObjectP12tagCommonObjP15tagDecBitstream($decvid, 
   var $call = __Z4ue_vP15tagDecBitstreamPj($stream_addr, $pic_parameter_set_id);
   
   
-  if (HEAPU32[$pic_parameter_set_id >> 2] >>> 0 > 255) {
+  if (HEAPU32[$pic_parameter_set_id >> 2] > 255) {
     __label__ = 1;
   } else {
     __label__ = 2;
@@ -5899,7 +5899,7 @@ function __Z9DecodePPSP12tagDecObjectP12tagCommonObjP15tagDecBitstream($decvid, 
       var $call4 = __Z4ue_vP15tagDecBitstreamPj($stream_addr, $seq_parameter_set_id);
       
       
-      if (HEAPU32[$seq_parameter_set_id >> 2] >>> 0 > 31) {
+      if (HEAPU32[$seq_parameter_set_id >> 2] > 31) {
         __label__ = 3;
       } else {
         __label__ = 4;
@@ -5913,7 +5913,7 @@ function __Z9DecodePPSP12tagDecObjectP12tagCommonObjP15tagDecBitstream($decvid, 
         
         
         
-        if ((HEAP32[$decvid_addr + 136 + HEAP32[$pic_parameter_set_id >> 2] * 4 >> 2] | 0) == 0) {
+        if (HEAP32[$decvid_addr + 136 + HEAP32[$pic_parameter_set_id >> 2] * 4 >> 2] == 0) {
           __label__ = 5;
         } else {
           __label__ = 8;
@@ -5936,7 +5936,7 @@ function __Z9DecodePPSP12tagDecObjectP12tagCommonObjP15tagDecBitstream($decvid, 
           
           
           
-          if ((HEAP32[$decvid_addr + 136 + HEAP32[$pic_parameter_set_id >> 2] * 4 >> 2] | 0) == 0) {
+          if (HEAP32[$decvid_addr + 136 + HEAP32[$pic_parameter_set_id >> 2] * 4 >> 2] == 0) {
             __label__ = 6;
           } else {
             __label__ = 7;
@@ -5980,7 +5980,7 @@ function __Z9DecodePPSP12tagDecObjectP12tagCommonObjP15tagDecBitstream($decvid, 
         
         
         
-        if ((HEAP32[$picParam + 8 >> 2] | 0) != 0) {
+        if (HEAP32[$picParam + 8 >> 2] != 0) {
           __label__ = 9;
         } else {
           __label__ = 10;
@@ -6001,7 +6001,7 @@ function __Z9DecodePPSP12tagDecObjectP12tagCommonObjP15tagDecBitstream($decvid, 
             
             
             
-            if (HEAPU32[$picParam + 16 >> 2] >>> 0 > 7) {
+            if (HEAPU32[$picParam + 16 >> 2] > 7) {
               __label__ = 11;
             } else {
               __label__ = 12;
@@ -6016,7 +6016,7 @@ function __Z9DecodePPSP12tagDecObjectP12tagCommonObjP15tagDecBitstream($decvid, 
               
               
               
-              if (HEAPU32[$picParam + 16 >> 2] >>> 0 > 0) {
+              if (HEAPU32[$picParam + 16 >> 2] > 0) {
                 __label__ = 13;
               } else {
                 __label__ = 50;
@@ -6030,7 +6030,7 @@ function __Z9DecodePPSP12tagDecObjectP12tagCommonObjP15tagDecBitstream($decvid, 
                 
                 
                 
-                if ((HEAP32[$picParam + 20 >> 2] | 0) == 0) {
+                if (HEAP32[$picParam + 20 >> 2] == 0) {
                   __label__ = 14;
                 } else {
                   __label__ = 19;
@@ -6042,7 +6042,7 @@ function __Z9DecodePPSP12tagDecObjectP12tagCommonObjP15tagDecBitstream($decvid, 
                     
                     
                     
-                    var $cmp43 = ($iGroup | 0) <= (HEAP32[$picParam + 16 >> 2] | 0);
+                    var $cmp43 = $iGroup <= HEAP32[$picParam + 16 >> 2];
                     if (!$cmp43) {
                       __label__ = 18;
                       break;
@@ -6064,7 +6064,7 @@ function __Z9DecodePPSP12tagDecObjectP12tagCommonObjP15tagDecBitstream($decvid, 
                   
                   
                   
-                  if ((HEAP32[$picParam + 20 >> 2] | 0) == 2) {
+                  if (HEAP32[$picParam + 20 >> 2] == 2) {
                     __label__ = 20;
                   } else {
                     __label__ = 25;
@@ -6076,7 +6076,7 @@ function __Z9DecodePPSP12tagDecObjectP12tagCommonObjP15tagDecBitstream($decvid, 
                       
                       
                       
-                      var $cmp51 = ($iGroup | 0) < (HEAP32[$picParam + 16 >> 2] | 0);
+                      var $cmp51 = $iGroup < HEAP32[$picParam + 16 >> 2];
                       if (!$cmp51) {
                         __label__ = 24;
                         break;
@@ -6104,7 +6104,7 @@ function __Z9DecodePPSP12tagDecObjectP12tagCommonObjP15tagDecBitstream($decvid, 
                     
                     
                     
-                    if ((HEAP32[$picParam + 20 >> 2] | 0) == 3) {
+                    if (HEAP32[$picParam + 20 >> 2] == 3) {
                       __label__ = 28;
                     } else {
                       __label__ = 26;
@@ -6115,7 +6115,7 @@ function __Z9DecodePPSP12tagDecObjectP12tagCommonObjP15tagDecBitstream($decvid, 
                         
                         
                         
-                        if ((HEAP32[$picParam + 20 >> 2] | 0) == 4) {
+                        if (HEAP32[$picParam + 20 >> 2] == 4) {
                           __label__ = 28;
                           break $if_then68$$lor_lhs_false$38;
                         }
@@ -6123,7 +6123,7 @@ function __Z9DecodePPSP12tagDecObjectP12tagCommonObjP15tagDecBitstream($decvid, 
                         
                         
                         
-                        if ((HEAP32[$picParam + 20 >> 2] | 0) == 5) {
+                        if (HEAP32[$picParam + 20 >> 2] == 5) {
                           __label__ = 28;
                           break $if_then68$$lor_lhs_false$38;
                         }
@@ -6131,7 +6131,7 @@ function __Z9DecodePPSP12tagDecObjectP12tagCommonObjP15tagDecBitstream($decvid, 
                         
                         
                         
-                        if ((HEAP32[$picParam + 20 >> 2] | 0) == 6) {
+                        if (HEAP32[$picParam + 20 >> 2] == 6) {
                           __label__ = 30;
                         } else {
                           __label__ = 46;
@@ -6148,7 +6148,7 @@ function __Z9DecodePPSP12tagDecObjectP12tagCommonObjP15tagDecBitstream($decvid, 
                           $i = HEAP32[$picParam + 16 >> 2];
                           $while_cond$44 : while (1) {
                             
-                            var $cmp78 = ($i | 0) > 0;
+                            var $cmp78 = $i > 0;
                             if (!$cmp78) {
                               __label__ = 33;
                               break $while_cond$44;
@@ -6172,7 +6172,7 @@ function __Z9DecodePPSP12tagDecObjectP12tagCommonObjP15tagDecBitstream($decvid, 
                           
                           
                           
-                          if ((HEAP32[$decvid_addr + 8 + $i * 4 >> 2] | 0) == 0) {
+                          if (HEAP32[$decvid_addr + 8 + $i * 4 >> 2] == 0) {
                             __label__ = 34;
                           } else {
                             __label__ = 35;
@@ -6210,7 +6210,7 @@ function __Z9DecodePPSP12tagDecObjectP12tagCommonObjP15tagDecBitstream($decvid, 
                             
                             
                             
-                            if ((HEAP32[$picParam + 120 >> 2] | 0) != ($PicSizeInMapUnits - 1 | 0)) {
+                            if (HEAP32[$picParam + 120 >> 2] != $PicSizeInMapUnits - 1) {
                               __label__ = 36;
                             } else {
                               __label__ = 37;
@@ -6224,7 +6224,7 @@ function __Z9DecodePPSP12tagDecObjectP12tagCommonObjP15tagDecBitstream($decvid, 
                               
                               
                               
-                              if ((HEAP32[$picParam + 124 >> 2] | 0) != 0) {
+                              if (HEAP32[$picParam + 124 >> 2] != 0) {
                                 __label__ = 38;
                               } else {
                                 __label__ = 39;
@@ -6255,7 +6255,7 @@ function __Z9DecodePPSP12tagDecObjectP12tagCommonObjP15tagDecBitstream($decvid, 
                               
                               
                               
-                              if ((HEAP32[$picParam + 124 >> 2] | 0) == 0) {
+                              if (HEAP32[$picParam + 124 >> 2] == 0) {
                                 __label__ = 40;
                               } else {
                                 __label__ = 41;
@@ -6269,7 +6269,7 @@ function __Z9DecodePPSP12tagDecObjectP12tagCommonObjP15tagDecBitstream($decvid, 
                                 while (1) {
                                   
                                   
-                                  var $cmp108 = ($i | 0) < ($PicSizeInMapUnits | 0);
+                                  var $cmp108 = $i < $PicSizeInMapUnits;
                                   if (!$cmp108) {
                                     __label__ = 45;
                                     break;
@@ -6317,7 +6317,7 @@ function __Z9DecodePPSP12tagDecObjectP12tagCommonObjP15tagDecBitstream($decvid, 
               
               
               
-              if (HEAPU32[$picParam + 128 >> 2] >>> 0 > 31) {
+              if (HEAPU32[$picParam + 128 >> 2] > 31) {
                 __label__ = 51;
               } else {
                 __label__ = 52;
@@ -6333,7 +6333,7 @@ function __Z9DecodePPSP12tagDecObjectP12tagCommonObjP15tagDecBitstream($decvid, 
                 
                 
                 
-                if (HEAPU32[$picParam + 132 >> 2] >>> 0 > 31) {
+                if (HEAPU32[$picParam + 132 >> 2] > 31) {
                   __label__ = 53;
                 } else {
                   __label__ = 54;
@@ -6353,7 +6353,7 @@ function __Z9DecodePPSP12tagDecObjectP12tagCommonObjP15tagDecBitstream($decvid, 
                   
                   
                   
-                  if (HEAPU32[$picParam + 140 >> 2] >>> 0 > 2) {
+                  if (HEAPU32[$picParam + 140 >> 2] > 2) {
                     __label__ = 55;
                   } else {
                     __label__ = 56;
@@ -6368,7 +6368,7 @@ function __Z9DecodePPSP12tagDecObjectP12tagCommonObjP15tagDecBitstream($decvid, 
                     
                     
                     
-                    var $cmp139 = (HEAP32[$picParam + 144 >> 2] | 0) < -26;
+                    var $cmp139 = HEAP32[$picParam + 144 >> 2] < -26;
                     if ($cmp139) {
                       __label__ = 58;
                     } else {
@@ -6380,7 +6380,7 @@ function __Z9DecodePPSP12tagDecObjectP12tagCommonObjP15tagDecBitstream($decvid, 
                         
                         
                         
-                        if ((HEAP32[$picParam + 144 >> 2] | 0) > 25) {
+                        if (HEAP32[$picParam + 144 >> 2] > 25) {
                           __label__ = 58;
                           break $if_then143$$lor_lhs_false140$81;
                         }
@@ -6391,7 +6391,7 @@ function __Z9DecodePPSP12tagDecObjectP12tagCommonObjP15tagDecBitstream($decvid, 
                         
                         
                         
-                        var $cmp147 = (HEAP32[$picParam + 148 >> 2] | 0) < -26;
+                        var $cmp147 = HEAP32[$picParam + 148 >> 2] < -26;
                         if ($cmp147) {
                           __label__ = 61;
                         } else {
@@ -6403,7 +6403,7 @@ function __Z9DecodePPSP12tagDecObjectP12tagCommonObjP15tagDecBitstream($decvid, 
                             
                             
                             
-                            if ((HEAP32[$picParam + 148 >> 2] | 0) > 25) {
+                            if (HEAP32[$picParam + 148 >> 2] > 25) {
                               __label__ = 61;
                               break $if_then151$$lor_lhs_false148$84;
                             }
@@ -6414,7 +6414,7 @@ function __Z9DecodePPSP12tagDecObjectP12tagCommonObjP15tagDecBitstream($decvid, 
                             
                             
                             
-                            var $cmp155 = (HEAP32[$picParam + 152 >> 2] | 0) < -12;
+                            var $cmp155 = HEAP32[$picParam + 152 >> 2] < -12;
                             if ($cmp155) {
                               __label__ = 64;
                             } else {
@@ -6426,7 +6426,7 @@ function __Z9DecodePPSP12tagDecObjectP12tagCommonObjP15tagDecBitstream($decvid, 
                                 
                                 
                                 
-                                if ((HEAP32[$picParam + 152 >> 2] | 0) > 12) {
+                                if (HEAP32[$picParam + 152 >> 2] > 12) {
                                   __label__ = 64;
                                   break $if_then159$$lor_lhs_false156$87;
                                 }
@@ -6477,7 +6477,7 @@ function __Z9DecodePPSP12tagDecObjectP12tagCommonObjP15tagDecBitstream($decvid, 
         
         
         
-        if ((HEAP32[$decvid_addr + 136 + HEAP32[$pic_parameter_set_id >> 2] * 4 >> 2] | 0) != 0) {
+        if (HEAP32[$decvid_addr + 136 + HEAP32[$pic_parameter_set_id >> 2] * 4 >> 2] != 0) {
           __label__ = 67;
         } else {
           __label__ = 70;
@@ -6487,7 +6487,7 @@ function __Z9DecodePPSP12tagDecObjectP12tagCommonObjP15tagDecBitstream($decvid, 
           
           
           
-          if ((HEAP32[$picParam + 124 >> 2] | 0) != 0) {
+          if (HEAP32[$picParam + 124 >> 2] != 0) {
             __label__ = 68;
           } else {
             __label__ = 69;
@@ -6573,7 +6573,7 @@ function __Z17DecodeSliceHeaderP12tagDecObjectP12tagCommonObjP15tagDecBitstream(
   
   
   
-  if ((HEAP32[$sliceHdr >> 2] | 0) != 0) {
+  if (HEAP32[$sliceHdr >> 2] != 0) {
     __label__ = 1;
   } else {
     __label__ = 5;
@@ -6584,7 +6584,7 @@ function __Z17DecodeSliceHeaderP12tagDecObjectP12tagCommonObjP15tagDecBitstream(
       
       
       
-      if ((HEAP32[$sliceHdr + 4 >> 2] | 0) >= 5) {
+      if (HEAP32[$sliceHdr + 4 >> 2] >= 5) {
         __label__ = 2;
       } else {
         __label__ = 4;
@@ -6596,7 +6596,7 @@ function __Z17DecodeSliceHeaderP12tagDecObjectP12tagCommonObjP15tagDecBitstream(
           
           
           
-          var $cmp7 = (HEAP32[$slice_type >> 2] | 0) != (HEAP32[$sliceHdr + 4 >> 2] - 5 | 0);
+          var $cmp7 = HEAP32[$slice_type >> 2] != HEAP32[$sliceHdr + 4 >> 2] - 5;
           if (!$cmp7) {
             __label__ = 4;
             break $land_lhs_true$$if_end$4;
@@ -6618,7 +6618,7 @@ function __Z17DecodeSliceHeaderP12tagDecObjectP12tagCommonObjP15tagDecBitstream(
       HEAP32[$sliceHdr + 4 >> 2] = $12;
       
       
-      if ((HEAP32[$slice_type >> 2] | 0) > 4) {
+      if (HEAP32[$slice_type >> 2] > 4) {
         __label__ = 6;
       } else {
         __label__ = 7;
@@ -6630,7 +6630,7 @@ function __Z17DecodeSliceHeaderP12tagDecObjectP12tagCommonObjP15tagDecBitstream(
       }
       
       
-      if ((HEAP32[$slice_type >> 2] | 0) == 1) {
+      if (HEAP32[$slice_type >> 2] == 1) {
         __label__ = 9;
       } else {
         __label__ = 8;
@@ -6639,7 +6639,7 @@ function __Z17DecodeSliceHeaderP12tagDecObjectP12tagCommonObjP15tagDecBitstream(
         if (__label__ == 8) {
           
           
-          if ((HEAP32[$slice_type >> 2] | 0) > 2) {
+          if (HEAP32[$slice_type >> 2] > 2) {
             __label__ = 9;
             break $if_then17$$lor_lhs_false$13;
           }
@@ -6655,7 +6655,7 @@ function __Z17DecodeSliceHeaderP12tagDecObjectP12tagCommonObjP15tagDecBitstream(
           
           
           
-          if (HEAPU32[$sliceHdr + 8 >> 2] >>> 0 > 255) {
+          if (HEAPU32[$sliceHdr + 8 >> 2] > 255) {
             __label__ = 11;
           } else {
             __label__ = 12;
@@ -6673,7 +6673,7 @@ function __Z17DecodeSliceHeaderP12tagDecObjectP12tagCommonObjP15tagDecBitstream(
             
             
             
-            if ((HEAP32[$decvid_addr + 136 + HEAP32[$sliceHdr + 8 >> 2] * 4 >> 2] | 0) == 0) {
+            if (HEAP32[$decvid_addr + 136 + HEAP32[$sliceHdr + 8 >> 2] * 4 >> 2] == 0) {
               __label__ = 13;
             } else {
               __label__ = 14;
@@ -6702,7 +6702,7 @@ function __Z17DecodeSliceHeaderP12tagDecObjectP12tagCommonObjP15tagDecBitstream(
               
               
               
-              if ((HEAP32[$decvid_addr + 8 + HEAP32[$currPPS + 4 >> 2] * 4 >> 2] | 0) == 0) {
+              if (HEAP32[$decvid_addr + 8 + HEAP32[$currPPS + 4 >> 2] * 4 >> 2] == 0) {
                 __label__ = 15;
               } else {
                 __label__ = 16;
@@ -6730,7 +6730,7 @@ function __Z17DecodeSliceHeaderP12tagDecObjectP12tagCommonObjP15tagDecBitstream(
                 
                 
                 
-                if ((HEAP32[$currPPS + 4 >> 2] | 0) != (HEAP32[$video_addr + 876 >> 2] | 0)) {
+                if (HEAP32[$currPPS + 4 >> 2] != HEAP32[$video_addr + 876 >> 2]) {
                   __label__ = 17;
                 } else {
                   __label__ = 20;
@@ -6750,7 +6750,7 @@ function __Z17DecodeSliceHeaderP12tagDecObjectP12tagCommonObjP15tagDecBitstream(
                   $status = $call45;
                   
                   
-                  if (($status | 0) != 1) {
+                  if ($status != 1) {
                     __label__ = 18;
                   } else {
                     __label__ = 19;
@@ -6845,7 +6845,7 @@ function __Z17DecodeSliceHeaderP12tagDecObjectP12tagCommonObjP15tagDecBitstream(
                 
                 
                 
-                if ((HEAP32[$video_addr + 888 >> 2] | 0) == 0) {
+                if (HEAP32[$video_addr + 888 >> 2] == 0) {
                   __label__ = 21;
                 } else {
                   __label__ = 23;
@@ -6855,7 +6855,7 @@ function __Z17DecodeSliceHeaderP12tagDecObjectP12tagCommonObjP15tagDecBitstream(
                     
                     
                     
-                    var $cmp69 = (HEAP32[$sliceHdr + 12 >> 2] | 0) != 0;
+                    var $cmp69 = HEAP32[$sliceHdr + 12 >> 2] != 0;
                     if (!$cmp69) {
                       __label__ = 23;
                       break $land_lhs_true67$$if_end73$31;
@@ -6876,7 +6876,7 @@ function __Z17DecodeSliceHeaderP12tagDecObjectP12tagCommonObjP15tagDecBitstream(
                 
                 
                 
-                if ((HEAP32[$currSPS + 1096 >> 2] | 0) != 0) {
+                if (HEAP32[$currSPS + 1096 >> 2] != 0) {
                   __label__ = 27;
                 } else {
                   __label__ = 24;
@@ -6890,7 +6890,7 @@ function __Z17DecodeSliceHeaderP12tagDecObjectP12tagCommonObjP15tagDecBitstream(
                   
                   
                   
-                  if ((HEAP32[$sliceHdr + 16 >> 2] | 0) != 0) {
+                  if (HEAP32[$sliceHdr + 16 >> 2] != 0) {
                     __label__ = 25;
                   } else {
                     __label__ = 26;
@@ -6940,7 +6940,7 @@ function __Z17DecodeSliceHeaderP12tagDecObjectP12tagCommonObjP15tagDecBitstream(
                 
                 
                 
-                if (HEAPU32[$sliceHdr >> 2] >>> 0 >= HEAPU32[$video_addr + 1308 >> 2] >>> 0) {
+                if (HEAPU32[$sliceHdr >> 2] >= HEAPU32[$video_addr + 1308 >> 2]) {
                   __label__ = 28;
                 } else {
                   __label__ = 29;
@@ -6966,7 +6966,7 @@ function __Z17DecodeSliceHeaderP12tagDecObjectP12tagCommonObjP15tagDecBitstream(
                   
                   
                   
-                  if ((HEAP32[$video_addr + 848 >> 2] | 0) == 5) {
+                  if (HEAP32[$video_addr + 848 >> 2] == 5) {
                     __label__ = 30;
                   } else {
                     __label__ = 33;
@@ -6976,7 +6976,7 @@ function __Z17DecodeSliceHeaderP12tagDecObjectP12tagCommonObjP15tagDecBitstream(
                     
                     
                     
-                    if ((HEAP32[$sliceHdr + 12 >> 2] | 0) != 0) {
+                    if (HEAP32[$sliceHdr + 12 >> 2] != 0) {
                       __label__ = 31;
                     } else {
                       __label__ = 32;
@@ -7005,7 +7005,7 @@ function __Z17DecodeSliceHeaderP12tagDecObjectP12tagCommonObjP15tagDecBitstream(
                   
                   
                   
-                  if ((HEAP32[$currSPS + 36 >> 2] | 0) == 0) {
+                  if (HEAP32[$currSPS + 36 >> 2] == 0) {
                     __label__ = 34;
                   } else {
                     __label__ = 39;
@@ -7035,7 +7035,7 @@ function __Z17DecodeSliceHeaderP12tagDecObjectP12tagCommonObjP15tagDecBitstream(
                     
                     
                     
-                    if (HEAPU32[$sliceHdr + 28 >> 2] >>> 0 > HEAP32[$video_addr + 1244 >> 2] - 1 >>> 0) {
+                    if (HEAPU32[$sliceHdr + 28 >> 2] > HEAP32[$video_addr + 1244 >> 2] - 1) {
                       __label__ = 35;
                     } else {
                       __label__ = 36;
@@ -7049,7 +7049,7 @@ function __Z17DecodeSliceHeaderP12tagDecObjectP12tagCommonObjP15tagDecBitstream(
                       
                       
                       
-                      if ((HEAP32[$currPPS + 12 >> 2] | 0) != 0) {
+                      if (HEAP32[$currPPS + 12 >> 2] != 0) {
                         __label__ = 37;
                       } else {
                         __label__ = 38;
@@ -7066,7 +7066,7 @@ function __Z17DecodeSliceHeaderP12tagDecObjectP12tagCommonObjP15tagDecBitstream(
                   
                   
                   
-                  if ((HEAP32[$currSPS + 36 >> 2] | 0) == 1) {
+                  if (HEAP32[$currSPS + 36 >> 2] == 1) {
                     __label__ = 40;
                   } else {
                     __label__ = 44;
@@ -7077,7 +7077,7 @@ function __Z17DecodeSliceHeaderP12tagDecObjectP12tagCommonObjP15tagDecBitstream(
                       
                       
                       
-                      if ((HEAP32[$currSPS + 44 >> 2] | 0) != 0) {
+                      if (HEAP32[$currSPS + 44 >> 2] != 0) {
                         __label__ = 44;
                         break $land_lhs_true129$$if_end142$59;
                       }
@@ -7090,7 +7090,7 @@ function __Z17DecodeSliceHeaderP12tagDecObjectP12tagCommonObjP15tagDecBitstream(
                       
                       
                       
-                      if ((HEAP32[$currPPS + 12 >> 2] | 0) != 0) {
+                      if (HEAP32[$currPPS + 12 >> 2] != 0) {
                         __label__ = 42;
                       } else {
                         __label__ = 43;
@@ -7111,7 +7111,7 @@ function __Z17DecodeSliceHeaderP12tagDecObjectP12tagCommonObjP15tagDecBitstream(
                   
                   
                   
-                  if ((HEAP32[$currPPS + 164 >> 2] | 0) != 0) {
+                  if (HEAP32[$currPPS + 164 >> 2] != 0) {
                     __label__ = 45;
                   } else {
                     __label__ = 50;
@@ -7125,7 +7125,7 @@ function __Z17DecodeSliceHeaderP12tagDecObjectP12tagCommonObjP15tagDecBitstream(
                     
                     
                     
-                    if (HEAPU32[$sliceHdr + 44 >> 2] >>> 0 > 127) {
+                    if (HEAPU32[$sliceHdr + 44 >> 2] > 127) {
                       __label__ = 46;
                     } else {
                       __label__ = 47;
@@ -7139,7 +7139,7 @@ function __Z17DecodeSliceHeaderP12tagDecObjectP12tagCommonObjP15tagDecBitstream(
                       
                       
                       
-                      if (HEAPU32[$sliceHdr + 44 >> 2] >>> 0 > 0) {
+                      if (HEAPU32[$sliceHdr + 44 >> 2] > 0) {
                         __label__ = 48;
                       } else {
                         __label__ = 49;
@@ -7167,7 +7167,7 @@ function __Z17DecodeSliceHeaderP12tagDecObjectP12tagCommonObjP15tagDecBitstream(
                   HEAP32[$sliceHdr + 60 >> 2] = $175;
                   
                   
-                  if ((HEAP32[$slice_type >> 2] | 0) == 0) {
+                  if (HEAP32[$slice_type >> 2] == 0) {
                     __label__ = 51;
                   } else {
                     __label__ = 58;
@@ -7181,7 +7181,7 @@ function __Z17DecodeSliceHeaderP12tagDecObjectP12tagCommonObjP15tagDecBitstream(
                     
                     
                     
-                    if ((HEAP32[$sliceHdr + 52 >> 2] | 0) != 0) {
+                    if (HEAP32[$sliceHdr + 52 >> 2] != 0) {
                       __label__ = 52;
                     } else {
                       __label__ = 53;
@@ -7194,7 +7194,7 @@ function __Z17DecodeSliceHeaderP12tagDecObjectP12tagCommonObjP15tagDecBitstream(
                     } else if (__label__ == 53) {
                       
                       
-                      if ((HEAP32[$slice_type >> 2] | 0) == 0) {
+                      if (HEAP32[$slice_type >> 2] == 0) {
                         __label__ = 54;
                       } else {
                         __label__ = 56;
@@ -7204,7 +7204,7 @@ function __Z17DecodeSliceHeaderP12tagDecObjectP12tagCommonObjP15tagDecBitstream(
                           
                           
                           
-                          var $cmp169 = HEAPU32[$currPPS + 128 >> 2] >>> 0 > 15;
+                          var $cmp169 = HEAPU32[$currPPS + 128 >> 2] > 15;
                           if (!$cmp169) {
                             __label__ = 56;
                             break $land_lhs_true167$$if_end171$80;
@@ -7220,7 +7220,7 @@ function __Z17DecodeSliceHeaderP12tagDecObjectP12tagCommonObjP15tagDecBitstream(
                   
                   
                   
-                  if (HEAPU32[$sliceHdr + 56 >> 2] >>> 0 > 15) {
+                  if (HEAPU32[$sliceHdr + 56 >> 2] > 15) {
                     __label__ = 60;
                   } else {
                     __label__ = 59;
@@ -7231,7 +7231,7 @@ function __Z17DecodeSliceHeaderP12tagDecObjectP12tagCommonObjP15tagDecBitstream(
                       
                       
                       
-                      if (HEAPU32[$sliceHdr + 60 >> 2] >>> 0 > 15) {
+                      if (HEAPU32[$sliceHdr + 60 >> 2] > 15) {
                         __label__ = 60;
                         break $if_then179$$lor_lhs_false176$86;
                       }
@@ -7243,7 +7243,7 @@ function __Z17DecodeSliceHeaderP12tagDecObjectP12tagCommonObjP15tagDecBitstream(
                       $status = $call181;
                       
                       
-                      if (($status | 0) != 1) {
+                      if ($status != 1) {
                         __label__ = 62;
                       } else {
                         __label__ = 63;
@@ -7258,7 +7258,7 @@ function __Z17DecodeSliceHeaderP12tagDecObjectP12tagCommonObjP15tagDecBitstream(
                         
                         
                         
-                        if ((HEAP32[$video_addr + 844 >> 2] | 0) != 0) {
+                        if (HEAP32[$video_addr + 844 >> 2] != 0) {
                           __label__ = 64;
                         } else {
                           __label__ = 65;
@@ -7288,7 +7288,7 @@ function __Z17DecodeSliceHeaderP12tagDecObjectP12tagCommonObjP15tagDecBitstream(
                         
                         
                         
-                        if ((HEAP32[$video_addr + 812 >> 2] | 0) > 51) {
+                        if (HEAP32[$video_addr + 812 >> 2] > 51) {
                           __label__ = 67;
                         } else {
                           __label__ = 66;
@@ -7299,7 +7299,7 @@ function __Z17DecodeSliceHeaderP12tagDecObjectP12tagCommonObjP15tagDecBitstream(
                             
                             
                             
-                            if ((HEAP32[$video_addr + 812 >> 2] | 0) < 0) {
+                            if (HEAP32[$video_addr + 812 >> 2] < 0) {
                               __label__ = 67;
                               break $if_then198$$lor_lhs_false195$95;
                             } else {
@@ -7313,7 +7313,7 @@ function __Z17DecodeSliceHeaderP12tagDecObjectP12tagCommonObjP15tagDecBitstream(
                           
                           
                           
-                          if ((HEAP32[$video_addr + 812 >> 2] | 0) < 51) {
+                          if (HEAP32[$video_addr + 812 >> 2] < 51) {
                             __label__ = 68;
                           } else {
                             __label__ = 69;
@@ -7328,7 +7328,7 @@ function __Z17DecodeSliceHeaderP12tagDecObjectP12tagCommonObjP15tagDecBitstream(
                           }
                           var $cond = __lastLabel__ == 68 ? $216 : 51;
                           
-                          if (0 > ($cond | 0)) {
+                          if (0 > $cond) {
                             __label__ = 71;
                           } else {
                             __label__ = 72;
@@ -7340,7 +7340,7 @@ function __Z17DecodeSliceHeaderP12tagDecObjectP12tagCommonObjP15tagDecBitstream(
                             
                             
                             
-                            if ((HEAP32[$video_addr + 812 >> 2] | 0) < 51) {
+                            if (HEAP32[$video_addr + 812 >> 2] < 51) {
                               __label__ = 73;
                             } else {
                               __label__ = 74;
@@ -7371,7 +7371,7 @@ function __Z17DecodeSliceHeaderP12tagDecObjectP12tagCommonObjP15tagDecBitstream(
                         
                         
                         
-                        if ((HEAP32[$video_addr + 812 >> 2] + HEAP32[HEAP32[$video_addr + 872 >> 2] + 152 >> 2] | 0) < 51) {
+                        if (HEAP32[$video_addr + 812 >> 2] + HEAP32[HEAP32[$video_addr + 872 >> 2] + 152 >> 2] < 51) {
                           __label__ = 78;
                         } else {
                           __label__ = 79;
@@ -7392,7 +7392,7 @@ function __Z17DecodeSliceHeaderP12tagDecObjectP12tagCommonObjP15tagDecBitstream(
                         }
                         var $cond227 = __lastLabel__ == 78 ? $add224 : 51;
                         
-                        if (0 > ($cond227 | 0)) {
+                        if (0 > $cond227) {
                           __label__ = 81;
                         } else {
                           __label__ = 82;
@@ -7410,7 +7410,7 @@ function __Z17DecodeSliceHeaderP12tagDecObjectP12tagCommonObjP15tagDecBitstream(
                           
                           
                           
-                          if ((HEAP32[$video_addr + 812 >> 2] + HEAP32[HEAP32[$video_addr + 872 >> 2] + 152 >> 2] | 0) < 51) {
+                          if (HEAP32[$video_addr + 812 >> 2] + HEAP32[HEAP32[$video_addr + 872 >> 2] + 152 >> 2] < 51) {
                             __label__ = 83;
                           } else {
                             __label__ = 84;
@@ -7435,7 +7435,7 @@ function __Z17DecodeSliceHeaderP12tagDecObjectP12tagCommonObjP15tagDecBitstream(
                         var $cond245 = __lastLabel__ == 81 ? 0 : $cond243;
                         
                         
-                        var $conv = HEAPU8[__ZL10mapQPi2QPc + $cond245 >> 0] & 255;
+                        var $conv = HEAPU8[__ZL10mapQPi2QPc + $cond245 >> 0];
                         
                         
                         HEAP32[$video_addr + 816 >> 2] = $conv;
@@ -7496,7 +7496,7 @@ function __Z17DecodeSliceHeaderP12tagDecObjectP12tagCommonObjP15tagDecBitstream(
                         
                         
                         
-                        if ((HEAP32[$currPPS + 156 >> 2] | 0) != 0) {
+                        if (HEAP32[$currPPS + 156 >> 2] != 0) {
                           __label__ = 87;
                         } else {
                           __label__ = 98;
@@ -7510,7 +7510,7 @@ function __Z17DecodeSliceHeaderP12tagDecObjectP12tagCommonObjP15tagDecBitstream(
                           
                           
                           
-                          if (HEAPU32[$sliceHdr + 2148 >> 2] >>> 0 > 2) {
+                          if (HEAPU32[$sliceHdr + 2148 >> 2] > 2) {
                             __label__ = 88;
                           } else {
                             __label__ = 89;
@@ -7524,7 +7524,7 @@ function __Z17DecodeSliceHeaderP12tagDecObjectP12tagCommonObjP15tagDecBitstream(
                             
                             
                             
-                            if ((HEAP32[$sliceHdr + 2148 >> 2] | 0) != 1) {
+                            if (HEAP32[$sliceHdr + 2148 >> 2] != 1) {
                               __label__ = 90;
                             } else {
                               __label__ = 97;
@@ -7538,7 +7538,7 @@ function __Z17DecodeSliceHeaderP12tagDecObjectP12tagCommonObjP15tagDecBitstream(
                                 
                                 
                                 
-                                var $cmp274 = (HEAP32[$sliceHdr + 2152 >> 2] | 0) < -6;
+                                var $cmp274 = HEAP32[$sliceHdr + 2152 >> 2] < -6;
                                 if ($cmp274) {
                                   __label__ = 92;
                                 } else {
@@ -7550,7 +7550,7 @@ function __Z17DecodeSliceHeaderP12tagDecObjectP12tagCommonObjP15tagDecBitstream(
                                     
                                     
                                     
-                                    if ((HEAP32[$sliceHdr + 2152 >> 2] | 0) > 6) {
+                                    if (HEAP32[$sliceHdr + 2152 >> 2] > 6) {
                                       __label__ = 92;
                                       break $if_then278$$lor_lhs_false275$131;
                                     }
@@ -7568,7 +7568,7 @@ function __Z17DecodeSliceHeaderP12tagDecObjectP12tagCommonObjP15tagDecBitstream(
                                     
                                     
                                     
-                                    var $cmp286 = (HEAP32[$sliceHdr + 2156 >> 2] | 0) < -6;
+                                    var $cmp286 = HEAP32[$sliceHdr + 2156 >> 2] < -6;
                                     if ($cmp286) {
                                       __label__ = 95;
                                     } else {
@@ -7580,7 +7580,7 @@ function __Z17DecodeSliceHeaderP12tagDecObjectP12tagCommonObjP15tagDecBitstream(
                                         
                                         
                                         
-                                        if ((HEAP32[$sliceHdr + 2156 >> 2] | 0) > 6) {
+                                        if (HEAP32[$sliceHdr + 2156 >> 2] > 6) {
                                           __label__ = 95;
                                           break $if_then290$$lor_lhs_false287$134;
                                         }
@@ -7611,7 +7611,7 @@ function __Z17DecodeSliceHeaderP12tagDecObjectP12tagCommonObjP15tagDecBitstream(
                         
                         
                         
-                        if (HEAPU32[$currPPS + 16 >> 2] >>> 0 > 0) {
+                        if (HEAPU32[$currPPS + 16 >> 2] > 0) {
                           __label__ = 99;
                         } else {
                           __label__ = 110;
@@ -7621,7 +7621,7 @@ function __Z17DecodeSliceHeaderP12tagDecObjectP12tagCommonObjP15tagDecBitstream(
                             
                             
                             
-                            var $cmp299 = HEAPU32[$currPPS + 20 >> 2] >>> 0 >= 3;
+                            var $cmp299 = HEAPU32[$currPPS + 20 >> 2] >= 3;
                             if (!$cmp299) {
                               __label__ = 110;
                               break $land_lhs_true298$$if_end329$141;
@@ -7629,7 +7629,7 @@ function __Z17DecodeSliceHeaderP12tagDecObjectP12tagCommonObjP15tagDecBitstream(
                             
                             
                             
-                            var $cmp302 = HEAPU32[$currPPS + 20 >> 2] >>> 0 <= 5;
+                            var $cmp302 = HEAPU32[$currPPS + 20 >> 2] <= 5;
                             if (!$cmp302) {
                               __label__ = 110;
                               break $land_lhs_true298$$if_end329$141;
@@ -7640,7 +7640,7 @@ function __Z17DecodeSliceHeaderP12tagDecObjectP12tagCommonObjP15tagDecBitstream(
                             
                             
                             var $300 = HEAPU32[$video_addr + 1272 >> 2];
-                            var $div = Math.floor(($298 >>> 0) / ($300 >>> 0));
+                            var $div = Math.floor($298 / $300);
                             $temp = $div;
                             
                             
@@ -7650,7 +7650,7 @@ function __Z17DecodeSliceHeaderP12tagDecObjectP12tagCommonObjP15tagDecBitstream(
                             
                             
                             
-                            if (((HEAPU32[$video_addr + 1264 >> 2] >>> 0) % (HEAPU32[$video_addr + 1272 >> 2] >>> 0) | 0) != 0) {
+                            if (HEAPU32[$video_addr + 1264 >> 2] % HEAPU32[$video_addr + 1272 >> 2] != 0) {
                               __label__ = 102;
                             } else {
                               __label__ = 103;
@@ -7666,7 +7666,7 @@ function __Z17DecodeSliceHeaderP12tagDecObjectP12tagCommonObjP15tagDecBitstream(
                             $temp = $inc311;
                             while (1) {
                               
-                              var $tobool312 = ($temp | 0) != 0;
+                              var $tobool312 = $temp != 0;
                               if (!$tobool312) {
                                 __label__ = 106;
                                 break;
@@ -7696,7 +7696,7 @@ function __Z17DecodeSliceHeaderP12tagDecObjectP12tagCommonObjP15tagDecBitstream(
                             
                             
                             
-                            if (HEAP32[$sliceHdr + 2160 >> 2] * HEAP32[$video_addr + 1272 >> 2] >>> 0 < HEAPU32[$video_addr + 1264 >> 2] >>> 0) {
+                            if (HEAP32[$sliceHdr + 2160 >> 2] * HEAP32[$video_addr + 1272 >> 2] < HEAPU32[$video_addr + 1264 >> 2]) {
                               __label__ = 107;
                             } else {
                               __label__ = 108;
@@ -7762,7 +7762,7 @@ function __Z23ref_pic_list_reorderingP12tagCommonObjP15tagDecBitstreamP14tagSlic
   $slice_type_addr = $slice_type;
   
   
-  if (($slice_type_addr | 0) != 2) {
+  if ($slice_type_addr != 2) {
     __label__ = 1;
   } else {
     __label__ = 21;
@@ -7777,7 +7777,7 @@ function __Z23ref_pic_list_reorderingP12tagCommonObjP15tagDecBitstreamP14tagSlic
       
       
       
-      if ((HEAP32[$sliceHdr_addr + 64 >> 2] | 0) != 0) {
+      if (HEAP32[$sliceHdr_addr + 64 >> 2] != 0) {
         __label__ = 2;
       } else {
         __label__ = 20;
@@ -7797,7 +7797,7 @@ function __Z23ref_pic_list_reorderingP12tagCommonObjP15tagDecBitstreamP14tagSlic
           
           
           
-          if ((HEAP32[$sliceHdr_addr + 68 + $i * 4 >> 2] | 0) == 0) {
+          if (HEAP32[$sliceHdr_addr + 68 + $i * 4 >> 2] == 0) {
             __label__ = 5;
           } else {
             __label__ = 4;
@@ -7810,7 +7810,7 @@ function __Z23ref_pic_list_reorderingP12tagCommonObjP15tagDecBitstreamP14tagSlic
               
               
               
-              if ((HEAP32[$sliceHdr_addr + 68 + $i * 4 >> 2] | 0) == 1) {
+              if (HEAP32[$sliceHdr_addr + 68 + $i * 4 >> 2] == 1) {
                 __label__ = 5;
                 break $if_then10$$lor_lhs_false$8;
               }
@@ -7820,7 +7820,7 @@ function __Z23ref_pic_list_reorderingP12tagCommonObjP15tagDecBitstreamP14tagSlic
               
               
               
-              if ((HEAP32[$sliceHdr_addr + 68 + $i * 4 >> 2] | 0) == 2) {
+              if (HEAP32[$sliceHdr_addr + 68 + $i * 4 >> 2] == 2) {
                 __label__ = 13;
               } else {
                 __label__ = 14;
@@ -7850,7 +7850,7 @@ function __Z23ref_pic_list_reorderingP12tagCommonObjP15tagDecBitstreamP14tagSlic
             
             
             
-            if ((HEAP32[$sliceHdr_addr + 68 + $i * 4 >> 2] | 0) == 0) {
+            if (HEAP32[$sliceHdr_addr + 68 + $i * 4 >> 2] == 0) {
               __label__ = 6;
             } else {
               __label__ = 8;
@@ -7864,10 +7864,10 @@ function __Z23ref_pic_list_reorderingP12tagCommonObjP15tagDecBitstreamP14tagSlic
               
               
               var $24 = HEAPU32[$video_addr + 1320 >> 2];
-              var $div = Math.floor(($24 >>> 0) / 2);
+              var $div = Math.floor($24 / 2);
               
               
-              if ($22 >>> 0 > $div - 1 >>> 0) {
+              if ($22 > $div - 1) {
                 __label__ = 7;
                 break $do_body$6;
               }
@@ -7878,7 +7878,7 @@ function __Z23ref_pic_list_reorderingP12tagCommonObjP15tagDecBitstreamP14tagSlic
             
             
             
-            if ((HEAP32[$sliceHdr_addr + 68 + $i * 4 >> 2] | 0) == 1) {
+            if (HEAP32[$sliceHdr_addr + 68 + $i * 4 >> 2] == 1) {
               __label__ = 9;
             } else {
               __label__ = 11;
@@ -7892,10 +7892,10 @@ function __Z23ref_pic_list_reorderingP12tagCommonObjP15tagDecBitstreamP14tagSlic
               
               
               var $32 = HEAPU32[$video_addr + 1320 >> 2];
-              var $div27 = Math.floor(($32 >>> 0) / 2);
+              var $div27 = Math.floor($32 / 2);
               
               
-              if ($30 >>> 0 > $div27 - 2 >>> 0) {
+              if ($30 > $div27 - 2) {
                 __label__ = 10;
                 break $do_body$6;
               }
@@ -7911,7 +7911,7 @@ function __Z23ref_pic_list_reorderingP12tagCommonObjP15tagDecBitstreamP14tagSlic
           
           
           
-          if ((HEAP32[$sliceHdr_addr + 68 + ($i - 1) * 4 >> 2] | 0) != 3) {
+          if (HEAP32[$sliceHdr_addr + 68 + ($i - 1) * 4 >> 2] != 3) {
             __lastLabel__ = 16;
             __label__ = 17;
           } else {
@@ -7924,7 +7924,7 @@ function __Z23ref_pic_list_reorderingP12tagCommonObjP15tagDecBitstreamP14tagSlic
             
             
             
-            var $cmp44 = ($i | 0) <= (HEAP32[$sliceHdr_addr + 56 >> 2] + 1 | 0);
+            var $cmp44 = $i <= HEAP32[$sliceHdr_addr + 56 >> 2] + 1;
             __lastLabel__ = 17;
           }
           var $46 = __lastLabel__ == 16 ? 0 : $cmp44;
@@ -7977,7 +7977,7 @@ function __Z19dec_ref_pic_markingP12tagCommonObjP15tagDecBitstreamP14tagSliceHea
   
   
   
-  if ((HEAP32[$video_addr + 848 >> 2] | 0) == 5) {
+  if (HEAP32[$video_addr + 848 >> 2] == 5) {
     __label__ = 1;
   } else {
     __label__ = 5;
@@ -7996,7 +7996,7 @@ function __Z19dec_ref_pic_markingP12tagCommonObjP15tagDecBitstreamP14tagSliceHea
       
       
       
-      if ((HEAP32[$sliceHdr_addr + 844 >> 2] | 0) == 0) {
+      if (HEAP32[$sliceHdr_addr + 844 >> 2] == 0) {
         __label__ = 2;
       } else {
         __label__ = 3;
@@ -8024,7 +8024,7 @@ function __Z19dec_ref_pic_markingP12tagCommonObjP15tagDecBitstreamP14tagSliceHea
       
       
       
-      if ((HEAP32[$sliceHdr_addr + 848 >> 2] | 0) != 0) {
+      if (HEAP32[$sliceHdr_addr + 848 >> 2] != 0) {
         __label__ = 6;
       } else {
         __label__ = 24;
@@ -8044,7 +8044,7 @@ function __Z19dec_ref_pic_markingP12tagCommonObjP15tagDecBitstreamP14tagSliceHea
           
           
           
-          if ((HEAP32[$sliceHdr_addr + 852 + $i * 4 >> 2] | 0) == 1) {
+          if (HEAP32[$sliceHdr_addr + 852 + $i * 4 >> 2] == 1) {
             __label__ = 9;
           } else {
             __label__ = 8;
@@ -8057,7 +8057,7 @@ function __Z19dec_ref_pic_markingP12tagCommonObjP15tagDecBitstreamP14tagSliceHea
               
               
               
-              if ((HEAP32[$sliceHdr_addr + 852 + $i * 4 >> 2] | 0) == 3) {
+              if (HEAP32[$sliceHdr_addr + 852 + $i * 4 >> 2] == 3) {
                 __label__ = 9;
                 break $if_then17$$lor_lhs_false$13;
               } else {
@@ -8080,7 +8080,7 @@ function __Z19dec_ref_pic_markingP12tagCommonObjP15tagDecBitstreamP14tagSliceHea
           
           
           
-          if ((HEAP32[$sliceHdr_addr + 852 + $i * 4 >> 2] | 0) == 2) {
+          if (HEAP32[$sliceHdr_addr + 852 + $i * 4 >> 2] == 2) {
             __label__ = 11;
           } else {
             __label__ = 12;
@@ -8099,7 +8099,7 @@ function __Z19dec_ref_pic_markingP12tagCommonObjP15tagDecBitstreamP14tagSliceHea
           
           
           
-          if ((HEAP32[$sliceHdr_addr + 852 + $i * 4 >> 2] | 0) == 3) {
+          if (HEAP32[$sliceHdr_addr + 852 + $i * 4 >> 2] == 3) {
             __label__ = 14;
           } else {
             __label__ = 13;
@@ -8112,7 +8112,7 @@ function __Z19dec_ref_pic_markingP12tagCommonObjP15tagDecBitstreamP14tagSliceHea
               
               
               
-              if ((HEAP32[$sliceHdr_addr + 852 + $i * 4 >> 2] | 0) == 6) {
+              if (HEAP32[$sliceHdr_addr + 852 + $i * 4 >> 2] == 6) {
                 __label__ = 14;
                 break $if_then35$$lor_lhs_false31$21;
               } else {
@@ -8135,7 +8135,7 @@ function __Z19dec_ref_pic_markingP12tagCommonObjP15tagDecBitstreamP14tagSliceHea
           
           
           
-          if ((HEAP32[$sliceHdr_addr + 852 + $i * 4 >> 2] | 0) == 4) {
+          if (HEAP32[$sliceHdr_addr + 852 + $i * 4 >> 2] == 4) {
             __label__ = 16;
           } else {
             __label__ = 17;
@@ -8158,7 +8158,7 @@ function __Z19dec_ref_pic_markingP12tagCommonObjP15tagDecBitstreamP14tagSliceHea
           
           
           
-          if ((HEAP32[$sliceHdr_addr + 852 + ($i - 1) * 4 >> 2] | 0) != 0) {
+          if (HEAP32[$sliceHdr_addr + 852 + ($i - 1) * 4 >> 2] != 0) {
             __lastLabel__ = 18;
             __label__ = 19;
           } else {
@@ -8167,7 +8167,7 @@ function __Z19dec_ref_pic_markingP12tagCommonObjP15tagDecBitstreamP14tagSliceHea
           }
           if (__label__ == 19) {
             
-            var $cmp49 = ($i | 0) < 64;
+            var $cmp49 = $i < 64;
             __lastLabel__ = 19;
           }
           var $53 = __lastLabel__ == 18 ? 0 : $cmp49;
@@ -8181,7 +8181,7 @@ function __Z19dec_ref_pic_markingP12tagCommonObjP15tagDecBitstreamP14tagSliceHea
         }
         
         
-        if (($i | 0) >= 64) {
+        if ($i >= 64) {
           __label__ = 22;
         } else {
           __label__ = 23;
@@ -8254,7 +8254,7 @@ function __Z18fill_frame_num_gapP12tagAVCHandleP12tagCommonObj($avcHandle, $vide
   
   
   
-  $UnusedShortTermFrameNum = (HEAP32[$video_addr + 1388 >> 2] + 1 >>> 0) % (HEAPU32[$video_addr + 1240 >> 2] >>> 0);
+  $UnusedShortTermFrameNum = (HEAP32[$video_addr + 1388 >> 2] + 1) % HEAPU32[$video_addr + 1240 >> 2];
   
   
   
@@ -8276,7 +8276,7 @@ function __Z18fill_frame_num_gapP12tagAVCHandleP12tagCommonObj($avcHandle, $vide
   while (1) {
     
     
-    var $cmp = ($CurrFrameNum | 0) != ($UnusedShortTermFrameNum | 0);
+    var $cmp = $CurrFrameNum != $UnusedShortTermFrameNum;
     if (!$cmp) {
       __label__ = 7;
       break;
@@ -8297,7 +8297,7 @@ function __Z18fill_frame_num_gapP12tagAVCHandleP12tagCommonObj($avcHandle, $vide
     $status = $call;
     
     
-    if (($status | 0) != 1) {
+    if ($status != 1) {
       __label__ = 3;
       break;
     }
@@ -8362,7 +8362,7 @@ function __Z18fill_frame_num_gapP12tagAVCHandleP12tagCommonObj($avcHandle, $vide
     $status = $call29;
     
     
-    if (($status | 0) != 1) {
+    if ($status != 1) {
       __label__ = 5;
       break;
     }
@@ -8375,7 +8375,7 @@ function __Z18fill_frame_num_gapP12tagAVCHandleP12tagCommonObj($avcHandle, $vide
     
     
     
-    var $rem36 = ($UnusedShortTermFrameNum + 1 >>> 0) % (HEAPU32[$video_addr + 1240 >> 2] >>> 0);
+    var $rem36 = ($UnusedShortTermFrameNum + 1) % HEAPU32[$video_addr + 1240 >> 2];
     $UnusedShortTermFrameNum = $rem36;
     __label__ = 1;
     continue;
@@ -8464,7 +8464,7 @@ function __Z9DecodePOCP12tagCommonObj($video) {
       
       
       
-      if ((HEAP32[$video_addr + 848 >> 2] | 0) == 5) {
+      if (HEAP32[$video_addr + 848 >> 2] == 5) {
         __label__ = 2;
       } else {
         __label__ = 3;
@@ -8484,7 +8484,7 @@ function __Z9DecodePOCP12tagCommonObj($video) {
       
       
       
-      if (HEAPU32[$sliceHdr + 28 >> 2] >>> 0 < HEAPU32[$video_addr + 1372 >> 2] >>> 0) {
+      if (HEAPU32[$sliceHdr + 28 >> 2] < HEAPU32[$video_addr + 1372 >> 2]) {
         __label__ = 4;
       } else {
         __label__ = 6;
@@ -8501,8 +8501,8 @@ function __Z9DecodePOCP12tagCommonObj($video) {
           
           
           var $19 = HEAPU32[$video_addr + 1244 >> 2];
-          var $div = Math.floor(($19 >>> 0) / 2);
-          var $cmp6 = $sub >>> 0 >= $div >>> 0;
+          var $div = Math.floor($19 / 2);
+          var $cmp6 = $sub >= $div;
           if (!$cmp6) {
             __label__ = 6;
             break $land_lhs_true$$if_else$8;
@@ -8529,7 +8529,7 @@ function __Z9DecodePOCP12tagCommonObj($video) {
         
         
         
-        if (HEAPU32[$sliceHdr + 28 >> 2] >>> 0 > HEAPU32[$video_addr + 1372 >> 2] >>> 0) {
+        if (HEAPU32[$sliceHdr + 28 >> 2] > HEAPU32[$video_addr + 1372 >> 2]) {
           __label__ = 7;
         } else {
           __label__ = 9;
@@ -8546,8 +8546,8 @@ function __Z9DecodePOCP12tagCommonObj($video) {
             
             
             var $34 = HEAPU32[$video_addr + 1244 >> 2];
-            var $div18 = Math.floor(($34 >>> 0) / 2);
-            var $cmp19 = $sub16 >>> 0 > $div18 >>> 0;
+            var $div18 = Math.floor($34 / 2);
+            var $cmp19 = $sub16 > $div18;
             if (!$cmp19) {
               __label__ = 9;
               break $land_lhs_true13$$if_else25$13;
@@ -8605,7 +8605,7 @@ function __Z9DecodePOCP12tagCommonObj($video) {
       
       
       
-      if ((HEAP32[$video_addr + 848 >> 2] | 0) == 5) {
+      if (HEAP32[$video_addr + 848 >> 2] == 5) {
         __label__ = 13;
       } else {
         __label__ = 14;
@@ -8625,7 +8625,7 @@ function __Z9DecodePOCP12tagCommonObj($video) {
         
         
         
-        if (HEAPU32[$video_addr + 1388 >> 2] >>> 0 > HEAPU32[$sliceHdr + 12 >> 2] >>> 0) {
+        if (HEAPU32[$video_addr + 1388 >> 2] > HEAPU32[$sliceHdr + 12 >> 2]) {
           __label__ = 15;
         } else {
           __label__ = 16;
@@ -8654,7 +8654,7 @@ function __Z9DecodePOCP12tagCommonObj($video) {
       
       
       
-      if ((HEAP32[$currSPS + 56 >> 2] | 0) != 0) {
+      if (HEAP32[$currSPS + 56 >> 2] != 0) {
         __label__ = 19;
       } else {
         __label__ = 20;
@@ -8679,7 +8679,7 @@ function __Z9DecodePOCP12tagCommonObj($video) {
       
       
       
-      if ((HEAP32[$video_addr + 1392 >> 2] | 0) > 0) {
+      if (HEAP32[$video_addr + 1392 >> 2] > 0) {
         __label__ = 22;
       } else {
         __label__ = 24;
@@ -8689,7 +8689,7 @@ function __Z9DecodePOCP12tagCommonObj($video) {
           
           
           
-          var $cmp60 = (HEAP32[$video_addr + 844 >> 2] | 0) == 0;
+          var $cmp60 = HEAP32[$video_addr + 844 >> 2] == 0;
           if (!$cmp60) {
             __label__ = 24;
             break $land_lhs_true59$$if_end63$33;
@@ -8705,7 +8705,7 @@ function __Z9DecodePOCP12tagCommonObj($video) {
       
       
       
-      if ((HEAP32[$video_addr + 1392 >> 2] | 0) > 0) {
+      if (HEAP32[$video_addr + 1392 >> 2] > 0) {
         __label__ = 25;
       } else {
         __label__ = 26;
@@ -8718,7 +8718,7 @@ function __Z9DecodePOCP12tagCommonObj($video) {
         
         
         var $89 = HEAPU32[$currSPS + 56 >> 2];
-        var $div70 = Math.floor(($sub68 >>> 0) / ($89 >>> 0));
+        var $div70 = Math.floor($sub68 / $89);
         
         
         HEAP32[$video_addr + 1396 >> 2] = $div70;
@@ -8729,7 +8729,7 @@ function __Z9DecodePOCP12tagCommonObj($video) {
         
         
         
-        var $rem = (HEAP32[$video_addr + 1392 >> 2] - 1 >>> 0) % (HEAPU32[$currSPS + 56 >> 2] >>> 0);
+        var $rem = (HEAP32[$video_addr + 1392 >> 2] - 1) % HEAPU32[$currSPS + 56 >> 2];
         
         
         HEAP32[$video_addr + 1400 >> 2] = $rem;
@@ -8743,7 +8743,7 @@ function __Z9DecodePOCP12tagCommonObj($video) {
         
         
         
-        var $cmp76 = ($i | 0) < (HEAP32[$currSPS + 56 >> 2] | 0);
+        var $cmp76 = $i < HEAP32[$currSPS + 56 >> 2];
         if (!$cmp76) {
           __label__ = 30;
           break $for_cond$40;
@@ -8768,7 +8768,7 @@ function __Z9DecodePOCP12tagCommonObj($video) {
       
       
       
-      if ((HEAP32[$video_addr + 1392 >> 2] | 0) != 0) {
+      if (HEAP32[$video_addr + 1392 >> 2] != 0) {
         __label__ = 31;
       } else {
         __label__ = 36;
@@ -8790,7 +8790,7 @@ function __Z9DecodePOCP12tagCommonObj($video) {
           
           
           
-          var $cmp86 = ($i | 0) <= (HEAP32[$video_addr + 1400 >> 2] | 0);
+          var $cmp86 = $i <= HEAP32[$video_addr + 1400 >> 2];
           if (!$cmp86) {
             __label__ = 35;
             break;
@@ -8820,7 +8820,7 @@ function __Z9DecodePOCP12tagCommonObj($video) {
       
       
       
-      if ((HEAP32[$video_addr + 844 >> 2] | 0) == 0) {
+      if (HEAP32[$video_addr + 844 >> 2] == 0) {
         __label__ = 38;
       } else {
         __label__ = 39;
@@ -8868,7 +8868,7 @@ function __Z9DecodePOCP12tagCommonObj($video) {
       
       
       
-      if ((HEAP32[$video_addr + 1364 >> 2] | 0) < (HEAP32[$video_addr + 1360 >> 2] | 0)) {
+      if (HEAP32[$video_addr + 1364 >> 2] < HEAP32[$video_addr + 1360 >> 2]) {
         __label__ = 40;
       } else {
         __label__ = 41;
@@ -8895,7 +8895,7 @@ function __Z9DecodePOCP12tagCommonObj($video) {
       
       
       
-      if ((HEAP32[$video_addr + 848 >> 2] | 0) == 5) {
+      if (HEAP32[$video_addr + 848 >> 2] == 5) {
         __label__ = 44;
       } else {
         __label__ = 45;
@@ -8912,7 +8912,7 @@ function __Z9DecodePOCP12tagCommonObj($video) {
         
         
         
-        if (HEAPU32[$video_addr + 1388 >> 2] >>> 0 > HEAPU32[$sliceHdr + 12 >> 2] >>> 0) {
+        if (HEAPU32[$video_addr + 1388 >> 2] > HEAPU32[$sliceHdr + 12 >> 2]) {
           __label__ = 46;
         } else {
           __label__ = 47;
@@ -8941,7 +8941,7 @@ function __Z9DecodePOCP12tagCommonObj($video) {
       
       
       
-      if ((HEAP32[$video_addr + 848 >> 2] | 0) == 5) {
+      if (HEAP32[$video_addr + 848 >> 2] == 5) {
         __label__ = 50;
       } else {
         __label__ = 51;
@@ -8955,7 +8955,7 @@ function __Z9DecodePOCP12tagCommonObj($video) {
         
         
         
-        if ((HEAP32[$video_addr + 844 >> 2] | 0) == 0) {
+        if (HEAP32[$video_addr + 844 >> 2] == 0) {
           __label__ = 52;
         } else {
           __label__ = 53;
@@ -9082,7 +9082,7 @@ function __Z11sei_payloadP12tagDecObjectP15tagDecBitstreamjj($decvid, $stream, $
     while (1) {
       
       
-      var $cmp11 = $i >>> 0 < $payloadSize_addr >>> 0;
+      var $cmp11 = $i < $payloadSize_addr;
       if (!$cmp11) {
         __label__ = 15;
         break;
@@ -9123,7 +9123,7 @@ function __Z11sei_payloadP12tagDecObjectP15tagDecBitstreamjj($decvid, $stream, $
     while (1) {
       
       
-      var $cmp = $i >>> 0 < $payloadSize_addr >>> 0;
+      var $cmp = $i < $payloadSize_addr;
       if (!$cmp) {
         __label__ = 7;
         break;
@@ -9189,7 +9189,7 @@ function __Z16buffering_periodP12tagDecObjectP15tagDecBitstream($decvid, $stream
   var $call = __Z4ue_vP15tagDecBitstreamPj($stream_addr, $seq_parameter_set_id);
   
   
-  if (HEAPU32[$seq_parameter_set_id >> 2] >>> 0 > 31) {
+  if (HEAPU32[$seq_parameter_set_id >> 2] > 31) {
     __label__ = 1;
   } else {
     __label__ = 2;
@@ -9208,7 +9208,7 @@ function __Z16buffering_periodP12tagDecObjectP15tagDecBitstream($decvid, $stream
     
     
     
-    if ((HEAP32[$currSPS + 1132 + 80 >> 2] | 0) != 0) {
+    if (HEAP32[$currSPS + 1132 + 80 >> 2] != 0) {
       __label__ = 3;
     } else {
       __label__ = 8;
@@ -9222,7 +9222,7 @@ function __Z16buffering_periodP12tagDecObjectP15tagDecBitstream($decvid, $stream
         
         
         
-        var $cmp3 = $i >>> 0 <= HEAPU32[$currSPS + 1132 + 84 >> 2] >>> 0;
+        var $cmp3 = $i <= HEAPU32[$currSPS + 1132 + 84 >> 2];
         if (!$cmp3) {
           __label__ = 7;
           break;
@@ -9255,7 +9255,7 @@ function __Z16buffering_periodP12tagDecObjectP15tagDecBitstream($decvid, $stream
     
     
     
-    if ((HEAP32[$currSPS + 1132 + 496 >> 2] | 0) != 0) {
+    if (HEAP32[$currSPS + 1132 + 496 >> 2] != 0) {
       __label__ = 9;
     } else {
       __label__ = 14;
@@ -9269,7 +9269,7 @@ function __Z16buffering_periodP12tagDecObjectP15tagDecBitstream($decvid, $stream
         
         
         
-        var $cmp19 = $i >>> 0 <= HEAPU32[$currSPS + 1132 + 500 >> 2] >>> 0;
+        var $cmp19 = $i <= HEAPU32[$currSPS + 1132 + 500 >> 2];
         if (!$cmp19) {
           __label__ = 13;
           break;
@@ -9335,7 +9335,7 @@ function __Z10pic_timingP12tagDecObjectP15tagDecBitstream($decvid, $stream) {
   
   
   
-  if ((HEAP32[$currSPS + 1132 + 80 >> 2] | 0) != 0) {
+  if (HEAP32[$currSPS + 1132 + 80 >> 2] != 0) {
     __label__ = 1;
   } else {
     __label__ = 2;
@@ -9369,7 +9369,7 @@ function __Z10pic_timingP12tagDecObjectP15tagDecBitstream($decvid, $stream) {
     
     
     
-    if ((HEAP32[$currSPS + 1132 + 496 >> 2] | 0) != 0) {
+    if (HEAP32[$currSPS + 1132 + 496 >> 2] != 0) {
       __label__ = 3;
     } else {
       __label__ = 4;
@@ -9404,7 +9404,7 @@ function __Z10pic_timingP12tagDecObjectP15tagDecBitstream($decvid, $stream) {
   
   
   
-  if ((HEAP32[$currSPS + 1132 + 916 >> 2] | 0) != 0) {
+  if (HEAP32[$currSPS + 1132 + 916 >> 2] != 0) {
     __label__ = 6;
   } else {
     __label__ = 30;
@@ -9447,7 +9447,7 @@ function __Z10pic_timingP12tagDecObjectP15tagDecBitstream($decvid, $stream) {
     while (1) {
       
       
-      var $cmp = $i >>> 0 < $NumClockTs >>> 0;
+      var $cmp = $i < $NumClockTs;
       if (!$cmp) {
         __label__ = 29;
         break;
@@ -9456,7 +9456,7 @@ function __Z10pic_timingP12tagDecObjectP15tagDecBitstream($decvid, $stream) {
       var $call31 = _BitstreamRead1Bit($stream_addr, $temp);
       
       
-      if ((HEAP32[$temp >> 2] | 0) != 0) {
+      if (HEAP32[$temp >> 2] != 0) {
         __label__ = 14;
       } else {
         __label__ = 27;
@@ -9480,7 +9480,7 @@ function __Z10pic_timingP12tagDecObjectP15tagDecBitstream($decvid, $stream) {
         var $call40 = _BitstreamReadBits($stream_addr, 8, $temp);
         
         
-        if (($full_timestamp_flag | 0) != 0) {
+        if ($full_timestamp_flag != 0) {
           __label__ = 15;
         } else {
           __label__ = 16;
@@ -9497,7 +9497,7 @@ function __Z10pic_timingP12tagDecObjectP15tagDecBitstream($decvid, $stream) {
           var $call47 = _BitstreamRead1Bit($stream_addr, $temp);
           
           
-          if ((HEAP32[$temp >> 2] | 0) != 0) {
+          if (HEAP32[$temp >> 2] != 0) {
             __label__ = 17;
           } else {
             __label__ = 22;
@@ -9509,7 +9509,7 @@ function __Z10pic_timingP12tagDecObjectP15tagDecBitstream($decvid, $stream) {
             var $call51 = _BitstreamRead1Bit($stream_addr, $temp);
             
             
-            if ((HEAP32[$temp >> 2] | 0) != 0) {
+            if (HEAP32[$temp >> 2] != 0) {
               __label__ = 18;
             } else {
               __label__ = 21;
@@ -9521,7 +9521,7 @@ function __Z10pic_timingP12tagDecObjectP15tagDecBitstream($decvid, $stream) {
               var $call55 = _BitstreamRead1Bit($stream_addr, $temp);
               
               
-              if ((HEAP32[$temp >> 2] | 0) != 0) {
+              if (HEAP32[$temp >> 2] != 0) {
                 __label__ = 19;
               } else {
                 __label__ = 20;
@@ -9535,7 +9535,7 @@ function __Z10pic_timingP12tagDecObjectP15tagDecBitstream($decvid, $stream) {
         }
         
         
-        if (($time_offset_length | 0) != 0) {
+        if ($time_offset_length != 0) {
           __label__ = 24;
         } else {
           __label__ = 25;
@@ -9608,7 +9608,7 @@ function __Z30dec_ref_pic_marking_repetitionP12tagDecObjectP15tagDecBitstream($d
   
   
   
-  if ((HEAP32[$currSPS + 1096 >> 2] | 0) == 0) {
+  if (HEAP32[$currSPS + 1096 >> 2] == 0) {
     __label__ = 1;
   } else {
     __label__ = 4;
@@ -9618,7 +9618,7 @@ function __Z30dec_ref_pic_marking_repetitionP12tagDecObjectP15tagDecBitstream($d
     var $call2 = _BitstreamRead1Bit($stream_addr, $temp);
     
     
-    if ((HEAP32[$temp >> 2] | 0) != 0) {
+    if (HEAP32[$temp >> 2] != 0) {
       __label__ = 2;
     } else {
       __label__ = 3;
@@ -9650,7 +9650,7 @@ function __Z34motion_constrained_slice_group_setP12tagDecObjectP15tagDecBitstrea
   $i = HEAP32[$temp >> 2];
   $while_cond$2 : while (1) {
     
-    var $cmp = $i >>> 0 > 0;
+    var $cmp = $i > 0;
     if (!$cmp) {
       __label__ = 3;
       break $while_cond$2;
@@ -9668,7 +9668,7 @@ function __Z34motion_constrained_slice_group_setP12tagDecObjectP15tagDecBitstrea
   while (1) {
     
     
-    var $cmp1 = $i >>> 0 <= HEAPU32[$temp >> 2] >>> 0;
+    var $cmp1 = $i <= HEAPU32[$temp >> 2];
     if (!$cmp1) {
       __label__ = 7;
       break;
@@ -9688,7 +9688,7 @@ function __Z34motion_constrained_slice_group_setP12tagDecObjectP15tagDecBitstrea
   var $call5 = _BitstreamRead1Bit($stream_addr, $temp);
   
   
-  if ((HEAP32[$temp >> 2] | 0) != 0) {
+  if (HEAP32[$temp >> 2] != 0) {
     __label__ = 8;
   } else {
     __label__ = 9;
@@ -9755,7 +9755,7 @@ function __Z24InitNeighborAvailabilityP12tagCommonObji($video, $mbNum) {
   
   
   
-  if ((HEAP32[$video_addr + 920 >> 2] | 0) != 0) {
+  if (HEAP32[$video_addr + 920 >> 2] != 0) {
     __label__ = 1;
   } else {
     __label__ = 4;
@@ -9776,7 +9776,7 @@ function __Z24InitNeighborAvailabilityP12tagCommonObji($video, $mbNum) {
     
     
     
-    var $conv = (HEAP32[HEAP32[$video_addr + 908 >> 2] + 420 * HEAP32[$video_addr + 1188 >> 2] + 416 >> 2] | 0) == (HEAP32[HEAP32[$video_addr + 912 >> 2] + 416 >> 2] | 0) & 1;
+    var $conv = HEAP32[HEAP32[$video_addr + 908 >> 2] + 420 * HEAP32[$video_addr + 1188 >> 2] + 416 >> 2] == HEAP32[HEAP32[$video_addr + 912 >> 2] + 416 >> 2];
     
     
     HEAP32[$video_addr + 1204 >> 2] = $conv;
@@ -9784,7 +9784,7 @@ function __Z24InitNeighborAvailabilityP12tagCommonObji($video, $mbNum) {
     
     
     
-    if ((HEAP32[$video_addr + 924 >> 2] | 0) != 0) {
+    if (HEAP32[$video_addr + 924 >> 2] != 0) {
       __label__ = 2;
     } else {
       __label__ = 3;
@@ -9805,7 +9805,7 @@ function __Z24InitNeighborAvailabilityP12tagCommonObji($video, $mbNum) {
       
       
       
-      var $conv18 = (HEAP32[HEAP32[$video_addr + 908 >> 2] + 420 * HEAP32[$video_addr + 1200 >> 2] + 416 >> 2] | 0) == (HEAP32[HEAP32[$video_addr + 912 >> 2] + 416 >> 2] | 0) & 1;
+      var $conv18 = HEAP32[HEAP32[$video_addr + 908 >> 2] + 420 * HEAP32[$video_addr + 1200 >> 2] + 416 >> 2] == HEAP32[HEAP32[$video_addr + 912 >> 2] + 416 >> 2];
       
       
       HEAP32[$video_addr + 1216 >> 2] = $conv18;
@@ -9815,7 +9815,7 @@ function __Z24InitNeighborAvailabilityP12tagCommonObji($video, $mbNum) {
   
   
   
-  if ((HEAP32[$video_addr + 924 >> 2] | 0) != 0) {
+  if (HEAP32[$video_addr + 924 >> 2] != 0) {
     __label__ = 5;
   } else {
     __label__ = 8;
@@ -9836,7 +9836,7 @@ function __Z24InitNeighborAvailabilityP12tagCommonObji($video, $mbNum) {
     
     
     
-    var $conv31 = (HEAP32[HEAP32[$video_addr + 908 >> 2] + 420 * HEAP32[$video_addr + 1192 >> 2] + 416 >> 2] | 0) == (HEAP32[HEAP32[$video_addr + 912 >> 2] + 416 >> 2] | 0) & 1;
+    var $conv31 = HEAP32[HEAP32[$video_addr + 908 >> 2] + 420 * HEAP32[$video_addr + 1192 >> 2] + 416 >> 2] == HEAP32[HEAP32[$video_addr + 912 >> 2] + 416 >> 2];
     
     
     HEAP32[$video_addr + 1208 >> 2] = $conv31;
@@ -9846,7 +9846,7 @@ function __Z24InitNeighborAvailabilityP12tagCommonObji($video, $mbNum) {
     
     
     
-    if ((HEAP32[$video_addr + 920 >> 2] | 0) < ($PicWidthInMbs - 1 | 0)) {
+    if (HEAP32[$video_addr + 920 >> 2] < $PicWidthInMbs - 1) {
       __label__ = 6;
     } else {
       __label__ = 7;
@@ -9867,7 +9867,7 @@ function __Z24InitNeighborAvailabilityP12tagCommonObji($video, $mbNum) {
       
       
       
-      var $conv44 = (HEAP32[HEAP32[$video_addr + 908 >> 2] + 420 * HEAP32[$video_addr + 1196 >> 2] + 416 >> 2] | 0) == (HEAP32[HEAP32[$video_addr + 912 >> 2] + 416 >> 2] | 0) & 1;
+      var $conv44 = HEAP32[HEAP32[$video_addr + 908 >> 2] + 420 * HEAP32[$video_addr + 1196 >> 2] + 416 >> 2] == HEAP32[HEAP32[$video_addr + 912 >> 2] + 416 >> 2];
       
       
       HEAP32[$video_addr + 1212 >> 2] = $conv44;
@@ -9892,7 +9892,7 @@ function __Z15mb_is_availableP13tagMacroblockjii($mblock, $PicSizeInMbs, $mbAddr
   $currMbAddr_addr = $currMbAddr;
   
   
-  if (($mbAddr_addr | 0) < 0) {
+  if ($mbAddr_addr < 0) {
     __label__ = 2;
   } else {
     __label__ = 1;
@@ -9902,7 +9902,7 @@ function __Z15mb_is_availableP13tagMacroblockjii($mblock, $PicSizeInMbs, $mbAddr
       
       
       
-      if (($mbAddr_addr | 0) >= ($PicSizeInMbs_addr | 0)) {
+      if ($mbAddr_addr >= $PicSizeInMbs_addr) {
         __label__ = 2;
         break $if_then$$lor_lhs_false$2;
       }
@@ -9917,7 +9917,7 @@ function __Z15mb_is_availableP13tagMacroblockjii($mblock, $PicSizeInMbs, $mbAddr
       
       
       
-      if ((HEAP32[$mblock_addr + 420 * $mbAddr_addr + 416 >> 2] | 0) != (HEAP32[$mblock_addr + 420 * $currMbAddr_addr + 416 >> 2] | 0)) {
+      if (HEAP32[$mblock_addr + 420 * $mbAddr_addr + 416 >> 2] != HEAP32[$mblock_addr + 420 * $currMbAddr_addr + 416 >> 2]) {
         __label__ = 4;
       } else {
         __label__ = 5;
@@ -9958,7 +9958,7 @@ function __Z11predict_nnzP12tagCommonObjii($video, $i, $j) {
   $cnt = 1;
   
   
-  if (($i_addr | 0) != 0) {
+  if ($i_addr != 0) {
     __label__ = 1;
   } else {
     __label__ = 2;
@@ -9976,13 +9976,13 @@ function __Z11predict_nnzP12tagCommonObjii($video, $i, $j) {
     
     
     
-    $pred_nnz = HEAPU8[HEAP32[$video_addr + 912 >> 2] + 380 + (($j_addr << 2) + $i_addr - 1) >> 0] & 255;
+    $pred_nnz = HEAPU8[HEAP32[$video_addr + 912 >> 2] + 380 + (($j_addr << 2) + $i_addr - 1) >> 0];
   } else if (__label__ == 2) {
     
     
     
     
-    if ((HEAP32[$video_addr + 1204 >> 2] | 0) != 0) {
+    if (HEAP32[$video_addr + 1204 >> 2] != 0) {
       __label__ = 3;
     } else {
       __label__ = 4;
@@ -10004,14 +10004,14 @@ function __Z11predict_nnzP12tagCommonObjii($video, $i, $j) {
       
       
       
-      $pred_nnz = HEAPU8[$tempMB + 380 + (($j_addr << 2) + 3) >> 0] & 255;
+      $pred_nnz = HEAPU8[$tempMB + 380 + (($j_addr << 2) + 3) >> 0];
     } else if (__label__ == 4) {
       $cnt = 0;
     }
   }
   
   
-  if (($j_addr | 0) != 0) {
+  if ($j_addr != 0) {
     __label__ = 7;
   } else {
     __label__ = 8;
@@ -10030,7 +10030,7 @@ function __Z11predict_nnzP12tagCommonObjii($video, $i, $j) {
     
     
     
-    var $add19 = $pred_nnz + (HEAPU8[HEAP32[$video_addr + 912 >> 2] + 380 + (($j_addr - 1 << 2) + $i_addr) >> 0] & 255);
+    var $add19 = $pred_nnz + HEAPU8[HEAP32[$video_addr + 912 >> 2] + 380 + (($j_addr - 1 << 2) + $i_addr) >> 0];
     $pred_nnz = $add19;
     
     var $inc = $cnt + 1;
@@ -10040,7 +10040,7 @@ function __Z11predict_nnzP12tagCommonObjii($video, $i, $j) {
     
     
     
-    if ((HEAP32[$video_addr + 1208 >> 2] | 0) != 0) {
+    if (HEAP32[$video_addr + 1208 >> 2] != 0) {
       __label__ = 9;
     } else {
       __label__ = 10;
@@ -10062,7 +10062,7 @@ function __Z11predict_nnzP12tagCommonObjii($video, $i, $j) {
       
       
       
-      var $add29 = $pred_nnz + (HEAPU8[$tempMB + 380 + (12 + $i_addr) >> 0] & 255);
+      var $add29 = $pred_nnz + HEAPU8[$tempMB + 380 + (12 + $i_addr) >> 0];
       $pred_nnz = $add29;
       
       var $inc30 = $cnt + 1;
@@ -10071,7 +10071,7 @@ function __Z11predict_nnzP12tagCommonObjii($video, $i, $j) {
   }
   
   
-  if (($cnt | 0) == 2) {
+  if ($cnt == 2) {
     __label__ = 12;
   } else {
     __label__ = 13;
@@ -10105,7 +10105,7 @@ function __Z18predict_nnz_chromaP12tagCommonObjii($video, $i, $j) {
   
   
   
-  if (($i_addr & 1 | 0) != 0) {
+  if (($i_addr & 1) != 0) {
     __label__ = 1;
   } else {
     __label__ = 2;
@@ -10123,13 +10123,13 @@ function __Z18predict_nnz_chromaP12tagCommonObjii($video, $i, $j) {
     
     
     
-    $pred_nnz = HEAPU8[HEAP32[$video_addr + 912 >> 2] + 380 + (($j_addr << 2) + $i_addr - 1) >> 0] & 255;
+    $pred_nnz = HEAPU8[HEAP32[$video_addr + 912 >> 2] + 380 + (($j_addr << 2) + $i_addr - 1) >> 0];
   } else if (__label__ == 2) {
     
     
     
     
-    if ((HEAP32[$video_addr + 1204 >> 2] | 0) != 0) {
+    if (HEAP32[$video_addr + 1204 >> 2] != 0) {
       __label__ = 3;
     } else {
       __label__ = 4;
@@ -10153,7 +10153,7 @@ function __Z18predict_nnz_chromaP12tagCommonObjii($video, $i, $j) {
       
       
       
-      $pred_nnz = HEAPU8[$tempMB + 380 + (($j_addr << 2) + $i_addr + 1) >> 0] & 255;
+      $pred_nnz = HEAPU8[$tempMB + 380 + (($j_addr << 2) + $i_addr + 1) >> 0];
     } else if (__label__ == 4) {
       $cnt = 0;
     }
@@ -10161,7 +10161,7 @@ function __Z18predict_nnz_chromaP12tagCommonObjii($video, $i, $j) {
   
   
   
-  if (($j_addr & 1 | 0) != 0) {
+  if (($j_addr & 1) != 0) {
     __label__ = 7;
   } else {
     __label__ = 8;
@@ -10180,7 +10180,7 @@ function __Z18predict_nnz_chromaP12tagCommonObjii($video, $i, $j) {
     
     
     
-    var $add21 = $pred_nnz + (HEAPU8[HEAP32[$video_addr + 912 >> 2] + 380 + (($j_addr - 1 << 2) + $i_addr) >> 0] & 255);
+    var $add21 = $pred_nnz + HEAPU8[HEAP32[$video_addr + 912 >> 2] + 380 + (($j_addr - 1 << 2) + $i_addr) >> 0];
     $pred_nnz = $add21;
     
     var $inc = $cnt + 1;
@@ -10190,7 +10190,7 @@ function __Z18predict_nnz_chromaP12tagCommonObjii($video, $i, $j) {
     
     
     
-    if ((HEAP32[$video_addr + 1208 >> 2] | 0) != 0) {
+    if (HEAP32[$video_addr + 1208 >> 2] != 0) {
       __label__ = 9;
     } else {
       __label__ = 10;
@@ -10212,7 +10212,7 @@ function __Z18predict_nnz_chromaP12tagCommonObjii($video, $i, $j) {
       
       
       
-      var $add31 = $pred_nnz + (HEAPU8[$tempMB + 380 + (20 + $i_addr) >> 0] & 255);
+      var $add31 = $pred_nnz + HEAPU8[$tempMB + 380 + (20 + $i_addr) >> 0];
       $pred_nnz = $add31;
       
       var $inc32 = $cnt + 1;
@@ -10221,7 +10221,7 @@ function __Z18predict_nnz_chromaP12tagCommonObjii($video, $i, $j) {
   }
   
   
-  if (($cnt | 0) == 2) {
+  if ($cnt == 2) {
     __label__ = 12;
   } else {
     __label__ = 13;
@@ -10309,7 +10309,7 @@ function __Z24GetMotionVectorPredictorP12tagCommonObji($video, $encFlag) {
   
   
   
-  if ((HEAP32[$currMB + 164 >> 2] | 0) == 10) {
+  if (HEAP32[$currMB + 164 >> 2] == 10) {
     __label__ = 1;
   } else {
     __label__ = 11;
@@ -10336,7 +10336,7 @@ function __Z24GetMotionVectorPredictorP12tagCommonObji($video, $encFlag) {
       
       
       
-      if ((HEAP32[$video_addr + 1204 >> 2] | 0) != 0) {
+      if (HEAP32[$video_addr + 1204 >> 2] != 0) {
         __label__ = 2;
       } else {
         __label__ = 9;
@@ -10346,7 +10346,7 @@ function __Z24GetMotionVectorPredictorP12tagCommonObji($video, $encFlag) {
           
           
           
-          var $tobool11 = (HEAP32[$video_addr + 1208 >> 2] | 0) != 0;
+          var $tobool11 = HEAP32[$video_addr + 1208 >> 2] != 0;
           if (!$tobool11) {
             __label__ = 9;
             break $land_lhs_true$$if_else$4;
@@ -10355,9 +10355,9 @@ function __Z24GetMotionVectorPredictorP12tagCommonObji($video, $encFlag) {
           
           
           
-          var $conv = (tempInt = HEAP16[$MB_A + 132 + 2 >> 1], tempInt >= 32768 ? tempInt - 65536 : tempInt);
           
-          if (($conv | 0) == 0) {
+          
+          if (HEAP16[$MB_A + 132 + 2 >> 1] == 0) {
             __label__ = 4;
           } else {
             __label__ = 5;
@@ -10369,7 +10369,7 @@ function __Z24GetMotionVectorPredictorP12tagCommonObji($video, $encFlag) {
               
               
               
-              if ((HEAP32[$MB_A + 4 + 12 >> 2] | 0) == 0) {
+              if (HEAP32[$MB_A + 4 + 12 >> 2] == 0) {
                 __label__ = 7;
                 break $land_lhs_true16$$lor_lhs_false$7;
               } else {
@@ -10384,9 +10384,9 @@ function __Z24GetMotionVectorPredictorP12tagCommonObji($video, $encFlag) {
               
               
               
-              var $conv21 = (tempInt = HEAP16[$MB_B + 132 + 4 >> 1], tempInt >= 32768 ? tempInt - 65536 : tempInt);
               
-              if (($conv21 | 0) == 0) {
+              
+              if (HEAP16[$MB_B + 132 + 4 >> 1] == 0) {
                 __label__ = 6;
               } else {
                 __label__ = 8;
@@ -10397,7 +10397,7 @@ function __Z24GetMotionVectorPredictorP12tagCommonObji($video, $encFlag) {
                 
                 
                 
-                if ((HEAP32[$MB_B + 4 + 48 >> 2] | 0) == 0) {
+                if (HEAP32[$MB_B + 4 + 48 >> 2] == 0) {
                   __label__ = 7;
                   break $if_then27$$lor_lhs_false$9;
                 }
@@ -10495,7 +10495,7 @@ function __Z24GetMotionVectorPredictorP12tagCommonObji($video, $encFlag) {
         
         
         
-        var $cmp44 = ($mbPartIdx | 0) < (HEAP32[$currMB + 256 >> 2] | 0);
+        var $cmp44 = $mbPartIdx < HEAP32[$currMB + 256 >> 2];
         if (!$cmp44) {
           __label__ = 123;
           break $for_end452$$if_end39$17;
@@ -10534,7 +10534,7 @@ function __Z24GetMotionVectorPredictorP12tagCommonObji($video, $encFlag) {
           
           
           
-          var $cmp52 = ($subMbPartIdx | 0) < (HEAP32[$currMB + 332 + $mbPartIdx * 4 >> 2] | 0);
+          var $cmp52 = $subMbPartIdx < HEAP32[$currMB + 332 + $mbPartIdx * 4 >> 2];
           if (!$cmp52) {
             __label__ = 121;
             break $for_cond50$22;
@@ -10571,7 +10571,7 @@ function __Z24GetMotionVectorPredictorP12tagCommonObji($video, $encFlag) {
           $pmv_A_x = 0;
           
           
-          if (($block_x | 0) != 0) {
+          if ($block_x != 0) {
             __label__ = 16;
           } else {
             __label__ = 17;
@@ -10587,8 +10587,8 @@ function __Z24GetMotionVectorPredictorP12tagCommonObji($video, $encFlag) {
             
             
             
-            var $conv69 = (tempInt = HEAP16[$currMB + 132 + (($block_y & 2) + ($block_x_1 >> 1)) * 2 >> 1], tempInt >= 32768 ? tempInt - 65536 : tempInt);
-            $refIdxLXA = $conv69;
+            
+            $refIdxLXA = HEAP16[$currMB + 132 + (($block_y & 2) + ($block_x_1 >> 1)) * 2 >> 1];
             
             
             
@@ -10603,12 +10603,12 @@ function __Z24GetMotionVectorPredictorP12tagCommonObji($video, $encFlag) {
             var $incdec_ptr = $76 + 2;
             $mv = $incdec_ptr;
             
-            var $conv74 = (tempInt = HEAP16[$76 >> 1], tempInt >= 32768 ? tempInt - 65536 : tempInt);
-            $pmv_A_x = $conv74;
+            
+            $pmv_A_x = HEAP16[$76 >> 1];
             
             
-            var $conv75 = (tempInt = HEAP16[$mv >> 1], tempInt >= 32768 ? tempInt - 65536 : tempInt);
-            $pmv_A_y = $conv75;
+            
+            $pmv_A_y = HEAP16[$mv >> 1];
           } else if (__label__ == 17) {
             
             
@@ -10616,7 +10616,7 @@ function __Z24GetMotionVectorPredictorP12tagCommonObji($video, $encFlag) {
             $avail_a = HEAP32[$video_addr + 1204 >> 2];
             
             
-            if (($avail_a | 0) != 0) {
+            if ($avail_a != 0) {
               __label__ = 18;
             } else {
               __label__ = 19;
@@ -10629,8 +10629,8 @@ function __Z24GetMotionVectorPredictorP12tagCommonObji($video, $encFlag) {
               
               
               
-              var $conv84 = (tempInt = HEAP16[$MB_A + 132 + (($block_y & 2) + 1) * 2 >> 1], tempInt >= 32768 ? tempInt - 65536 : tempInt);
-              $refIdxLXA = $conv84;
+              
+              $refIdxLXA = HEAP16[$MB_A + 132 + (($block_y & 2) + 1) * 2 >> 1];
               
               
               
@@ -10644,17 +10644,17 @@ function __Z24GetMotionVectorPredictorP12tagCommonObji($video, $encFlag) {
               var $incdec_ptr90 = $89 + 2;
               $mv = $incdec_ptr90;
               
-              var $conv91 = (tempInt = HEAP16[$89 >> 1], tempInt >= 32768 ? tempInt - 65536 : tempInt);
-              $pmv_A_x = $conv91;
+              
+              $pmv_A_x = HEAP16[$89 >> 1];
               
               
-              var $conv92 = (tempInt = HEAP16[$mv >> 1], tempInt >= 32768 ? tempInt - 65536 : tempInt);
-              $pmv_A_y = $conv92;
+              
+              $pmv_A_y = HEAP16[$mv >> 1];
             }
           }
           
           
-          if (($block_y | 0) != 0) {
+          if ($block_y != 0) {
             __label__ = 21;
           } else {
             __label__ = 22;
@@ -10670,8 +10670,8 @@ function __Z24GetMotionVectorPredictorP12tagCommonObji($video, $encFlag) {
             
             
             
-            var $conv102 = (tempInt = HEAP16[$currMB + 132 + (($block_y_1 & 2) + ($block_x >> 1)) * 2 >> 1], tempInt >= 32768 ? tempInt - 65536 : tempInt);
-            $refIdxLXB = $conv102;
+            
+            $refIdxLXB = HEAP16[$currMB + 132 + (($block_y_1 & 2) + ($block_x >> 1)) * 2 >> 1];
             
             
             
@@ -10686,12 +10686,12 @@ function __Z24GetMotionVectorPredictorP12tagCommonObji($video, $encFlag) {
             var $incdec_ptr108 = $102 + 2;
             $mv = $incdec_ptr108;
             
-            var $conv109 = (tempInt = HEAP16[$102 >> 1], tempInt >= 32768 ? tempInt - 65536 : tempInt);
-            $pmv_B_x = $conv109;
+            
+            $pmv_B_x = HEAP16[$102 >> 1];
             
             
-            var $conv110 = (tempInt = HEAP16[$mv >> 1], tempInt >= 32768 ? tempInt - 65536 : tempInt);
-            $pmv_B_y = $conv110;
+            
+            $pmv_B_y = HEAP16[$mv >> 1];
           } else if (__label__ == 22) {
             
             
@@ -10699,7 +10699,7 @@ function __Z24GetMotionVectorPredictorP12tagCommonObji($video, $encFlag) {
             $avail_b = HEAP32[$video_addr + 1208 >> 2];
             
             
-            if (($avail_b | 0) != 0) {
+            if ($avail_b != 0) {
               __label__ = 23;
             } else {
               __label__ = 24;
@@ -10712,8 +10712,8 @@ function __Z24GetMotionVectorPredictorP12tagCommonObji($video, $encFlag) {
               
               
               
-              var $conv119 = (tempInt = HEAP16[$MB_B + 132 + (2 + ($block_x >> 1)) * 2 >> 1], tempInt >= 32768 ? tempInt - 65536 : tempInt);
-              $refIdxLXB = $conv119;
+              
+              $refIdxLXB = HEAP16[$MB_B + 132 + (2 + ($block_x >> 1)) * 2 >> 1];
               
               
               
@@ -10726,12 +10726,12 @@ function __Z24GetMotionVectorPredictorP12tagCommonObji($video, $encFlag) {
               var $incdec_ptr124 = $115 + 2;
               $mv = $incdec_ptr124;
               
-              var $conv125 = (tempInt = HEAP16[$115 >> 1], tempInt >= 32768 ? tempInt - 65536 : tempInt);
-              $pmv_B_x = $conv125;
+              
+              $pmv_B_x = HEAP16[$115 >> 1];
               
               
-              var $conv126 = (tempInt = HEAP16[$mv >> 1], tempInt >= 32768 ? tempInt - 65536 : tempInt);
-              $pmv_B_y = $conv126;
+              
+              $pmv_B_y = HEAP16[$mv >> 1];
             }
           }
           
@@ -10750,10 +10750,10 @@ function __Z24GetMotionVectorPredictorP12tagCommonObji($video, $encFlag) {
           
           
           
-          $avail_c = 22352 >>> (($block_y << 2) + $new_block_x >>> 0) & 1;
+          $avail_c = 22352 >>> ($block_y << 2) + $new_block_x & 1;
           
           
-          if (($avail_c | 0) != 0) {
+          if ($avail_c != 0) {
             __label__ = 26;
           } else {
             __label__ = 27;
@@ -10769,8 +10769,8 @@ function __Z24GetMotionVectorPredictorP12tagCommonObji($video, $encFlag) {
             
             
             
-            var $conv146 = (tempInt = HEAP16[$currMB + 132 + (($block_y_1 & 2) + ($new_block_x + 1 >> 1)) * 2 >> 1], tempInt >= 32768 ? tempInt - 65536 : tempInt);
-            $refIdxLXC = $conv146;
+            
+            $refIdxLXC = HEAP16[$currMB + 132 + (($block_y_1 & 2) + ($new_block_x + 1 >> 1)) * 2 >> 1];
             
             
             
@@ -10786,16 +10786,16 @@ function __Z24GetMotionVectorPredictorP12tagCommonObji($video, $encFlag) {
             var $incdec_ptr153 = $134 + 2;
             $mv = $incdec_ptr153;
             
-            var $conv154 = (tempInt = HEAP16[$134 >> 1], tempInt >= 32768 ? tempInt - 65536 : tempInt);
-            $pmv_C_x = $conv154;
+            
+            $pmv_C_x = HEAP16[$134 >> 1];
             
             
-            var $conv155 = (tempInt = HEAP16[$mv >> 1], tempInt >= 32768 ? tempInt - 65536 : tempInt);
-            $pmv_C_y = $conv155;
+            
+            $pmv_C_y = HEAP16[$mv >> 1];
           } else if (__label__ == 27) {
             
             
-            if (($block_y | 0) == 0) {
+            if ($block_y == 0) {
               __label__ = 28;
             } else {
               __label__ = 32;
@@ -10803,7 +10803,7 @@ function __Z24GetMotionVectorPredictorP12tagCommonObji($video, $encFlag) {
             $land_lhs_true158$$if_else179$42 : do {
               if (__label__ == 28) {
                 
-                var $cmp159 = ($new_block_x | 0) < 3;
+                var $cmp159 = $new_block_x < 3;
                 if (!$cmp159) {
                   __label__ = 32;
                   break $land_lhs_true158$$if_else179$42;
@@ -10814,7 +10814,7 @@ function __Z24GetMotionVectorPredictorP12tagCommonObji($video, $encFlag) {
                 $avail_c = HEAP32[$video_addr + 1208 >> 2];
                 
                 
-                if (($avail_c | 0) != 0) {
+                if ($avail_c != 0) {
                   __label__ = 30;
                 } else {
                   __label__ = 31;
@@ -10828,8 +10828,8 @@ function __Z24GetMotionVectorPredictorP12tagCommonObji($video, $encFlag) {
                   
                   
                   
-                  var $conv169 = (tempInt = HEAP16[$MB_B + 132 + (2 + ($new_block_x + 1 >> 1)) * 2 >> 1], tempInt >= 32768 ? tempInt - 65536 : tempInt);
-                  $refIdxLXC = $conv169;
+                  
+                  $refIdxLXC = HEAP16[$MB_B + 132 + (2 + ($new_block_x + 1 >> 1)) * 2 >> 1];
                   
                   
                   
@@ -10843,12 +10843,12 @@ function __Z24GetMotionVectorPredictorP12tagCommonObji($video, $encFlag) {
                   var $incdec_ptr175 = $149 + 2;
                   $mv = $incdec_ptr175;
                   
-                  var $conv176 = (tempInt = HEAP16[$149 >> 1], tempInt >= 32768 ? tempInt - 65536 : tempInt);
-                  $pmv_C_x = $conv176;
+                  
+                  $pmv_C_x = HEAP16[$149 >> 1];
                   
                   
-                  var $conv177 = (tempInt = HEAP16[$mv >> 1], tempInt >= 32768 ? tempInt - 65536 : tempInt);
-                  $pmv_C_y = $conv177;
+                  
+                  $pmv_C_y = HEAP16[$mv >> 1];
                 }
                 __label__ = 38;
                 break $land_lhs_true158$$if_else179$42;
@@ -10857,7 +10857,7 @@ function __Z24GetMotionVectorPredictorP12tagCommonObji($video, $encFlag) {
             if (__label__ == 32) {
               
               
-              if (($block_y | 0) == 0) {
+              if ($block_y == 0) {
                 __label__ = 33;
               } else {
                 __label__ = 37;
@@ -10865,7 +10865,7 @@ function __Z24GetMotionVectorPredictorP12tagCommonObji($video, $encFlag) {
               $land_lhs_true181$$if_end196$50 : do {
                 if (__label__ == 33) {
                   
-                  var $cmp182 = ($new_block_x | 0) == 3;
+                  var $cmp182 = $new_block_x == 3;
                   if (!$cmp182) {
                     __label__ = 37;
                     break $land_lhs_true181$$if_end196$50;
@@ -10876,7 +10876,7 @@ function __Z24GetMotionVectorPredictorP12tagCommonObji($video, $encFlag) {
                   $avail_c = HEAP32[$video_addr + 1212 >> 2];
                   
                   
-                  if (($avail_c | 0) != 0) {
+                  if ($avail_c != 0) {
                     __label__ = 35;
                   } else {
                     __label__ = 36;
@@ -10886,8 +10886,8 @@ function __Z24GetMotionVectorPredictorP12tagCommonObji($video, $encFlag) {
                     
                     
                     
-                    var $conv188 = (tempInt = HEAP16[$MB_C + 132 + 4 >> 1], tempInt >= 32768 ? tempInt - 65536 : tempInt);
-                    $refIdxLXC = $conv188;
+                    
+                    $refIdxLXC = HEAP16[$MB_C + 132 + 4 >> 1];
                     
                     
                     
@@ -10898,19 +10898,19 @@ function __Z24GetMotionVectorPredictorP12tagCommonObji($video, $encFlag) {
                     var $incdec_ptr192 = $162 + 2;
                     $mv = $incdec_ptr192;
                     
-                    var $conv193 = (tempInt = HEAP16[$162 >> 1], tempInt >= 32768 ? tempInt - 65536 : tempInt);
-                    $pmv_C_x = $conv193;
+                    
+                    $pmv_C_x = HEAP16[$162 >> 1];
                     
                     
-                    var $conv194 = (tempInt = HEAP16[$mv >> 1], tempInt >= 32768 ? tempInt - 65536 : tempInt);
-                    $pmv_C_y = $conv194;
+                    
+                    $pmv_C_y = HEAP16[$mv >> 1];
                   }
                 }
               } while (0);
             }
             
             
-            if (($avail_c | 0) == 0) {
+            if ($avail_c == 0) {
               __label__ = 39;
             } else {
               __label__ = 56;
@@ -10918,7 +10918,7 @@ function __Z24GetMotionVectorPredictorP12tagCommonObji($video, $encFlag) {
             if (__label__ == 39) {
               
               
-              if (($block_x | 0) != 0) {
+              if ($block_x != 0) {
                 __label__ = 40;
               } else {
                 __label__ = 42;
@@ -10926,7 +10926,7 @@ function __Z24GetMotionVectorPredictorP12tagCommonObji($video, $encFlag) {
               $land_lhs_true201$$if_else218$60 : do {
                 if (__label__ == 40) {
                   
-                  var $tobool202 = ($block_y | 0) != 0;
+                  var $tobool202 = $block_y != 0;
                   if (!$tobool202) {
                     __label__ = 42;
                     break $land_lhs_true201$$if_else218$60;
@@ -10941,8 +10941,8 @@ function __Z24GetMotionVectorPredictorP12tagCommonObji($video, $encFlag) {
                   
                   
                   
-                  var $conv209 = (tempInt = HEAP16[$currMB + 132 + (($block_y_1 & 2) + ($block_x_1 >> 1)) * 2 >> 1], tempInt >= 32768 ? tempInt - 65536 : tempInt);
-                  $refIdxLXC = $conv209;
+                  
+                  $refIdxLXC = HEAP16[$currMB + 132 + (($block_y_1 & 2) + ($block_x_1 >> 1)) * 2 >> 1];
                   
                   
                   
@@ -10957,12 +10957,12 @@ function __Z24GetMotionVectorPredictorP12tagCommonObji($video, $encFlag) {
                   var $incdec_ptr215 = $177 + 2;
                   $mv = $incdec_ptr215;
                   
-                  var $conv216 = (tempInt = HEAP16[$177 >> 1], tempInt >= 32768 ? tempInt - 65536 : tempInt);
-                  $pmv_C_x = $conv216;
+                  
+                  $pmv_C_x = HEAP16[$177 >> 1];
                   
                   
-                  var $conv217 = (tempInt = HEAP16[$mv >> 1], tempInt >= 32768 ? tempInt - 65536 : tempInt);
-                  $pmv_C_y = $conv217;
+                  
+                  $pmv_C_y = HEAP16[$mv >> 1];
                   __label__ = 55;
                   break $land_lhs_true201$$if_else218$60;
                 }
@@ -10970,7 +10970,7 @@ function __Z24GetMotionVectorPredictorP12tagCommonObji($video, $encFlag) {
               if (__label__ == 42) {
                 
                 
-                if (($block_y | 0) != 0) {
+                if ($block_y != 0) {
                   __label__ = 43;
                 } else {
                   __label__ = 46;
@@ -10982,7 +10982,7 @@ function __Z24GetMotionVectorPredictorP12tagCommonObji($video, $encFlag) {
                   $avail_c = HEAP32[$video_addr + 1204 >> 2];
                   
                   
-                  if (($avail_c | 0) != 0) {
+                  if ($avail_c != 0) {
                     __label__ = 44;
                   } else {
                     __label__ = 45;
@@ -10995,8 +10995,8 @@ function __Z24GetMotionVectorPredictorP12tagCommonObji($video, $encFlag) {
                     
                     
                     
-                    var $conv228 = (tempInt = HEAP16[$MB_A + 132 + (($block_y_1 & 2) + 1) * 2 >> 1], tempInt >= 32768 ? tempInt - 65536 : tempInt);
-                    $refIdxLXC = $conv228;
+                    
+                    $refIdxLXC = HEAP16[$MB_A + 132 + (($block_y_1 & 2) + 1) * 2 >> 1];
                     
                     
                     
@@ -11010,17 +11010,17 @@ function __Z24GetMotionVectorPredictorP12tagCommonObji($video, $encFlag) {
                     var $incdec_ptr234 = $191 + 2;
                     $mv = $incdec_ptr234;
                     
-                    var $conv235 = (tempInt = HEAP16[$191 >> 1], tempInt >= 32768 ? tempInt - 65536 : tempInt);
-                    $pmv_C_x = $conv235;
+                    
+                    $pmv_C_x = HEAP16[$191 >> 1];
                     
                     
-                    var $conv236 = (tempInt = HEAP16[$mv >> 1], tempInt >= 32768 ? tempInt - 65536 : tempInt);
-                    $pmv_C_y = $conv236;
+                    
+                    $pmv_C_y = HEAP16[$mv >> 1];
                   }
                 } else if (__label__ == 46) {
                   
                   
-                  if (($block_x | 0) != 0) {
+                  if ($block_x != 0) {
                     __label__ = 47;
                   } else {
                     __label__ = 50;
@@ -11032,7 +11032,7 @@ function __Z24GetMotionVectorPredictorP12tagCommonObji($video, $encFlag) {
                     $avail_c = HEAP32[$video_addr + 1208 >> 2];
                     
                     
-                    if (($avail_c | 0) != 0) {
+                    if ($avail_c != 0) {
                       __label__ = 48;
                     } else {
                       __label__ = 49;
@@ -11045,8 +11045,8 @@ function __Z24GetMotionVectorPredictorP12tagCommonObji($video, $encFlag) {
                       
                       
                       
-                      var $conv248 = (tempInt = HEAP16[$MB_B + 132 + (2 + ($block_x_1 >> 1)) * 2 >> 1], tempInt >= 32768 ? tempInt - 65536 : tempInt);
-                      $refIdxLXC = $conv248;
+                      
+                      $refIdxLXC = HEAP16[$MB_B + 132 + (2 + ($block_x_1 >> 1)) * 2 >> 1];
                       
                       
                       
@@ -11059,12 +11059,12 @@ function __Z24GetMotionVectorPredictorP12tagCommonObji($video, $encFlag) {
                       var $incdec_ptr253 = $205 + 2;
                       $mv = $incdec_ptr253;
                       
-                      var $conv254 = (tempInt = HEAP16[$205 >> 1], tempInt >= 32768 ? tempInt - 65536 : tempInt);
-                      $pmv_C_x = $conv254;
+                      
+                      $pmv_C_x = HEAP16[$205 >> 1];
                       
                       
-                      var $conv255 = (tempInt = HEAP16[$mv >> 1], tempInt >= 32768 ? tempInt - 65536 : tempInt);
-                      $pmv_C_y = $conv255;
+                      
+                      $pmv_C_y = HEAP16[$mv >> 1];
                     }
                   } else if (__label__ == 50) {
                     
@@ -11073,7 +11073,7 @@ function __Z24GetMotionVectorPredictorP12tagCommonObji($video, $encFlag) {
                     $avail_c = HEAP32[$video_addr + 1216 >> 2];
                     
                     
-                    if (($avail_c | 0) != 0) {
+                    if ($avail_c != 0) {
                       __label__ = 51;
                     } else {
                       __label__ = 52;
@@ -11083,8 +11083,8 @@ function __Z24GetMotionVectorPredictorP12tagCommonObji($video, $encFlag) {
                       
                       
                       
-                      var $conv262 = (tempInt = HEAP16[$MB_D + 132 + 6 >> 1], tempInt >= 32768 ? tempInt - 65536 : tempInt);
-                      $refIdxLXC = $conv262;
+                      
+                      $refIdxLXC = HEAP16[$MB_D + 132 + 6 >> 1];
                       
                       
                       
@@ -11095,12 +11095,12 @@ function __Z24GetMotionVectorPredictorP12tagCommonObji($video, $encFlag) {
                       var $incdec_ptr266 = $216 + 2;
                       $mv = $incdec_ptr266;
                       
-                      var $conv267 = (tempInt = HEAP16[$216 >> 1], tempInt >= 32768 ? tempInt - 65536 : tempInt);
-                      $pmv_C_x = $conv267;
+                      
+                      $pmv_C_x = HEAP16[$216 >> 1];
                       
                       
-                      var $conv268 = (tempInt = HEAP16[$mv >> 1], tempInt >= 32768 ? tempInt - 65536 : tempInt);
-                      $pmv_C_y = $conv268;
+                      
+                      $pmv_C_y = HEAP16[$mv >> 1];
                     }
                   }
                 }
@@ -11123,11 +11123,11 @@ function __Z24GetMotionVectorPredictorP12tagCommonObji($video, $encFlag) {
           
           
           
-          var $conv283 = (tempInt = HEAP16[$currMB + 132 + (($block_y & 2) + ($block_x >> 1)) * 2 >> 1], tempInt >= 32768 ? tempInt - 65536 : tempInt);
-          $curr_ref_idx = $conv283;
+          
+          $curr_ref_idx = HEAP16[$currMB + 132 + (($block_y & 2) + ($block_x >> 1)) * 2 >> 1];
           
           
-          if (($avail_a | 0) != 0) {
+          if ($avail_a != 0) {
             __label__ = 58;
           } else {
             __label__ = 61;
@@ -11136,13 +11136,13 @@ function __Z24GetMotionVectorPredictorP12tagCommonObji($video, $encFlag) {
             if (__label__ == 58) {
               
               
-              if (($avail_b | 0) != 0) {
+              if ($avail_b != 0) {
                 __label__ = 61;
                 break $land_lhs_true285$$if_else292$85;
               }
               
               
-              if (($avail_c | 0) != 0) {
+              if ($avail_c != 0) {
                 __label__ = 61;
                 break $land_lhs_true285$$if_else292$85;
               }
@@ -11172,7 +11172,7 @@ function __Z24GetMotionVectorPredictorP12tagCommonObji($video, $encFlag) {
             
             
             
-            if (((($curr_ref_idx | 0) == ($refIdxLXA | 0) & 1) + (($curr_ref_idx | 0) == ($refIdxLXB | 0) & 1) + (($curr_ref_idx | 0) == ($refIdxLXC | 0) & 1) | 0) == 1) {
+            if (($curr_ref_idx == $refIdxLXA) + ($curr_ref_idx == $refIdxLXB) + ($curr_ref_idx == $refIdxLXC) == 1) {
               __label__ = 62;
             } else {
               __label__ = 69;
@@ -11181,7 +11181,7 @@ function __Z24GetMotionVectorPredictorP12tagCommonObji($video, $encFlag) {
               
               
               
-              if (($curr_ref_idx | 0) == ($refIdxLXA | 0)) {
+              if ($curr_ref_idx == $refIdxLXA) {
                 __label__ = 63;
               } else {
                 __label__ = 64;
@@ -11197,7 +11197,7 @@ function __Z24GetMotionVectorPredictorP12tagCommonObji($video, $encFlag) {
                 
                 
                 
-                if (($curr_ref_idx | 0) == ($refIdxLXB | 0)) {
+                if ($curr_ref_idx == $refIdxLXB) {
                   __label__ = 65;
                 } else {
                   __label__ = 66;
@@ -11222,7 +11222,7 @@ function __Z24GetMotionVectorPredictorP12tagCommonObji($video, $encFlag) {
               
               
               
-              if (($pmv_A_x | 0) > ($pmv_B_x | 0)) {
+              if ($pmv_A_x > $pmv_B_x) {
                 __label__ = 70;
               } else {
                 __label__ = 74;
@@ -11231,7 +11231,7 @@ function __Z24GetMotionVectorPredictorP12tagCommonObji($video, $encFlag) {
                 
                 
                 
-                if (($pmv_A_x | 0) < ($pmv_C_x | 0)) {
+                if ($pmv_A_x < $pmv_C_x) {
                   __label__ = 71;
                 } else {
                   __label__ = 72;
@@ -11245,7 +11245,7 @@ function __Z24GetMotionVectorPredictorP12tagCommonObji($video, $encFlag) {
                   
                   
                   
-                  var $cond = ($pmv_B_x | 0) > ($pmv_C_x | 0) ? $pmv_B_x : $pmv_C_x;
+                  var $cond = $pmv_B_x > $pmv_C_x ? $pmv_B_x : $pmv_C_x;
                   __lastLabel__ = 72;
                 }
                 var $cond322 = __lastLabel__ == 71 ? $252 : $cond;
@@ -11254,7 +11254,7 @@ function __Z24GetMotionVectorPredictorP12tagCommonObji($video, $encFlag) {
                 
                 
                 
-                if (($pmv_B_x | 0) < ($pmv_C_x | 0)) {
+                if ($pmv_B_x < $pmv_C_x) {
                   __label__ = 75;
                 } else {
                   __label__ = 76;
@@ -11268,7 +11268,7 @@ function __Z24GetMotionVectorPredictorP12tagCommonObji($video, $encFlag) {
                   
                   
                   
-                  var $cond328 = ($pmv_C_x | 0) > ($pmv_A_x | 0) ? $pmv_C_x : $pmv_A_x;
+                  var $cond328 = $pmv_C_x > $pmv_A_x ? $pmv_C_x : $pmv_A_x;
                   __lastLabel__ = 76;
                 }
                 var $cond330 = __lastLabel__ == 75 ? $259 : $cond328;
@@ -11280,7 +11280,7 @@ function __Z24GetMotionVectorPredictorP12tagCommonObji($video, $encFlag) {
               
               
               
-              if (($pmv_A_y | 0) > ($pmv_B_y | 0)) {
+              if ($pmv_A_y > $pmv_B_y) {
                 __label__ = 79;
               } else {
                 __label__ = 83;
@@ -11289,7 +11289,7 @@ function __Z24GetMotionVectorPredictorP12tagCommonObji($video, $encFlag) {
                 
                 
                 
-                if (($pmv_A_y | 0) < ($pmv_C_y | 0)) {
+                if ($pmv_A_y < $pmv_C_y) {
                   __label__ = 80;
                 } else {
                   __label__ = 81;
@@ -11303,7 +11303,7 @@ function __Z24GetMotionVectorPredictorP12tagCommonObji($video, $encFlag) {
                   
                   
                   
-                  var $cond340 = ($pmv_B_y | 0) > ($pmv_C_y | 0) ? $pmv_B_y : $pmv_C_y;
+                  var $cond340 = $pmv_B_y > $pmv_C_y ? $pmv_B_y : $pmv_C_y;
                   __lastLabel__ = 81;
                 }
                 var $cond342 = __lastLabel__ == 80 ? $268 : $cond340;
@@ -11312,7 +11312,7 @@ function __Z24GetMotionVectorPredictorP12tagCommonObji($video, $encFlag) {
                 
                 
                 
-                if (($pmv_B_y | 0) < ($pmv_C_y | 0)) {
+                if ($pmv_B_y < $pmv_C_y) {
                   __label__ = 84;
                 } else {
                   __label__ = 85;
@@ -11326,7 +11326,7 @@ function __Z24GetMotionVectorPredictorP12tagCommonObji($video, $encFlag) {
                   
                   
                   
-                  var $cond348 = ($pmv_C_y | 0) > ($pmv_A_y | 0) ? $pmv_C_y : $pmv_A_y;
+                  var $cond348 = $pmv_C_y > $pmv_A_y ? $pmv_C_y : $pmv_A_y;
                   __lastLabel__ = 85;
                 }
                 var $cond350 = __lastLabel__ == 84 ? $275 : $cond348;
@@ -11341,7 +11341,7 @@ function __Z24GetMotionVectorPredictorP12tagCommonObji($video, $encFlag) {
           
           
           
-          if ((HEAP32[$currMB + 256 >> 2] | 0) == 2) {
+          if (HEAP32[$currMB + 256 >> 2] == 2) {
             __label__ = 90;
           } else {
             __label__ = 108;
@@ -11351,7 +11351,7 @@ function __Z24GetMotionVectorPredictorP12tagCommonObji($video, $encFlag) {
             
             
             
-            if ((HEAP32[$currMB + 324 >> 2] | 0) == 16) {
+            if (HEAP32[$currMB + 324 >> 2] == 16) {
               __label__ = 91;
             } else {
               __label__ = 99;
@@ -11359,7 +11359,7 @@ function __Z24GetMotionVectorPredictorP12tagCommonObji($video, $encFlag) {
             if (__label__ == 91) {
               
               
-              if (($mbPartIdx | 0) == 0) {
+              if ($mbPartIdx == 0) {
                 __label__ = 92;
               } else {
                 __label__ = 95;
@@ -11368,7 +11368,7 @@ function __Z24GetMotionVectorPredictorP12tagCommonObji($video, $encFlag) {
                 
                 
                 
-                if (($refIdxLXB | 0) == ($curr_ref_idx | 0)) {
+                if ($refIdxLXB == $curr_ref_idx) {
                   __label__ = 93;
                 } else {
                   __label__ = 94;
@@ -11385,7 +11385,7 @@ function __Z24GetMotionVectorPredictorP12tagCommonObji($video, $encFlag) {
                 
                 
                 
-                if (($refIdxLXA | 0) == ($curr_ref_idx | 0)) {
+                if ($refIdxLXA == $curr_ref_idx) {
                   __label__ = 96;
                 } else {
                   __label__ = 97;
@@ -11402,7 +11402,7 @@ function __Z24GetMotionVectorPredictorP12tagCommonObji($video, $encFlag) {
             } else if (__label__ == 99) {
               
               
-              if (($mbPartIdx | 0) == 0) {
+              if ($mbPartIdx == 0) {
                 __label__ = 100;
               } else {
                 __label__ = 103;
@@ -11411,7 +11411,7 @@ function __Z24GetMotionVectorPredictorP12tagCommonObji($video, $encFlag) {
                 
                 
                 
-                if (($refIdxLXA | 0) == ($curr_ref_idx | 0)) {
+                if ($refIdxLXA == $curr_ref_idx) {
                   __label__ = 101;
                 } else {
                   __label__ = 102;
@@ -11428,7 +11428,7 @@ function __Z24GetMotionVectorPredictorP12tagCommonObji($video, $encFlag) {
                 
                 
                 
-                if (($refIdxLXC | 0) == ($curr_ref_idx | 0)) {
+                if ($refIdxLXC == $curr_ref_idx) {
                   __label__ = 104;
                 } else {
                   __label__ = 105;
@@ -11456,7 +11456,7 @@ function __Z24GetMotionVectorPredictorP12tagCommonObji($video, $encFlag) {
           $mv = $currMB + 4 + 4 * $block_x + 4 * ($block_y << 2);
           
           
-          if (($encFlag_addr | 0) != 0) {
+          if ($encFlag_addr != 0) {
             __label__ = 109;
           } else {
             __label__ = 110;
@@ -11466,9 +11466,6 @@ function __Z24GetMotionVectorPredictorP12tagCommonObji($video, $encFlag) {
             var $incdec_ptr399 = $307 + 2;
             $mv = $incdec_ptr399;
             
-            var $conv400 = (tempInt = HEAP16[$307 >> 1], tempInt >= 32768 ? tempInt - 65536 : tempInt);
-            
-            var $conv401 = (tempInt = $pmv_x, tempInt >= 32768 ? tempInt - 65536 : tempInt);
             
             
             
@@ -11477,14 +11474,14 @@ function __Z24GetMotionVectorPredictorP12tagCommonObji($video, $encFlag) {
             
             
             
-            HEAP32[$video_addr + 932 + $mbPartIdx * 32 + $subMbPartIdx * 8 >> 2] = $conv400 - $conv401;
+            
+            
+            
+            HEAP32[$video_addr + 932 + $mbPartIdx * 32 + $subMbPartIdx * 8 >> 2] = HEAP16[$307 >> 1] - $pmv_x;
             var $313 = $mv;
             var $incdec_ptr407 = $313 + 2;
             $mv = $incdec_ptr407;
             
-            var $conv408 = (tempInt = HEAP16[$313 >> 1], tempInt >= 32768 ? tempInt - 65536 : tempInt);
-            
-            var $conv409 = (tempInt = $pmv_y, tempInt >= 32768 ? tempInt - 65536 : tempInt);
             
             
             
@@ -11493,7 +11490,10 @@ function __Z24GetMotionVectorPredictorP12tagCommonObji($video, $encFlag) {
             
             
             
-            HEAP32[$video_addr + 932 + $mbPartIdx * 32 + $subMbPartIdx * 8 + 4 >> 2] = $conv408 - $conv409;
+            
+            
+            
+            HEAP32[$video_addr + 932 + $mbPartIdx * 32 + $subMbPartIdx * 8 + 4 >> 2] = HEAP16[$313 >> 1] - $pmv_y;
           } else if (__label__ == 110) {
             
             
@@ -11525,7 +11525,7 @@ function __Z24GetMotionVectorPredictorP12tagCommonObji($video, $encFlag) {
             $for_cond430$158 : while (1) {
               
               
-              var $cmp431 = ($i | 0) < ($nmSubMbHeight | 0);
+              var $cmp431 = $i < $nmSubMbHeight;
               if (!$cmp431) {
                 __label__ = 118;
                 break $for_cond430$158;
@@ -11534,7 +11534,7 @@ function __Z24GetMotionVectorPredictorP12tagCommonObji($video, $encFlag) {
               while (1) {
                 
                 
-                var $cmp434 = ($j | 0) < ($nmSubMbWidth | 0);
+                var $cmp434 = $j < $nmSubMbWidth;
                 if (!$cmp434) {
                   __label__ = 116;
                   break;
@@ -11619,7 +11619,7 @@ function __Z14Intra16DCTransPsii($block, $Qq, $Rq) {
   $j = 0;
   $for_cond$2 : while (1) {
     
-    var $cmp = ($j | 0) < 4;
+    var $cmp = $j < 4;
     if (!$cmp) {
       __label__ = 4;
       break $for_cond$2;
@@ -11627,43 +11627,43 @@ function __Z14Intra16DCTransPsii($block, $Qq, $Rq) {
     
     
     
-    var $conv = (tempInt = HEAP16[$inout >> 1], tempInt >= 32768 ? tempInt - 65536 : tempInt);
     
     
     
-    var $conv4 = (tempInt = HEAP16[$inout + 8 >> 1], tempInt >= 32768 ? tempInt - 65536 : tempInt);
-    
-    $m0 = $conv + $conv4;
     
     
     
-    var $conv6 = (tempInt = HEAP16[$inout >> 1], tempInt >= 32768 ? tempInt - 65536 : tempInt);
+    $m0 = HEAP16[$inout >> 1] + HEAP16[$inout + 8 >> 1];
     
     
     
-    var $conv8 = (tempInt = HEAP16[$inout + 8 >> 1], tempInt >= 32768 ? tempInt - 65536 : tempInt);
-    
-    $m1 = $conv6 - $conv8;
     
     
     
-    var $conv10 = (tempInt = HEAP16[$inout + 16 >> 1], tempInt >= 32768 ? tempInt - 65536 : tempInt);
     
     
     
-    var $conv12 = (tempInt = HEAP16[$inout + 24 >> 1], tempInt >= 32768 ? tempInt - 65536 : tempInt);
-    
-    $m2 = $conv10 + $conv12;
+    $m1 = HEAP16[$inout >> 1] - HEAP16[$inout + 8 >> 1];
     
     
     
-    var $conv15 = (tempInt = HEAP16[$inout + 16 >> 1], tempInt >= 32768 ? tempInt - 65536 : tempInt);
     
     
     
-    var $conv17 = (tempInt = HEAP16[$inout + 24 >> 1], tempInt >= 32768 ? tempInt - 65536 : tempInt);
     
-    $m3 = $conv15 - $conv17;
+    
+    
+    $m2 = HEAP16[$inout + 16 >> 1] + HEAP16[$inout + 24 >> 1];
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    $m3 = HEAP16[$inout + 16 >> 1] - HEAP16[$inout + 24 >> 1];
     
     
     
@@ -11705,7 +11705,7 @@ function __Z14Intra16DCTransPsii($block, $Qq, $Rq) {
   $inout = $block_addr;
   
   
-  if (($Qq_addr | 0) >= 2) {
+  if ($Qq_addr >= 2) {
     __label__ = 5;
   } else {
     __label__ = 10;
@@ -11717,7 +11717,7 @@ function __Z14Intra16DCTransPsii($block, $Qq, $Rq) {
     $j = 0;
     while (1) {
       
-      var $cmp34 = ($j | 0) < 4;
+      var $cmp34 = $j < 4;
       if (!$cmp34) {
         __label__ = 9;
         break;
@@ -11725,43 +11725,43 @@ function __Z14Intra16DCTransPsii($block, $Qq, $Rq) {
       
       
       
-      var $conv37 = (tempInt = HEAP16[$inout >> 1], tempInt >= 32768 ? tempInt - 65536 : tempInt);
       
       
       
-      var $conv39 = (tempInt = HEAP16[$inout + 128 >> 1], tempInt >= 32768 ? tempInt - 65536 : tempInt);
-      
-      $m0 = $conv37 + $conv39;
       
       
       
-      var $conv42 = (tempInt = HEAP16[$inout >> 1], tempInt >= 32768 ? tempInt - 65536 : tempInt);
+      $m0 = HEAP16[$inout >> 1] + HEAP16[$inout + 128 >> 1];
       
       
       
-      var $conv44 = (tempInt = HEAP16[$inout + 128 >> 1], tempInt >= 32768 ? tempInt - 65536 : tempInt);
-      
-      $m1 = $conv42 - $conv44;
       
       
       
-      var $conv47 = (tempInt = HEAP16[$inout + 256 >> 1], tempInt >= 32768 ? tempInt - 65536 : tempInt);
       
       
       
-      var $conv49 = (tempInt = HEAP16[$inout + 384 >> 1], tempInt >= 32768 ? tempInt - 65536 : tempInt);
-      
-      $m2 = $conv47 + $conv49;
+      $m1 = HEAP16[$inout >> 1] - HEAP16[$inout + 128 >> 1];
       
       
       
-      var $conv52 = (tempInt = HEAP16[$inout + 256 >> 1], tempInt >= 32768 ? tempInt - 65536 : tempInt);
       
       
       
-      var $conv54 = (tempInt = HEAP16[$inout + 384 >> 1], tempInt >= 32768 ? tempInt - 65536 : tempInt);
       
-      $m3 = $conv52 - $conv54;
+      
+      
+      $m2 = HEAP16[$inout + 256 >> 1] + HEAP16[$inout + 384 >> 1];
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      $m3 = HEAP16[$inout + 256 >> 1] - HEAP16[$inout + 384 >> 1];
       
       
       
@@ -11826,7 +11826,7 @@ function __Z14Intra16DCTransPsii($block, $Qq, $Rq) {
     $j = 0;
     while (1) {
       
-      var $cmp82 = ($j | 0) < 4;
+      var $cmp82 = $j < 4;
       if (!$cmp82) {
         __label__ = 14;
         break;
@@ -11834,43 +11834,34 @@ function __Z14Intra16DCTransPsii($block, $Qq, $Rq) {
       
       
       
-      var $conv85 = (tempInt = HEAP16[$inout >> 1], tempInt >= 32768 ? tempInt - 65536 : tempInt);
       
       
       
-      var $conv87 = (tempInt = HEAP16[$inout + 128 >> 1], tempInt >= 32768 ? tempInt - 65536 : tempInt);
       
-      $m0 = $conv85 + $conv87;
       
       
+      $m0 = HEAP16[$inout >> 1] + HEAP16[$inout + 128 >> 1];
       
-      var $conv90 = (tempInt = HEAP16[$inout >> 1], tempInt >= 32768 ? tempInt - 65536 : tempInt);
       
       
       
-      var $conv92 = (tempInt = HEAP16[$inout + 128 >> 1], tempInt >= 32768 ? tempInt - 65536 : tempInt);
       
-      $m1 = $conv90 - $conv92;
       
       
       
-      var $conv95 = (tempInt = HEAP16[$inout + 256 >> 1], tempInt >= 32768 ? tempInt - 65536 : tempInt);
       
+      $m1 = HEAP16[$inout >> 1] - HEAP16[$inout + 128 >> 1];
       
       
-      var $conv97 = (tempInt = HEAP16[$inout + 384 >> 1], tempInt >= 32768 ? tempInt - 65536 : tempInt);
       
-      $m2 = $conv95 + $conv97;
       
       
       
-      var $conv100 = (tempInt = HEAP16[$inout + 256 >> 1], tempInt >= 32768 ? tempInt - 65536 : tempInt);
       
       
       
-      var $conv102 = (tempInt = HEAP16[$inout + 384 >> 1], tempInt >= 32768 ? tempInt - 65536 : tempInt);
+      $m2 = HEAP16[$inout + 256 >> 1] + HEAP16[$inout + 384 >> 1];
       
-      $m3 = $conv100 - $conv102;
       
       
       
@@ -11879,11 +11870,11 @@ function __Z14Intra16DCTransPsii($block, $Qq, $Rq) {
       
       
       
+      $m3 = HEAP16[$inout + 256 >> 1] - HEAP16[$inout + 384 >> 1];
       
       
       
       
-      HEAP16[$inout >> 1] = ($m0 + $m2) * $scale + $offset >> ($Qq_addr | 0) & 65535;
       
       
       
@@ -11892,11 +11883,11 @@ function __Z14Intra16DCTransPsii($block, $Qq, $Rq) {
       
       
       
+      HEAP16[$inout >> 1] = ($m0 + $m2) * $scale + $offset >> $Qq_addr & 65535;
       
       
       
       
-      HEAP16[$inout + 128 >> 1] = ($m0 - $m2) * $scale + $offset >> ($Qq_addr | 0) & 65535;
       
       
       
@@ -11905,11 +11896,11 @@ function __Z14Intra16DCTransPsii($block, $Qq, $Rq) {
       
       
       
+      HEAP16[$inout + 128 >> 1] = ($m0 - $m2) * $scale + $offset >> $Qq_addr & 65535;
       
       
       
       
-      HEAP16[$inout + 256 >> 1] = ($m1 - $m3) * $scale + $offset >> ($Qq_addr | 0) & 65535;
       
       
       
@@ -11918,11 +11909,20 @@ function __Z14Intra16DCTransPsii($block, $Qq, $Rq) {
       
       
       
+      HEAP16[$inout + 256 >> 1] = ($m1 - $m3) * $scale + $offset >> $Qq_addr & 65535;
       
       
       
       
-      HEAP16[$inout + 384 >> 1] = ($m1 + $m3) * $scale + $offset >> ($Qq_addr | 0) & 65535;
+      
+      
+      
+      
+      
+      
+      
+      
+      HEAP16[$inout + 384 >> 1] = ($m1 + $m3) * $scale + $offset >> $Qq_addr & 65535;
       
       var $add_ptr127 = $inout + 8;
       $inout = $add_ptr127;
@@ -11960,7 +11960,7 @@ function __Z6itransPsPhS0_i($block, $pred, $cur, $width) {
   $i = 4;
   $for_cond$2 : while (1) {
     
-    var $cmp = ($i | 0) > 0;
+    var $cmp = $i > 0;
     if (!$cmp) {
       __label__ = 4;
       break $for_cond$2;
@@ -11968,45 +11968,45 @@ function __Z6itransPsPhS0_i($block, $pred, $cur, $width) {
     
     
     
-    var $conv = (tempInt = HEAP16[$inout >> 1], tempInt >= 32768 ? tempInt - 65536 : tempInt);
     
     
     
-    var $conv2 = (tempInt = HEAP16[$inout + 4 >> 1], tempInt >= 32768 ? tempInt - 65536 : tempInt);
-    
-    $e0 = $conv + $conv2;
     
     
     
-    var $conv4 = (tempInt = HEAP16[$inout >> 1], tempInt >= 32768 ? tempInt - 65536 : tempInt);
+    $e0 = HEAP16[$inout >> 1] + HEAP16[$inout + 4 >> 1];
     
     
     
-    var $conv6 = (tempInt = HEAP16[$inout + 4 >> 1], tempInt >= 32768 ? tempInt - 65536 : tempInt);
-    
-    $e1 = $conv4 - $conv6;
     
     
     
-    var $conv8 = (tempInt = HEAP16[$inout + 2 >> 1], tempInt >= 32768 ? tempInt - 65536 : tempInt);
-    var $shr = $conv8 >> 1;
     
     
     
-    var $conv10 = (tempInt = HEAP16[$inout + 6 >> 1], tempInt >= 32768 ? tempInt - 65536 : tempInt);
-    
-    $e2 = $shr - $conv10;
+    $e1 = HEAP16[$inout >> 1] - HEAP16[$inout + 4 >> 1];
     
     
     
-    var $conv13 = (tempInt = HEAP16[$inout + 2 >> 1], tempInt >= 32768 ? tempInt - 65536 : tempInt);
     
     
     
-    var $conv15 = (tempInt = HEAP16[$inout + 6 >> 1], tempInt >= 32768 ? tempInt - 65536 : tempInt);
     
     
-    $e3 = $conv13 + ($conv15 >> 1);
+    
+    
+    $e2 = (HEAP16[$inout + 2 >> 1] >> 1) - HEAP16[$inout + 6 >> 1];
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    $e3 = HEAP16[$inout + 2 >> 1] + (HEAP16[$inout + 6 >> 1] >> 1);
     
     
     
@@ -12047,7 +12047,7 @@ function __Z6itransPsPhS0_i($block, $pred, $cur, $width) {
   $i = 4;
   while (1) {
     
-    var $cmp31 = ($i | 0) > 0;
+    var $cmp31 = $i > 0;
     if (!$cmp31) {
       __label__ = 16;
       break;
@@ -12055,45 +12055,45 @@ function __Z6itransPsPhS0_i($block, $pred, $cur, $width) {
     
     
     
-    var $conv34 = (tempInt = HEAP16[$block_addr >> 1], tempInt >= 32768 ? tempInt - 65536 : tempInt);
     
     
     
-    var $conv36 = (tempInt = HEAP16[$block_addr + 64 >> 1], tempInt >= 32768 ? tempInt - 65536 : tempInt);
-    
-    $e0 = $conv34 + $conv36;
     
     
     
-    var $conv39 = (tempInt = HEAP16[$block_addr >> 1], tempInt >= 32768 ? tempInt - 65536 : tempInt);
+    $e0 = HEAP16[$block_addr >> 1] + HEAP16[$block_addr + 64 >> 1];
     
     
     
-    var $conv41 = (tempInt = HEAP16[$block_addr + 64 >> 1], tempInt >= 32768 ? tempInt - 65536 : tempInt);
-    
-    $e1 = $conv39 - $conv41;
     
     
     
-    var $conv44 = (tempInt = HEAP16[$block_addr + 32 >> 1], tempInt >= 32768 ? tempInt - 65536 : tempInt);
-    var $shr45 = $conv44 >> 1;
     
     
     
-    var $conv47 = (tempInt = HEAP16[$block_addr + 96 >> 1], tempInt >= 32768 ? tempInt - 65536 : tempInt);
-    
-    $e2 = $shr45 - $conv47;
+    $e1 = HEAP16[$block_addr >> 1] - HEAP16[$block_addr + 64 >> 1];
     
     
     
-    var $conv50 = (tempInt = HEAP16[$block_addr + 32 >> 1], tempInt >= 32768 ? tempInt - 65536 : tempInt);
     
     
     
-    var $conv52 = (tempInt = HEAP16[$block_addr + 96 >> 1], tempInt >= 32768 ? tempInt - 65536 : tempInt);
     
     
-    $e3 = $conv50 + ($conv52 >> 1);
+    
+    
+    $e2 = (HEAP16[$block_addr + 32 >> 1] >> 1) - HEAP16[$block_addr + 96 >> 1];
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    $e3 = HEAP16[$block_addr + 32 >> 1] + (HEAP16[$block_addr + 96 >> 1] >> 1);
     
     
     var $add55 = $e0 + $e3;
@@ -12129,7 +12129,7 @@ function __Z6itransPsPhS0_i($block, $pred, $cur, $width) {
     
     
     
-    var $add66 = (HEAPU8[$cur_addr >> 0] & 255) + ($e0 >> 6);
+    var $add66 = HEAPU8[$cur_addr >> 0] + ($e0 >> 6);
     $e0 = $add66;
     
     
@@ -12157,7 +12157,7 @@ function __Z6itransPsPhS0_i($block, $pred, $cur, $width) {
     
     
     
-    var $add73 = (HEAPU8[$add_ptr70 >> 0] & 255) + ($e1 >> 6);
+    var $add73 = HEAPU8[$add_ptr70 >> 0] + ($e1 >> 6);
     $e1 = $add73;
     
     
@@ -12185,7 +12185,7 @@ function __Z6itransPsPhS0_i($block, $pred, $cur, $width) {
     
     
     
-    var $add84 = (HEAPU8[$add_ptr81 >> 0] & 255) + ($e2 >> 6);
+    var $add84 = HEAPU8[$add_ptr81 >> 0] + ($e2 >> 6);
     $e2 = $add84;
     
     
@@ -12212,7 +12212,7 @@ function __Z6itransPsPhS0_i($block, $pred, $cur, $width) {
     
     
     
-    var $add95 = (HEAPU8[$cur_addr + $width_addr >> 0] & 255) + ($e3 >> 6);
+    var $add95 = HEAPU8[$cur_addr + $width_addr >> 0] + ($e3 >> 6);
     $e3 = $add95;
     
     
@@ -12279,7 +12279,7 @@ function __Z7ictransPsPhS0_i($block, $pred, $cur, $width) {
   $i = 4;
   $for_cond$2 : while (1) {
     
-    var $cmp = ($i | 0) > 0;
+    var $cmp = $i > 0;
     if (!$cmp) {
       __label__ = 4;
       break $for_cond$2;
@@ -12287,45 +12287,45 @@ function __Z7ictransPsPhS0_i($block, $pred, $cur, $width) {
     
     
     
-    var $conv = (tempInt = HEAP16[$inout >> 1], tempInt >= 32768 ? tempInt - 65536 : tempInt);
     
     
     
-    var $conv2 = (tempInt = HEAP16[$inout + 4 >> 1], tempInt >= 32768 ? tempInt - 65536 : tempInt);
-    
-    $e0 = $conv + $conv2;
     
     
     
-    var $conv4 = (tempInt = HEAP16[$inout >> 1], tempInt >= 32768 ? tempInt - 65536 : tempInt);
+    $e0 = HEAP16[$inout >> 1] + HEAP16[$inout + 4 >> 1];
     
     
     
-    var $conv6 = (tempInt = HEAP16[$inout + 4 >> 1], tempInt >= 32768 ? tempInt - 65536 : tempInt);
-    
-    $e1 = $conv4 - $conv6;
     
     
     
-    var $conv8 = (tempInt = HEAP16[$inout + 2 >> 1], tempInt >= 32768 ? tempInt - 65536 : tempInt);
-    var $shr = $conv8 >> 1;
     
     
     
-    var $conv10 = (tempInt = HEAP16[$inout + 6 >> 1], tempInt >= 32768 ? tempInt - 65536 : tempInt);
-    
-    $e2 = $shr - $conv10;
+    $e1 = HEAP16[$inout >> 1] - HEAP16[$inout + 4 >> 1];
     
     
     
-    var $conv13 = (tempInt = HEAP16[$inout + 2 >> 1], tempInt >= 32768 ? tempInt - 65536 : tempInt);
     
     
     
-    var $conv15 = (tempInt = HEAP16[$inout + 6 >> 1], tempInt >= 32768 ? tempInt - 65536 : tempInt);
     
     
-    $e3 = $conv13 + ($conv15 >> 1);
+    
+    
+    $e2 = (HEAP16[$inout + 2 >> 1] >> 1) - HEAP16[$inout + 6 >> 1];
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    $e3 = HEAP16[$inout + 2 >> 1] + (HEAP16[$inout + 6 >> 1] >> 1);
     
     
     
@@ -12366,7 +12366,7 @@ function __Z7ictransPsPhS0_i($block, $pred, $cur, $width) {
   $i = 4;
   while (1) {
     
-    var $cmp31 = ($i | 0) > 0;
+    var $cmp31 = $i > 0;
     if (!$cmp31) {
       __label__ = 16;
       break;
@@ -12374,45 +12374,45 @@ function __Z7ictransPsPhS0_i($block, $pred, $cur, $width) {
     
     
     
-    var $conv34 = (tempInt = HEAP16[$block_addr >> 1], tempInt >= 32768 ? tempInt - 65536 : tempInt);
     
     
     
-    var $conv36 = (tempInt = HEAP16[$block_addr + 64 >> 1], tempInt >= 32768 ? tempInt - 65536 : tempInt);
-    
-    $e0 = $conv34 + $conv36;
     
     
     
-    var $conv39 = (tempInt = HEAP16[$block_addr >> 1], tempInt >= 32768 ? tempInt - 65536 : tempInt);
+    $e0 = HEAP16[$block_addr >> 1] + HEAP16[$block_addr + 64 >> 1];
     
     
     
-    var $conv41 = (tempInt = HEAP16[$block_addr + 64 >> 1], tempInt >= 32768 ? tempInt - 65536 : tempInt);
-    
-    $e1 = $conv39 - $conv41;
     
     
     
-    var $conv44 = (tempInt = HEAP16[$block_addr + 32 >> 1], tempInt >= 32768 ? tempInt - 65536 : tempInt);
-    var $shr45 = $conv44 >> 1;
     
     
     
-    var $conv47 = (tempInt = HEAP16[$block_addr + 96 >> 1], tempInt >= 32768 ? tempInt - 65536 : tempInt);
-    
-    $e2 = $shr45 - $conv47;
+    $e1 = HEAP16[$block_addr >> 1] - HEAP16[$block_addr + 64 >> 1];
     
     
     
-    var $conv50 = (tempInt = HEAP16[$block_addr + 32 >> 1], tempInt >= 32768 ? tempInt - 65536 : tempInt);
     
     
     
-    var $conv52 = (tempInt = HEAP16[$block_addr + 96 >> 1], tempInt >= 32768 ? tempInt - 65536 : tempInt);
     
     
-    $e3 = $conv50 + ($conv52 >> 1);
+    
+    
+    $e2 = (HEAP16[$block_addr + 32 >> 1] >> 1) - HEAP16[$block_addr + 96 >> 1];
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    $e3 = HEAP16[$block_addr + 32 >> 1] + (HEAP16[$block_addr + 96 >> 1] >> 1);
     
     
     var $add55 = $e0 + $e3;
@@ -12448,11 +12448,11 @@ function __Z7ictransPsPhS0_i($block, $pred, $cur, $width) {
     
     
     
-    var $add66 = (HEAPU8[$cur_addr >> 0] & 255) + ($e0 >> 6);
+    var $add66 = HEAPU8[$cur_addr >> 0] + ($e0 >> 6);
     $e0 = $add66;
     
     
-    if ($e0 >>> 0 > 255) {
+    if ($e0 > 255) {
       __label__ = 7;
     } else {
       __label__ = 8;
@@ -12476,11 +12476,11 @@ function __Z7ictransPsPhS0_i($block, $pred, $cur, $width) {
     
     
     
-    var $add73 = (HEAPU8[$add_ptr70 >> 0] & 255) + ($e1 >> 6);
+    var $add73 = HEAPU8[$add_ptr70 >> 0] + ($e1 >> 6);
     $e1 = $add73;
     
     
-    if ($e1 >>> 0 > 255) {
+    if ($e1 > 255) {
       __label__ = 9;
     } else {
       __label__ = 10;
@@ -12504,11 +12504,11 @@ function __Z7ictransPsPhS0_i($block, $pred, $cur, $width) {
     
     
     
-    var $add84 = (HEAPU8[$add_ptr81 >> 0] & 255) + ($e2 >> 6);
+    var $add84 = HEAPU8[$add_ptr81 >> 0] + ($e2 >> 6);
     $e2 = $add84;
     
     
-    if ($e2 >>> 0 > 255) {
+    if ($e2 > 255) {
       __label__ = 11;
     } else {
       __label__ = 12;
@@ -12531,11 +12531,11 @@ function __Z7ictransPsPhS0_i($block, $pred, $cur, $width) {
     
     
     
-    var $add95 = (HEAPU8[$cur_addr + $width_addr >> 0] & 255) + ($e3 >> 6);
+    var $add95 = HEAPU8[$cur_addr + $width_addr >> 0] + ($e3 >> 6);
     $e3 = $add95;
     
     
-    if ($e3 >>> 0 > 255) {
+    if ($e3 > 255) {
       __label__ = 13;
     } else {
       __label__ = 14;
@@ -12602,43 +12602,43 @@ function __Z13ChromaDCTransPsii($block, $Qq, $Rq) {
   
   
   
-  var $conv = (tempInt = HEAP16[$block_addr >> 1], tempInt >= 32768 ? tempInt - 65536 : tempInt);
   
   
   
-  var $conv4 = (tempInt = HEAP16[$block_addr + 8 >> 1], tempInt >= 32768 ? tempInt - 65536 : tempInt);
-  
-  $c00 = $conv + $conv4;
   
   
   
-  var $conv6 = (tempInt = HEAP16[$block_addr >> 1], tempInt >= 32768 ? tempInt - 65536 : tempInt);
+  $c00 = HEAP16[$block_addr >> 1] + HEAP16[$block_addr + 8 >> 1];
   
   
   
-  var $conv8 = (tempInt = HEAP16[$block_addr + 8 >> 1], tempInt >= 32768 ? tempInt - 65536 : tempInt);
-  
-  $c01 = $conv6 - $conv8;
   
   
   
-  var $conv10 = (tempInt = HEAP16[$block_addr + 128 >> 1], tempInt >= 32768 ? tempInt - 65536 : tempInt);
   
   
   
-  var $conv12 = (tempInt = HEAP16[$block_addr + 136 >> 1], tempInt >= 32768 ? tempInt - 65536 : tempInt);
-  
-  $c10 = $conv10 + $conv12;
+  $c01 = HEAP16[$block_addr >> 1] - HEAP16[$block_addr + 8 >> 1];
   
   
   
-  var $conv15 = (tempInt = HEAP16[$block_addr + 128 >> 1], tempInt >= 32768 ? tempInt - 65536 : tempInt);
   
   
   
-  var $conv17 = (tempInt = HEAP16[$block_addr + 136 >> 1], tempInt >= 32768 ? tempInt - 65536 : tempInt);
   
-  $c11 = $conv15 - $conv17;
+  
+  
+  $c10 = HEAP16[$block_addr + 128 >> 1] + HEAP16[$block_addr + 136 >> 1];
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  $c11 = HEAP16[$block_addr + 128 >> 1] - HEAP16[$block_addr + 136 >> 1];
   
   
   
@@ -12657,7 +12657,7 @@ function __Z13ChromaDCTransPsii($block, $Qq, $Rq) {
   $f3 = $c01 - $c11;
   
   
-  if (($Qq_addr | 0) >= 1) {
+  if ($Qq_addr >= 1) {
     __label__ = 1;
   } else {
     __label__ = 2;
@@ -12888,7 +12888,7 @@ function __Z17IntraMBPredictionP12tagCommonObj($video) {
   
   
   
-  if ((HEAP32[$currMB + 164 >> 2] | 0) == 0) {
+  if (HEAP32[$currMB + 164 >> 2] == 0) {
     __label__ = 1;
   } else {
     __label__ = 20;
@@ -12900,7 +12900,7 @@ function __Z17IntraMBPredictionP12tagCommonObj($video) {
       $component = 0;
       $for_cond$4 : while (1) {
         
-        var $cmp6 = ($component | 0) < 4;
+        var $cmp6 = $component < 4;
         if (!$cmp6) {
           __label__ = 19;
           break $for_cond$4;
@@ -12918,7 +12918,7 @@ function __Z17IntraMBPredictionP12tagCommonObj($video) {
         $SubBlock_indx = 0;
         while (1) {
           
-          var $cmp10 = ($SubBlock_indx | 0) < 4;
+          var $cmp10 = $SubBlock_indx < 4;
           if (!$cmp10) {
             __label__ = 14;
             break;
@@ -12931,7 +12931,7 @@ function __Z17IntraMBPredictionP12tagCommonObj($video) {
           $status = $call;
           
           
-          if (($status | 0) != 1) {
+          if ($status != 1) {
             __label__ = 6;
             break $for_cond$4;
           }
@@ -12943,7 +12943,7 @@ function __Z17IntraMBPredictionP12tagCommonObj($video) {
           
           
           
-          if (($cbp4x4 & 1 << ($block_y << 2) + $block_x | 0) != 0) {
+          if (($cbp4x4 & 1 << ($block_y << 2) + $block_x) != 0) {
             __label__ = 8;
           } else {
             __label__ = 9;
@@ -12960,7 +12960,7 @@ function __Z17IntraMBPredictionP12tagCommonObj($video) {
           $temp = $SubBlock_indx & 1;
           
           
-          if (($temp | 0) != 0) {
+          if ($temp != 0) {
             __label__ = 10;
           } else {
             __label__ = 11;
@@ -13001,7 +13001,7 @@ function __Z17IntraMBPredictionP12tagCommonObj($video) {
         
         
         
-        if (($component & 1 | 0) != 0) {
+        if (($component & 1) != 0) {
           __label__ = 15;
         } else {
           __label__ = 16;
@@ -13059,7 +13059,7 @@ function __Z17IntraMBPredictionP12tagCommonObj($video) {
       
       
       
-      if ((HEAP32[$video_addr + 924 >> 2] | 0) != 0) {
+      if (HEAP32[$video_addr + 924 >> 2] != 0) {
         __label__ = 21;
       } else {
         __label__ = 22;
@@ -13097,7 +13097,7 @@ function __Z17IntraMBPredictionP12tagCommonObj($video) {
           
           
           
-          if ((HEAP32[$video_addr + 1224 >> 2] | 0) != 0) {
+          if (HEAP32[$video_addr + 1224 >> 2] != 0) {
             __label__ = 24;
           } else {
             __label__ = 25;
@@ -13115,7 +13115,7 @@ function __Z17IntraMBPredictionP12tagCommonObj($video) {
           
           
           
-          if ((HEAP32[$video_addr + 1220 >> 2] | 0) != 0) {
+          if (HEAP32[$video_addr + 1220 >> 2] != 0) {
             __label__ = 28;
           } else {
             __label__ = 29;
@@ -13138,7 +13138,7 @@ function __Z17IntraMBPredictionP12tagCommonObj($video) {
           
           
           
-          if ((HEAP32[$video_addr + 1220 >> 2] | 0) != 0) {
+          if (HEAP32[$video_addr + 1220 >> 2] != 0) {
             __label__ = 33;
           } else {
             __label__ = 36;
@@ -13148,7 +13148,7 @@ function __Z17IntraMBPredictionP12tagCommonObj($video) {
               
               
               
-              var $tobool70 = (HEAP32[$video_addr + 1224 >> 2] | 0) != 0;
+              var $tobool70 = HEAP32[$video_addr + 1224 >> 2] != 0;
               if (!$tobool70) {
                 __label__ = 36;
                 break $land_lhs_true$$if_else74$46;
@@ -13156,7 +13156,7 @@ function __Z17IntraMBPredictionP12tagCommonObj($video) {
               
               
               
-              var $tobool72 = (HEAP32[$video_addr + 1232 >> 2] | 0) != 0;
+              var $tobool72 = HEAP32[$video_addr + 1232 >> 2] != 0;
               if (!$tobool72) {
                 __label__ = 36;
                 break $land_lhs_true$$if_else74$46;
@@ -13180,7 +13180,7 @@ function __Z17IntraMBPredictionP12tagCommonObj($video) {
       $block_y = 4;
       $for_cond77$53 : while (1) {
         
-        var $cmp78 = ($block_y | 0) > 0;
+        var $cmp78 = $block_y > 0;
         if (!$cmp78) {
           __label__ = 49;
           break $for_cond77$53;
@@ -13188,7 +13188,7 @@ function __Z17IntraMBPredictionP12tagCommonObj($video) {
         $block_x = 4;
         while (1) {
           
-          var $cmp81 = ($block_x | 0) > 0;
+          var $cmp81 = $block_x > 0;
           if (!$cmp81) {
             __label__ = 47;
             break;
@@ -13196,7 +13196,7 @@ function __Z17IntraMBPredictionP12tagCommonObj($video) {
           
           
           
-          if (($cbp4x4 & 1 | 0) != 0) {
+          if (($cbp4x4 & 1) != 0) {
             __label__ = 44;
           } else {
             __label__ = 45;
@@ -13295,7 +13295,7 @@ function __Z17IntraMBPredictionP12tagCommonObj($video) {
       
       
       
-      if ((HEAP32[$video_addr + 924 >> 2] | 0) != 0) {
+      if (HEAP32[$video_addr + 924 >> 2] != 0) {
         __label__ = 51;
       } else {
         __label__ = 52;
@@ -13359,7 +13359,7 @@ function __Z17IntraMBPredictionP12tagCommonObj($video) {
           
           
           
-          if ((HEAP32[$video_addr + 1220 >> 2] | 0) != 0) {
+          if (HEAP32[$video_addr + 1220 >> 2] != 0) {
             __label__ = 55;
           } else {
             __label__ = 56;
@@ -13380,7 +13380,7 @@ function __Z17IntraMBPredictionP12tagCommonObj($video) {
           
           
           
-          if ((HEAP32[$video_addr + 1224 >> 2] | 0) != 0) {
+          if (HEAP32[$video_addr + 1224 >> 2] != 0) {
             __label__ = 59;
           } else {
             __label__ = 60;
@@ -13400,7 +13400,7 @@ function __Z17IntraMBPredictionP12tagCommonObj($video) {
           
           
           
-          if ((HEAP32[$video_addr + 1220 >> 2] | 0) != 0) {
+          if (HEAP32[$video_addr + 1220 >> 2] != 0) {
             __label__ = 63;
           } else {
             __label__ = 66;
@@ -13410,7 +13410,7 @@ function __Z17IntraMBPredictionP12tagCommonObj($video) {
               
               
               
-              var $tobool145 = (HEAP32[$video_addr + 1224 >> 2] | 0) != 0;
+              var $tobool145 = HEAP32[$video_addr + 1224 >> 2] != 0;
               if (!$tobool145) {
                 __label__ = 66;
                 break $land_lhs_true143$$if_else150$85;
@@ -13418,7 +13418,7 @@ function __Z17IntraMBPredictionP12tagCommonObj($video) {
               
               
               
-              var $tobool148 = (HEAP32[$video_addr + 1232 >> 2] | 0) != 0;
+              var $tobool148 = HEAP32[$video_addr + 1232 >> 2] != 0;
               if (!$tobool148) {
                 __label__ = 66;
                 break $land_lhs_true143$$if_else150$85;
@@ -13445,7 +13445,7 @@ function __Z17IntraMBPredictionP12tagCommonObj($video) {
       $block_y = 2;
       $for_cond156$92 : while (1) {
         
-        var $cmp157 = ($block_y | 0) > 0;
+        var $cmp157 = $block_y > 0;
         if (!$cmp157) {
           __label__ = 85;
           break $for_cond156$92;
@@ -13453,7 +13453,7 @@ function __Z17IntraMBPredictionP12tagCommonObj($video) {
         $block_x = 2;
         $for_cond159$95 : while (1) {
           
-          var $cmp160 = ($block_x | 0) > 0;
+          var $cmp160 = $block_x > 0;
           if (!$cmp160) {
             __label__ = 77;
             break $for_cond159$95;
@@ -13461,7 +13461,7 @@ function __Z17IntraMBPredictionP12tagCommonObj($video) {
           
           
           
-          if (($cbp4x4 & 1 | 0) != 0) {
+          if (($cbp4x4 & 1) != 0) {
             __label__ = 74;
           } else {
             __label__ = 75;
@@ -13491,7 +13491,7 @@ function __Z17IntraMBPredictionP12tagCommonObj($video) {
         $block_x = 2;
         while (1) {
           
-          var $cmp173 = ($block_x | 0) > 0;
+          var $cmp173 = $block_x > 0;
           if (!$cmp173) {
             __label__ = 83;
             break;
@@ -13499,7 +13499,7 @@ function __Z17IntraMBPredictionP12tagCommonObj($video) {
           
           
           
-          if (($cbp4x4 & 1 | 0) != 0) {
+          if (($cbp4x4 & 1) != 0) {
             __label__ = 80;
           } else {
             __label__ = 81;
@@ -13606,7 +13606,7 @@ function __Z9Intra_4x4P12tagCommonObjiiPh($video, $block_x, $block_y, $comp) {
   
   
   
-  if ((HEAP32[$video_addr + 924 >> 2] | 0) != 0) {
+  if (HEAP32[$video_addr + 924 >> 2] != 0) {
     __label__ = 2;
   } else {
     __label__ = 1;
@@ -13615,7 +13615,7 @@ function __Z9Intra_4x4P12tagCommonObjiiPh($video, $block_x, $block_y, $comp) {
     if (__label__ == 1) {
       
       
-      if (($block_y_addr | 0) != 0) {
+      if ($block_y_addr != 0) {
         __label__ = 2;
         break $if_then$$lor_lhs_false$2;
       } else {
@@ -13671,7 +13671,7 @@ function __Z9Intra_4x4P12tagCommonObjiiPh($video, $block_x, $block_y, $comp) {
     } else if (__label__ == 4) {
       
       
-      if (($block_y_addr | 0) > 0) {
+      if ($block_y_addr > 0) {
         __label__ = 6;
       } else {
         __label__ = 5;
@@ -13682,7 +13682,7 @@ function __Z9Intra_4x4P12tagCommonObjiiPh($video, $block_x, $block_y, $comp) {
           
           
           
-          if ((HEAP32[$video_addr + 1224 >> 2] | 0) != 0) {
+          if (HEAP32[$video_addr + 1224 >> 2] != 0) {
             __label__ = 6;
             break $if_then13$$lor_lhs_false11$10;
           }
@@ -13699,7 +13699,7 @@ function __Z9Intra_4x4P12tagCommonObjiiPh($video, $block_x, $block_y, $comp) {
     } else if (__label__ == 9) {
       
       
-      if (($block_x_addr | 0) != 0) {
+      if ($block_x_addr != 0) {
         __label__ = 11;
       } else {
         __label__ = 10;
@@ -13710,7 +13710,7 @@ function __Z9Intra_4x4P12tagCommonObjiiPh($video, $block_x, $block_y, $comp) {
           
           
           
-          if ((HEAP32[$video_addr + 1220 >> 2] | 0) != 0) {
+          if (HEAP32[$video_addr + 1220 >> 2] != 0) {
             __label__ = 11;
             break $if_then19$$lor_lhs_false17$16;
           }
@@ -13732,7 +13732,7 @@ function __Z9Intra_4x4P12tagCommonObjiiPh($video, $block_x, $block_y, $comp) {
       HEAP32[$availability + 4 >> 2] = 1;
       
       
-      if (($block_y_addr | 0) != 0) {
+      if ($block_y_addr != 0) {
         __label__ = 16;
       } else {
         __label__ = 15;
@@ -13746,7 +13746,7 @@ function __Z9Intra_4x4P12tagCommonObjiiPh($video, $block_x, $block_y, $comp) {
       }
       
       
-      if (($block_x_addr | 0) != 0) {
+      if ($block_x_addr != 0) {
         __label__ = 18;
       } else {
         __label__ = 17;
@@ -13767,7 +13767,7 @@ function __Z9Intra_4x4P12tagCommonObjiiPh($video, $block_x, $block_y, $comp) {
     } else if (__label__ == 19) {
       
       
-      if (($block_y_addr | 0) == 0) {
+      if ($block_y_addr == 0) {
         __label__ = 20;
       } else {
         __label__ = 22;
@@ -13778,7 +13778,7 @@ function __Z9Intra_4x4P12tagCommonObjiiPh($video, $block_x, $block_y, $comp) {
           
           
           
-          if ((HEAP32[$video_addr + 1224 >> 2] | 0) != 0) {
+          if (HEAP32[$video_addr + 1224 >> 2] != 0) {
             __label__ = 22;
             break $land_lhs_true$$if_end38$29;
           }
@@ -13798,7 +13798,7 @@ function __Z9Intra_4x4P12tagCommonObjiiPh($video, $block_x, $block_y, $comp) {
       
       
       
-      if ((HEAP32[$availability + 8 >> 2] | 0) == 2) {
+      if (HEAP32[$availability + 8 >> 2] == 2) {
         __label__ = 23;
       } else {
         __label__ = 24;
@@ -13813,7 +13813,7 @@ function __Z9Intra_4x4P12tagCommonObjiiPh($video, $block_x, $block_y, $comp) {
         
         
         
-        if ((HEAP32[$availability + 8 >> 2] | 0) == 3) {
+        if (HEAP32[$availability + 8 >> 2] == 3) {
           __label__ = 25;
         } else {
           __label__ = 26;
@@ -13834,7 +13834,7 @@ function __Z9Intra_4x4P12tagCommonObjiiPh($video, $block_x, $block_y, $comp) {
     } else if (__label__ == 28) {
       
       
-      if (($block_y_addr | 0) != 0) {
+      if ($block_y_addr != 0) {
         __label__ = 29;
       } else {
         __label__ = 30;
@@ -13843,7 +13843,7 @@ function __Z9Intra_4x4P12tagCommonObjiiPh($video, $block_x, $block_y, $comp) {
         if (__label__ == 29) {
           
           
-          if (($block_x_addr | 0) != 0) {
+          if ($block_x_addr != 0) {
             __label__ = 37;
             break $land_lhs_true56$$lor_lhs_false58$41;
           } else {
@@ -13856,7 +13856,7 @@ function __Z9Intra_4x4P12tagCommonObjiiPh($video, $block_x, $block_y, $comp) {
         if (__label__ == 30) {
           
           
-          if (($block_y_addr | 0) != 0) {
+          if ($block_y_addr != 0) {
             __label__ = 31;
           } else {
             __label__ = 32;
@@ -13866,14 +13866,14 @@ function __Z9Intra_4x4P12tagCommonObjiiPh($video, $block_x, $block_y, $comp) {
             
             
             
-            if ((HEAP32[$video_addr + 1220 >> 2] | 0) != 0) {
+            if (HEAP32[$video_addr + 1220 >> 2] != 0) {
               __label__ = 37;
               break $if_then76$$lor_lhs_false58$43;
             }
           }
           
           
-          if (($block_x_addr | 0) != 0) {
+          if ($block_x_addr != 0) {
             __label__ = 33;
           } else {
             __label__ = 34;
@@ -13883,7 +13883,7 @@ function __Z9Intra_4x4P12tagCommonObjiiPh($video, $block_x, $block_y, $comp) {
             
             
             
-            if ((HEAP32[$video_addr + 1224 >> 2] | 0) != 0) {
+            if (HEAP32[$video_addr + 1224 >> 2] != 0) {
               __label__ = 37;
               break $if_then76$$lor_lhs_false58$43;
             }
@@ -13892,7 +13892,7 @@ function __Z9Intra_4x4P12tagCommonObjiiPh($video, $block_x, $block_y, $comp) {
           
           
           
-          if ((HEAP32[$video_addr + 1220 >> 2] | 0) != 0) {
+          if (HEAP32[$video_addr + 1220 >> 2] != 0) {
             __label__ = 35;
           } else {
             __label__ = 38;
@@ -13902,7 +13902,7 @@ function __Z9Intra_4x4P12tagCommonObjiiPh($video, $block_x, $block_y, $comp) {
               
               
               
-              var $tobool72 = (HEAP32[$video_addr + 1232 >> 2] | 0) != 0;
+              var $tobool72 = HEAP32[$video_addr + 1232 >> 2] != 0;
               if (!$tobool72) {
                 __label__ = 38;
                 break $land_lhs_true71$$if_else77$51;
@@ -13911,7 +13911,7 @@ function __Z9Intra_4x4P12tagCommonObjiiPh($video, $block_x, $block_y, $comp) {
               
               
               
-              if ((HEAP32[$video_addr + 1224 >> 2] | 0) != 0) {
+              if (HEAP32[$video_addr + 1224 >> 2] != 0) {
                 __label__ = 37;
                 break $if_then76$$lor_lhs_false58$43;
               }
@@ -13931,7 +13931,7 @@ function __Z9Intra_4x4P12tagCommonObjiiPh($video, $block_x, $block_y, $comp) {
     } else if (__label__ == 40) {
       
       
-      if (($block_y_addr | 0) != 0) {
+      if ($block_y_addr != 0) {
         __label__ = 41;
       } else {
         __label__ = 42;
@@ -13940,7 +13940,7 @@ function __Z9Intra_4x4P12tagCommonObjiiPh($video, $block_x, $block_y, $comp) {
         if (__label__ == 41) {
           
           
-          if (($block_x_addr | 0) != 0) {
+          if ($block_x_addr != 0) {
             __label__ = 49;
             break $land_lhs_true81$$lor_lhs_false83$58;
           } else {
@@ -13953,7 +13953,7 @@ function __Z9Intra_4x4P12tagCommonObjiiPh($video, $block_x, $block_y, $comp) {
         if (__label__ == 42) {
           
           
-          if (($block_y_addr | 0) != 0) {
+          if ($block_y_addr != 0) {
             __label__ = 43;
           } else {
             __label__ = 44;
@@ -13963,14 +13963,14 @@ function __Z9Intra_4x4P12tagCommonObjiiPh($video, $block_x, $block_y, $comp) {
             
             
             
-            if ((HEAP32[$video_addr + 1220 >> 2] | 0) != 0) {
+            if (HEAP32[$video_addr + 1220 >> 2] != 0) {
               __label__ = 49;
               break $if_then102$$lor_lhs_false83$60;
             }
           }
           
           
-          if (($block_x_addr | 0) != 0) {
+          if ($block_x_addr != 0) {
             __label__ = 45;
           } else {
             __label__ = 46;
@@ -13980,7 +13980,7 @@ function __Z9Intra_4x4P12tagCommonObjiiPh($video, $block_x, $block_y, $comp) {
             
             
             
-            if ((HEAP32[$video_addr + 1224 >> 2] | 0) != 0) {
+            if (HEAP32[$video_addr + 1224 >> 2] != 0) {
               __label__ = 49;
               break $if_then102$$lor_lhs_false83$60;
             }
@@ -13989,7 +13989,7 @@ function __Z9Intra_4x4P12tagCommonObjiiPh($video, $block_x, $block_y, $comp) {
           
           
           
-          if ((HEAP32[$video_addr + 1220 >> 2] | 0) != 0) {
+          if (HEAP32[$video_addr + 1220 >> 2] != 0) {
             __label__ = 47;
           } else {
             __label__ = 50;
@@ -13999,7 +13999,7 @@ function __Z9Intra_4x4P12tagCommonObjiiPh($video, $block_x, $block_y, $comp) {
               
               
               
-              var $tobool98 = (HEAP32[$video_addr + 1232 >> 2] | 0) != 0;
+              var $tobool98 = HEAP32[$video_addr + 1232 >> 2] != 0;
               if (!$tobool98) {
                 __label__ = 50;
                 break $land_lhs_true96$$if_else103$68;
@@ -14008,7 +14008,7 @@ function __Z9Intra_4x4P12tagCommonObjiiPh($video, $block_x, $block_y, $comp) {
               
               
               
-              if ((HEAP32[$video_addr + 1224 >> 2] | 0) != 0) {
+              if (HEAP32[$video_addr + 1224 >> 2] != 0) {
                 __label__ = 49;
                 break $if_then102$$lor_lhs_false83$60;
               }
@@ -14028,7 +14028,7 @@ function __Z9Intra_4x4P12tagCommonObjiiPh($video, $block_x, $block_y, $comp) {
     } else if (__label__ == 52) {
       
       
-      if (($block_y_addr | 0) != 0) {
+      if ($block_y_addr != 0) {
         __label__ = 53;
       } else {
         __label__ = 54;
@@ -14037,7 +14037,7 @@ function __Z9Intra_4x4P12tagCommonObjiiPh($video, $block_x, $block_y, $comp) {
         if (__label__ == 53) {
           
           
-          if (($block_x_addr | 0) != 0) {
+          if ($block_x_addr != 0) {
             __label__ = 61;
             break $land_lhs_true107$$lor_lhs_false109$75;
           } else {
@@ -14050,7 +14050,7 @@ function __Z9Intra_4x4P12tagCommonObjiiPh($video, $block_x, $block_y, $comp) {
         if (__label__ == 54) {
           
           
-          if (($block_y_addr | 0) != 0) {
+          if ($block_y_addr != 0) {
             __label__ = 55;
           } else {
             __label__ = 56;
@@ -14060,14 +14060,14 @@ function __Z9Intra_4x4P12tagCommonObjiiPh($video, $block_x, $block_y, $comp) {
             
             
             
-            if ((HEAP32[$video_addr + 1220 >> 2] | 0) != 0) {
+            if (HEAP32[$video_addr + 1220 >> 2] != 0) {
               __label__ = 61;
               break $if_then128$$lor_lhs_false109$77;
             }
           }
           
           
-          if (($block_x_addr | 0) != 0) {
+          if ($block_x_addr != 0) {
             __label__ = 57;
           } else {
             __label__ = 58;
@@ -14077,7 +14077,7 @@ function __Z9Intra_4x4P12tagCommonObjiiPh($video, $block_x, $block_y, $comp) {
             
             
             
-            if ((HEAP32[$video_addr + 1224 >> 2] | 0) != 0) {
+            if (HEAP32[$video_addr + 1224 >> 2] != 0) {
               __label__ = 61;
               break $if_then128$$lor_lhs_false109$77;
             }
@@ -14086,7 +14086,7 @@ function __Z9Intra_4x4P12tagCommonObjiiPh($video, $block_x, $block_y, $comp) {
           
           
           
-          if ((HEAP32[$video_addr + 1220 >> 2] | 0) != 0) {
+          if (HEAP32[$video_addr + 1220 >> 2] != 0) {
             __label__ = 59;
           } else {
             __label__ = 62;
@@ -14096,7 +14096,7 @@ function __Z9Intra_4x4P12tagCommonObjiiPh($video, $block_x, $block_y, $comp) {
               
               
               
-              var $tobool124 = (HEAP32[$video_addr + 1232 >> 2] | 0) != 0;
+              var $tobool124 = HEAP32[$video_addr + 1232 >> 2] != 0;
               if (!$tobool124) {
                 __label__ = 62;
                 break $land_lhs_true122$$if_else129$85;
@@ -14105,7 +14105,7 @@ function __Z9Intra_4x4P12tagCommonObjiiPh($video, $block_x, $block_y, $comp) {
               
               
               
-              if ((HEAP32[$video_addr + 1224 >> 2] | 0) != 0) {
+              if (HEAP32[$video_addr + 1224 >> 2] != 0) {
                 __label__ = 61;
                 break $if_then128$$lor_lhs_false109$77;
               }
@@ -14125,7 +14125,7 @@ function __Z9Intra_4x4P12tagCommonObjiiPh($video, $block_x, $block_y, $comp) {
     } else if (__label__ == 64) {
       
       
-      if (($block_y_addr | 0) == 0) {
+      if ($block_y_addr == 0) {
         __label__ = 65;
       } else {
         __label__ = 67;
@@ -14136,7 +14136,7 @@ function __Z9Intra_4x4P12tagCommonObjiiPh($video, $block_x, $block_y, $comp) {
           
           
           
-          if ((HEAP32[$video_addr + 1224 >> 2] | 0) != 0) {
+          if (HEAP32[$video_addr + 1224 >> 2] != 0) {
             __label__ = 67;
             break $land_lhs_true133$$if_end137$92;
           }
@@ -14156,7 +14156,7 @@ function __Z9Intra_4x4P12tagCommonObjiiPh($video, $block_x, $block_y, $comp) {
       
       
       
-      if ((HEAP32[$availability + 8 >> 2] | 0) == 2) {
+      if (HEAP32[$availability + 8 >> 2] == 2) {
         __label__ = 68;
       } else {
         __label__ = 69;
@@ -14171,7 +14171,7 @@ function __Z9Intra_4x4P12tagCommonObjiiPh($video, $block_x, $block_y, $comp) {
         
         
         
-        if ((HEAP32[$availability + 8 >> 2] | 0) == 3) {
+        if (HEAP32[$availability + 8 >> 2] == 3) {
           __label__ = 70;
         } else {
           __label__ = 71;
@@ -14192,7 +14192,7 @@ function __Z9Intra_4x4P12tagCommonObjiiPh($video, $block_x, $block_y, $comp) {
     } else if (__label__ == 73) {
       
       
-      if (($block_x_addr | 0) != 0) {
+      if ($block_x_addr != 0) {
         __label__ = 75;
       } else {
         __label__ = 74;
@@ -14203,7 +14203,7 @@ function __Z9Intra_4x4P12tagCommonObjiiPh($video, $block_x, $block_y, $comp) {
           
           
           
-          if ((HEAP32[$video_addr + 1220 >> 2] | 0) != 0) {
+          if (HEAP32[$video_addr + 1220 >> 2] != 0) {
             __label__ = 75;
             break $if_then160$$lor_lhs_false157$104;
           }
@@ -14285,7 +14285,7 @@ function __Z20Intra_16x16_VerticalP12tagCommonObj($video) {
   $i = 16;
   while (1) {
     
-    var $cmp = ($i | 0) > 0;
+    var $cmp = $i > 0;
     if (!$cmp) {
       __label__ = 3;
       break;
@@ -14351,7 +14351,7 @@ function __Z22Intra_16x16_HorizontalP12tagCommonObji($video, $pitch) {
   $i = 0;
   while (1) {
     
-    var $cmp = ($i | 0) < 16;
+    var $cmp = $i < 16;
     if (!$cmp) {
       __label__ = 4;
       break;
@@ -14359,7 +14359,7 @@ function __Z22Intra_16x16_HorizontalP12tagCommonObji($video, $pitch) {
     
     
     
-    $temp = HEAPU8[$comp_ref >> 0] & 255;
+    $temp = HEAPU8[$comp_ref >> 0];
     
     
     
@@ -14444,7 +14444,7 @@ function __Z14Intra_16x16_DCP12tagCommonObji($video, $pitch) {
   
   
   
-  if ((HEAP32[$video_addr + 1224 >> 2] | 0) != 0) {
+  if (HEAP32[$video_addr + 1224 >> 2] != 0) {
     __label__ = 1;
   } else {
     __label__ = 9;
@@ -14555,7 +14555,7 @@ function __Z14Intra_16x16_DCP12tagCommonObji($video, $pitch) {
     
     
     
-    if ((HEAP32[$video_addr + 1220 >> 2] | 0) != 0) {
+    if (HEAP32[$video_addr + 1220 >> 2] != 0) {
       __label__ = 2;
     } else {
       __label__ = 7;
@@ -14564,7 +14564,7 @@ function __Z14Intra_16x16_DCP12tagCommonObji($video, $pitch) {
       $i = 0;
       while (1) {
         
-        var $cmp = ($i | 0) < 16;
+        var $cmp = $i < 16;
         if (!$cmp) {
           __label__ = 6;
           break;
@@ -14573,7 +14573,7 @@ function __Z14Intra_16x16_DCP12tagCommonObji($video, $pitch) {
         
         
         
-        var $add32 = $sum + (HEAPU8[$comp_ref_y >> 0] & 255);
+        var $add32 = $sum + HEAPU8[$comp_ref_y >> 0];
         $sum = $add32;
         
         
@@ -14600,7 +14600,7 @@ function __Z14Intra_16x16_DCP12tagCommonObji($video, $pitch) {
     
     
     
-    if ((HEAP32[$video_addr + 1220 >> 2] | 0) != 0) {
+    if (HEAP32[$video_addr + 1220 >> 2] != 0) {
       __label__ = 10;
     } else {
       __label__ = 15;
@@ -14609,7 +14609,7 @@ function __Z14Intra_16x16_DCP12tagCommonObji($video, $pitch) {
       $i = 0;
       while (1) {
         
-        var $cmp43 = ($i | 0) < 16;
+        var $cmp43 = $i < 16;
         if (!$cmp43) {
           __label__ = 14;
           break;
@@ -14618,7 +14618,7 @@ function __Z14Intra_16x16_DCP12tagCommonObji($video, $pitch) {
         
         
         
-        var $add46 = $sum + (HEAPU8[$comp_ref_y >> 0] & 255);
+        var $add46 = $sum + HEAPU8[$comp_ref_y >> 0];
         $sum = $add46;
         
         
@@ -14651,7 +14651,7 @@ function __Z14Intra_16x16_DCP12tagCommonObji($video, $pitch) {
   $i = 0;
   while (1) {
     
-    var $cmp59 = ($i | 0) < 16;
+    var $cmp59 = $i < 16;
     if (!$cmp59) {
       __label__ = 21;
       break;
@@ -14755,7 +14755,7 @@ function __Z17Intra_16x16_PlaneP12tagCommonObji($video, $pitch) {
   $i = 1;
   $for_cond$2 : while (1) {
     
-    var $cmp = ($i | 0) < 8;
+    var $cmp = $i < 8;
     if (!$cmp) {
       __label__ = 4;
       break $for_cond$2;
@@ -14765,7 +14765,7 @@ function __Z17Intra_16x16_PlaneP12tagCommonObji($video, $pitch) {
     var $incdec_ptr = $16 + 1;
     $comp_ref_x0 = $incdec_ptr;
     
-    var $conv = HEAPU8[$16 >> 0] & 255;
+    var $conv = HEAPU8[$16 >> 0];
     var $18 = $comp_ref_x1;
     var $incdec_ptr12 = $18 + -1;
     $comp_ref_x1 = $incdec_ptr12;
@@ -14774,7 +14774,7 @@ function __Z17Intra_16x16_PlaneP12tagCommonObji($video, $pitch) {
     
     
     
-    var $add = $H + $i * ($conv - (HEAPU8[$18 >> 0] & 255));
+    var $add = $H + $i * ($conv - HEAPU8[$18 >> 0]);
     $H = $add;
     
     
@@ -14786,7 +14786,7 @@ function __Z17Intra_16x16_PlaneP12tagCommonObji($video, $pitch) {
     
     
     
-    var $add19 = $V + $i * ((HEAPU8[$comp_ref_y0 >> 0] & 255) - (HEAPU8[$comp_ref_y1 >> 0] & 255));
+    var $add19 = $V + $i * (HEAPU8[$comp_ref_y0 >> 0] - HEAPU8[$comp_ref_y1 >> 0]);
     $V = $add19;
     
     
@@ -14816,7 +14816,7 @@ function __Z17Intra_16x16_PlaneP12tagCommonObji($video, $pitch) {
   
   
   
-  var $add27 = $H + $i * ((HEAPU8[$33 >> 0] & 255) - (HEAPU8[$video_addr + 784 >> 0] & 255));
+  var $add27 = $H + $i * (HEAPU8[$33 >> 0] - HEAPU8[$video_addr + 784 >> 0]);
   $H = $add27;
   
   
@@ -14828,7 +14828,7 @@ function __Z17Intra_16x16_PlaneP12tagCommonObji($video, $pitch) {
   
   
   
-  var $add32 = $V + $i * ((HEAPU8[$comp_ref_y0 >> 0] & 255) - (HEAPU8[$comp_ref_y1 >> 0] & 255));
+  var $add32 = $V + $i * (HEAPU8[$comp_ref_y0 >> 0] - HEAPU8[$comp_ref_y1 >> 0]);
   $V = $add32;
   
   
@@ -14843,7 +14843,7 @@ function __Z17Intra_16x16_PlaneP12tagCommonObji($video, $pitch) {
   
   
   
-  $a_16 = ((HEAPU8[$comp_ref_x + 15 >> 0] & 255) + (HEAPU8[$comp_ref_y + 15 * $pitch_addr >> 0] & 255) << 4) + 16;
+  $a_16 = (HEAPU8[$comp_ref_x + 15 >> 0] + HEAPU8[$comp_ref_y + 15 * $pitch_addr >> 0] << 4) + 16;
   
   
   
@@ -14858,7 +14858,7 @@ function __Z17Intra_16x16_PlaneP12tagCommonObji($video, $pitch) {
   $i = 0;
   while (1) {
     
-    var $cmp47 = ($i | 0) < 16;
+    var $cmp47 = $i < 16;
     if (!$cmp47) {
       __label__ = 40;
       break;
@@ -14886,7 +14886,7 @@ function __Z17Intra_16x16_PlaneP12tagCommonObji($video, $pitch) {
     $factor_c = $add56;
     
     
-    if ($value >>> 0 > 255) {
+    if ($value > 255) {
       __label__ = 7;
     } else {
       __label__ = 8;
@@ -14910,7 +14910,7 @@ function __Z17Intra_16x16_PlaneP12tagCommonObji($video, $pitch) {
     $factor_c = $add61;
     
     
-    if ($value >>> 0 > 255) {
+    if ($value > 255) {
       __label__ = 9;
     } else {
       __label__ = 10;
@@ -14934,7 +14934,7 @@ function __Z17Intra_16x16_PlaneP12tagCommonObji($video, $pitch) {
     $factor_c = $add70;
     
     
-    if ($value >>> 0 > 255) {
+    if ($value > 255) {
       __label__ = 11;
     } else {
       __label__ = 12;
@@ -14958,7 +14958,7 @@ function __Z17Intra_16x16_PlaneP12tagCommonObji($video, $pitch) {
     $factor_c = $add79;
     
     
-    if ($value >>> 0 > 255) {
+    if ($value > 255) {
       __label__ = 13;
     } else {
       __label__ = 14;
@@ -14976,12 +14976,12 @@ function __Z17Intra_16x16_PlaneP12tagCommonObji($video, $pitch) {
     
     
     
-    $temp = $byte1 & 255 | ($byte2 & 255) << 8;
+    $temp = $byte1 | $byte2 << 8;
     
     
     
     
-    var $or91 = $temp | ($byte3 & 255) << 16;
+    var $or91 = $temp | $byte3 << 16;
     $temp = $or91;
     
     
@@ -15001,7 +15001,7 @@ function __Z17Intra_16x16_PlaneP12tagCommonObji($video, $pitch) {
     $factor_c = $add95;
     
     
-    if ($value >>> 0 > 255) {
+    if ($value > 255) {
       __label__ = 15;
     } else {
       __label__ = 16;
@@ -15025,7 +15025,7 @@ function __Z17Intra_16x16_PlaneP12tagCommonObji($video, $pitch) {
     $factor_c = $add104;
     
     
-    if ($value >>> 0 > 255) {
+    if ($value > 255) {
       __label__ = 17;
     } else {
       __label__ = 18;
@@ -15049,7 +15049,7 @@ function __Z17Intra_16x16_PlaneP12tagCommonObji($video, $pitch) {
     $factor_c = $add113;
     
     
-    if ($value >>> 0 > 255) {
+    if ($value > 255) {
       __label__ = 19;
     } else {
       __label__ = 20;
@@ -15073,7 +15073,7 @@ function __Z17Intra_16x16_PlaneP12tagCommonObji($video, $pitch) {
     $factor_c = $add122;
     
     
-    if ($value >>> 0 > 255) {
+    if ($value > 255) {
       __label__ = 21;
     } else {
       __label__ = 22;
@@ -15091,12 +15091,12 @@ function __Z17Intra_16x16_PlaneP12tagCommonObji($video, $pitch) {
     
     
     
-    $temp = $byte1 & 255 | ($byte2 & 255) << 8;
+    $temp = $byte1 | $byte2 << 8;
     
     
     
     
-    var $or135 = $temp | ($byte3 & 255) << 16;
+    var $or135 = $temp | $byte3 << 16;
     $temp = $or135;
     
     
@@ -15117,7 +15117,7 @@ function __Z17Intra_16x16_PlaneP12tagCommonObji($video, $pitch) {
     $factor_c = $add140;
     
     
-    if ($value >>> 0 > 255) {
+    if ($value > 255) {
       __label__ = 23;
     } else {
       __label__ = 24;
@@ -15141,7 +15141,7 @@ function __Z17Intra_16x16_PlaneP12tagCommonObji($video, $pitch) {
     $factor_c = $add149;
     
     
-    if ($value >>> 0 > 255) {
+    if ($value > 255) {
       __label__ = 25;
     } else {
       __label__ = 26;
@@ -15207,12 +15207,12 @@ function __Z17Intra_16x16_PlaneP12tagCommonObji($video, $pitch) {
     
     
     
-    $temp = $byte1 & 255 | ($byte2 & 255) << 8;
+    $temp = $byte1 | $byte2 << 8;
     
     
     
     
-    var $or180 = $temp | ($byte3 & 255) << 16;
+    var $or180 = $temp | $byte3 << 16;
     $temp = $or180;
     
     
@@ -15319,12 +15319,12 @@ function __Z17Intra_16x16_PlaneP12tagCommonObji($video, $pitch) {
     
     
     
-    $temp = $byte1 & 255 | ($byte2 & 255) << 8;
+    $temp = $byte1 | $byte2 << 8;
     
     
     
     
-    var $or224 = $temp | ($byte3 & 255) << 16;
+    var $or224 = $temp | $byte3 << 16;
     $temp = $or224;
     
     
@@ -15413,7 +15413,7 @@ function __Z15Intra_Chroma_DCP12tagCommonObjiPhS1_($video, $pitch, $predCb, $pre
   
   
   
-  if ((HEAP32[$video_addr + 1224 >> 2] & HEAP32[$video_addr + 1220 >> 2] | 0) != 0) {
+  if ((HEAP32[$video_addr + 1224 >> 2] & HEAP32[$video_addr + 1220 >> 2]) != 0) {
     __label__ = 1;
   } else {
     __label__ = 6;
@@ -15426,7 +15426,7 @@ function __Z15Intra_Chroma_DCP12tagCommonObjiPhS1_($video, $pitch, $predCb, $pre
     $i = 0;
     while (1) {
       
-      var $cmp = ($i | 0) < 2;
+      var $cmp = $i < 2;
       if (!$cmp) {
         __label__ = 5;
         break;
@@ -15489,7 +15489,7 @@ function __Z15Intra_Chroma_DCP12tagCommonObjiPhS1_($video, $pitch, $predCb, $pre
       
       
       
-      $sum_y0 = HEAPU8[$comp_ref_y >> 0] & 255;
+      $sum_y0 = HEAPU8[$comp_ref_y >> 0];
       
       
       var $add_ptr16 = $comp_ref_y + $pitch_addr;
@@ -15497,7 +15497,7 @@ function __Z15Intra_Chroma_DCP12tagCommonObjiPhS1_($video, $pitch, $predCb, $pre
       
       
       
-      var $add18 = $sum_y0 + (HEAPU8[$add_ptr16 >> 0] & 255);
+      var $add18 = $sum_y0 + HEAPU8[$add_ptr16 >> 0];
       $sum_y0 = $add18;
       
       
@@ -15506,7 +15506,7 @@ function __Z15Intra_Chroma_DCP12tagCommonObjiPhS1_($video, $pitch, $predCb, $pre
       
       
       
-      var $add21 = $sum_y0 + (HEAPU8[$add_ptr19 >> 0] & 255);
+      var $add21 = $sum_y0 + HEAPU8[$add_ptr19 >> 0];
       $sum_y0 = $add21;
       
       
@@ -15515,7 +15515,7 @@ function __Z15Intra_Chroma_DCP12tagCommonObjiPhS1_($video, $pitch, $predCb, $pre
       
       
       
-      var $add24 = $sum_y0 + (HEAPU8[$add_ptr22 >> 0] & 255);
+      var $add24 = $sum_y0 + HEAPU8[$add_ptr22 >> 0];
       $sum_y0 = $add24;
       
       
@@ -15523,7 +15523,7 @@ function __Z15Intra_Chroma_DCP12tagCommonObjiPhS1_($video, $pitch, $predCb, $pre
       $comp_ref_y = $add_ptr25;
       
       
-      $sum_y1 = HEAPU8[$add_ptr25 >> 0] & 255;
+      $sum_y1 = HEAPU8[$add_ptr25 >> 0];
       
       
       var $add_ptr27 = $comp_ref_y + $pitch_addr;
@@ -15531,7 +15531,7 @@ function __Z15Intra_Chroma_DCP12tagCommonObjiPhS1_($video, $pitch, $predCb, $pre
       
       
       
-      var $add29 = $sum_y1 + (HEAPU8[$add_ptr27 >> 0] & 255);
+      var $add29 = $sum_y1 + HEAPU8[$add_ptr27 >> 0];
       $sum_y1 = $add29;
       
       
@@ -15540,7 +15540,7 @@ function __Z15Intra_Chroma_DCP12tagCommonObjiPhS1_($video, $pitch, $predCb, $pre
       
       
       
-      var $add32 = $sum_y1 + (HEAPU8[$add_ptr30 >> 0] & 255);
+      var $add32 = $sum_y1 + HEAPU8[$add_ptr30 >> 0];
       $sum_y1 = $add32;
       
       
@@ -15549,7 +15549,7 @@ function __Z15Intra_Chroma_DCP12tagCommonObjiPhS1_($video, $pitch, $predCb, $pre
       
       
       
-      var $add35 = $sum_y1 + (HEAPU8[$add_ptr33 >> 0] & 255);
+      var $add35 = $sum_y1 + HEAPU8[$add_ptr33 >> 0];
       $sum_y1 = $add35;
       
       
@@ -15588,7 +15588,7 @@ function __Z15Intra_Chroma_DCP12tagCommonObjiPhS1_($video, $pitch, $predCb, $pre
     
     
     
-    if ((HEAP32[$video_addr + 1220 >> 2] | 0) != 0) {
+    if (HEAP32[$video_addr + 1220 >> 2] != 0) {
       __label__ = 7;
     } else {
       __label__ = 12;
@@ -15599,7 +15599,7 @@ function __Z15Intra_Chroma_DCP12tagCommonObjiPhS1_($video, $pitch, $predCb, $pre
       $i = 0;
       while (1) {
         
-        var $cmp51 = ($i | 0) < 2;
+        var $cmp51 = $i < 2;
         if (!$cmp51) {
           __label__ = 11;
           break;
@@ -15607,7 +15607,7 @@ function __Z15Intra_Chroma_DCP12tagCommonObjiPhS1_($video, $pitch, $predCb, $pre
         
         
         
-        $sum_y0 = HEAPU8[$comp_ref_y >> 0] & 255;
+        $sum_y0 = HEAPU8[$comp_ref_y >> 0];
         
         
         var $add_ptr54 = $comp_ref_y + $pitch_addr;
@@ -15615,7 +15615,7 @@ function __Z15Intra_Chroma_DCP12tagCommonObjiPhS1_($video, $pitch, $predCb, $pre
         
         
         
-        var $add56 = $sum_y0 + (HEAPU8[$add_ptr54 >> 0] & 255);
+        var $add56 = $sum_y0 + HEAPU8[$add_ptr54 >> 0];
         $sum_y0 = $add56;
         
         
@@ -15624,7 +15624,7 @@ function __Z15Intra_Chroma_DCP12tagCommonObjiPhS1_($video, $pitch, $predCb, $pre
         
         
         
-        var $add59 = $sum_y0 + (HEAPU8[$add_ptr57 >> 0] & 255);
+        var $add59 = $sum_y0 + HEAPU8[$add_ptr57 >> 0];
         $sum_y0 = $add59;
         
         
@@ -15633,7 +15633,7 @@ function __Z15Intra_Chroma_DCP12tagCommonObjiPhS1_($video, $pitch, $predCb, $pre
         
         
         
-        var $add62 = $sum_y0 + (HEAPU8[$add_ptr60 >> 0] & 255);
+        var $add62 = $sum_y0 + HEAPU8[$add_ptr60 >> 0];
         $sum_y0 = $add62;
         
         
@@ -15641,7 +15641,7 @@ function __Z15Intra_Chroma_DCP12tagCommonObjiPhS1_($video, $pitch, $predCb, $pre
         $comp_ref_y = $add_ptr63;
         
         
-        $sum_y1 = HEAPU8[$add_ptr63 >> 0] & 255;
+        $sum_y1 = HEAPU8[$add_ptr63 >> 0];
         
         
         var $add_ptr65 = $comp_ref_y + $pitch_addr;
@@ -15649,7 +15649,7 @@ function __Z15Intra_Chroma_DCP12tagCommonObjiPhS1_($video, $pitch, $predCb, $pre
         
         
         
-        var $add67 = $sum_y1 + (HEAPU8[$add_ptr65 >> 0] & 255);
+        var $add67 = $sum_y1 + HEAPU8[$add_ptr65 >> 0];
         $sum_y1 = $add67;
         
         
@@ -15658,7 +15658,7 @@ function __Z15Intra_Chroma_DCP12tagCommonObjiPhS1_($video, $pitch, $predCb, $pre
         
         
         
-        var $add70 = $sum_y1 + (HEAPU8[$add_ptr68 >> 0] & 255);
+        var $add70 = $sum_y1 + HEAPU8[$add_ptr68 >> 0];
         $sum_y1 = $add70;
         
         
@@ -15667,7 +15667,7 @@ function __Z15Intra_Chroma_DCP12tagCommonObjiPhS1_($video, $pitch, $predCb, $pre
         
         
         
-        var $add73 = $sum_y1 + (HEAPU8[$add_ptr71 >> 0] & 255);
+        var $add73 = $sum_y1 + HEAPU8[$add_ptr71 >> 0];
         $sum_y1 = $add73;
         
         
@@ -15700,7 +15700,7 @@ function __Z15Intra_Chroma_DCP12tagCommonObjiPhS1_($video, $pitch, $predCb, $pre
       
       
       
-      if ((HEAP32[$video_addr + 1224 >> 2] | 0) != 0) {
+      if (HEAP32[$video_addr + 1224 >> 2] != 0) {
         __label__ = 13;
       } else {
         __label__ = 18;
@@ -15711,7 +15711,7 @@ function __Z15Intra_Chroma_DCP12tagCommonObjiPhS1_($video, $pitch, $predCb, $pre
         $i = 0;
         while (1) {
           
-          var $cmp90 = ($i | 0) < 2;
+          var $cmp90 = $i < 2;
           if (!$cmp90) {
             __label__ = 17;
             break;
@@ -15816,7 +15816,7 @@ function __Z15Intra_Chroma_DCP12tagCommonObjiPhS1_($video, $pitch, $predCb, $pre
   $component = 0;
   $for_cond129$29 : while (1) {
     
-    var $cmp130 = ($component | 0) < 2;
+    var $cmp130 = $component < 2;
     if (!$cmp130) {
       __label__ = 33;
       break $for_cond129$29;
@@ -15852,7 +15852,7 @@ function __Z15Intra_Chroma_DCP12tagCommonObjiPhS1_($video, $pitch, $predCb, $pre
     $i = 4;
     $for_cond140$32 : while (1) {
       
-      var $cmp141 = ($i | 0) < 6;
+      var $cmp141 = $i < 6;
       if (!$cmp141) {
         __label__ = 31;
         break $for_cond140$32;
@@ -15860,7 +15860,7 @@ function __Z15Intra_Chroma_DCP12tagCommonObjiPhS1_($video, $pitch, $predCb, $pre
       $j = 0;
       while (1) {
         
-        var $cmp144 = ($j | 0) < 4;
+        var $cmp144 = $j < 4;
         if (!$cmp144) {
           __label__ = 29;
           break;
@@ -15970,7 +15970,7 @@ function __Z23Intra_Chroma_HorizontalP12tagCommonObjiPhS1_($video, $pitch, $pred
   $component = 0;
   $for_cond$2 : while (1) {
     
-    var $cmp = ($component | 0) < 2;
+    var $cmp = $component < 2;
     if (!$cmp) {
       __label__ = 12;
       break $for_cond$2;
@@ -15978,7 +15978,7 @@ function __Z23Intra_Chroma_HorizontalP12tagCommonObjiPhS1_($video, $pitch, $pred
     $i = 4;
     $for_cond2$5 : while (1) {
       
-      var $cmp3 = ($i | 0) < 6;
+      var $cmp3 = $i < 6;
       if (!$cmp3) {
         __label__ = 10;
         break $for_cond2$5;
@@ -15986,7 +15986,7 @@ function __Z23Intra_Chroma_HorizontalP12tagCommonObjiPhS1_($video, $pitch, $pred
       $j = 0;
       while (1) {
         
-        var $cmp6 = ($j | 0) < 4;
+        var $cmp6 = $j < 4;
         if (!$cmp6) {
           __label__ = 8;
           break;
@@ -15994,7 +15994,7 @@ function __Z23Intra_Chroma_HorizontalP12tagCommonObjiPhS1_($video, $pitch, $pred
         
         
         
-        $temp = HEAPU8[$comp >> 0] & 255;
+        $temp = HEAPU8[$comp >> 0];
         
         
         var $add_ptr = $comp + $pitch_addr;
@@ -16086,7 +16086,7 @@ function __Z21Intra_Chroma_VerticalP12tagCommonObjPhS1_($video, $predCb, $predCr
   $component = 0;
   $for_cond$2 : while (1) {
     
-    var $cmp = ($component | 0) < 2;
+    var $cmp = $component < 2;
     if (!$cmp) {
       __label__ = 8;
       break $for_cond$2;
@@ -16103,7 +16103,7 @@ function __Z21Intra_Chroma_VerticalP12tagCommonObjPhS1_($video, $predCb, $predCr
     $j = 0;
     while (1) {
       
-      var $cmp3 = ($j | 0) < 8;
+      var $cmp3 = $j < 8;
       if (!$cmp3) {
         __label__ = 6;
         break;
@@ -16199,7 +16199,7 @@ function __Z18Intra_Chroma_PlaneP12tagCommonObjiPhS1_($video, $pitch, $predCb, $
   $component = 0;
   $for_cond$2 : while (1) {
     
-    var $cmp = ($component | 0) < 2;
+    var $cmp = $component < 2;
     if (!$cmp) {
       __label__ = 8;
       break $for_cond$2;
@@ -16225,7 +16225,7 @@ function __Z18Intra_Chroma_PlaneP12tagCommonObjiPhS1_($video, $pitch, $predCb, $
     $i = 1;
     while (1) {
       
-      var $cmp15 = ($i | 0) < 4;
+      var $cmp15 = $i < 4;
       if (!$cmp15) {
         __label__ = 6;
         break;
@@ -16235,7 +16235,7 @@ function __Z18Intra_Chroma_PlaneP12tagCommonObjiPhS1_($video, $pitch, $predCb, $
       var $incdec_ptr = $17 + 1;
       $comp_ref_x0 = $incdec_ptr;
       
-      var $conv = HEAPU8[$17 >> 0] & 255;
+      var $conv = HEAPU8[$17 >> 0];
       var $19 = $comp_ref_x1;
       var $incdec_ptr17 = $19 + -1;
       $comp_ref_x1 = $incdec_ptr17;
@@ -16244,7 +16244,7 @@ function __Z18Intra_Chroma_PlaneP12tagCommonObjiPhS1_($video, $pitch, $predCb, $
       
       
       
-      var $add = $H + $i * ($conv - (HEAPU8[$19 >> 0] & 255));
+      var $add = $H + $i * ($conv - HEAPU8[$19 >> 0]);
       $H = $add;
       
       
@@ -16256,7 +16256,7 @@ function __Z18Intra_Chroma_PlaneP12tagCommonObjiPhS1_($video, $pitch, $predCb, $
       
       
       
-      var $add23 = $V + $i * ((HEAPU8[$comp_ref_y0 >> 0] & 255) - (HEAPU8[$comp_ref_y1 >> 0] & 255));
+      var $add23 = $V + $i * (HEAPU8[$comp_ref_y0 >> 0] - HEAPU8[$comp_ref_y1 >> 0]);
       $V = $add23;
       
       
@@ -16296,7 +16296,7 @@ function __Z18Intra_Chroma_PlaneP12tagCommonObjiPhS1_($video, $pitch, $predCb, $
     
     
     
-    var $add36 = $V + $i * ((HEAPU8[$comp_ref_y0 >> 0] & 255) - (HEAPU8[$comp_ref_y1 >> 0] & 255));
+    var $add36 = $V + $i * (HEAPU8[$comp_ref_y0 >> 0] - HEAPU8[$comp_ref_y1 >> 0]);
     $V = $add36;
     
     
@@ -16313,7 +16313,7 @@ function __Z18Intra_Chroma_PlaneP12tagCommonObjiPhS1_($video, $pitch, $predCb, $
     
     
     
-    HEAP32[$a_16_C + $component * 4 >> 2] = ((HEAPU8[$comp_ref_x + 7 >> 0] & 255) + (HEAPU8[$comp_ref_y + 7 * $pitch_addr >> 0] & 255) << 4) + 16;
+    HEAP32[$a_16_C + $component * 4 >> 2] = (HEAPU8[$comp_ref_x + 7 >> 0] + HEAPU8[$comp_ref_y + 7 * $pitch_addr >> 0] << 4) + 16;
     
     
     
@@ -16351,7 +16351,7 @@ function __Z18Intra_Chroma_PlaneP12tagCommonObjiPhS1_($video, $pitch, $predCb, $
   $component = 0;
   $for_cond55$12 : while (1) {
     
-    var $cmp56 = ($component | 0) < 2;
+    var $cmp56 = $component < 2;
     if (!$cmp56) {
       __label__ = 36;
       break $for_cond55$12;
@@ -16372,7 +16372,7 @@ function __Z18Intra_Chroma_PlaneP12tagCommonObjiPhS1_($video, $pitch, $predCb, $
     $i = 4;
     $for_cond61$15 : while (1) {
       
-      var $cmp62 = ($i | 0) < 6;
+      var $cmp62 = $i < 6;
       if (!$cmp62) {
         __label__ = 34;
         break $for_cond61$15;
@@ -16380,7 +16380,7 @@ function __Z18Intra_Chroma_PlaneP12tagCommonObjiPhS1_($video, $pitch, $predCb, $
       $j = 0;
       while (1) {
         
-        var $cmp65 = ($j | 0) < 4;
+        var $cmp65 = $j < 4;
         if (!$cmp65) {
           __label__ = 32;
           break;
@@ -16408,7 +16408,7 @@ function __Z18Intra_Chroma_PlaneP12tagCommonObjiPhS1_($video, $pitch, $predCb, $
         $factor_c = $add74;
         
         
-        if ($value >>> 0 > 255) {
+        if ($value > 255) {
           __label__ = 15;
         } else {
           __label__ = 16;
@@ -16432,7 +16432,7 @@ function __Z18Intra_Chroma_PlaneP12tagCommonObjiPhS1_($video, $pitch, $predCb, $
         $factor_c = $add79;
         
         
-        if ($value >>> 0 > 255) {
+        if ($value > 255) {
           __label__ = 17;
         } else {
           __label__ = 18;
@@ -16456,7 +16456,7 @@ function __Z18Intra_Chroma_PlaneP12tagCommonObjiPhS1_($video, $pitch, $predCb, $
         $factor_c = $add88;
         
         
-        if ($value >>> 0 > 255) {
+        if ($value > 255) {
           __label__ = 19;
         } else {
           __label__ = 20;
@@ -16480,7 +16480,7 @@ function __Z18Intra_Chroma_PlaneP12tagCommonObjiPhS1_($video, $pitch, $predCb, $
         $factor_c = $add97;
         
         
-        if ($value >>> 0 > 255) {
+        if ($value > 255) {
           __label__ = 21;
         } else {
           __label__ = 22;
@@ -16498,12 +16498,12 @@ function __Z18Intra_Chroma_PlaneP12tagCommonObjiPhS1_($video, $pitch, $predCb, $
         
         
         
-        $temp = $byte1 & 255 | ($byte2 & 255) << 8;
+        $temp = $byte1 | $byte2 << 8;
         
         
         
         
-        var $or109 = $temp | ($byte3 & 255) << 16;
+        var $or109 = $temp | $byte3 << 16;
         $temp = $or109;
         
         
@@ -16523,7 +16523,7 @@ function __Z18Intra_Chroma_PlaneP12tagCommonObjiPhS1_($video, $pitch, $predCb, $
         $factor_c = $add113;
         
         
-        if ($value >>> 0 > 255) {
+        if ($value > 255) {
           __label__ = 23;
         } else {
           __label__ = 24;
@@ -16547,7 +16547,7 @@ function __Z18Intra_Chroma_PlaneP12tagCommonObjiPhS1_($video, $pitch, $predCb, $
         $factor_c = $add122;
         
         
-        if ($value >>> 0 > 255) {
+        if ($value > 255) {
           __label__ = 25;
         } else {
           __label__ = 26;
@@ -16571,7 +16571,7 @@ function __Z18Intra_Chroma_PlaneP12tagCommonObjiPhS1_($video, $pitch, $predCb, $
         $factor_c = $add131;
         
         
-        if ($value >>> 0 > 255) {
+        if ($value > 255) {
           __label__ = 27;
         } else {
           __label__ = 28;
@@ -16613,12 +16613,12 @@ function __Z18Intra_Chroma_PlaneP12tagCommonObjiPhS1_($video, $pitch, $predCb, $
         
         
         
-        $temp = $byte1 & 255 | ($byte2 & 255) << 8;
+        $temp = $byte1 | $byte2 << 8;
         
         
         
         
-        var $or153 = $temp | ($byte3 & 255) << 16;
+        var $or153 = $temp | $byte3 << 16;
         $temp = $or153;
         
         
@@ -16752,7 +16752,7 @@ function __Z20Intra_4x4_HorizontalP12tagCommonObjii($video, $pitch, $block_offse
   
   
   
-  $P = HEAPU8[$comp_ref >> 0] & 255;
+  $P = HEAPU8[$comp_ref >> 0];
   
   
   
@@ -16778,7 +16778,7 @@ function __Z20Intra_4x4_HorizontalP12tagCommonObjii($video, $pitch, $block_offse
   
   
   
-  $P = HEAPU8[$comp_ref >> 0] & 255;
+  $P = HEAPU8[$comp_ref >> 0];
   
   
   
@@ -16804,7 +16804,7 @@ function __Z20Intra_4x4_HorizontalP12tagCommonObjii($video, $pitch, $block_offse
   
   
   
-  $P = HEAPU8[$comp_ref >> 0] & 255;
+  $P = HEAPU8[$comp_ref >> 0];
   
   
   
@@ -16830,7 +16830,7 @@ function __Z20Intra_4x4_HorizontalP12tagCommonObjii($video, $pitch, $block_offse
   
   
   
-  $P = HEAPU8[$comp_ref >> 0] & 255;
+  $P = HEAPU8[$comp_ref >> 0];
   
   
   
@@ -16884,7 +16884,7 @@ function __Z12Intra_4x4_DCP12tagCommonObjiiP23tagNeighborAvailability($video, $p
   
   
   
-  if ((HEAP32[$availability_addr >> 2] | 0) != 0) {
+  if (HEAP32[$availability_addr >> 2] != 0) {
     __label__ = 1;
   } else {
     __label__ = 5;
@@ -16893,7 +16893,7 @@ function __Z12Intra_4x4_DCP12tagCommonObjiiP23tagNeighborAvailability($video, $p
     
     
     
-    $DC = HEAPU8[$comp_ref >> 0] & 255;
+    $DC = HEAPU8[$comp_ref >> 0];
     
     
     var $add_ptr2 = $comp_ref + $pitch_addr;
@@ -16902,7 +16902,7 @@ function __Z12Intra_4x4_DCP12tagCommonObjiiP23tagNeighborAvailability($video, $p
     
     
     
-    var $add = $DC + (HEAPU8[$comp_ref >> 0] & 255);
+    var $add = $DC + HEAPU8[$comp_ref >> 0];
     $DC = $add;
     
     
@@ -16912,7 +16912,7 @@ function __Z12Intra_4x4_DCP12tagCommonObjiiP23tagNeighborAvailability($video, $p
     
     
     
-    var $add6 = $DC + (HEAPU8[$comp_ref >> 0] & 255);
+    var $add6 = $DC + HEAPU8[$comp_ref >> 0];
     $DC = $add6;
     
     
@@ -16922,7 +16922,7 @@ function __Z12Intra_4x4_DCP12tagCommonObjiiP23tagNeighborAvailability($video, $p
     
     
     
-    var $add9 = $DC + (HEAPU8[$comp_ref >> 0] & 255);
+    var $add9 = $DC + HEAPU8[$comp_ref >> 0];
     $DC = $add9;
     
     
@@ -16932,7 +16932,7 @@ function __Z12Intra_4x4_DCP12tagCommonObjiiP23tagNeighborAvailability($video, $p
     
     
     
-    if ((HEAP32[$availability_addr + 4 >> 2] | 0) != 0) {
+    if (HEAP32[$availability_addr + 4 >> 2] != 0) {
       __label__ = 2;
     } else {
       __label__ = 3;
@@ -16960,7 +16960,7 @@ function __Z12Intra_4x4_DCP12tagCommonObjiiP23tagNeighborAvailability($video, $p
       
       
       
-      var $shr = (HEAPU8[$comp_ref >> 0] & 255) + (HEAPU8[$comp_ref + 1 >> 0] & 255) + (HEAPU8[$comp_ref + 2 >> 0] & 255) + (HEAPU8[$comp_ref + 3 >> 0] & 255) + $DC + 4 >> 3;
+      var $shr = HEAPU8[$comp_ref >> 0] + HEAPU8[$comp_ref + 1 >> 0] + HEAPU8[$comp_ref + 2 >> 0] + HEAPU8[$comp_ref + 3 >> 0] + $DC + 4 >> 3;
       $DC = $shr;
     } else if (__label__ == 3) {
       
@@ -16973,7 +16973,7 @@ function __Z12Intra_4x4_DCP12tagCommonObjiiP23tagNeighborAvailability($video, $p
     
     
     
-    if ((HEAP32[$availability_addr + 4 >> 2] | 0) != 0) {
+    if (HEAP32[$availability_addr + 4 >> 2] != 0) {
       __label__ = 6;
     } else {
       __label__ = 7;
@@ -17004,7 +17004,7 @@ function __Z12Intra_4x4_DCP12tagCommonObjiiP23tagNeighborAvailability($video, $p
       
       
       
-      $DC = (HEAPU8[$comp_ref >> 0] & 255) + (HEAPU8[$comp_ref + 1 >> 0] & 255) + (HEAPU8[$comp_ref + 2 >> 0] & 255) + (HEAPU8[$comp_ref + 3 >> 0] & 255) + 2 >> 2;
+      $DC = HEAPU8[$comp_ref >> 0] + HEAPU8[$comp_ref + 1 >> 0] + HEAPU8[$comp_ref + 2 >> 0] + HEAPU8[$comp_ref + 3 >> 0] + 2 >> 2;
     } else if (__label__ == 7) {
       $DC = 128;
     }
@@ -17092,30 +17092,30 @@ function __Z19Intra_4x4_Down_LeftP12tagCommonObjiP23tagNeighborAvailability($vid
   $comp_refx = $incdec_ptr;
   
   
-  $r0 = HEAPU8[$7 >> 0] & 255;
+  $r0 = HEAPU8[$7 >> 0];
   var $9 = $comp_refx;
   var $incdec_ptr2 = $9 + 1;
   $comp_refx = $incdec_ptr2;
   
   
-  $r1 = HEAPU8[$9 >> 0] & 255;
+  $r1 = HEAPU8[$9 >> 0];
   var $11 = $comp_refx;
   var $incdec_ptr4 = $11 + 1;
   $comp_refx = $incdec_ptr4;
   
   
-  $r2 = HEAPU8[$11 >> 0] & 255;
+  $r2 = HEAPU8[$11 >> 0];
   var $13 = $comp_refx;
   var $incdec_ptr6 = $13 + 1;
   $comp_refx = $incdec_ptr6;
   
   
-  $r3 = HEAPU8[$13 >> 0] & 255;
+  $r3 = HEAPU8[$13 >> 0];
   
   
   
   
-  if ((HEAP32[$availability_addr + 8 >> 2] | 0) != 0) {
+  if (HEAP32[$availability_addr + 8 >> 2] != 0) {
     __label__ = 1;
   } else {
     __label__ = 2;
@@ -17126,25 +17126,25 @@ function __Z19Intra_4x4_Down_LeftP12tagCommonObjiP23tagNeighborAvailability($vid
     $comp_refx = $incdec_ptr8;
     
     
-    $r4 = HEAPU8[$17 >> 0] & 255;
+    $r4 = HEAPU8[$17 >> 0];
     var $19 = $comp_refx;
     var $incdec_ptr10 = $19 + 1;
     $comp_refx = $incdec_ptr10;
     
     
-    $r5 = HEAPU8[$19 >> 0] & 255;
+    $r5 = HEAPU8[$19 >> 0];
     var $21 = $comp_refx;
     var $incdec_ptr12 = $21 + 1;
     $comp_refx = $incdec_ptr12;
     
     
-    $r6 = HEAPU8[$21 >> 0] & 255;
+    $r6 = HEAPU8[$21 >> 0];
     var $23 = $comp_refx;
     var $incdec_ptr14 = $23 + 1;
     $comp_refx = $incdec_ptr14;
     
     
-    $r7 = HEAPU8[$23 >> 0] & 255;
+    $r7 = HEAPU8[$23 >> 0];
   } else if (__label__ == 2) {
     
     $r4 = $r3;
@@ -17402,7 +17402,7 @@ function __Z29Intra_4x4_Diagonal_Down_RightP12tagCommonObjii($video, $pitch, $bl
   
   
   
-  $x2 = HEAPU8[$video_addr + 784 >> 0] & 255;
+  $x2 = HEAPU8[$video_addr + 784 >> 0];
   
   
   
@@ -17415,7 +17415,7 @@ function __Z29Intra_4x4_Diagonal_Down_RightP12tagCommonObjii($video, $pitch, $bl
   
   
   
-  $x1 = HEAPU8[$comp_refy >> 0] & 255;
+  $x1 = HEAPU8[$comp_refy >> 0];
   
   
   var $add_ptr20 = $comp_refy + $pitch_addr;
@@ -17432,7 +17432,7 @@ function __Z29Intra_4x4_Diagonal_Down_RightP12tagCommonObjii($video, $pitch, $bl
   
   
   
-  $x0 = HEAPU8[$comp_refy >> 0] & 255;
+  $x0 = HEAPU8[$comp_refy >> 0];
   
   
   var $add_ptr27 = $comp_refy + $pitch_addr;
@@ -17449,7 +17449,7 @@ function __Z29Intra_4x4_Diagonal_Down_RightP12tagCommonObjii($video, $pitch, $bl
   
   
   
-  $x2 = HEAPU8[$comp_refy >> 0] & 255;
+  $x2 = HEAPU8[$comp_refy >> 0];
   
   
   var $add_ptr34 = $comp_refy + $pitch_addr;
@@ -17466,7 +17466,7 @@ function __Z29Intra_4x4_Diagonal_Down_RightP12tagCommonObjii($video, $pitch, $bl
   
   
   
-  $x1 = HEAPU8[$comp_refy >> 0] & 255;
+  $x1 = HEAPU8[$comp_refy >> 0];
   
   
   
@@ -17619,13 +17619,13 @@ function __Z33Intra_4x4_Diagonal_Vertical_RightP12tagCommonObjii($video, $pitch,
   $comp_refx = $incdec_ptr;
   
   
-  $x0 = HEAPU8[$9 >> 0] & 255;
+  $x0 = HEAPU8[$9 >> 0];
   var $11 = $comp_refx;
   var $incdec_ptr2 = $11 + 1;
   $comp_refx = $incdec_ptr2;
   
   
-  $x1 = HEAPU8[$11 >> 0] & 255;
+  $x1 = HEAPU8[$11 >> 0];
   
   
   
@@ -17636,7 +17636,7 @@ function __Z33Intra_4x4_Diagonal_Vertical_RightP12tagCommonObjii($video, $pitch,
   $comp_refx = $incdec_ptr5;
   
   
-  $x2 = HEAPU8[$15 >> 0] & 255;
+  $x2 = HEAPU8[$15 >> 0];
   
   
   
@@ -17647,7 +17647,7 @@ function __Z33Intra_4x4_Diagonal_Vertical_RightP12tagCommonObjii($video, $pitch,
   $comp_refx = $incdec_ptr9;
   
   
-  $x1 = HEAPU8[$19 >> 0] & 255;
+  $x1 = HEAPU8[$19 >> 0];
   
   
   
@@ -17657,7 +17657,7 @@ function __Z33Intra_4x4_Diagonal_Vertical_RightP12tagCommonObjii($video, $pitch,
   
   
   
-  $x1 = HEAPU8[$video_addr + 784 >> 0] & 255;
+  $x1 = HEAPU8[$video_addr + 784 >> 0];
   
   
   
@@ -17666,7 +17666,7 @@ function __Z33Intra_4x4_Diagonal_Vertical_RightP12tagCommonObjii($video, $pitch,
   
   
   
-  $x2 = HEAPU8[$comp_refy >> 0] & 255;
+  $x2 = HEAPU8[$comp_refy >> 0];
   
   
   var $add_ptr17 = $comp_refy + $pitch_addr;
@@ -17710,7 +17710,7 @@ function __Z33Intra_4x4_Diagonal_Vertical_RightP12tagCommonObjii($video, $pitch,
   
   
   
-  $x0 = HEAPU8[$comp_refy >> 0] & 255;
+  $x0 = HEAPU8[$comp_refy >> 0];
   
   
   var $add_ptr32 = $comp_refy + $pitch_addr;
@@ -17727,7 +17727,7 @@ function __Z33Intra_4x4_Diagonal_Vertical_RightP12tagCommonObjii($video, $pitch,
   
   
   
-  $x1 = HEAPU8[$comp_refy >> 0] & 255;
+  $x1 = HEAPU8[$comp_refy >> 0];
   
   
   var $add_ptr39 = $comp_refy + $pitch_addr;
@@ -17884,19 +17884,19 @@ function __Z34Intra_4x4_Diagonal_Horizontal_DownP12tagCommonObjii($video, $pitch
   $comp_refx = $incdec_ptr;
   
   
-  $x0 = HEAPU8[$9 >> 0] & 255;
+  $x0 = HEAPU8[$9 >> 0];
   var $11 = $comp_refx;
   var $incdec_ptr2 = $11 + 1;
   $comp_refx = $incdec_ptr2;
   
   
-  $x1 = HEAPU8[$11 >> 0] & 255;
+  $x1 = HEAPU8[$11 >> 0];
   var $13 = $comp_refx;
   var $incdec_ptr4 = $13 + 1;
   $comp_refx = $incdec_ptr4;
   
   
-  $x2 = HEAPU8[$13 >> 0] & 255;
+  $x2 = HEAPU8[$13 >> 0];
   
   
   
@@ -17910,7 +17910,7 @@ function __Z34Intra_4x4_Diagonal_Horizontal_DownP12tagCommonObjii($video, $pitch
   
   
   
-  $x2 = HEAPU8[$video_addr + 784 >> 0] & 255;
+  $x2 = HEAPU8[$video_addr + 784 >> 0];
   
   
   
@@ -17923,7 +17923,7 @@ function __Z34Intra_4x4_Diagonal_Horizontal_DownP12tagCommonObjii($video, $pitch
   
   
   
-  $x1 = HEAPU8[$comp_refy >> 0] & 255;
+  $x1 = HEAPU8[$comp_refy >> 0];
   
   
   var $add_ptr15 = $comp_refy + $pitch_addr;
@@ -17945,7 +17945,7 @@ function __Z34Intra_4x4_Diagonal_Horizontal_DownP12tagCommonObjii($video, $pitch
   
   
   
-  $x0 = HEAPU8[$comp_refy >> 0] & 255;
+  $x0 = HEAPU8[$comp_refy >> 0];
   
   
   var $add_ptr24 = $comp_refy + $pitch_addr;
@@ -17958,7 +17958,7 @@ function __Z34Intra_4x4_Diagonal_Horizontal_DownP12tagCommonObjii($video, $pitch
   
   
   
-  $x1 = HEAPU8[$comp_refy >> 0] & 255;
+  $x1 = HEAPU8[$comp_refy >> 0];
   
   
   var $add_ptr28 = $comp_refy + $pitch_addr;
@@ -17971,7 +17971,7 @@ function __Z34Intra_4x4_Diagonal_Horizontal_DownP12tagCommonObjii($video, $pitch
   
   
   
-  $x2 = HEAPU8[$comp_refy >> 0] & 255;
+  $x2 = HEAPU8[$comp_refy >> 0];
   
   
   
@@ -18137,30 +18137,30 @@ function __Z23Intra_4x4_Vertical_LeftP12tagCommonObjiP23tagNeighborAvailability(
   $comp_refx = $incdec_ptr;
   
   
-  $x0 = HEAPU8[$7 >> 0] & 255;
+  $x0 = HEAPU8[$7 >> 0];
   var $9 = $comp_refx;
   var $incdec_ptr2 = $9 + 1;
   $comp_refx = $incdec_ptr2;
   
   
-  $x1 = HEAPU8[$9 >> 0] & 255;
+  $x1 = HEAPU8[$9 >> 0];
   var $11 = $comp_refx;
   var $incdec_ptr4 = $11 + 1;
   $comp_refx = $incdec_ptr4;
   
   
-  $x2 = HEAPU8[$11 >> 0] & 255;
+  $x2 = HEAPU8[$11 >> 0];
   var $13 = $comp_refx;
   var $incdec_ptr6 = $13 + 1;
   $comp_refx = $incdec_ptr6;
   
   
-  $x3 = HEAPU8[$13 >> 0] & 255;
+  $x3 = HEAPU8[$13 >> 0];
   
   
   
   
-  if ((HEAP32[$availability_addr + 8 >> 2] | 0) != 0) {
+  if (HEAP32[$availability_addr + 8 >> 2] != 0) {
     __label__ = 1;
   } else {
     __label__ = 2;
@@ -18171,19 +18171,19 @@ function __Z23Intra_4x4_Vertical_LeftP12tagCommonObjiP23tagNeighborAvailability(
     $comp_refx = $incdec_ptr8;
     
     
-    $x4 = HEAPU8[$17 >> 0] & 255;
+    $x4 = HEAPU8[$17 >> 0];
     var $19 = $comp_refx;
     var $incdec_ptr10 = $19 + 1;
     $comp_refx = $incdec_ptr10;
     
     
-    $x5 = HEAPU8[$19 >> 0] & 255;
+    $x5 = HEAPU8[$19 >> 0];
     var $21 = $comp_refx;
     var $incdec_ptr12 = $21 + 1;
     $comp_refx = $incdec_ptr12;
     
     
-    $x6 = HEAPU8[$21 >> 0] & 255;
+    $x6 = HEAPU8[$21 >> 0];
   } else if (__label__ == 2) {
     
     $x4 = $x3;
@@ -18366,7 +18366,7 @@ function __Z23Intra_4x4_Horizontal_UpP12tagCommonObjii($video, $pitch, $block_of
   
   
   
-  $y0 = HEAPU8[$comp_refy >> 0] & 255;
+  $y0 = HEAPU8[$comp_refy >> 0];
   
   
   var $add_ptr2 = $comp_refy + $pitch_addr;
@@ -18374,7 +18374,7 @@ function __Z23Intra_4x4_Horizontal_UpP12tagCommonObjii($video, $pitch, $block_of
   
   
   
-  $y1 = HEAPU8[$comp_refy >> 0] & 255;
+  $y1 = HEAPU8[$comp_refy >> 0];
   
   
   var $add_ptr4 = $comp_refy + $pitch_addr;
@@ -18382,7 +18382,7 @@ function __Z23Intra_4x4_Horizontal_UpP12tagCommonObjii($video, $pitch, $block_of
   
   
   
-  $y2 = HEAPU8[$comp_refy >> 0] & 255;
+  $y2 = HEAPU8[$comp_refy >> 0];
   
   
   var $add_ptr6 = $comp_refy + $pitch_addr;
@@ -18390,7 +18390,7 @@ function __Z23Intra_4x4_Horizontal_UpP12tagCommonObjii($video, $pitch, $block_of
   
   
   
-  $y3 = HEAPU8[$comp_refy >> 0] & 255;
+  $y3 = HEAPU8[$comp_refy >> 0];
   
   
   
@@ -18636,7 +18636,7 @@ function __Z17InterMBPredictionP12tagCommonObj($video) {
     
     
     
-    var $cmp = ($mbPartIdx | 0) < (HEAP32[$currMB + 256 >> 2] | 0);
+    var $cmp = $mbPartIdx < HEAP32[$currMB + 256 >> 2];
     if (!$cmp) {
       __label__ = 8;
       break $for_cond$2;
@@ -18671,8 +18671,8 @@ function __Z17InterMBPredictionP12tagCommonObj($video) {
     
     
     
-    var $conv = (tempInt = HEAP16[$currMB + 132 + (($mbPartIdx_Y << 1) + $mbPartIdx_X) * 2 >> 1], tempInt >= 32768 ? tempInt - 65536 : tempInt);
-    $ref_idx = $conv;
+    
+    $ref_idx = HEAP16[$currMB + 132 + (($mbPartIdx_Y << 1) + $mbPartIdx_X) * 2 >> 1];
     $offset_indx = 0;
     
     
@@ -18706,7 +18706,7 @@ function __Z17InterMBPredictionP12tagCommonObj($video) {
       
       
       
-      var $cmp25 = ($subMbPartIdx | 0) < (HEAP32[$currMB + 332 + $mbPartIdx * 4 >> 2] | 0);
+      var $cmp25 = $subMbPartIdx < HEAP32[$currMB + 332 + $mbPartIdx * 4 >> 2];
       if (!$cmp25) {
         __label__ = 6;
         break;
@@ -18754,16 +18754,16 @@ function __Z17InterMBPredictionP12tagCommonObj($video) {
       var $incdec_ptr = $78 + 2;
       $mv = $incdec_ptr;
       
-      var $conv44 = (tempInt = HEAP16[$78 >> 1], tempInt >= 32768 ? tempInt - 65536 : tempInt);
-      
-      $x_pos = ($offset_x << 2) + $conv44;
       
       
+      $x_pos = ($offset_x << 2) + HEAP16[$78 >> 1];
       
       
-      var $conv47 = (tempInt = HEAP16[$mv >> 1], tempInt >= 32768 ? tempInt - 65536 : tempInt);
       
-      $y_pos = ($offset_y << 2) + $conv47;
+      
+      
+      
+      $y_pos = ($offset_y << 2) + HEAP16[$mv >> 1];
       
       
       
@@ -18860,7 +18860,7 @@ function __Z17InterMBPredictionP12tagCommonObj($video) {
   $block_y = 4;
   $for_cond78$12 : while (1) {
     
-    var $cmp79 = ($block_y | 0) > 0;
+    var $cmp79 = $block_y > 0;
     if (!$cmp79) {
       __label__ = 18;
       break $for_cond78$12;
@@ -18868,7 +18868,7 @@ function __Z17InterMBPredictionP12tagCommonObj($video) {
     $block_x = 4;
     while (1) {
       
-      var $cmp82 = ($block_x | 0) > 0;
+      var $cmp82 = $block_x > 0;
       if (!$cmp82) {
         __label__ = 16;
         break;
@@ -18876,7 +18876,7 @@ function __Z17InterMBPredictionP12tagCommonObj($video) {
       
       
       
-      if (($cbp4x4 & 1 | 0) != 0) {
+      if (($cbp4x4 & 1) != 0) {
         __label__ = 13;
       } else {
         __label__ = 14;
@@ -18924,7 +18924,7 @@ function __Z17InterMBPredictionP12tagCommonObj($video) {
   $block_y = 2;
   $for_cond97$25 : while (1) {
     
-    var $cmp98 = ($block_y | 0) > 0;
+    var $cmp98 = $block_y > 0;
     if (!$cmp98) {
       __label__ = 34;
       break $for_cond97$25;
@@ -18932,7 +18932,7 @@ function __Z17InterMBPredictionP12tagCommonObj($video) {
     $block_x = 2;
     $for_cond100$28 : while (1) {
       
-      var $cmp101 = ($block_x | 0) > 0;
+      var $cmp101 = $block_x > 0;
       if (!$cmp101) {
         __label__ = 26;
         break $for_cond100$28;
@@ -18940,7 +18940,7 @@ function __Z17InterMBPredictionP12tagCommonObj($video) {
       
       
       
-      if (($cbp4x4 & 1 | 0) != 0) {
+      if (($cbp4x4 & 1) != 0) {
         __label__ = 23;
       } else {
         __label__ = 24;
@@ -18970,7 +18970,7 @@ function __Z17InterMBPredictionP12tagCommonObj($video) {
     $block_x = 2;
     while (1) {
       
-      var $cmp114 = ($block_x | 0) > 0;
+      var $cmp114 = $block_x > 0;
       if (!$cmp114) {
         __label__ = 32;
         break;
@@ -18978,7 +18978,7 @@ function __Z17InterMBPredictionP12tagCommonObj($video) {
       
       
       
-      if (($cbp4x4 & 1 | 0) != 0) {
+      if (($cbp4x4 & 1) != 0) {
         __label__ = 29;
       } else {
         __label__ = 30;
@@ -19071,7 +19071,7 @@ function __Z14LumaMotionCompPhiiiiS_iii($ref, $picwidth, $picheight, $x_pos, $y_
   $y_pos_addr = $shr2;
   
   
-  if (($dx | 0) == 0) {
+  if ($dx == 0) {
     __label__ = 1;
   } else {
     __label__ = 9;
@@ -19079,14 +19079,14 @@ function __Z14LumaMotionCompPhiiiiS_iii($ref, $picwidth, $picheight, $x_pos, $y_
   $land_lhs_true$$if_else17$2 : do {
     if (__label__ == 1) {
       
-      var $cmp3 = ($dy | 0) == 0;
+      var $cmp3 = $dy == 0;
       if (!$cmp3) {
         __label__ = 9;
         break $land_lhs_true$$if_else17$2;
       }
       
       
-      if (($x_pos_addr | 0) >= 0) {
+      if ($x_pos_addr >= 0) {
         __label__ = 3;
       } else {
         __label__ = 7;
@@ -19097,13 +19097,13 @@ function __Z14LumaMotionCompPhiiiiS_iii($ref, $picwidth, $picheight, $x_pos, $y_
           
           
           
-          var $cmp6 = ($x_pos_addr + $blkwidth_addr | 0) <= ($picwidth_addr | 0);
+          var $cmp6 = $x_pos_addr + $blkwidth_addr <= $picwidth_addr;
           if (!$cmp6) {
             __label__ = 7;
             break $land_lhs_true5$$if_else$5;
           }
           
-          var $cmp8 = ($y_pos_addr | 0) >= 0;
+          var $cmp8 = $y_pos_addr >= 0;
           if (!$cmp8) {
             __label__ = 7;
             break $land_lhs_true5$$if_else$5;
@@ -19112,7 +19112,7 @@ function __Z14LumaMotionCompPhiiiiS_iii($ref, $picwidth, $picheight, $x_pos, $y_
           
           
           
-          var $cmp11 = ($y_pos_addr + $blkheight_addr | 0) <= ($picheight_addr | 0);
+          var $cmp11 = $y_pos_addr + $blkheight_addr <= $picheight_addr;
           if (!$cmp11) {
             __label__ = 7;
             break $land_lhs_true5$$if_else$5;
@@ -19162,7 +19162,7 @@ function __Z14LumaMotionCompPhiiiiS_iii($ref, $picwidth, $picheight, $x_pos, $y_
   if (__label__ == 9) {
     
     
-    if (($dy | 0) == 0) {
+    if ($dy == 0) {
       __label__ = 10;
     } else {
       __label__ = 17;
@@ -19171,7 +19171,7 @@ function __Z14LumaMotionCompPhiiiiS_iii($ref, $picwidth, $picheight, $x_pos, $y_
       
       
       
-      if (($x_pos_addr - 2 | 0) >= 0) {
+      if ($x_pos_addr - 2 >= 0) {
         __label__ = 11;
       } else {
         __label__ = 15;
@@ -19183,13 +19183,13 @@ function __Z14LumaMotionCompPhiiiiS_iii($ref, $picwidth, $picheight, $x_pos, $y_
           
           
           
-          var $cmp24 = ($x_pos_addr + 3 + $blkwidth_addr | 0) <= ($picwidth_addr | 0);
+          var $cmp24 = $x_pos_addr + 3 + $blkwidth_addr <= $picwidth_addr;
           if (!$cmp24) {
             __label__ = 15;
             break $land_lhs_true21$$if_else34$17;
           }
           
-          var $cmp26 = ($y_pos_addr | 0) >= 0;
+          var $cmp26 = $y_pos_addr >= 0;
           if (!$cmp26) {
             __label__ = 15;
             break $land_lhs_true21$$if_else34$17;
@@ -19198,7 +19198,7 @@ function __Z14LumaMotionCompPhiiiiS_iii($ref, $picwidth, $picheight, $x_pos, $y_
           
           
           
-          var $cmp29 = ($y_pos_addr + $blkheight_addr | 0) <= ($picheight_addr | 0);
+          var $cmp29 = $y_pos_addr + $blkheight_addr <= $picheight_addr;
           if (!$cmp29) {
             __label__ = 15;
             break $land_lhs_true21$$if_else34$17;
@@ -19248,7 +19248,7 @@ function __Z14LumaMotionCompPhiiiiS_iii($ref, $picwidth, $picheight, $x_pos, $y_
     } else if (__label__ == 17) {
       
       
-      if (($dx | 0) == 0) {
+      if ($dx == 0) {
         __label__ = 18;
       } else {
         __label__ = 25;
@@ -19256,7 +19256,7 @@ function __Z14LumaMotionCompPhiiiiS_iii($ref, $picwidth, $picheight, $x_pos, $y_
       if (__label__ == 18) {
         
         
-        if (($x_pos_addr | 0) >= 0) {
+        if ($x_pos_addr >= 0) {
           __label__ = 19;
         } else {
           __label__ = 23;
@@ -19267,14 +19267,14 @@ function __Z14LumaMotionCompPhiiiiS_iii($ref, $picwidth, $picheight, $x_pos, $y_
             
             
             
-            var $cmp48 = ($x_pos_addr + $blkwidth_addr | 0) <= ($picwidth_addr | 0);
+            var $cmp48 = $x_pos_addr + $blkwidth_addr <= $picwidth_addr;
             if (!$cmp48) {
               __label__ = 23;
               break $land_lhs_true46$$if_else60$28;
             }
             
             
-            var $cmp51 = ($y_pos_addr - 2 | 0) >= 0;
+            var $cmp51 = $y_pos_addr - 2 >= 0;
             if (!$cmp51) {
               __label__ = 23;
               break $land_lhs_true46$$if_else60$28;
@@ -19284,7 +19284,7 @@ function __Z14LumaMotionCompPhiiiiS_iii($ref, $picwidth, $picheight, $x_pos, $y_
             
             
             
-            var $cmp55 = ($y_pos_addr + 3 + $blkheight_addr | 0) <= ($picheight_addr | 0);
+            var $cmp55 = $y_pos_addr + 3 + $blkheight_addr <= $picheight_addr;
             if (!$cmp55) {
               __label__ = 23;
               break $land_lhs_true46$$if_else60$28;
@@ -19334,7 +19334,7 @@ function __Z14LumaMotionCompPhiiiiS_iii($ref, $picwidth, $picheight, $x_pos, $y_
       } else if (__label__ == 25) {
         
         
-        if (($dy | 0) == 2) {
+        if ($dy == 2) {
           __label__ = 26;
         } else {
           __label__ = 33;
@@ -19343,7 +19343,7 @@ function __Z14LumaMotionCompPhiiiiS_iii($ref, $picwidth, $picheight, $x_pos, $y_
           
           
           
-          if (($x_pos_addr - 2 | 0) >= 0) {
+          if ($x_pos_addr - 2 >= 0) {
             __label__ = 27;
           } else {
             __label__ = 31;
@@ -19355,14 +19355,14 @@ function __Z14LumaMotionCompPhiiiiS_iii($ref, $picwidth, $picheight, $x_pos, $y_
               
               
               
-              var $cmp76 = ($x_pos_addr + 3 + $blkwidth_addr | 0) <= ($picwidth_addr | 0);
+              var $cmp76 = $x_pos_addr + 3 + $blkwidth_addr <= $picwidth_addr;
               if (!$cmp76) {
                 __label__ = 31;
                 break $land_lhs_true73$$if_else94$39;
               }
               
               
-              var $cmp79 = ($y_pos_addr - 2 | 0) >= 0;
+              var $cmp79 = $y_pos_addr - 2 >= 0;
               if (!$cmp79) {
                 __label__ = 31;
                 break $land_lhs_true73$$if_else94$39;
@@ -19372,7 +19372,7 @@ function __Z14LumaMotionCompPhiiiiS_iii($ref, $picwidth, $picheight, $x_pos, $y_
               
               
               
-              var $cmp83 = ($y_pos_addr + 3 + $blkheight_addr | 0) <= ($picheight_addr | 0);
+              var $cmp83 = $y_pos_addr + 3 + $blkheight_addr <= $picheight_addr;
               if (!$cmp83) {
                 __label__ = 31;
                 break $land_lhs_true73$$if_else94$39;
@@ -19441,7 +19441,7 @@ function __Z14LumaMotionCompPhiiiiS_iii($ref, $picwidth, $picheight, $x_pos, $y_
         } else if (__label__ == 33) {
           
           
-          if (($dx | 0) == 2) {
+          if ($dx == 2) {
             __label__ = 34;
           } else {
             __label__ = 41;
@@ -19450,7 +19450,7 @@ function __Z14LumaMotionCompPhiiiiS_iii($ref, $picwidth, $picheight, $x_pos, $y_
             
             
             
-            if (($x_pos_addr - 2 | 0) >= 0) {
+            if ($x_pos_addr - 2 >= 0) {
               __label__ = 35;
             } else {
               __label__ = 39;
@@ -19462,14 +19462,14 @@ function __Z14LumaMotionCompPhiiiiS_iii($ref, $picwidth, $picheight, $x_pos, $y_
                 
                 
                 
-                var $cmp117 = ($x_pos_addr + 3 + $blkwidth_addr | 0) <= ($picwidth_addr | 0);
+                var $cmp117 = $x_pos_addr + 3 + $blkwidth_addr <= $picwidth_addr;
                 if (!$cmp117) {
                   __label__ = 39;
                   break $land_lhs_true114$$if_else135$50;
                 }
                 
                 
-                var $cmp120 = ($y_pos_addr - 2 | 0) >= 0;
+                var $cmp120 = $y_pos_addr - 2 >= 0;
                 if (!$cmp120) {
                   __label__ = 39;
                   break $land_lhs_true114$$if_else135$50;
@@ -19479,7 +19479,7 @@ function __Z14LumaMotionCompPhiiiiS_iii($ref, $picwidth, $picheight, $x_pos, $y_
                 
                 
                 
-                var $cmp124 = ($y_pos_addr + 3 + $blkheight_addr | 0) <= ($picheight_addr | 0);
+                var $cmp124 = $y_pos_addr + 3 + $blkheight_addr <= $picheight_addr;
                 if (!$cmp124) {
                   __label__ = 39;
                   break $land_lhs_true114$$if_else135$50;
@@ -19549,7 +19549,7 @@ function __Z14LumaMotionCompPhiiiiS_iii($ref, $picwidth, $picheight, $x_pos, $y_
             
             
             
-            if (($x_pos_addr - 2 | 0) >= 0) {
+            if ($x_pos_addr - 2 >= 0) {
               __label__ = 42;
             } else {
               __label__ = 46;
@@ -19564,14 +19564,14 @@ function __Z14LumaMotionCompPhiiiiS_iii($ref, $picwidth, $picheight, $x_pos, $y_
                 
                 
                 
-                var $cmp157 = ($x_pos_addr + 3 + (($dx | 0) / 2 | 0) + $blkwidth_addr | 0) <= ($picwidth_addr | 0);
+                var $cmp157 = $x_pos_addr + 3 + ($dx / 2 | 0) + $blkwidth_addr <= $picwidth_addr;
                 if (!$cmp157) {
                   __label__ = 46;
                   break $land_lhs_true153$$if_else178$59;
                 }
                 
                 
-                var $cmp160 = ($y_pos_addr - 2 | 0) >= 0;
+                var $cmp160 = $y_pos_addr - 2 >= 0;
                 if (!$cmp160) {
                   __label__ = 46;
                   break $land_lhs_true153$$if_else178$59;
@@ -19584,7 +19584,7 @@ function __Z14LumaMotionCompPhiiiiS_iii($ref, $picwidth, $picheight, $x_pos, $y_
                 
                 
                 
-                var $cmp166 = ($y_pos_addr + 3 + $blkheight_addr + (($dy | 0) / 2 | 0) | 0) <= ($picheight_addr | 0);
+                var $cmp166 = $y_pos_addr + 3 + $blkheight_addr + ($dy / 2 | 0) <= $picheight_addr;
                 if (!$cmp166) {
                   __label__ = 46;
                   break $land_lhs_true153$$if_else178$59;
@@ -19599,7 +19599,7 @@ function __Z14LumaMotionCompPhiiiiS_iii($ref, $picwidth, $picheight, $x_pos, $y_
                 
                 
                 
-                $ref2 = $ref_addr + ($y_pos_addr + (($dy | 0) / 2 | 0)) * $picwidth_addr + $x_pos_addr;
+                $ref2 = $ref_addr + ($y_pos_addr + ($dy / 2 | 0)) * $picwidth_addr + $x_pos_addr;
                 
                 
                 
@@ -19609,7 +19609,7 @@ function __Z14LumaMotionCompPhiiiiS_iii($ref, $picwidth, $picheight, $x_pos, $y_
                 
                 
                 
-                var $add_ptr177 = $ref_addr + ($y_pos_addr * $picwidth_addr + $x_pos_addr + (($dx | 0) / 2 | 0));
+                var $add_ptr177 = $ref_addr + ($y_pos_addr * $picwidth_addr + $x_pos_addr + ($dx / 2 | 0));
                 $ref_addr = $add_ptr177;
                 
                 
@@ -19643,19 +19643,19 @@ function __Z14LumaMotionCompPhiiiiS_iii($ref, $picwidth, $picheight, $x_pos, $y_
               
               
               
-              __Z9CreatePadPhiiiiS_ii($ref_addr, $picwidth_addr, $picheight_addr, $x_pos_addr - 2, $y_pos_addr - 2, $arrayidx182, $blkwidth_addr + 5 + (($dx | 0) / 2 | 0), $blkheight_addr + 5 + (($dy | 0) / 2 | 0));
+              __Z9CreatePadPhiiiiS_ii($ref_addr, $picwidth_addr, $picheight_addr, $x_pos_addr - 2, $y_pos_addr - 2, $arrayidx182, $blkwidth_addr + 5 + ($dx / 2 | 0), $blkheight_addr + 5 + ($dy / 2 | 0));
               
               
               
               
               
-              $ref2 = $temp + (2 + (($dy | 0) / 2 | 0)) * 24 + 2;
+              $ref2 = $temp + (2 + ($dy / 2 | 0)) * 24 + 2;
               
               
               
               
               
-              $ref_addr = $temp + 48 + (2 + (($dx | 0) / 2 | 0));
+              $ref_addr = $temp + 48 + (2 + ($dx / 2 | 0));
               
               
               
@@ -19723,7 +19723,7 @@ function __Z16ChromaMotionCompPhiiiiS_iii($ref, $picwidth, $picheight, $x_pos, $
   $y_pos_addr = $shr5;
   
   
-  if (($x_pos_addr | 0) >= 0) {
+  if ($x_pos_addr >= 0) {
     __label__ = 1;
   } else {
     __label__ = 5;
@@ -19736,13 +19736,13 @@ function __Z16ChromaMotionCompPhiiiiS_iii($ref, $picwidth, $picheight, $x_pos, $
       
       
       
-      var $cmp8 = ($x_pos_addr + $blkwidth_addr + $offset_dx | 0) <= ($picwidth_addr | 0);
+      var $cmp8 = $x_pos_addr + $blkwidth_addr + $offset_dx <= $picwidth_addr;
       if (!$cmp8) {
         __label__ = 5;
         break $land_lhs_true$$if_else$2;
       }
       
-      var $cmp10 = ($y_pos_addr | 0) >= 0;
+      var $cmp10 = $y_pos_addr >= 0;
       if (!$cmp10) {
         __label__ = 5;
         break $land_lhs_true$$if_else$2;
@@ -19753,7 +19753,7 @@ function __Z16ChromaMotionCompPhiiiiS_iii($ref, $picwidth, $picheight, $x_pos, $
       
       
       
-      var $cmp14 = ($y_pos_addr + $blkheight_addr + $offset_dy | 0) <= ($picheight_addr | 0);
+      var $cmp14 = $y_pos_addr + $blkheight_addr + $offset_dy <= $picheight_addr;
       if (!$cmp14) {
         __label__ = 5;
         break $land_lhs_true$$if_else$2;
@@ -19849,7 +19849,7 @@ function __Z9FullPelMCPhiS_iii($in, $inpitch, $out, $outpitch, $blkwidth, $blkhe
   
   
   
-  if (($in_addr & 3 | 0) != 0) {
+  if (($in_addr & 3) != 0) {
     __label__ = 1;
   } else {
     __label__ = 10;
@@ -19859,7 +19859,7 @@ function __Z9FullPelMCPhiS_iii($in, $inpitch, $out, $outpitch, $blkwidth, $blkhe
     $j = $blkheight_addr;
     $for_cond$4 : while (1) {
       
-      var $cmp = ($j | 0) > 0;
+      var $cmp = $j > 0;
       if (!$cmp) {
         __label__ = 9;
         break $for_cond$4;
@@ -19868,7 +19868,7 @@ function __Z9FullPelMCPhiS_iii($in, $inpitch, $out, $outpitch, $blkwidth, $blkhe
       $i = $blkwidth_addr;
       while (1) {
         
-        var $cmp3 = ($i | 0) > 0;
+        var $cmp3 = $i > 0;
         if (!$cmp3) {
           __label__ = 7;
           break;
@@ -19878,7 +19878,7 @@ function __Z9FullPelMCPhiS_iii($in, $inpitch, $out, $outpitch, $blkwidth, $blkhe
         $in_addr = $incdec_ptr;
         
         
-        $temp = HEAPU8[$10 >> 0] & 255;
+        $temp = HEAPU8[$10 >> 0];
         var $12 = $in_addr;
         var $incdec_ptr5 = $12 + 1;
         $in_addr = $incdec_ptr5;
@@ -19944,7 +19944,7 @@ function __Z9FullPelMCPhiS_iii($in, $inpitch, $out, $outpitch, $blkwidth, $blkhe
     $j = $blkheight_addr;
     $for_cond20$15 : while (1) {
       
-      var $cmp21 = ($j | 0) > 0;
+      var $cmp21 = $j > 0;
       if (!$cmp21) {
         __label__ = 18;
         break $for_cond20$15;
@@ -19953,7 +19953,7 @@ function __Z9FullPelMCPhiS_iii($in, $inpitch, $out, $outpitch, $blkwidth, $blkhe
       $i = $blkwidth_addr;
       while (1) {
         
-        var $cmp24 = ($i | 0) > 0;
+        var $cmp24 = $i > 0;
         if (!$cmp24) {
           __label__ = 16;
           break;
@@ -20029,7 +20029,7 @@ function __Z9CreatePadPhiiiiS_ii($ref, $picwidth, $picheight, $x_pos, $y_pos, $o
   $blkheight_addr = $blkheight;
   
   
-  if (($x_pos_addr | 0) < 0) {
+  if ($x_pos_addr < 0) {
     __label__ = 1;
   } else {
     __label__ = 5;
@@ -20040,7 +20040,7 @@ function __Z9CreatePadPhiiiiS_ii($ref, $picwidth, $picheight, $x_pos, $y_pos, $o
     
     
     
-    if (($blkwidth_addr + $x_pos_addr | 0) > 0) {
+    if ($blkwidth_addr + $x_pos_addr > 0) {
       __label__ = 2;
     } else {
       __label__ = 3;
@@ -20062,7 +20062,7 @@ function __Z9CreatePadPhiiiiS_ii($ref, $picwidth, $picheight, $x_pos, $y_pos, $o
     
     
     
-    if (($x_pos_addr + $blkwidth_addr | 0) > ($picwidth_addr | 0)) {
+    if ($x_pos_addr + $blkwidth_addr > $picwidth_addr) {
       __label__ = 6;
     } else {
       __label__ = 10;
@@ -20072,7 +20072,7 @@ function __Z9CreatePadPhiiiiS_ii($ref, $picwidth, $picheight, $x_pos, $y_pos, $o
       
       
       
-      if (($picwidth_addr | 0) > ($x_pos_addr | 0)) {
+      if ($picwidth_addr > $x_pos_addr) {
         __label__ = 7;
       } else {
         __label__ = 8;
@@ -20096,7 +20096,7 @@ function __Z9CreatePadPhiiiiS_ii($ref, $picwidth, $picheight, $x_pos, $y_pos, $o
   }
   
   
-  if (($y_pos_addr | 0) < 0) {
+  if ($y_pos_addr < 0) {
     __label__ = 13;
   } else {
     __label__ = 20;
@@ -20104,7 +20104,7 @@ function __Z9CreatePadPhiiiiS_ii($ref, $picwidth, $picheight, $x_pos, $y_pos, $o
   if (__label__ == 13) {
     
     
-    if (($x_inc0 | 0) != 0) {
+    if ($x_inc0 != 0) {
       __label__ = 14;
     } else {
       __label__ = 15;
@@ -20130,7 +20130,7 @@ function __Z9CreatePadPhiiiiS_ii($ref, $picwidth, $picheight, $x_pos, $y_pos, $o
     
     
     
-    if (($blkheight_addr + $y_pos_addr | 0) > 0) {
+    if ($blkheight_addr + $y_pos_addr > 0) {
       __label__ = 17;
     } else {
       __label__ = 18;
@@ -20152,7 +20152,7 @@ function __Z9CreatePadPhiiiiS_ii($ref, $picwidth, $picheight, $x_pos, $y_pos, $o
     
     
     
-    if (($y_pos_addr + $blkheight_addr | 0) > ($picheight_addr | 0)) {
+    if ($y_pos_addr + $blkheight_addr > $picheight_addr) {
       __label__ = 21;
     } else {
       __label__ = 28;
@@ -20160,7 +20160,7 @@ function __Z9CreatePadPhiiiiS_ii($ref, $picwidth, $picheight, $x_pos, $y_pos, $o
     if (__label__ == 21) {
       
       
-      if (($x_inc0 | 0) != 0) {
+      if ($x_inc0 != 0) {
         __label__ = 22;
       } else {
         __label__ = 23;
@@ -20185,7 +20185,7 @@ function __Z9CreatePadPhiiiiS_ii($ref, $picwidth, $picheight, $x_pos, $y_pos, $o
       
       
       
-      if (($picheight_addr | 0) > ($y_pos_addr | 0)) {
+      if ($picheight_addr > $y_pos_addr) {
         __label__ = 25;
       } else {
         __label__ = 26;
@@ -20204,7 +20204,7 @@ function __Z9CreatePadPhiiiiS_ii($ref, $picwidth, $picheight, $x_pos, $y_pos, $o
     } else if (__label__ == 28) {
       
       
-      if (($x_inc0 | 0) != 0) {
+      if ($x_inc0 != 0) {
         __label__ = 29;
       } else {
         __label__ = 30;
@@ -20234,7 +20234,7 @@ function __Z9CreatePadPhiiiiS_ii($ref, $picwidth, $picheight, $x_pos, $y_pos, $o
   
   
   
-  if (($y_pos_addr | 0) > ($picheight_addr - 1 | 0)) {
+  if ($y_pos_addr > $picheight_addr - 1) {
     __label__ = 34;
   } else {
     __label__ = 35;
@@ -20248,7 +20248,7 @@ function __Z9CreatePadPhiiiiS_ii($ref, $picwidth, $picheight, $x_pos, $y_pos, $o
   
   
   
-  if (($x_pos_addr | 0) > ($picwidth_addr - 1 | 0)) {
+  if ($x_pos_addr > $picwidth_addr - 1) {
     __label__ = 36;
   } else {
     __label__ = 37;
@@ -20277,7 +20277,7 @@ function __Z9CreatePadPhiiiiS_ii($ref, $picwidth, $picheight, $x_pos, $y_pos, $o
   $blkwidth_addr = $sub75;
   
   
-  if (($x_inc0 | 0) == 0) {
+  if ($x_inc0 == 0) {
     __label__ = 38;
   } else {
     __label__ = 53;
@@ -20287,7 +20287,7 @@ function __Z9CreatePadPhiiiiS_ii($ref, $picwidth, $picheight, $x_pos, $y_pos, $o
     $for_cond$54 : while (1) {
       
       
-      var $cmp78 = ($j | 0) < ($blkheight_addr | 0);
+      var $cmp78 = $j < $blkheight_addr;
       if (!$cmp78) {
         __label__ = 52;
         break $for_cond$54;
@@ -20295,7 +20295,7 @@ function __Z9CreatePadPhiiiiS_ii($ref, $picwidth, $picheight, $x_pos, $y_pos, $o
       
       
       
-      if (($j | 0) == ($y_mid | 0)) {
+      if ($j == $y_mid) {
         __label__ = 41;
       } else {
         __label__ = 42;
@@ -20308,7 +20308,7 @@ function __Z9CreatePadPhiiiiS_ii($ref, $picwidth, $picheight, $x_pos, $y_pos, $o
       $i = $x_mid;
       $for_cond82$60 : while (1) {
         
-        var $cmp83 = ($i | 0) > 0;
+        var $cmp83 = $i > 0;
         if (!$cmp83) {
           __label__ = 46;
           break $for_cond82$60;
@@ -20329,7 +20329,7 @@ function __Z9CreatePadPhiiiiS_ii($ref, $picwidth, $picheight, $x_pos, $y_pos, $o
       $i = $blkwidth_addr;
       while (1) {
         
-        var $cmp86 = ($i | 0) > 0;
+        var $cmp86 = $i > 0;
         if (!$cmp86) {
           __label__ = 50;
           break;
@@ -20367,7 +20367,7 @@ function __Z9CreatePadPhiiiiS_ii($ref, $picwidth, $picheight, $x_pos, $y_pos, $o
     $for_cond98$73 : while (1) {
       
       
-      var $cmp99 = ($j | 0) < ($blkheight_addr | 0);
+      var $cmp99 = $j < $blkheight_addr;
       if (!$cmp99) {
         __label__ = 67;
         break $for_cond98$73;
@@ -20375,7 +20375,7 @@ function __Z9CreatePadPhiiiiS_ii($ref, $picwidth, $picheight, $x_pos, $y_pos, $o
       
       
       
-      if (($j | 0) == ($y_mid | 0)) {
+      if ($j == $y_mid) {
         __label__ = 56;
       } else {
         __label__ = 57;
@@ -20388,7 +20388,7 @@ function __Z9CreatePadPhiiiiS_ii($ref, $picwidth, $picheight, $x_pos, $y_pos, $o
       $i = $x_mid;
       $for_cond104$79 : while (1) {
         
-        var $cmp105 = ($i | 0) > 0;
+        var $cmp105 = $i > 0;
         if (!$cmp105) {
           __label__ = 61;
           break $for_cond104$79;
@@ -20411,7 +20411,7 @@ function __Z9CreatePadPhiiiiS_ii($ref, $picwidth, $picheight, $x_pos, $y_pos, $o
       $i = $blkwidth_addr;
       while (1) {
         
-        var $cmp113 = ($i | 0) > 0;
+        var $cmp113 = $i > 0;
         if (!$cmp113) {
           __label__ = 65;
           break;
@@ -20498,7 +20498,7 @@ function __Z13HorzInterp1MCPhiS_iiii($in, $inpitch, $out, $outpitch, $blkwidth, 
   
   
   
-  if (($dx_addr & 1 | 0) != 0) {
+  if (($dx_addr & 1) != 0) {
     __label__ = 1;
   } else {
     __label__ = 22;
@@ -20507,7 +20507,7 @@ function __Z13HorzInterp1MCPhiS_iiii($in, $inpitch, $out, $outpitch, $blkwidth, 
     
     
     
-    var $cond = ($dx_addr >> 1 | 0) != 0 ? -3 : -4;
+    var $cond = $dx_addr >> 1 != 0 ? -3 : -4;
     $dx_addr = $cond;
     
     var $add_ptr = $p_ref + -2;
@@ -20517,7 +20517,7 @@ function __Z13HorzInterp1MCPhiS_iiii($in, $inpitch, $out, $outpitch, $blkwidth, 
     $j = $blkheight_addr;
     $for_cond$4 : while (1) {
       
-      var $cmp = ($j | 0) > 0;
+      var $cmp = $j > 0;
       if (!$cmp) {
         __label__ = 21;
         break $for_cond$4;
@@ -20531,12 +20531,12 @@ function __Z13HorzInterp1MCPhiS_iiii($in, $inpitch, $out, $outpitch, $blkwidth, 
       
       
       
-      $r0 = HEAPU8[$p_ref >> 0] & 255;
+      $r0 = HEAPU8[$p_ref >> 0];
       
       
       
       
-      $r1 = HEAPU8[$p_ref + 2 >> 0] & 255;
+      $r1 = HEAPU8[$p_ref + 2 >> 0];
       
       
       
@@ -20546,12 +20546,12 @@ function __Z13HorzInterp1MCPhiS_iiii($in, $inpitch, $out, $outpitch, $blkwidth, 
       
       
       
-      $r1 = HEAPU8[$p_ref + 1 >> 0] & 255;
+      $r1 = HEAPU8[$p_ref + 1 >> 0];
       
       
       
       
-      $r2 = HEAPU8[$p_ref + 3 >> 0] & 255;
+      $r2 = HEAPU8[$p_ref + 3 >> 0];
       
       
       
@@ -20561,7 +20561,7 @@ function __Z13HorzInterp1MCPhiS_iiii($in, $inpitch, $out, $outpitch, $blkwidth, 
         
         
         
-        var $cmp26 = $p_ref >>> 0 < $tmp >>> 0;
+        var $cmp26 = $p_ref < $tmp;
         if (!$cmp26) {
           __label__ = 6;
           break $while_cond$7;
@@ -20571,12 +20571,12 @@ function __Z13HorzInterp1MCPhiS_iiii($in, $inpitch, $out, $outpitch, $blkwidth, 
         $p_ref = $add_ptr27;
         
         
-        $r2 = HEAPU8[$add_ptr27 >> 0] & 255;
+        $r2 = HEAPU8[$add_ptr27 >> 0];
         
         
         
         
-        $r3 = HEAPU8[$p_ref + 2 >> 0] & 255;
+        $r3 = HEAPU8[$p_ref + 2 >> 0];
         
         
         
@@ -20586,12 +20586,12 @@ function __Z13HorzInterp1MCPhiS_iiii($in, $inpitch, $out, $outpitch, $blkwidth, 
         
         
         
-        $r3 = HEAPU8[$p_ref + 1 >> 0] & 255;
+        $r3 = HEAPU8[$p_ref + 1 >> 0];
         
         
         
         
-        $r4 = HEAPU8[$p_ref + 3 >> 0] & 255;
+        $r4 = HEAPU8[$p_ref + 3 >> 0];
         
         
         
@@ -20647,14 +20647,14 @@ function __Z13HorzInterp1MCPhiS_iiii($in, $inpitch, $out, $outpitch, $blkwidth, 
         
         
         
-        $r5 = HEAPU8[$p_ref + ($dx_addr + 2) >> 0] & 255;
+        $r5 = HEAPU8[$p_ref + ($dx_addr + 2) >> 0];
         
         
         
         
         
         
-        $r6 = HEAPU8[$p_ref + ($dx_addr + 4) >> 0] & 255;
+        $r6 = HEAPU8[$p_ref + ($dx_addr + 4) >> 0];
         
         
         
@@ -20675,7 +20675,7 @@ function __Z13HorzInterp1MCPhiS_iiii($in, $inpitch, $out, $outpitch, $blkwidth, 
         
         
         
-        $r5 = HEAPU8[$p_ref + 4 >> 0] & 255;
+        $r5 = HEAPU8[$p_ref + 4 >> 0];
         
         
         $r6 = $r5 << 16;
@@ -20738,14 +20738,14 @@ function __Z13HorzInterp1MCPhiS_iiii($in, $inpitch, $out, $outpitch, $blkwidth, 
         
         
         
-        $r0 = HEAPU8[$p_ref + ($dx_addr + 3) >> 0] & 255;
+        $r0 = HEAPU8[$p_ref + ($dx_addr + 3) >> 0];
         
         
         
         
         
         
-        $r1 = HEAPU8[$p_ref + ($dx_addr + 5) >> 0] & 255;
+        $r1 = HEAPU8[$p_ref + ($dx_addr + 5) >> 0];
         
         
         
@@ -20790,7 +20790,7 @@ function __Z13HorzInterp1MCPhiS_iiii($in, $inpitch, $out, $outpitch, $blkwidth, 
       
       var $and100 = $r13 & -16775424;
       
-      if (($and100 | 0) != 0) {
+      if ($and100 != 0) {
         __label__ = 7;
       } else {
         __label__ = 19;
@@ -20818,7 +20818,7 @@ function __Z13HorzInterp1MCPhiS_iiii($in, $inpitch, $out, $outpitch, $blkwidth, 
           
           
           
-          var $cmp110 = $p_ref >>> 0 < $tmp >>> 0;
+          var $cmp110 = $p_ref < $tmp;
           if (!$cmp110) {
             __label__ = 18;
             break;
@@ -20828,37 +20828,37 @@ function __Z13HorzInterp1MCPhiS_iiii($in, $inpitch, $out, $outpitch, $blkwidth, 
           $p_ref = $incdec_ptr112;
           
           
-          $r0 = HEAPU8[$132 >> 0] & 255;
+          $r0 = HEAPU8[$132 >> 0];
           var $134 = $p_ref;
           var $incdec_ptr114 = $134 + 1;
           $p_ref = $incdec_ptr114;
           
           
-          $r1 = HEAPU8[$134 >> 0] & 255;
+          $r1 = HEAPU8[$134 >> 0];
           var $136 = $p_ref;
           var $incdec_ptr116 = $136 + 1;
           $p_ref = $incdec_ptr116;
           
           
-          $r2 = HEAPU8[$136 >> 0] & 255;
+          $r2 = HEAPU8[$136 >> 0];
           var $138 = $p_ref;
           var $incdec_ptr118 = $138 + 1;
           $p_ref = $incdec_ptr118;
           
           
-          $r3 = HEAPU8[$138 >> 0] & 255;
+          $r3 = HEAPU8[$138 >> 0];
           var $140 = $p_ref;
           var $incdec_ptr120 = $140 + 1;
           $p_ref = $incdec_ptr120;
           
           
-          $r4 = HEAPU8[$140 >> 0] & 255;
+          $r4 = HEAPU8[$140 >> 0];
           var $142 = $p_ref;
           var $incdec_ptr122 = $142 + 1;
           $p_ref = $incdec_ptr122;
           
           
-          $r5 = HEAPU8[$142 >> 0] & 255;
+          $r5 = HEAPU8[$142 >> 0];
           
           
           
@@ -20906,7 +20906,7 @@ function __Z13HorzInterp1MCPhiS_iiii($in, $inpitch, $out, $outpitch, $blkwidth, 
           
           
           
-          var $add140 = $result + (HEAPU8[$p_ref + $dx_addr >> 0] & 255) + 1;
+          var $add140 = $result + HEAPU8[$p_ref + $dx_addr >> 0] + 1;
           $result = $add140;
           
           
@@ -20916,7 +20916,7 @@ function __Z13HorzInterp1MCPhiS_iiii($in, $inpitch, $out, $outpitch, $blkwidth, 
           $p_ref = $incdec_ptr142;
           
           
-          $r0 = HEAPU8[$162 >> 0] & 255;
+          $r0 = HEAPU8[$162 >> 0];
           
           
           
@@ -20964,7 +20964,7 @@ function __Z13HorzInterp1MCPhiS_iiii($in, $inpitch, $out, $outpitch, $blkwidth, 
           
           
           
-          var $add162 = $result + (HEAPU8[$p_ref + $dx_addr >> 0] & 255) + 1;
+          var $add162 = $result + HEAPU8[$p_ref + $dx_addr >> 0] + 1;
           $result = $add162;
           
           var $shr163 = $result >> 1;
@@ -20979,7 +20979,7 @@ function __Z13HorzInterp1MCPhiS_iiii($in, $inpitch, $out, $outpitch, $blkwidth, 
           $p_ref = $incdec_ptr166;
           
           
-          $r1 = HEAPU8[$184 >> 0] & 255;
+          $r1 = HEAPU8[$184 >> 0];
           
           
           
@@ -21027,7 +21027,7 @@ function __Z13HorzInterp1MCPhiS_iiii($in, $inpitch, $out, $outpitch, $blkwidth, 
           
           
           
-          var $add186 = $result + (HEAPU8[$p_ref + $dx_addr >> 0] & 255) + 1;
+          var $add186 = $result + HEAPU8[$p_ref + $dx_addr >> 0] + 1;
           $result = $add186;
           
           var $shr187 = $result >> 1;
@@ -21042,7 +21042,7 @@ function __Z13HorzInterp1MCPhiS_iiii($in, $inpitch, $out, $outpitch, $blkwidth, 
           $p_ref = $incdec_ptr190;
           
           
-          $r2 = HEAPU8[$206 >> 0] & 255;
+          $r2 = HEAPU8[$206 >> 0];
           
           
           
@@ -21090,7 +21090,7 @@ function __Z13HorzInterp1MCPhiS_iiii($in, $inpitch, $out, $outpitch, $blkwidth, 
           
           
           
-          var $add210 = $result + (HEAPU8[$p_ref + $dx_addr >> 0] & 255) + 1;
+          var $add210 = $result + HEAPU8[$p_ref + $dx_addr >> 0] + 1;
           $result = $add210;
           
           var $shr211 = $result >> 1;
@@ -21135,7 +21135,7 @@ function __Z13HorzInterp1MCPhiS_iiii($in, $inpitch, $out, $outpitch, $blkwidth, 
     $j = $blkheight_addr;
     $for_cond221$33 : while (1) {
       
-      var $cmp222 = ($j | 0) > 0;
+      var $cmp222 = $j > 0;
       if (!$cmp222) {
         __label__ = 42;
         break $for_cond221$33;
@@ -21149,12 +21149,12 @@ function __Z13HorzInterp1MCPhiS_iiii($in, $inpitch, $out, $outpitch, $blkwidth, 
       
       
       
-      $r0 = HEAPU8[$p_ref >> 0] & 255;
+      $r0 = HEAPU8[$p_ref >> 0];
       
       
       
       
-      $r1 = HEAPU8[$p_ref + 2 >> 0] & 255;
+      $r1 = HEAPU8[$p_ref + 2 >> 0];
       
       
       
@@ -21164,12 +21164,12 @@ function __Z13HorzInterp1MCPhiS_iiii($in, $inpitch, $out, $outpitch, $blkwidth, 
       
       
       
-      $r1 = HEAPU8[$p_ref + 1 >> 0] & 255;
+      $r1 = HEAPU8[$p_ref + 1 >> 0];
       
       
       
       
-      $r2 = HEAPU8[$p_ref + 3 >> 0] & 255;
+      $r2 = HEAPU8[$p_ref + 3 >> 0];
       
       
       
@@ -21179,7 +21179,7 @@ function __Z13HorzInterp1MCPhiS_iiii($in, $inpitch, $out, $outpitch, $blkwidth, 
         
         
         
-        var $cmp238 = $p_ref >>> 0 < $tmp >>> 0;
+        var $cmp238 = $p_ref < $tmp;
         if (!$cmp238) {
           __label__ = 27;
           break $while_cond237$36;
@@ -21189,12 +21189,12 @@ function __Z13HorzInterp1MCPhiS_iiii($in, $inpitch, $out, $outpitch, $blkwidth, 
         $p_ref = $add_ptr240;
         
         
-        $r2 = HEAPU8[$add_ptr240 >> 0] & 255;
+        $r2 = HEAPU8[$add_ptr240 >> 0];
         
         
         
         
-        $r3 = HEAPU8[$p_ref + 2 >> 0] & 255;
+        $r3 = HEAPU8[$p_ref + 2 >> 0];
         
         
         
@@ -21204,12 +21204,12 @@ function __Z13HorzInterp1MCPhiS_iiii($in, $inpitch, $out, $outpitch, $blkwidth, 
         
         
         
-        $r3 = HEAPU8[$p_ref + 1 >> 0] & 255;
+        $r3 = HEAPU8[$p_ref + 1 >> 0];
         
         
         
         
-        $r4 = HEAPU8[$p_ref + 3 >> 0] & 255;
+        $r4 = HEAPU8[$p_ref + 3 >> 0];
         
         
         
@@ -21266,7 +21266,7 @@ function __Z13HorzInterp1MCPhiS_iiii($in, $inpitch, $out, $outpitch, $blkwidth, 
         
         
         
-        $r5 = HEAPU8[$p_ref + 4 >> 0] & 255;
+        $r5 = HEAPU8[$p_ref + 4 >> 0];
         
         
         $r6 = $r5 << 16;
@@ -21354,7 +21354,7 @@ function __Z13HorzInterp1MCPhiS_iiii($in, $inpitch, $out, $outpitch, $blkwidth, 
       
       var $and295 = $r13 & -16775424;
       
-      if (($and295 | 0) != 0) {
+      if ($and295 != 0) {
         __label__ = 28;
       } else {
         __label__ = 40;
@@ -21382,7 +21382,7 @@ function __Z13HorzInterp1MCPhiS_iiii($in, $inpitch, $out, $outpitch, $blkwidth, 
           
           
           
-          var $cmp306 = $p_ref >>> 0 < $tmp >>> 0;
+          var $cmp306 = $p_ref < $tmp;
           if (!$cmp306) {
             __label__ = 39;
             break;
@@ -21392,37 +21392,37 @@ function __Z13HorzInterp1MCPhiS_iiii($in, $inpitch, $out, $outpitch, $blkwidth, 
           $p_ref = $incdec_ptr308;
           
           
-          $r0 = HEAPU8[$337 >> 0] & 255;
+          $r0 = HEAPU8[$337 >> 0];
           var $339 = $p_ref;
           var $incdec_ptr310 = $339 + 1;
           $p_ref = $incdec_ptr310;
           
           
-          $r1 = HEAPU8[$339 >> 0] & 255;
+          $r1 = HEAPU8[$339 >> 0];
           var $341 = $p_ref;
           var $incdec_ptr312 = $341 + 1;
           $p_ref = $incdec_ptr312;
           
           
-          $r2 = HEAPU8[$341 >> 0] & 255;
+          $r2 = HEAPU8[$341 >> 0];
           var $343 = $p_ref;
           var $incdec_ptr314 = $343 + 1;
           $p_ref = $incdec_ptr314;
           
           
-          $r3 = HEAPU8[$343 >> 0] & 255;
+          $r3 = HEAPU8[$343 >> 0];
           var $345 = $p_ref;
           var $incdec_ptr316 = $345 + 1;
           $p_ref = $incdec_ptr316;
           
           
-          $r4 = HEAPU8[$345 >> 0] & 255;
+          $r4 = HEAPU8[$345 >> 0];
           var $347 = $p_ref;
           var $incdec_ptr318 = $347 + 1;
           $p_ref = $incdec_ptr318;
           
           
-          $r5 = HEAPU8[$347 >> 0] & 255;
+          $r5 = HEAPU8[$347 >> 0];
           
           
           
@@ -21470,7 +21470,7 @@ function __Z13HorzInterp1MCPhiS_iiii($in, $inpitch, $out, $outpitch, $blkwidth, 
           $p_ref = $incdec_ptr335;
           
           
-          $r0 = HEAPU8[$363 >> 0] & 255;
+          $r0 = HEAPU8[$363 >> 0];
           
           
           
@@ -21521,7 +21521,7 @@ function __Z13HorzInterp1MCPhiS_iiii($in, $inpitch, $out, $outpitch, $blkwidth, 
           $p_ref = $incdec_ptr354;
           
           
-          $r1 = HEAPU8[$380 >> 0] & 255;
+          $r1 = HEAPU8[$380 >> 0];
           
           
           
@@ -21572,7 +21572,7 @@ function __Z13HorzInterp1MCPhiS_iiii($in, $inpitch, $out, $outpitch, $blkwidth, 
           $p_ref = $incdec_ptr373;
           
           
-          $r2 = HEAPU8[$397 >> 0] & 255;
+          $r2 = HEAPU8[$397 >> 0];
           
           
           
@@ -21691,7 +21691,7 @@ function __Z13VertInterp1MCPhiS_iiii($in, $inpitch, $out, $outpitch, $blkwidth, 
   
   
   
-  if (($in_addr & 3 | 0) != 0) {
+  if (($in_addr & 3) != 0) {
     __label__ = 1;
   } else {
     __label__ = 2;
@@ -21728,7 +21728,7 @@ function __Z13VertInterp1MCPhiS_iiii($in, $inpitch, $out, $outpitch, $blkwidth, 
   
   
   
-  if (($dy_addr & 1 | 0) != 0) {
+  if (($dy_addr & 1) != 0) {
     __label__ = 3;
   } else {
     __label__ = 31;
@@ -21737,7 +21737,7 @@ function __Z13VertInterp1MCPhiS_iiii($in, $inpitch, $out, $outpitch, $blkwidth, 
     
     
     
-    if (($dy_addr >> 1 | 0) != 0) {
+    if ($dy_addr >> 1 != 0) {
       __label__ = 4;
     } else {
       __label__ = 5;
@@ -21755,7 +21755,7 @@ function __Z13VertInterp1MCPhiS_iiii($in, $inpitch, $out, $outpitch, $blkwidth, 
     $for_cond$11 : while (1) {
       
       
-      var $cmp = ($j | 0) < ($blkwidth_addr | 0);
+      var $cmp = $j < $blkwidth_addr;
       if (!$cmp) {
         __label__ = 30;
         break $for_cond$11;
@@ -21777,7 +21777,7 @@ function __Z13VertInterp1MCPhiS_iiii($in, $inpitch, $out, $outpitch, $blkwidth, 
         
         
         
-        var $cmp29 = $p_ref >>> 0 < $tmp >>> 0;
+        var $cmp29 = $p_ref < $tmp;
         if (!$cmp29) {
           __label__ = 11;
           break $while_cond$14;
@@ -21989,7 +21989,7 @@ function __Z13VertInterp1MCPhiS_iiii($in, $inpitch, $out, $outpitch, $blkwidth, 
       
       var $and94 = $r13 & -16775424;
       
-      if (($and94 | 0) != 0) {
+      if ($and94 != 0) {
         __label__ = 12;
       } else {
         __label__ = 28;
@@ -22001,7 +22001,7 @@ function __Z13VertInterp1MCPhiS_iiii($in, $inpitch, $out, $outpitch, $blkwidth, 
         $i = 0;
         $for_cond98$20 : while (1) {
           
-          var $cmp99 = ($i | 0) < 4;
+          var $cmp99 = $i < 4;
           if (!$cmp99) {
             __label__ = 27;
             break $for_cond98$20;
@@ -22024,7 +22024,7 @@ function __Z13VertInterp1MCPhiS_iiii($in, $inpitch, $out, $outpitch, $blkwidth, 
             
             
             
-            var $cmp106 = $p_ref >>> 0 < $tmp >>> 0;
+            var $cmp106 = $p_ref < $tmp;
             if (!$cmp106) {
               __label__ = 25;
               break;
@@ -22036,39 +22036,39 @@ function __Z13VertInterp1MCPhiS_iiii($in, $inpitch, $out, $outpitch, $blkwidth, 
             
             
             
-            $r0 = HEAPU8[$p_ref + (0 - ($inpitch_addr << 1)) >> 0] & 255;
+            $r0 = HEAPU8[$p_ref + (0 - ($inpitch_addr << 1)) >> 0];
             
             
             
             
             
             
-            $r1 = HEAPU8[$p_ref + (0 - $inpitch_addr) >> 0] & 255;
+            $r1 = HEAPU8[$p_ref + (0 - $inpitch_addr) >> 0];
             
             
             
-            $r2 = HEAPU8[$p_ref >> 0] & 255;
+            $r2 = HEAPU8[$p_ref >> 0];
             
             
             var $add_ptr115 = $p_ref + $inpitch_addr;
             $p_ref = $add_ptr115;
             
             
-            $r3 = HEAPU8[$add_ptr115 >> 0] & 255;
+            $r3 = HEAPU8[$add_ptr115 >> 0];
             
             
             var $add_ptr117 = $p_ref + $inpitch_addr;
             $p_ref = $add_ptr117;
             
             
-            $r4 = HEAPU8[$add_ptr117 >> 0] & 255;
+            $r4 = HEAPU8[$add_ptr117 >> 0];
             
             
             var $add_ptr119 = $p_ref + $inpitch_addr;
             $p_ref = $add_ptr119;
             
             
-            $r5 = HEAPU8[$add_ptr119 >> 0] & 255;
+            $r5 = HEAPU8[$add_ptr119 >> 0];
             
             
             
@@ -22119,7 +22119,7 @@ function __Z13VertInterp1MCPhiS_iiii($in, $inpitch, $out, $outpitch, $blkwidth, 
             
             
             
-            var $add140 = $result + (HEAPU8[$p_ref + ($dy_addr - ($inpitch_addr << 1)) >> 0] & 255) + 1;
+            var $add140 = $result + HEAPU8[$p_ref + ($dy_addr - ($inpitch_addr << 1)) >> 0] + 1;
             $result = $add140;
             
             var $shr141 = $result >> 1;
@@ -22137,7 +22137,7 @@ function __Z13VertInterp1MCPhiS_iiii($in, $inpitch, $out, $outpitch, $blkwidth, 
             $p_ref = $add_ptr144;
             
             
-            $r0 = HEAPU8[$add_ptr144 >> 0] & 255;
+            $r0 = HEAPU8[$add_ptr144 >> 0];
             
             
             
@@ -22188,7 +22188,7 @@ function __Z13VertInterp1MCPhiS_iiii($in, $inpitch, $out, $outpitch, $blkwidth, 
             
             
             
-            var $add166 = $result + (HEAPU8[$p_ref + ($dy_addr - ($inpitch_addr << 1)) >> 0] & 255) + 1;
+            var $add166 = $result + HEAPU8[$p_ref + ($dy_addr - ($inpitch_addr << 1)) >> 0] + 1;
             $result = $add166;
             
             var $shr167 = $result >> 1;
@@ -22206,7 +22206,7 @@ function __Z13VertInterp1MCPhiS_iiii($in, $inpitch, $out, $outpitch, $blkwidth, 
             $p_ref = $add_ptr170;
             
             
-            $r1 = HEAPU8[$add_ptr170 >> 0] & 255;
+            $r1 = HEAPU8[$add_ptr170 >> 0];
             
             
             
@@ -22257,7 +22257,7 @@ function __Z13VertInterp1MCPhiS_iiii($in, $inpitch, $out, $outpitch, $blkwidth, 
             
             
             
-            var $add192 = $result + (HEAPU8[$p_ref + ($dy_addr - ($inpitch_addr << 1)) >> 0] & 255) + 1;
+            var $add192 = $result + HEAPU8[$p_ref + ($dy_addr - ($inpitch_addr << 1)) >> 0] + 1;
             $result = $add192;
             
             var $shr193 = $result >> 1;
@@ -22275,7 +22275,7 @@ function __Z13VertInterp1MCPhiS_iiii($in, $inpitch, $out, $outpitch, $blkwidth, 
             $p_ref = $add_ptr196;
             
             
-            $r2 = HEAPU8[$add_ptr196 >> 0] & 255;
+            $r2 = HEAPU8[$add_ptr196 >> 0];
             
             
             
@@ -22326,7 +22326,7 @@ function __Z13VertInterp1MCPhiS_iiii($in, $inpitch, $out, $outpitch, $blkwidth, 
             
             
             
-            var $add218 = $result + (HEAPU8[$p_ref + ($dy_addr - ($inpitch_addr << 1)) >> 0] & 255) + 1;
+            var $add218 = $result + HEAPU8[$p_ref + ($dy_addr - ($inpitch_addr << 1)) >> 0] + 1;
             $result = $add218;
             
             var $shr219 = $result >> 1;
@@ -22373,7 +22373,7 @@ function __Z13VertInterp1MCPhiS_iiii($in, $inpitch, $out, $outpitch, $blkwidth, 
     $for_cond233$45 : while (1) {
       
       
-      var $cmp234 = ($j | 0) < ($blkwidth_addr | 0);
+      var $cmp234 = $j < $blkwidth_addr;
       if (!$cmp234) {
         __label__ = 55;
         break $for_cond233$45;
@@ -22395,7 +22395,7 @@ function __Z13VertInterp1MCPhiS_iiii($in, $inpitch, $out, $outpitch, $blkwidth, 
         
         
         
-        var $cmp240 = $p_ref >>> 0 < $tmp >>> 0;
+        var $cmp240 = $p_ref < $tmp;
         if (!$cmp240) {
           __label__ = 36;
           break $while_cond239$48;
@@ -22578,7 +22578,7 @@ function __Z13VertInterp1MCPhiS_iiii($in, $inpitch, $out, $outpitch, $blkwidth, 
       
       var $and299 = $r13 & -16775424;
       
-      if (($and299 | 0) != 0) {
+      if ($and299 != 0) {
         __label__ = 37;
       } else {
         __label__ = 53;
@@ -22590,7 +22590,7 @@ function __Z13VertInterp1MCPhiS_iiii($in, $inpitch, $out, $outpitch, $blkwidth, 
         $i = 0;
         $for_cond303$54 : while (1) {
           
-          var $cmp304 = ($i | 0) < 4;
+          var $cmp304 = $i < 4;
           if (!$cmp304) {
             __label__ = 52;
             break $for_cond303$54;
@@ -22613,7 +22613,7 @@ function __Z13VertInterp1MCPhiS_iiii($in, $inpitch, $out, $outpitch, $blkwidth, 
             
             
             
-            var $cmp311 = $p_ref >>> 0 < $tmp >>> 0;
+            var $cmp311 = $p_ref < $tmp;
             if (!$cmp311) {
               __label__ = 50;
               break;
@@ -22625,39 +22625,39 @@ function __Z13VertInterp1MCPhiS_iiii($in, $inpitch, $out, $outpitch, $blkwidth, 
             
             
             
-            $r0 = HEAPU8[$p_ref + (0 - ($inpitch_addr << 1)) >> 0] & 255;
+            $r0 = HEAPU8[$p_ref + (0 - ($inpitch_addr << 1)) >> 0];
             
             
             
             
             
             
-            $r1 = HEAPU8[$p_ref + (0 - $inpitch_addr) >> 0] & 255;
+            $r1 = HEAPU8[$p_ref + (0 - $inpitch_addr) >> 0];
             
             
             
-            $r2 = HEAPU8[$p_ref >> 0] & 255;
+            $r2 = HEAPU8[$p_ref >> 0];
             
             
             var $add_ptr321 = $p_ref + $inpitch_addr;
             $p_ref = $add_ptr321;
             
             
-            $r3 = HEAPU8[$add_ptr321 >> 0] & 255;
+            $r3 = HEAPU8[$add_ptr321 >> 0];
             
             
             var $add_ptr323 = $p_ref + $inpitch_addr;
             $p_ref = $add_ptr323;
             
             
-            $r4 = HEAPU8[$add_ptr323 >> 0] & 255;
+            $r4 = HEAPU8[$add_ptr323 >> 0];
             
             
             var $add_ptr325 = $p_ref + $inpitch_addr;
             $p_ref = $add_ptr325;
             
             
-            $r5 = HEAPU8[$add_ptr325 >> 0] & 255;
+            $r5 = HEAPU8[$add_ptr325 >> 0];
             
             
             
@@ -22711,7 +22711,7 @@ function __Z13VertInterp1MCPhiS_iiii($in, $inpitch, $out, $outpitch, $blkwidth, 
             $p_ref = $add_ptr344;
             
             
-            $r0 = HEAPU8[$add_ptr344 >> 0] & 255;
+            $r0 = HEAPU8[$add_ptr344 >> 0];
             
             
             
@@ -22765,7 +22765,7 @@ function __Z13VertInterp1MCPhiS_iiii($in, $inpitch, $out, $outpitch, $blkwidth, 
             $p_ref = $add_ptr363;
             
             
-            $r1 = HEAPU8[$add_ptr363 >> 0] & 255;
+            $r1 = HEAPU8[$add_ptr363 >> 0];
             
             
             
@@ -22819,7 +22819,7 @@ function __Z13VertInterp1MCPhiS_iiii($in, $inpitch, $out, $outpitch, $blkwidth, 
             $p_ref = $add_ptr382;
             
             
-            $r2 = HEAPU8[$add_ptr382 >> 0] & 255;
+            $r2 = HEAPU8[$add_ptr382 >> 0];
             
             
             
@@ -22947,7 +22947,7 @@ function __Z13VertInterp2MCPhiPiiii($in, $inpitch, $out, $outpitch, $blkwidth, $
   $for_cond$2 : while (1) {
     
     
-    var $cmp = ($j | 0) < ($blkwidth_addr | 0);
+    var $cmp = $j < $blkwidth_addr;
     if (!$cmp) {
       __label__ = 7;
       break $for_cond$2;
@@ -22970,7 +22970,7 @@ function __Z13VertInterp2MCPhiPiiii($in, $inpitch, $out, $outpitch, $blkwidth, $
       
       
       
-      var $cmp14 = $p_ref >>> 0 < $tmp >>> 0;
+      var $cmp14 = $p_ref < $tmp;
       if (!$cmp14) {
         __label__ = 5;
         break;
@@ -22982,39 +22982,39 @@ function __Z13VertInterp2MCPhiPiiii($in, $inpitch, $out, $outpitch, $blkwidth, $
       
       
       
-      $r0 = HEAPU8[$p_ref + (0 - ($inpitch_addr << 1)) >> 0] & 255;
+      $r0 = HEAPU8[$p_ref + (0 - ($inpitch_addr << 1)) >> 0];
       
       
       
       
       
       
-      $r1 = HEAPU8[$p_ref + (0 - $inpitch_addr) >> 0] & 255;
+      $r1 = HEAPU8[$p_ref + (0 - $inpitch_addr) >> 0];
       
       
       
-      $r2 = HEAPU8[$p_ref >> 0] & 255;
+      $r2 = HEAPU8[$p_ref >> 0];
       
       
       var $add_ptr21 = $p_ref + $inpitch_addr;
       $p_ref = $add_ptr21;
       
       
-      $r3 = HEAPU8[$add_ptr21 >> 0] & 255;
+      $r3 = HEAPU8[$add_ptr21 >> 0];
       
       
       var $add_ptr23 = $p_ref + $inpitch_addr;
       $p_ref = $add_ptr23;
       
       
-      $r4 = HEAPU8[$add_ptr23 >> 0] & 255;
+      $r4 = HEAPU8[$add_ptr23 >> 0];
       
       
       var $add_ptr25 = $p_ref + $inpitch_addr;
       $p_ref = $add_ptr25;
       
       
-      $r5 = HEAPU8[$add_ptr25 >> 0] & 255;
+      $r5 = HEAPU8[$add_ptr25 >> 0];
       
       
       
@@ -23049,7 +23049,7 @@ function __Z13VertInterp2MCPhiPiiii($in, $inpitch, $out, $outpitch, $blkwidth, $
       $p_ref = $add_ptr34;
       
       
-      $r0 = HEAPU8[$add_ptr34 >> 0] & 255;
+      $r0 = HEAPU8[$add_ptr34 >> 0];
       
       
       
@@ -23084,7 +23084,7 @@ function __Z13VertInterp2MCPhiPiiii($in, $inpitch, $out, $outpitch, $blkwidth, $
       $p_ref = $add_ptr44;
       
       
-      $r1 = HEAPU8[$add_ptr44 >> 0] & 255;
+      $r1 = HEAPU8[$add_ptr44 >> 0];
       
       
       
@@ -23119,7 +23119,7 @@ function __Z13VertInterp2MCPhiPiiii($in, $inpitch, $out, $outpitch, $blkwidth, $
       $p_ref = $add_ptr54;
       
       
-      $r2 = HEAPU8[$add_ptr54 >> 0] & 255;
+      $r2 = HEAPU8[$add_ptr54 >> 0];
       
       
       
@@ -23221,7 +23221,7 @@ function __Z13HorzInterp2MCPiiPhiiii($in, $inpitch, $out, $outpitch, $blkwidth, 
   
   
   
-  if (($dx_addr & 1 | 0) != 0) {
+  if (($dx_addr & 1) != 0) {
     __label__ = 1;
   } else {
     __label__ = 25;
@@ -23230,13 +23230,13 @@ function __Z13HorzInterp2MCPiiPhiiii($in, $inpitch, $out, $outpitch, $blkwidth, 
     
     
     
-    var $cond = ($dx_addr >> 1 | 0) != 0 ? -3 : -4;
+    var $cond = $dx_addr >> 1 != 0 ? -3 : -4;
     $dx_addr = $cond;
     
     $j = $blkheight_addr;
     $for_cond$4 : while (1) {
       
-      var $cmp = ($j | 0) > 0;
+      var $cmp = $j > 0;
       if (!$cmp) {
         __label__ = 24;
         break $for_cond$4;
@@ -23250,7 +23250,7 @@ function __Z13HorzInterp2MCPiiPhiiii($in, $inpitch, $out, $outpitch, $blkwidth, 
         
         
         
-        var $cmp17 = $p_ref >>> 0 < $tmp >>> 0;
+        var $cmp17 = $p_ref < $tmp;
         if (!$cmp17) {
           __label__ = 22;
           break;
@@ -23619,7 +23619,7 @@ function __Z13HorzInterp2MCPiiPhiiii($in, $inpitch, $out, $outpitch, $blkwidth, 
     $j = $blkheight_addr;
     $for_cond139$38 : while (1) {
       
-      var $cmp140 = ($j | 0) > 0;
+      var $cmp140 = $j > 0;
       if (!$cmp140) {
         __label__ = 40;
         break $for_cond139$38;
@@ -23633,7 +23633,7 @@ function __Z13HorzInterp2MCPiiPhiiii($in, $inpitch, $out, $outpitch, $blkwidth, 
         
         
         
-        var $cmp144 = $p_ref >>> 0 < $tmp >>> 0;
+        var $cmp144 = $p_ref < $tmp;
         if (!$cmp144) {
           __label__ = 38;
           break;
@@ -23933,7 +23933,7 @@ function __Z13HorzInterp3MCPhiPiiii($in, $inpitch, $out, $outpitch, $blkwidth, $
   $j = $blkheight_addr;
   $for_cond$2 : while (1) {
     
-    var $cmp = ($j | 0) > 0;
+    var $cmp = $j > 0;
     if (!$cmp) {
       __label__ = 7;
       break $for_cond$2;
@@ -23947,7 +23947,7 @@ function __Z13HorzInterp3MCPhiPiiii($in, $inpitch, $out, $outpitch, $blkwidth, $
       
       
       
-      var $cmp13 = $p_ref >>> 0 < $tmp >>> 0;
+      var $cmp13 = $p_ref < $tmp;
       if (!$cmp13) {
         __label__ = 5;
         break;
@@ -23956,36 +23956,36 @@ function __Z13HorzInterp3MCPhiPiiii($in, $inpitch, $out, $outpitch, $blkwidth, $
       var $arrayidx = $p_ref + -2;
       
       
-      $r0 = HEAPU8[$arrayidx >> 0] & 255;
+      $r0 = HEAPU8[$arrayidx >> 0];
       
       var $arrayidx15 = $p_ref + -1;
       
       
-      $r1 = HEAPU8[$arrayidx15 >> 0] & 255;
+      $r1 = HEAPU8[$arrayidx15 >> 0];
       var $18 = $p_ref;
       var $incdec_ptr = $18 + 1;
       $p_ref = $incdec_ptr;
       
       
-      $r2 = HEAPU8[$18 >> 0] & 255;
+      $r2 = HEAPU8[$18 >> 0];
       var $20 = $p_ref;
       var $incdec_ptr18 = $20 + 1;
       $p_ref = $incdec_ptr18;
       
       
-      $r3 = HEAPU8[$20 >> 0] & 255;
+      $r3 = HEAPU8[$20 >> 0];
       var $22 = $p_ref;
       var $incdec_ptr20 = $22 + 1;
       $p_ref = $incdec_ptr20;
       
       
-      $r4 = HEAPU8[$22 >> 0] & 255;
+      $r4 = HEAPU8[$22 >> 0];
       var $24 = $p_ref;
       var $incdec_ptr22 = $24 + 1;
       $p_ref = $incdec_ptr22;
       
       
-      $r5 = HEAPU8[$24 >> 0] & 255;
+      $r5 = HEAPU8[$24 >> 0];
       
       
       
@@ -24018,7 +24018,7 @@ function __Z13HorzInterp3MCPhiPiiii($in, $inpitch, $out, $outpitch, $blkwidth, $
       $p_ref = $incdec_ptr30;
       
       
-      $r0 = HEAPU8[$38 >> 0] & 255;
+      $r0 = HEAPU8[$38 >> 0];
       
       
       
@@ -24051,7 +24051,7 @@ function __Z13HorzInterp3MCPhiPiiii($in, $inpitch, $out, $outpitch, $blkwidth, $
       $p_ref = $incdec_ptr40;
       
       
-      $r1 = HEAPU8[$52 >> 0] & 255;
+      $r1 = HEAPU8[$52 >> 0];
       
       
       
@@ -24084,7 +24084,7 @@ function __Z13HorzInterp3MCPhiPiiii($in, $inpitch, $out, $outpitch, $blkwidth, $
       $p_ref = $incdec_ptr50;
       
       
-      $r2 = HEAPU8[$66 >> 0] & 255;
+      $r2 = HEAPU8[$66 >> 0];
       
       
       
@@ -24184,7 +24184,7 @@ function __Z13VertInterp3MCPiiPhiiii($in, $inpitch, $out, $outpitch, $blkwidth, 
   
   
   
-  if (($dy_addr & 1 | 0) != 0) {
+  if (($dy_addr & 1) != 0) {
     __label__ = 1;
   } else {
     __label__ = 28;
@@ -24193,7 +24193,7 @@ function __Z13VertInterp3MCPiiPhiiii($in, $inpitch, $out, $outpitch, $blkwidth, 
     
     
     
-    if (($dy_addr >> 1 | 0) != 0) {
+    if ($dy_addr >> 1 != 0) {
       __label__ = 2;
     } else {
       __label__ = 3;
@@ -24217,7 +24217,7 @@ function __Z13VertInterp3MCPiiPhiiii($in, $inpitch, $out, $outpitch, $blkwidth, 
     $for_cond$8 : while (1) {
       
       
-      var $cmp = ($j | 0) < ($blkwidth_addr | 0);
+      var $cmp = $j < $blkwidth_addr;
       if (!$cmp) {
         __label__ = 27;
         break $for_cond$8;
@@ -24240,7 +24240,7 @@ function __Z13VertInterp3MCPiiPhiiii($in, $inpitch, $out, $outpitch, $blkwidth, 
         
         
         
-        var $cmp20 = $p_ref >>> 0 < $tmp >>> 0;
+        var $cmp20 = $p_ref < $tmp;
         if (!$cmp20) {
           __label__ = 25;
           break;
@@ -24625,7 +24625,7 @@ function __Z13VertInterp3MCPiiPhiiii($in, $inpitch, $out, $outpitch, $blkwidth, 
     $for_cond147$42 : while (1) {
       
       
-      var $cmp148 = ($j | 0) < ($blkwidth_addr | 0);
+      var $cmp148 = $j < $blkwidth_addr;
       if (!$cmp148) {
         __label__ = 43;
         break $for_cond147$42;
@@ -24648,7 +24648,7 @@ function __Z13VertInterp3MCPiiPhiiii($in, $inpitch, $out, $outpitch, $blkwidth, 
         
         
         
-        var $cmp155 = $p_ref >>> 0 < $tmp >>> 0;
+        var $cmp155 = $p_ref < $tmp;
         if (!$cmp155) {
           __label__ = 41;
           break;
@@ -24715,7 +24715,7 @@ function __Z13VertInterp3MCPiiPhiiii($in, $inpitch, $out, $outpitch, $blkwidth, 
         $result = $shr173;
         
         
-        if ($result >>> 0 > 255) {
+        if ($result > 255) {
           __label__ = 33;
         } else {
           __label__ = 34;
@@ -24768,7 +24768,7 @@ function __Z13VertInterp3MCPiiPhiiii($in, $inpitch, $out, $outpitch, $blkwidth, 
         $result = $shr191;
         
         
-        if ($result >>> 0 > 255) {
+        if ($result > 255) {
           __label__ = 35;
         } else {
           __label__ = 36;
@@ -24821,7 +24821,7 @@ function __Z13VertInterp3MCPiiPhiiii($in, $inpitch, $out, $outpitch, $blkwidth, 
         $result = $shr209;
         
         
-        if ($result >>> 0 > 255) {
+        if ($result > 255) {
           __label__ = 37;
         } else {
           __label__ = 38;
@@ -24874,7 +24874,7 @@ function __Z13VertInterp3MCPiiPhiiii($in, $inpitch, $out, $outpitch, $blkwidth, 
         $result = $shr227;
         
         
-        if ($result >>> 0 > 255) {
+        if ($result > 255) {
           __label__ = 39;
         } else {
           __label__ = 40;
@@ -24976,7 +24976,7 @@ function __Z16DiagonalInterpMCPhS_iS_iii($in1, $in2, $inpitch, $out, $outpitch, 
   $j = $blkheight_addr;
   $for_cond$2 : while (1) {
     
-    var $cmp = ($j | 0) > 0;
+    var $cmp = $j > 0;
     if (!$cmp) {
       __label__ = 20;
       break $for_cond$2;
@@ -24991,12 +24991,12 @@ function __Z16DiagonalInterpMCPhS_iS_iii($in1, $in2, $inpitch, $out, $outpitch, 
     
     
     
-    $r0 = HEAPU8[$p_ref >> 0] & 255;
+    $r0 = HEAPU8[$p_ref >> 0];
     
     
     
     
-    $r1 = HEAPU8[$p_ref + 2 >> 0] & 255;
+    $r1 = HEAPU8[$p_ref + 2 >> 0];
     
     
     
@@ -25006,12 +25006,12 @@ function __Z16DiagonalInterpMCPhS_iS_iii($in1, $in2, $inpitch, $out, $outpitch, 
     
     
     
-    $r1 = HEAPU8[$p_ref + 1 >> 0] & 255;
+    $r1 = HEAPU8[$p_ref + 1 >> 0];
     
     
     
     
-    $r2 = HEAPU8[$p_ref + 3 >> 0] & 255;
+    $r2 = HEAPU8[$p_ref + 3 >> 0];
     
     
     
@@ -25021,7 +25021,7 @@ function __Z16DiagonalInterpMCPhS_iS_iii($in1, $in2, $inpitch, $out, $outpitch, 
       
       
       
-      var $cmp26 = $p_ref >>> 0 < $tmp >>> 0;
+      var $cmp26 = $p_ref < $tmp;
       if (!$cmp26) {
         __label__ = 5;
         break $while_cond$5;
@@ -25031,12 +25031,12 @@ function __Z16DiagonalInterpMCPhS_iS_iii($in1, $in2, $inpitch, $out, $outpitch, 
       $p_ref = $add_ptr27;
       
       
-      $r2 = HEAPU8[$add_ptr27 >> 0] & 255;
+      $r2 = HEAPU8[$add_ptr27 >> 0];
       
       
       
       
-      $r3 = HEAPU8[$p_ref + 2 >> 0] & 255;
+      $r3 = HEAPU8[$p_ref + 2 >> 0];
       
       
       
@@ -25046,12 +25046,12 @@ function __Z16DiagonalInterpMCPhS_iS_iii($in1, $in2, $inpitch, $out, $outpitch, 
       
       
       
-      $r3 = HEAPU8[$p_ref + 1 >> 0] & 255;
+      $r3 = HEAPU8[$p_ref + 1 >> 0];
       
       
       
       
-      $r4 = HEAPU8[$p_ref + 3 >> 0] & 255;
+      $r4 = HEAPU8[$p_ref + 3 >> 0];
       
       
       
@@ -25108,7 +25108,7 @@ function __Z16DiagonalInterpMCPhS_iS_iii($in1, $in2, $inpitch, $out, $outpitch, 
       
       
       
-      $r5 = HEAPU8[$p_ref + 4 >> 0] & 255;
+      $r5 = HEAPU8[$p_ref + 4 >> 0];
       
       
       $r6 = $r5 << 16;
@@ -25198,7 +25198,7 @@ function __Z16DiagonalInterpMCPhS_iS_iii($in1, $in2, $inpitch, $out, $outpitch, 
     
     var $and78 = $r13 & -16775424;
     
-    if (($and78 | 0) != 0) {
+    if ($and78 != 0) {
       __label__ = 6;
     } else {
       __label__ = 18;
@@ -25223,7 +25223,7 @@ function __Z16DiagonalInterpMCPhS_iS_iii($in1, $in2, $inpitch, $out, $outpitch, 
         
         
         
-        var $cmp84 = $p_ref >>> 0 < $tmp >>> 0;
+        var $cmp84 = $p_ref < $tmp;
         if (!$cmp84) {
           __label__ = 17;
           break;
@@ -25233,37 +25233,37 @@ function __Z16DiagonalInterpMCPhS_iS_iii($in1, $in2, $inpitch, $out, $outpitch, 
         $p_ref = $incdec_ptr86;
         
         
-        $r0 = HEAPU8[$103 >> 0] & 255;
+        $r0 = HEAPU8[$103 >> 0];
         var $105 = $p_ref;
         var $incdec_ptr88 = $105 + 1;
         $p_ref = $incdec_ptr88;
         
         
-        $r1 = HEAPU8[$105 >> 0] & 255;
+        $r1 = HEAPU8[$105 >> 0];
         var $107 = $p_ref;
         var $incdec_ptr90 = $107 + 1;
         $p_ref = $incdec_ptr90;
         
         
-        $r2 = HEAPU8[$107 >> 0] & 255;
+        $r2 = HEAPU8[$107 >> 0];
         var $109 = $p_ref;
         var $incdec_ptr92 = $109 + 1;
         $p_ref = $incdec_ptr92;
         
         
-        $r3 = HEAPU8[$109 >> 0] & 255;
+        $r3 = HEAPU8[$109 >> 0];
         var $111 = $p_ref;
         var $incdec_ptr94 = $111 + 1;
         $p_ref = $incdec_ptr94;
         
         
-        $r4 = HEAPU8[$111 >> 0] & 255;
+        $r4 = HEAPU8[$111 >> 0];
         var $113 = $p_ref;
         var $incdec_ptr96 = $113 + 1;
         $p_ref = $incdec_ptr96;
         
         
-        $r5 = HEAPU8[$113 >> 0] & 255;
+        $r5 = HEAPU8[$113 >> 0];
         
         
         
@@ -25311,7 +25311,7 @@ function __Z16DiagonalInterpMCPhS_iS_iii($in1, $in2, $inpitch, $out, $outpitch, 
         $p_ref = $incdec_ptr111;
         
         
-        $r0 = HEAPU8[$129 >> 0] & 255;
+        $r0 = HEAPU8[$129 >> 0];
         
         
         
@@ -25362,7 +25362,7 @@ function __Z16DiagonalInterpMCPhS_iS_iii($in1, $in2, $inpitch, $out, $outpitch, 
         $p_ref = $incdec_ptr130;
         
         
-        $r1 = HEAPU8[$146 >> 0] & 255;
+        $r1 = HEAPU8[$146 >> 0];
         
         
         
@@ -25413,7 +25413,7 @@ function __Z16DiagonalInterpMCPhS_iS_iii($in1, $in2, $inpitch, $out, $outpitch, 
         $p_ref = $incdec_ptr149;
         
         
-        $r2 = HEAPU8[$163 >> 0] & 255;
+        $r2 = HEAPU8[$163 >> 0];
         
         
         
@@ -25491,7 +25491,7 @@ function __Z16DiagonalInterpMCPhS_iS_iii($in1, $in2, $inpitch, $out, $outpitch, 
   
   
   
-  if (($in2_addr & 3 | 0) != 0) {
+  if (($in2_addr & 3) != 0) {
     __label__ = 21;
   } else {
     __label__ = 22;
@@ -25529,7 +25529,7 @@ function __Z16DiagonalInterpMCPhS_iS_iii($in1, $in2, $inpitch, $out, $outpitch, 
   $for_cond190$33 : while (1) {
     
     
-    var $cmp191 = ($j | 0) < ($blkwidth_addr | 0);
+    var $cmp191 = $j < $blkwidth_addr;
     if (!$cmp191) {
       __label__ = 46;
       break $for_cond190$33;
@@ -25558,7 +25558,7 @@ function __Z16DiagonalInterpMCPhS_iS_iii($in1, $in2, $inpitch, $out, $outpitch, 
       
       
       
-      var $cmp200 = $p_ref >>> 0 < $tmp >>> 0;
+      var $cmp200 = $p_ref < $tmp;
       if (!$cmp200) {
         __label__ = 27;
         break $while_cond199$36;
@@ -25770,7 +25770,7 @@ function __Z16DiagonalInterpMCPhS_iS_iii($in1, $in2, $inpitch, $out, $outpitch, 
     
     var $and269 = $r13 & -16775424;
     
-    if (($and269 | 0) != 0) {
+    if ($and269 != 0) {
       __label__ = 28;
     } else {
       __label__ = 44;
@@ -25782,7 +25782,7 @@ function __Z16DiagonalInterpMCPhS_iS_iii($in1, $in2, $inpitch, $out, $outpitch, 
       $i = 0;
       $for_cond273$42 : while (1) {
         
-        var $cmp274 = ($i | 0) < 4;
+        var $cmp274 = $i < 4;
         if (!$cmp274) {
           __label__ = 43;
           break $for_cond273$42;
@@ -25814,7 +25814,7 @@ function __Z16DiagonalInterpMCPhS_iS_iii($in1, $in2, $inpitch, $out, $outpitch, 
           
           
           
-          var $cmp285 = $p_ref >>> 0 < $tmp >>> 0;
+          var $cmp285 = $p_ref < $tmp;
           if (!$cmp285) {
             __label__ = 41;
             break;
@@ -25826,39 +25826,39 @@ function __Z16DiagonalInterpMCPhS_iS_iii($in1, $in2, $inpitch, $out, $outpitch, 
           
           
           
-          $r0 = HEAPU8[$p_ref + (0 - ($inpitch_addr << 1)) >> 0] & 255;
+          $r0 = HEAPU8[$p_ref + (0 - ($inpitch_addr << 1)) >> 0];
           
           
           
           
           
           
-          $r1 = HEAPU8[$p_ref + (0 - $inpitch_addr) >> 0] & 255;
+          $r1 = HEAPU8[$p_ref + (0 - $inpitch_addr) >> 0];
           
           
           
-          $r2 = HEAPU8[$p_ref >> 0] & 255;
+          $r2 = HEAPU8[$p_ref >> 0];
           
           
           var $add_ptr295 = $p_ref + $inpitch_addr;
           $p_ref = $add_ptr295;
           
           
-          $r3 = HEAPU8[$add_ptr295 >> 0] & 255;
+          $r3 = HEAPU8[$add_ptr295 >> 0];
           
           
           var $add_ptr297 = $p_ref + $inpitch_addr;
           $p_ref = $add_ptr297;
           
           
-          $r4 = HEAPU8[$add_ptr297 >> 0] & 255;
+          $r4 = HEAPU8[$add_ptr297 >> 0];
           
           
           var $add_ptr299 = $p_ref + $inpitch_addr;
           $p_ref = $add_ptr299;
           
           
-          $r5 = HEAPU8[$add_ptr299 >> 0] & 255;
+          $r5 = HEAPU8[$add_ptr299 >> 0];
           
           
           
@@ -25904,7 +25904,7 @@ function __Z16DiagonalInterpMCPhS_iS_iii($in1, $in2, $inpitch, $out, $outpitch, 
           $p_tmp8 = $add_ptr316;
           
           
-          $tmp_result = HEAPU8[$add_ptr316 >> 0] & 255;
+          $tmp_result = HEAPU8[$add_ptr316 >> 0];
           
           
           
@@ -25926,7 +25926,7 @@ function __Z16DiagonalInterpMCPhS_iS_iii($in1, $in2, $inpitch, $out, $outpitch, 
           $p_ref = $add_ptr323;
           
           
-          $r0 = HEAPU8[$add_ptr323 >> 0] & 255;
+          $r0 = HEAPU8[$add_ptr323 >> 0];
           
           
           
@@ -25972,7 +25972,7 @@ function __Z16DiagonalInterpMCPhS_iS_iii($in1, $in2, $inpitch, $out, $outpitch, 
           $p_tmp8 = $add_ptr340;
           
           
-          $tmp_result = HEAPU8[$add_ptr340 >> 0] & 255;
+          $tmp_result = HEAPU8[$add_ptr340 >> 0];
           
           
           
@@ -25994,7 +25994,7 @@ function __Z16DiagonalInterpMCPhS_iS_iii($in1, $in2, $inpitch, $out, $outpitch, 
           $p_ref = $add_ptr347;
           
           
-          $r1 = HEAPU8[$add_ptr347 >> 0] & 255;
+          $r1 = HEAPU8[$add_ptr347 >> 0];
           
           
           
@@ -26040,7 +26040,7 @@ function __Z16DiagonalInterpMCPhS_iS_iii($in1, $in2, $inpitch, $out, $outpitch, 
           $p_tmp8 = $add_ptr364;
           
           
-          $tmp_result = HEAPU8[$add_ptr364 >> 0] & 255;
+          $tmp_result = HEAPU8[$add_ptr364 >> 0];
           
           
           
@@ -26062,7 +26062,7 @@ function __Z16DiagonalInterpMCPhS_iS_iii($in1, $in2, $inpitch, $out, $outpitch, 
           $p_ref = $add_ptr371;
           
           
-          $r2 = HEAPU8[$add_ptr371 >> 0] & 255;
+          $r2 = HEAPU8[$add_ptr371 >> 0];
           
           
           
@@ -26108,7 +26108,7 @@ function __Z16DiagonalInterpMCPhS_iS_iii($in1, $in2, $inpitch, $out, $outpitch, 
           $p_tmp8 = $add_ptr388;
           
           
-          $tmp_result = HEAPU8[$add_ptr388 >> 0] & 255;
+          $tmp_result = HEAPU8[$add_ptr388 >> 0];
           
           
           
@@ -26214,7 +26214,7 @@ function __Z11CreateAlignPhiiS_ii($ref, $picwidth, $y_pos, $out, $blkwidth, $blk
     $for_cond$4 : while (1) {
       
       
-      var $cmp = ($j | 0) < ($blkheight_addr | 0);
+      var $cmp = $j < $blkheight_addr;
       if (!$cmp) {
         __label__ = 9;
         break $for_cond$4;
@@ -26224,12 +26224,12 @@ function __Z11CreateAlignPhiiS_ii($ref, $picwidth, $y_pos, $out, $blkwidth, $blk
       $ref_addr = $incdec_ptr;
       
       
-      $pix1 = HEAPU8[$10 >> 0] & 255;
+      $pix1 = HEAPU8[$10 >> 0];
       
       
       
       
-      $pix2 = HEAPU16[$ref_addr >> 1] & 65535;
+      $pix2 = HEAPU16[$ref_addr >> 1];
       
       var $add_ptr4 = $ref_addr + 2;
       $ref_addr = $add_ptr4;
@@ -26242,7 +26242,7 @@ function __Z11CreateAlignPhiiS_ii($ref, $picwidth, $y_pos, $out, $blkwidth, $blk
       while (1) {
         
         
-        var $cmp6 = ($i | 0) < ($blkwidth_addr | 0);
+        var $cmp6 = $i < $blkwidth_addr;
         if (!$cmp6) {
           __label__ = 7;
           break;
@@ -26308,7 +26308,7 @@ function __Z11CreateAlignPhiiS_ii($ref, $picwidth, $y_pos, $out, $blkwidth, $blk
     $for_cond22$15 : while (1) {
       
       
-      var $cmp23 = ($j | 0) < ($blkheight_addr | 0);
+      var $cmp23 = $j < $blkheight_addr;
       if (!$cmp23) {
         __label__ = 18;
         break $for_cond22$15;
@@ -26317,7 +26317,7 @@ function __Z11CreateAlignPhiiS_ii($ref, $picwidth, $y_pos, $out, $blkwidth, $blk
       
       
       
-      $result = HEAPU16[$ref_addr >> 1] & 65535;
+      $result = HEAPU16[$ref_addr >> 1];
       
       var $add_ptr26 = $ref_addr + 2;
       $ref_addr = $add_ptr26;
@@ -26325,7 +26325,7 @@ function __Z11CreateAlignPhiiS_ii($ref, $picwidth, $y_pos, $out, $blkwidth, $blk
       while (1) {
         
         
-        var $cmp28 = ($i | 0) < ($blkwidth_addr | 0);
+        var $cmp28 = $i < $blkwidth_addr;
         if (!$cmp28) {
           __label__ = 16;
           break;
@@ -26391,7 +26391,7 @@ function __Z11CreateAlignPhiiS_ii($ref, $picwidth, $y_pos, $out, $blkwidth, $blk
     $for_cond49$26 : while (1) {
       
       
-      var $cmp50 = ($j | 0) < ($blkheight_addr | 0);
+      var $cmp50 = $j < $blkheight_addr;
       if (!$cmp50) {
         __label__ = 27;
         break $for_cond49$26;
@@ -26401,12 +26401,12 @@ function __Z11CreateAlignPhiiS_ii($ref, $picwidth, $y_pos, $out, $blkwidth, $blk
       $ref_addr = $incdec_ptr52;
       
       
-      $result = HEAPU8[$76 >> 0] & 255;
+      $result = HEAPU8[$76 >> 0];
       $i = 1;
       while (1) {
         
         
-        var $cmp55 = ($i | 0) < ($blkwidth_addr | 0);
+        var $cmp55 = $i < $blkwidth_addr;
         if (!$cmp55) {
           __label__ = 25;
           break;
@@ -26507,7 +26507,7 @@ function __Z21ChromaDiagonalMC_SIMDPhiiiS_iii($pRef, $srcPitch, $dx, $dy, $pOut,
     
     
     
-    var $cmp = ($i | 0) < ($blkheight_addr + 1 | 0);
+    var $cmp = $i < $blkheight_addr + 1;
     if (!$cmp) {
       __label__ = 8;
       break $for_cond$2;
@@ -26518,12 +26518,12 @@ function __Z21ChromaDiagonalMC_SIMDPhiiiS_iii($pRef, $srcPitch, $dx, $dy, $pOut,
     
     
     
-    $r0 = HEAPU8[$ref >> 0] & 255;
+    $r0 = HEAPU8[$ref >> 0];
     $j = 0;
     while (1) {
       
       
-      var $cmp3 = ($j | 0) < ($blkwidth_addr | 0);
+      var $cmp3 = $j < $blkwidth_addr;
       if (!$cmp3) {
         __label__ = 6;
         break;
@@ -26534,7 +26534,7 @@ function __Z21ChromaDiagonalMC_SIMDPhiiiS_iii($pRef, $srcPitch, $dx, $dy, $pOut,
       
       
       
-      var $or = $r0 | (HEAPU8[$ref + 2 >> 0] & 255) << 16;
+      var $or = $r0 | HEAPU8[$ref + 2 >> 0] << 16;
       $r0 = $or;
       
       
@@ -26550,7 +26550,7 @@ function __Z21ChromaDiagonalMC_SIMDPhiiiS_iii($pRef, $srcPitch, $dx, $dy, $pOut,
       
       
       
-      $r1 = HEAPU8[$ref + 1 >> 0] & 255 | (HEAPU8[$ref + 3 >> 0] & 255) << 16;
+      $r1 = HEAPU8[$ref + 1 >> 0] | HEAPU8[$ref + 3 >> 0] << 16;
       
       
       
@@ -26569,7 +26569,7 @@ function __Z21ChromaDiagonalMC_SIMDPhiiiS_iii($pRef, $srcPitch, $dx, $dy, $pOut,
       
       
       
-      $r2 = HEAPU8[$ref + 4 >> 0] & 255;
+      $r2 = HEAPU8[$ref + 4 >> 0];
       
       var $shr = $r0 >> 16;
       $r0 = $shr;
@@ -26624,7 +26624,7 @@ function __Z21ChromaDiagonalMC_SIMDPhiiiS_iii($pRef, $srcPitch, $dx, $dy, $pOut,
   $for_cond31$12 : while (1) {
     
     
-    var $cmp32 = ($j | 0) < ($blkwidth_addr | 0);
+    var $cmp32 = $j < $blkwidth_addr;
     if (!$cmp32) {
       __label__ = 16;
       break $for_cond31$12;
@@ -26648,7 +26648,7 @@ function __Z21ChromaDiagonalMC_SIMDPhiiiS_iii($pRef, $srcPitch, $dx, $dy, $pOut,
       
       
       
-      var $cmp38 = ($i | 0) < ($blkheight_addr >> 1 | 0);
+      var $cmp38 = $i < $blkheight_addr >> 1;
       if (!$cmp38) {
         __label__ = 14;
         break;
@@ -26834,7 +26834,7 @@ function __Z23ChromaHorizontalMC_SIMDPhiiiS_iii($pRef, $srcPitch, $dx, $dy, $pOu
   $for_cond$2 : while (1) {
     
     
-    var $cmp = ($i | 0) < ($blkheight_addr | 0);
+    var $cmp = $i < $blkheight_addr;
     if (!$cmp) {
       __label__ = 8;
       break $for_cond$2;
@@ -26847,12 +26847,12 @@ function __Z23ChromaHorizontalMC_SIMDPhiiiS_iii($pRef, $srcPitch, $dx, $dy, $pOu
     
     
     
-    $r0 = HEAPU8[$ref >> 0] & 255;
+    $r0 = HEAPU8[$ref >> 0];
     $j = 0;
     while (1) {
       
       
-      var $cmp2 = ($j | 0) < ($blkwidth_addr | 0);
+      var $cmp2 = $j < $blkwidth_addr;
       if (!$cmp2) {
         __label__ = 6;
         break;
@@ -26863,7 +26863,7 @@ function __Z23ChromaHorizontalMC_SIMDPhiiiS_iii($pRef, $srcPitch, $dx, $dy, $pOu
       
       
       
-      var $or = $r0 | (HEAPU8[$ref + 2 >> 0] & 255) << 16;
+      var $or = $r0 | HEAPU8[$ref + 2 >> 0] << 16;
       $r0 = $or;
       
       
@@ -26880,7 +26880,7 @@ function __Z23ChromaHorizontalMC_SIMDPhiiiS_iii($pRef, $srcPitch, $dx, $dy, $pOu
       
       
       
-      $r1 = HEAPU8[$ref + 1 >> 0] & 255 | (HEAPU8[$ref + 3 >> 0] & 255) << 16;
+      $r1 = HEAPU8[$ref + 1 >> 0] | HEAPU8[$ref + 3 >> 0] << 16;
       
       
       
@@ -26902,7 +26902,7 @@ function __Z23ChromaHorizontalMC_SIMDPhiiiS_iii($pRef, $srcPitch, $dx, $dy, $pOu
       
       
       
-      $r2 = HEAPU8[$ref + 4 >> 0] & 255;
+      $r2 = HEAPU8[$ref + 4 >> 0];
       
       var $shr18 = $r0 >> 16;
       $r0 = $shr18;
@@ -27000,7 +27000,7 @@ function __Z21ChromaVerticalMC_SIMDPhiiiS_iii($pRef, $srcPitch, $dx, $dy, $pOut,
   $for_cond$2 : while (1) {
     
     
-    var $cmp = ($i | 0) < ($blkwidth_addr | 0);
+    var $cmp = $i < $blkwidth_addr;
     if (!$cmp) {
       __label__ = 8;
       break $for_cond$2;
@@ -27019,7 +27019,7 @@ function __Z21ChromaVerticalMC_SIMDPhiiiS_iii($pRef, $srcPitch, $dx, $dy, $pOut,
     
     
     
-    $r0 = HEAPU8[$ref >> 0] & 255 | (HEAPU8[$ref + 2 >> 0] & 255) << 16;
+    $r0 = HEAPU8[$ref >> 0] | HEAPU8[$ref + 2 >> 0] << 16;
     
     
     
@@ -27030,7 +27030,7 @@ function __Z21ChromaVerticalMC_SIMDPhiiiS_iii($pRef, $srcPitch, $dx, $dy, $pOut,
     
     
     
-    $r1 = HEAPU8[$ref + 1 >> 0] & 255 | (HEAPU8[$ref + 3 >> 0] & 255) << 16;
+    $r1 = HEAPU8[$ref + 1 >> 0] | HEAPU8[$ref + 3 >> 0] << 16;
     
     
     var $add_ptr = $ref + $srcPitch_addr;
@@ -27039,7 +27039,7 @@ function __Z21ChromaVerticalMC_SIMDPhiiiS_iii($pRef, $srcPitch, $dx, $dy, $pOut,
     while (1) {
       
       
-      var $cmp10 = ($j | 0) < ($blkheight_addr | 0);
+      var $cmp10 = $j < $blkheight_addr;
       if (!$cmp10) {
         __label__ = 6;
         break;
@@ -27059,7 +27059,7 @@ function __Z21ChromaVerticalMC_SIMDPhiiiS_iii($pRef, $srcPitch, $dx, $dy, $pOut,
       
       
       
-      $r2 = HEAPU8[$ref >> 0] & 255 | (HEAPU8[$ref + 2 >> 0] & 255) << 16;
+      $r2 = HEAPU8[$ref >> 0] | HEAPU8[$ref + 2 >> 0] << 16;
       
       
       
@@ -27089,7 +27089,7 @@ function __Z21ChromaVerticalMC_SIMDPhiiiS_iii($pRef, $srcPitch, $dx, $dy, $pOut,
       
       
       
-      $r3 = HEAPU8[$ref + 1 >> 0] & 255 | (HEAPU8[$ref + 3 >> 0] & 255) << 16;
+      $r3 = HEAPU8[$ref + 1 >> 0] | HEAPU8[$ref + 3 >> 0] << 16;
       
       
       
@@ -27181,7 +27181,7 @@ function __Z22ChromaDiagonalMC2_SIMDPhiiiS_iii($pRef, $srcPitch, $dx, $dy, $pOut
     
     
     
-    var $cmp = ($i | 0) < ($blkheight_addr + 1 | 0);
+    var $cmp = $i < $blkheight_addr + 1;
     if (!$cmp) {
       __label__ = 4;
       break $for_cond$2;
@@ -27190,7 +27190,7 @@ function __Z22ChromaDiagonalMC2_SIMDPhiiiS_iii($pRef, $srcPitch, $dx, $dy, $pOut
     
     
     
-    $r_temp = HEAPU8[$pRef_addr + 1 >> 0] & 255;
+    $r_temp = HEAPU8[$pRef_addr + 1 >> 0];
     
     
     
@@ -27205,7 +27205,7 @@ function __Z22ChromaDiagonalMC2_SIMDPhiiiS_iii($pRef, $srcPitch, $dx, $dy, $pOut
     
     
     
-    $temp0 = ((HEAPU8[$pRef_addr >> 0] & 255) << 3) + $dx_addr * ($r_temp - (HEAPU8[$pRef_addr >> 0] & 255));
+    $temp0 = (HEAPU8[$pRef_addr >> 0] << 3) + $dx_addr * ($r_temp - HEAPU8[$pRef_addr >> 0]);
     
     
     
@@ -27217,7 +27217,7 @@ function __Z22ChromaDiagonalMC2_SIMDPhiiiS_iii($pRef, $srcPitch, $dx, $dy, $pOut
     
     
     
-    $temp1 = ($r_temp << 3) + $dx_addr * ((HEAPU8[$pRef_addr + 2 >> 0] & 255) - $r_temp);
+    $temp1 = ($r_temp << 3) + $dx_addr * (HEAPU8[$pRef_addr + 2 >> 0] - $r_temp);
     
     
     
@@ -27257,7 +27257,7 @@ function __Z22ChromaDiagonalMC2_SIMDPhiiiS_iii($pRef, $srcPitch, $dx, $dy, $pOut
   while (1) {
     
     
-    var $cmp20 = ($i | 0) < ($blkheight_addr | 0);
+    var $cmp20 = $i < $blkheight_addr;
     if (!$cmp20) {
       __label__ = 8;
       break;
@@ -27337,7 +27337,7 @@ function __Z24ChromaHorizontalMC2_SIMDPhiiiS_iii($pRef, $srcPitch, $dx, $dy, $pO
   while (1) {
     
     
-    var $cmp = ($i | 0) < ($blkheight_addr | 0);
+    var $cmp = $i < $blkheight_addr;
     if (!$cmp) {
       __label__ = 4;
       break;
@@ -27346,7 +27346,7 @@ function __Z24ChromaHorizontalMC2_SIMDPhiiiS_iii($pRef, $srcPitch, $dx, $dy, $pO
     
     
     
-    $temp = HEAPU8[$pRef_addr + 1 >> 0] & 255;
+    $temp = HEAPU8[$pRef_addr + 1 >> 0];
     
     
     
@@ -27363,7 +27363,7 @@ function __Z24ChromaHorizontalMC2_SIMDPhiiiS_iii($pRef, $srcPitch, $dx, $dy, $pO
     
     
     
-    $temp0 = ((HEAPU8[$pRef_addr >> 0] & 255) << 3) + $dx_addr * ($temp - (HEAPU8[$pRef_addr >> 0] & 255)) + 4 >> 3;
+    $temp0 = (HEAPU8[$pRef_addr >> 0] << 3) + $dx_addr * ($temp - HEAPU8[$pRef_addr >> 0]) + 4 >> 3;
     
     
     
@@ -27377,7 +27377,7 @@ function __Z24ChromaHorizontalMC2_SIMDPhiiiS_iii($pRef, $srcPitch, $dx, $dy, $pO
     
     
     
-    $temp1 = ($temp << 3) + $dx_addr * ((HEAPU8[$pRef_addr + 2 >> 0] & 255) - $temp) + 4 >> 3;
+    $temp1 = ($temp << 3) + $dx_addr * (HEAPU8[$pRef_addr + 2 >> 0] - $temp) + 4 >> 3;
     
     
     
@@ -27442,7 +27442,7 @@ function __Z22ChromaVerticalMC2_SIMDPhiiiS_iii($pRef, $srcPitch, $dx, $dy, $pOut
   
   
   
-  $r0 = HEAPU8[$pRef_addr >> 0] & 255 | (HEAPU8[$pRef_addr + 1 >> 0] & 255) << 16;
+  $r0 = HEAPU8[$pRef_addr >> 0] | HEAPU8[$pRef_addr + 1 >> 0] << 16;
   
   
   var $add_ptr = $pRef_addr + $srcPitch_addr;
@@ -27451,7 +27451,7 @@ function __Z22ChromaVerticalMC2_SIMDPhiiiS_iii($pRef, $srcPitch, $dx, $dy, $pOut
   while (1) {
     
     
-    var $cmp = ($i | 0) < ($blkheight_addr | 0);
+    var $cmp = $i < $blkheight_addr;
     if (!$cmp) {
       __label__ = 4;
       break;
@@ -27471,7 +27471,7 @@ function __Z22ChromaVerticalMC2_SIMDPhiiiS_iii($pRef, $srcPitch, $dx, $dy, $pOut
     
     
     
-    $r1 = HEAPU8[$pRef_addr >> 0] & 255 | (HEAPU8[$pRef_addr + 1 >> 0] & 255) << 16;
+    $r1 = HEAPU8[$pRef_addr >> 0] | HEAPU8[$pRef_addr + 1 >> 0] << 16;
     
     
     
@@ -27551,7 +27551,7 @@ function __Z17ChromaFullMC_SIMDPhiiiS_iii($pRef, $srcPitch, $dx, $dy, $pOut, $pr
   
   
   
-  if (($pRef_addr & 1 | 0) != 0) {
+  if (($pRef_addr & 1) != 0) {
     __label__ = 1;
   } else {
     __label__ = 10;
@@ -27561,7 +27561,7 @@ function __Z17ChromaFullMC_SIMDPhiiiS_iii($pRef, $srcPitch, $dx, $dy, $pOut, $pr
     $j = $blkheight_addr;
     $for_cond$4 : while (1) {
       
-      var $cmp = ($j | 0) > 0;
+      var $cmp = $j > 0;
       if (!$cmp) {
         __label__ = 9;
         break $for_cond$4;
@@ -27570,7 +27570,7 @@ function __Z17ChromaFullMC_SIMDPhiiiS_iii($pRef, $srcPitch, $dx, $dy, $pOut, $pr
       $i = $blkwidth_addr;
       while (1) {
         
-        var $cmp3 = ($i | 0) > 0;
+        var $cmp3 = $i > 0;
         if (!$cmp3) {
           __label__ = 7;
           break;
@@ -27580,7 +27580,7 @@ function __Z17ChromaFullMC_SIMDPhiiiS_iii($pRef, $srcPitch, $dx, $dy, $pOut, $pr
         $pRef_addr = $incdec_ptr;
         
         
-        $temp = HEAPU8[$10 >> 0] & 255;
+        $temp = HEAPU8[$10 >> 0];
         var $12 = $pRef_addr;
         var $incdec_ptr5 = $12 + 1;
         $pRef_addr = $incdec_ptr5;
@@ -27626,7 +27626,7 @@ function __Z17ChromaFullMC_SIMDPhiiiS_iii($pRef, $srcPitch, $dx, $dy, $pOut, $pr
     $j = $blkheight_addr;
     $for_cond14$15 : while (1) {
       
-      var $cmp15 = ($j | 0) > 0;
+      var $cmp15 = $j > 0;
       if (!$cmp15) {
         __label__ = 18;
         break $for_cond14$15;
@@ -27635,7 +27635,7 @@ function __Z17ChromaFullMC_SIMDPhiiiS_iii($pRef, $srcPitch, $dx, $dy, $pOut, $pr
       $i = $blkwidth_addr;
       while (1) {
         
-        var $cmp18 = ($i | 0) > 0;
+        var $cmp18 = $i > 0;
         if (!$cmp18) {
           __label__ = 16;
           break;
@@ -27720,7 +27720,7 @@ function __Z11DecodeSliceP12tagDecObject($decvid) {
   $slice_group_id = HEAP32[HEAP32[$video + 1412 >> 2] + 4 * $CurrMbAddr >> 2];
   
   
-  if (($CurrMbAddr | 0) != 0) {
+  if ($CurrMbAddr != 0) {
     __label__ = 1;
   } else {
     __label__ = 4;
@@ -27732,7 +27732,7 @@ function __Z11DecodeSliceP12tagDecObject($decvid) {
       
       
       
-      var $cmp = ($CurrMbAddr | 0) != (HEAP32[$video + 916 >> 2] + 1 | 0);
+      var $cmp = $CurrMbAddr != HEAP32[$video + 916 >> 2] + 1;
       if (!$cmp) {
         __label__ = 4;
         break $land_lhs_true$$if_end$2;
@@ -27742,7 +27742,7 @@ function __Z11DecodeSliceP12tagDecObject($decvid) {
       
       
       
-      var $cmp3 = (HEAP32[HEAP32[$video + 868 >> 2] + 12 >> 2] | 0) == 1;
+      var $cmp3 = HEAP32[HEAP32[$video + 868 >> 2] + 12 >> 2] == 1;
       if (!$cmp3) {
         __label__ = 4;
         break $land_lhs_true$$if_end$2;
@@ -27765,7 +27765,7 @@ function __Z11DecodeSliceP12tagDecObject($decvid) {
     
     
     
-    if ($CurrMbAddr >>> 0 >= HEAPU32[$video + 1308 >> 2] >>> 0) {
+    if ($CurrMbAddr >= HEAPU32[$video + 1308 >> 2]) {
       __label__ = 6;
       break $do_body$7;
     }
@@ -27795,12 +27795,12 @@ function __Z11DecodeSliceP12tagDecObject($decvid) {
     
     
     
-    HEAP32[$video + 920 >> 2] = ($CurrMbAddr >>> 0) % (HEAPU32[$video + 1248 >> 2] >>> 0);
+    HEAP32[$video + 920 >> 2] = $CurrMbAddr % HEAPU32[$video + 1248 >> 2];
     
     
     
     var $42 = HEAPU32[$video + 1248 >> 2];
-    var $div = Math.floor(($CurrMbAddr >>> 0) / ($42 >>> 0));
+    var $div = Math.floor($CurrMbAddr / $42);
     
     
     HEAP32[$video + 924 >> 2] = $div;
@@ -27812,7 +27812,7 @@ function __Z11DecodeSliceP12tagDecObject($decvid) {
     $status = $call13;
     
     
-    if (($status | 0) != 1) {
+    if ($status != 1) {
       __label__ = 8;
       break $do_body$7;
     }
@@ -27824,7 +27824,7 @@ function __Z11DecodeSliceP12tagDecObject($decvid) {
     
     var $call17 = _more_rbsp_data($stream);
     
-    $moreDataFlag = $call17 & 1;
+    $moreDataFlag = $call17;
     $while_cond$11 : while (1) {
       
       var $inc = $CurrMbAddr + 1;
@@ -27833,7 +27833,7 @@ function __Z11DecodeSliceP12tagDecObject($decvid) {
       
       
       
-      if ($inc >>> 0 < HEAPU32[$video + 1308 >> 2] >>> 0) {
+      if ($inc < HEAPU32[$video + 1308 >> 2]) {
         __lastLabel__ = 10;
         __label__ = 11;
       } else {
@@ -27848,7 +27848,7 @@ function __Z11DecodeSliceP12tagDecObject($decvid) {
         
         
         
-        var $cmp22 = (HEAP32[HEAP32[$video + 1412 >> 2] + 4 * $CurrMbAddr >> 2] | 0) != ($slice_group_id | 0);
+        var $cmp22 = HEAP32[HEAP32[$video + 1412 >> 2] + 4 * $CurrMbAddr >> 2] != $slice_group_id;
         __lastLabel__ = 11;
       }
       var $60 = __lastLabel__ == 10 ? 0 : $cmp22;
@@ -27861,7 +27861,7 @@ function __Z11DecodeSliceP12tagDecObject($decvid) {
     }
     
     
-    if (($moreDataFlag | 0) != 0) {
+    if ($moreDataFlag != 0) {
       __label__ = 16;
     } else {
       __label__ = 17;
@@ -27872,7 +27872,7 @@ function __Z11DecodeSliceP12tagDecObject($decvid) {
         
         
         
-        if ((HEAP32[$video + 1316 >> 2] | 0) > 0) {
+        if (HEAP32[$video + 1316 >> 2] > 0) {
           __lastLabel__ = 16;
           __label__ = 18;
           break $land_lhs_true24$$lor_rhs$19;
@@ -27887,7 +27887,7 @@ function __Z11DecodeSliceP12tagDecObject($decvid) {
       
       
       
-      var $cmp28 = (HEAP32[$video + 2072 >> 2] | 0) > 0;
+      var $cmp28 = HEAP32[$video + 2072 >> 2] > 0;
       __lastLabel__ = 17;
     }
     var $66 = __lastLabel__ == 16 ? 1 : $cmp28;
@@ -27909,7 +27909,7 @@ function __Z11DecodeSliceP12tagDecObject($decvid) {
     
     
     
-    if ((HEAP32[$video + 1316 >> 2] | 0) == 0) {
+    if (HEAP32[$video + 1316 >> 2] == 0) {
       __label__ = 20;
     } else {
       __label__ = 21;
@@ -27954,7 +27954,7 @@ function __Z12ConcealSliceP12tagDecObjectii($decvid, $mbnum_start, $mbnum_end) {
   
   
   
-  if ((HEAP32[$video + 1416 >> 2] | 0) == 0) {
+  if (HEAP32[$video + 1416 >> 2] == 0) {
     __label__ = 1;
   } else {
     __label__ = 2;
@@ -27967,7 +27967,7 @@ function __Z12ConcealSliceP12tagDecObjectii($decvid, $mbnum_start, $mbnum_end) {
     while (1) {
       
       
-      var $cmp1 = ($CurrMbAddr | 0) < ($mbnum_end_addr | 0);
+      var $cmp1 = $CurrMbAddr < $mbnum_end_addr;
       if (!$cmp1) {
         __label__ = 6;
         break;
@@ -28000,12 +28000,12 @@ function __Z12ConcealSliceP12tagDecObjectii($decvid, $mbnum_start, $mbnum_end) {
       
       
       
-      HEAP32[$video + 920 >> 2] = ($CurrMbAddr >>> 0) % (HEAPU32[$video + 1248 >> 2] >>> 0);
+      HEAP32[$video + 920 >> 2] = $CurrMbAddr % HEAPU32[$video + 1248 >> 2];
       
       
       
       var $22 = HEAPU32[$video + 1248 >> 2];
-      var $div = Math.floor(($CurrMbAddr >>> 0) / ($22 >>> 0));
+      var $div = Math.floor($CurrMbAddr / $22);
       
       
       HEAP32[$video + 924 >> 2] = $div;
@@ -28201,7 +28201,7 @@ function __Z8DecodeMBP12tagDecObject($decvid) {
   HEAP32[$currMB + 408 >> 2] = $12;
   
   
-  if (($slice_type | 0) == 0) {
+  if ($slice_type == 0) {
     __label__ = 1;
   } else {
     __label__ = 9;
@@ -28212,7 +28212,7 @@ function __Z8DecodeMBP12tagDecObject($decvid) {
       
       
       
-      if ((HEAP32[$video + 2072 >> 2] | 0) < 0) {
+      if (HEAP32[$video + 2072 >> 2] < 0) {
         __label__ = 2;
       } else {
         __label__ = 3;
@@ -28227,7 +28227,7 @@ function __Z8DecodeMBP12tagDecObject($decvid) {
       
       
       
-      if ((HEAP32[$video + 2072 >> 2] | 0) == 0) {
+      if (HEAP32[$video + 2072 >> 2] == 0) {
         __label__ = 4;
       } else {
         __label__ = 7;
@@ -28237,7 +28237,7 @@ function __Z8DecodeMBP12tagDecObject($decvid) {
         var $call11 = __Z4ue_vP15tagDecBitstreamPj($stream, $mb_type);
         
         
-        if (HEAPU32[$mb_type >> 2] >>> 0 > 30) {
+        if (HEAPU32[$mb_type >> 2] > 30) {
           __label__ = 5;
         } else {
           __label__ = 6;
@@ -28391,7 +28391,7 @@ function __Z8DecodeMBP12tagDecObject($decvid) {
       var $call50 = __Z4ue_vP15tagDecBitstreamPj($stream, $mb_type);
       
       
-      if (HEAPU32[$mb_type >> 2] >>> 0 > 25) {
+      if (HEAPU32[$mb_type >> 2] > 25) {
         __label__ = 10;
       } else {
         __label__ = 11;
@@ -28415,7 +28415,7 @@ function __Z8DecodeMBP12tagDecObject($decvid) {
       
       
       
-      if ((HEAP32[$currMB + 164 >> 2] | 0) != 2) {
+      if (HEAP32[$currMB + 164 >> 2] != 2) {
         __label__ = 13;
       } else {
         __label__ = 52;
@@ -28425,7 +28425,7 @@ function __Z8DecodeMBP12tagDecObject($decvid) {
         
         
         
-        if ((HEAP32[$currMB + 164 >> 2] | 0) == 8) {
+        if (HEAP32[$currMB + 164 >> 2] == 8) {
           __label__ = 15;
         } else {
           __label__ = 14;
@@ -28436,7 +28436,7 @@ function __Z8DecodeMBP12tagDecObject($decvid) {
             
             
             
-            if ((HEAP32[$currMB + 164 >> 2] | 0) == 9) {
+            if (HEAP32[$currMB + 164 >> 2] == 9) {
               __label__ = 15;
               break $if_then62$$lor_lhs_false$22;
             }
@@ -28458,7 +28458,7 @@ function __Z8DecodeMBP12tagDecObject($decvid) {
         }
         
         
-        if (($status | 0) != 1) {
+        if ($status != 1) {
           __label__ = 18;
         } else {
           __label__ = 19;
@@ -28471,7 +28471,7 @@ function __Z8DecodeMBP12tagDecObject($decvid) {
           
           
           
-          if ((HEAP32[$currMB + 164 >> 2] | 0) != 1) {
+          if (HEAP32[$currMB + 164 >> 2] != 1) {
             __label__ = 20;
           } else {
             __label__ = 23;
@@ -28483,7 +28483,7 @@ function __Z8DecodeMBP12tagDecObject($decvid) {
             $status = $call73;
             
             
-            if (($status | 0) != 1) {
+            if ($status != 1) {
               __label__ = 21;
             } else {
               __label__ = 22;
@@ -28501,7 +28501,7 @@ function __Z8DecodeMBP12tagDecObject($decvid) {
           
           
           
-          if (HEAPU32[$currMB + 184 >> 2] >>> 0 > 0) {
+          if (HEAPU32[$currMB + 184 >> 2] > 0) {
             __label__ = 25;
           } else {
             __label__ = 24;
@@ -28512,7 +28512,7 @@ function __Z8DecodeMBP12tagDecObject($decvid) {
               
               
               
-              if ((HEAP32[$currMB + 164 >> 2] | 0) == 1) {
+              if (HEAP32[$currMB + 164 >> 2] == 1) {
                 __label__ = 25;
                 break $if_then83$$lor_lhs_false80$37;
               } else {
@@ -28526,7 +28526,7 @@ function __Z8DecodeMBP12tagDecObject($decvid) {
             var $call84 = __Z4se_vP15tagDecBitstreamPi($stream, $temp);
             
             
-            if ((HEAP32[$temp >> 2] | 0) != 0) {
+            if (HEAP32[$temp >> 2] != 0) {
               __label__ = 26;
             } else {
               __label__ = 48;
@@ -28555,7 +28555,7 @@ function __Z8DecodeMBP12tagDecObject($decvid) {
               
               
               
-              if ((HEAP32[$currMB + 404 >> 2] | 0) > 51) {
+              if (HEAP32[$currMB + 404 >> 2] > 51) {
                 __label__ = 28;
               } else {
                 __label__ = 27;
@@ -28566,7 +28566,7 @@ function __Z8DecodeMBP12tagDecObject($decvid) {
                   
                   
                   
-                  if ((HEAP32[$currMB + 404 >> 2] | 0) < 0) {
+                  if (HEAP32[$currMB + 404 >> 2] < 0) {
                     __label__ = 28;
                     break $if_then96$$lor_lhs_false93$43;
                   } else {
@@ -28580,7 +28580,7 @@ function __Z8DecodeMBP12tagDecObject($decvid) {
                 
                 
                 
-                if ((HEAP32[$video + 812 >> 2] | 0) < 51) {
+                if (HEAP32[$video + 812 >> 2] < 51) {
                   __label__ = 29;
                 } else {
                   __label__ = 30;
@@ -28595,7 +28595,7 @@ function __Z8DecodeMBP12tagDecObject($decvid) {
                 }
                 var $cond = __lastLabel__ == 29 ? $104 : 51;
                 
-                if (0 > ($cond | 0)) {
+                if (0 > $cond) {
                   __label__ = 32;
                 } else {
                   __label__ = 33;
@@ -28607,7 +28607,7 @@ function __Z8DecodeMBP12tagDecObject($decvid) {
                   
                   
                   
-                  if ((HEAP32[$video + 812 >> 2] | 0) < 51) {
+                  if (HEAP32[$video + 812 >> 2] < 51) {
                     __label__ = 34;
                   } else {
                     __label__ = 35;
@@ -28657,7 +28657,7 @@ function __Z8DecodeMBP12tagDecObject($decvid) {
               
               
               
-              if ((HEAP32[$video + 812 >> 2] + HEAP32[HEAP32[$video + 872 >> 2] + 152 >> 2] | 0) < 51) {
+              if (HEAP32[$video + 812 >> 2] + HEAP32[HEAP32[$video + 872 >> 2] + 152 >> 2] < 51) {
                 __label__ = 39;
               } else {
                 __label__ = 40;
@@ -28678,7 +28678,7 @@ function __Z8DecodeMBP12tagDecObject($decvid) {
               }
               var $cond131 = __lastLabel__ == 39 ? $add128 : 51;
               
-              if (0 > ($cond131 | 0)) {
+              if (0 > $cond131) {
                 __label__ = 42;
               } else {
                 __label__ = 43;
@@ -28696,7 +28696,7 @@ function __Z8DecodeMBP12tagDecObject($decvid) {
                 
                 
                 
-                if ((HEAP32[$video + 812 >> 2] + HEAP32[HEAP32[$video + 872 >> 2] + 152 >> 2] | 0) < 51) {
+                if (HEAP32[$video + 812 >> 2] + HEAP32[HEAP32[$video + 872 >> 2] + 152 >> 2] < 51) {
                   __label__ = 44;
                 } else {
                   __label__ = 45;
@@ -28721,7 +28721,7 @@ function __Z8DecodeMBP12tagDecObject($decvid) {
               var $cond149 = __lastLabel__ == 42 ? 0 : $cond147;
               
               
-              var $conv = HEAPU8[__ZL10mapQPi2QPc8 + $cond149 >> 0] & 255;
+              var $conv = HEAPU8[__ZL10mapQPi2QPc8 + $cond149 >> 0];
               
               
               HEAP32[$video + 816 >> 2] = $conv;
@@ -28755,7 +28755,7 @@ function __Z8DecodeMBP12tagDecObject($decvid) {
           $status = $call162;
           
           
-          if (($status | 0) != 1) {
+          if ($status != 1) {
             __label__ = 50;
           } else {
             __label__ = 51;
@@ -28768,7 +28768,7 @@ function __Z8DecodeMBP12tagDecObject($decvid) {
             
             
             
-            if ((HEAP32[$currMB + 164 >> 2] | 0) == 0) {
+            if (HEAP32[$currMB + 164 >> 2] == 0) {
               __label__ = 66;
             } else {
               __label__ = 65;
@@ -28779,7 +28779,7 @@ function __Z8DecodeMBP12tagDecObject($decvid) {
                 
                 
                 
-                if ((HEAP32[$currMB + 164 >> 2] | 0) == 1) {
+                if (HEAP32[$currMB + 164 >> 2] == 1) {
                   __label__ = 66;
                   break $if_then210$$lor_lhs_false207$78;
                 }
@@ -28802,7 +28802,7 @@ function __Z8DecodeMBP12tagDecObject($decvid) {
         
         
         
-        if ((HEAP32[$stream + 36 >> 2] & 7 | 0) != 0) {
+        if ((HEAP32[$stream + 36 >> 2] & 7) != 0) {
           __label__ = 53;
         } else {
           __label__ = 54;
@@ -28823,7 +28823,7 @@ function __Z8DecodeMBP12tagDecObject($decvid) {
         
         
         
-        if ((HEAP32[HEAP32[$video + 872 >> 2] + 152 >> 2] | 0) < 51) {
+        if (HEAP32[HEAP32[$video + 872 >> 2] + 152 >> 2] < 51) {
           __label__ = 55;
         } else {
           __label__ = 56;
@@ -28840,7 +28840,7 @@ function __Z8DecodeMBP12tagDecObject($decvid) {
         }
         var $cond181 = __lastLabel__ == 55 ? $164 : 51;
         
-        if (0 > ($cond181 | 0)) {
+        if (0 > $cond181) {
           __label__ = 58;
         } else {
           __label__ = 59;
@@ -28854,7 +28854,7 @@ function __Z8DecodeMBP12tagDecObject($decvid) {
           
           
           
-          if ((HEAP32[HEAP32[$video + 872 >> 2] + 152 >> 2] | 0) < 51) {
+          if (HEAP32[HEAP32[$video + 872 >> 2] + 152 >> 2] < 51) {
             __label__ = 60;
           } else {
             __label__ = 61;
@@ -28875,7 +28875,7 @@ function __Z8DecodeMBP12tagDecObject($decvid) {
         var $cond195 = __lastLabel__ == 58 ? 0 : $cond193;
         
         
-        var $conv197 = HEAPU8[__ZL10mapQPi2QPc8 + $cond195 >> 0] & 255;
+        var $conv197 = HEAPU8[__ZL10mapQPi2QPc8 + $cond195 >> 0];
         
         
         HEAP32[$currMB + 408 >> 2] = $conv197;
@@ -28931,7 +28931,7 @@ function __Z16InterpretMBModePP13tagMacroblockj($mblock, $mb_type) {
   HEAP32[$mblock_addr + 156 >> 2] = 0;
   
   
-  if ($mb_type_addr >>> 0 < 5) {
+  if ($mb_type_addr < 5) {
     __label__ = 1;
   } else {
     __label__ = 2;
@@ -29079,7 +29079,7 @@ function __Z16InterpretMBModeIP13tagMacroblockj($mblock, $mb_type) {
   HEAP32[$mblock_addr + 156 >> 2] = 1;
   
   
-  if (($mb_type_addr | 0) == 0) {
+  if ($mb_type_addr == 0) {
     __label__ = 1;
   } else {
     __label__ = 2;
@@ -29091,7 +29091,7 @@ function __Z16InterpretMBModeIP13tagMacroblockj($mblock, $mb_type) {
   } else if (__label__ == 2) {
     
     
-    if ($mb_type_addr >>> 0 < 25) {
+    if ($mb_type_addr < 25) {
       __label__ = 3;
     } else {
       __label__ = 7;
@@ -29108,7 +29108,7 @@ function __Z16InterpretMBModeIP13tagMacroblockj($mblock, $mb_type) {
       HEAP32[$mblock_addr + 188 >> 2] = $mb_type_addr - 1 & 3;
       
       
-      if ($mb_type_addr >>> 0 > 12) {
+      if ($mb_type_addr > 12) {
         __label__ = 4;
       } else {
         __label__ = 5;
@@ -29187,7 +29187,7 @@ function __Z11sub_mb_predP12tagCommonObjP13tagMacroblockP15tagDecBitstream($vide
   $mbPartIdx = 0;
   $for_cond$2 : while (1) {
     
-    var $cmp = ($mbPartIdx | 0) < 4;
+    var $cmp = $mbPartIdx < 4;
     if (!$cmp) {
       __label__ = 6;
       break $for_cond$2;
@@ -29200,7 +29200,7 @@ function __Z11sub_mb_predP12tagCommonObjP13tagMacroblockP15tagDecBitstream($vide
     
     
     
-    if (HEAPU32[$sub_mb_type + $mbPartIdx * 4 >> 2] >>> 0 > 3) {
+    if (HEAPU32[$sub_mb_type + $mbPartIdx * 4 >> 2] > 3) {
       __label__ = 3;
       break $for_cond$2;
     }
@@ -29224,7 +29224,7 @@ function __Z11sub_mb_predP12tagCommonObjP13tagMacroblockP15tagDecBitstream($vide
       
       
       
-      if (HEAPU32[$sliceHdr + 56 >> 2] >>> 0 > 0) {
+      if (HEAPU32[$sliceHdr + 56 >> 2] > 0) {
         __label__ = 7;
       } else {
         __label__ = 15;
@@ -29234,7 +29234,7 @@ function __Z11sub_mb_predP12tagCommonObjP13tagMacroblockP15tagDecBitstream($vide
           
           
           
-          var $cmp6 = (HEAP32[$currMB_addr + 164 >> 2] | 0) != 9;
+          var $cmp6 = HEAP32[$currMB_addr + 164 >> 2] != 9;
           if (!$cmp6) {
             __label__ = 15;
             break $land_lhs_true$$if_end20$9;
@@ -29242,7 +29242,7 @@ function __Z11sub_mb_predP12tagCommonObjP13tagMacroblockP15tagDecBitstream($vide
           $mbPartIdx = 0;
           while (1) {
             
-            var $cmp9 = ($mbPartIdx | 0) < 4;
+            var $cmp9 = $mbPartIdx < 4;
             if (!$cmp9) {
               __label__ = 14;
               break;
@@ -29253,7 +29253,7 @@ function __Z11sub_mb_predP12tagCommonObjP13tagMacroblockP15tagDecBitstream($vide
             
             
             
-            if (HEAPU32[$code >> 2] >>> 0 > $max_ref_idx >>> 0) {
+            if (HEAPU32[$code >> 2] > $max_ref_idx) {
               __label__ = 11;
               break;
             }
@@ -29286,7 +29286,7 @@ function __Z11sub_mb_predP12tagCommonObjP13tagMacroblockP15tagDecBitstream($vide
       $mbPartIdx = 0;
       $for_cond21$21 : while (1) {
         
-        var $cmp22 = ($mbPartIdx | 0) < 4;
+        var $cmp22 = $mbPartIdx < 4;
         if (!$cmp22) {
           __label__ = 23;
           break $for_cond21$21;
@@ -29299,7 +29299,7 @@ function __Z11sub_mb_predP12tagCommonObjP13tagMacroblockP15tagDecBitstream($vide
           
           
           
-          var $cmp26 = ($subMbPartIdx | 0) < (HEAP32[$currMB_addr + 332 + $mbPartIdx * 4 >> 2] | 0);
+          var $cmp26 = $subMbPartIdx < HEAP32[$currMB_addr + 332 + $mbPartIdx * 4 >> 2];
           if (!$cmp26) {
             __label__ = 21;
             break;
@@ -29333,13 +29333,13 @@ function __Z11sub_mb_predP12tagCommonObjP13tagMacroblockP15tagDecBitstream($vide
         
         
         
-        var $idxprom = (tempInt = HEAP16[$currMB_addr + 132 + $mbPartIdx * 2 >> 1], tempInt >= 32768 ? tempInt - 65536 : tempInt);
         
         
         
         
         
-        var $47 = HEAP16[HEAP32[$video_addr + 1416 + $idxprom * 4 >> 2] >> 1];
+        
+        var $47 = HEAP16[HEAP32[$video_addr + 1416 + HEAP16[$currMB_addr + 132 + $mbPartIdx * 2 >> 1] * 4 >> 2] >> 1];
         
         
         
@@ -29386,7 +29386,7 @@ function __Z7mb_predP12tagCommonObjP13tagMacroblockP15tagDecBitstream($video, $c
   
   
   
-  if ((HEAP32[$currMB_addr + 164 >> 2] | 0) == 0) {
+  if (HEAP32[$currMB_addr + 164 >> 2] == 0) {
     __label__ = 2;
   } else {
     __label__ = 1;
@@ -29397,7 +29397,7 @@ function __Z7mb_predP12tagCommonObjP13tagMacroblockP15tagDecBitstream($video, $c
       
       
       
-      if ((HEAP32[$currMB_addr + 164 >> 2] | 0) == 1) {
+      if (HEAP32[$currMB_addr + 164 >> 2] == 1) {
         __label__ = 2;
         break $if_then$$lor_lhs_false$2;
       }
@@ -29432,7 +29432,7 @@ function __Z7mb_predP12tagCommonObjP13tagMacroblockP15tagDecBitstream($video, $c
       
       
       
-      if (HEAPU32[$sliceHdr + 56 >> 2] >>> 0 > 0) {
+      if (HEAPU32[$sliceHdr + 56 >> 2] > 0) {
         __label__ = 19;
       } else {
         __label__ = 26;
@@ -29444,7 +29444,7 @@ function __Z7mb_predP12tagCommonObjP13tagMacroblockP15tagDecBitstream($video, $c
           
           
           
-          var $cmp49 = ($mbPartIdx | 0) < (HEAP32[$currMB_addr + 256 >> 2] | 0);
+          var $cmp49 = $mbPartIdx < HEAP32[$currMB_addr + 256 >> 2];
           if (!$cmp49) {
             __label__ = 25;
             break;
@@ -29455,7 +29455,7 @@ function __Z7mb_predP12tagCommonObjP13tagMacroblockP15tagDecBitstream($video, $c
           
           
           
-          if (HEAPU32[$code >> 2] >>> 0 > $max_ref_idx >>> 0) {
+          if (HEAPU32[$code >> 2] > $max_ref_idx) {
             __label__ = 22;
             break;
           }
@@ -29543,13 +29543,13 @@ function __Z7mb_predP12tagCommonObjP13tagMacroblockP15tagDecBitstream($video, $c
       
       
       
-      var $idxprom = (tempInt = HEAP16[$currMB_addr + 132 >> 1], tempInt >= 32768 ? tempInt - 65536 : tempInt);
       
       
       
       
       
-      var $110 = HEAP16[HEAP32[$video_addr + 1416 + $idxprom * 4 >> 2] >> 1];
+      
+      var $110 = HEAP16[HEAP32[$video_addr + 1416 + HEAP16[$currMB_addr + 132 >> 1] * 4 >> 2] >> 1];
       
       
       
@@ -29558,13 +29558,13 @@ function __Z7mb_predP12tagCommonObjP13tagMacroblockP15tagDecBitstream($video, $c
       
       
       
-      var $idxprom85 = (tempInt = HEAP16[$currMB_addr + 132 + 2 >> 1], tempInt >= 32768 ? tempInt - 65536 : tempInt);
       
       
       
       
       
-      var $116 = HEAP16[HEAP32[$video_addr + 1416 + $idxprom85 * 4 >> 2] >> 1];
+      
+      var $116 = HEAP16[HEAP32[$video_addr + 1416 + HEAP16[$currMB_addr + 132 + 2 >> 1] * 4 >> 2] >> 1];
       
       
       
@@ -29573,13 +29573,13 @@ function __Z7mb_predP12tagCommonObjP13tagMacroblockP15tagDecBitstream($video, $c
       
       
       
-      var $idxprom93 = (tempInt = HEAP16[$currMB_addr + 132 + 4 >> 1], tempInt >= 32768 ? tempInt - 65536 : tempInt);
       
       
       
       
       
-      var $122 = HEAP16[HEAP32[$video_addr + 1416 + $idxprom93 * 4 >> 2] >> 1];
+      
+      var $122 = HEAP16[HEAP32[$video_addr + 1416 + HEAP16[$currMB_addr + 132 + 4 >> 1] * 4 >> 2] >> 1];
       
       
       
@@ -29588,13 +29588,13 @@ function __Z7mb_predP12tagCommonObjP13tagMacroblockP15tagDecBitstream($video, $c
       
       
       
-      var $idxprom101 = (tempInt = HEAP16[$currMB_addr + 132 + 6 >> 1], tempInt >= 32768 ? tempInt - 65536 : tempInt);
       
       
       
       
       
-      var $128 = HEAP16[HEAP32[$video_addr + 1416 + $idxprom101 * 4 >> 2] >> 1];
+      
+      var $128 = HEAP16[HEAP32[$video_addr + 1416 + HEAP16[$currMB_addr + 132 + 6 >> 1] * 4 >> 2] >> 1];
       
       
       
@@ -29609,7 +29609,7 @@ function __Z7mb_predP12tagCommonObjP13tagMacroblockP15tagDecBitstream($video, $c
         
         
         
-        var $cmp109 = ($mbPartIdx | 0) < (HEAP32[$currMB_addr + 256 >> 2] | 0);
+        var $cmp109 = $mbPartIdx < HEAP32[$currMB_addr + 256 >> 2];
         if (!$cmp109) {
           __label__ = 30;
           break;
@@ -29660,7 +29660,7 @@ function __Z7mb_predP12tagCommonObjP13tagMacroblockP15tagDecBitstream($video, $c
       
       
       
-      if ((HEAP32[HEAP32[$video_addr + 872 >> 2] + 160 >> 2] | 0) != 0) {
+      if (HEAP32[HEAP32[$video_addr + 872 >> 2] + 160 >> 2] != 0) {
         __label__ = 4;
       } else {
         __label__ = 3;
@@ -29670,7 +29670,7 @@ function __Z7mb_predP12tagCommonObjP13tagMacroblockP15tagDecBitstream($video, $c
         
         
         
-        if ((HEAP32[$video_addr + 1204 >> 2] | 0) != 0) {
+        if (HEAP32[$video_addr + 1204 >> 2] != 0) {
           __label__ = 5;
         } else {
           __label__ = 6;
@@ -29693,7 +29693,7 @@ function __Z7mb_predP12tagCommonObjP13tagMacroblockP15tagDecBitstream($video, $c
         
         
         
-        if ((HEAP32[$video_addr + 1208 >> 2] | 0) != 0) {
+        if (HEAP32[$video_addr + 1208 >> 2] != 0) {
           __label__ = 7;
         } else {
           __label__ = 8;
@@ -29716,7 +29716,7 @@ function __Z7mb_predP12tagCommonObjP13tagMacroblockP15tagDecBitstream($video, $c
         
         
         
-        if ((HEAP32[$video_addr + 1212 >> 2] | 0) != 0) {
+        if (HEAP32[$video_addr + 1212 >> 2] != 0) {
           __label__ = 9;
         } else {
           __label__ = 10;
@@ -29739,7 +29739,7 @@ function __Z7mb_predP12tagCommonObjP13tagMacroblockP15tagDecBitstream($video, $c
         
         
         
-        if ((HEAP32[$video_addr + 1216 >> 2] | 0) != 0) {
+        if (HEAP32[$video_addr + 1216 >> 2] != 0) {
           __label__ = 11;
         } else {
           __label__ = 12;
@@ -29788,7 +29788,7 @@ function __Z7mb_predP12tagCommonObjP13tagMacroblockP15tagDecBitstream($video, $c
       
       
       
-      if ((HEAP32[$currMB_addr + 164 >> 2] | 0) == 0) {
+      if (HEAP32[$currMB_addr + 164 >> 2] == 0) {
         __label__ = 14;
       } else {
         __label__ = 15;
@@ -29803,7 +29803,7 @@ function __Z7mb_predP12tagCommonObjP13tagMacroblockP15tagDecBitstream($video, $c
       var $call42 = __Z4ue_vP15tagDecBitstreamPj($stream_addr, $code);
       
       
-      if (HEAPU32[$code >> 2] >>> 0 > 3) {
+      if (HEAPU32[$code >> 2] > 3) {
         __label__ = 16;
       } else {
         __label__ = 17;
@@ -29858,7 +29858,7 @@ function __Z18DecodeIntra4x4ModeP12tagCommonObjP13tagMacroblockP15tagDecBitstrea
   $component = 0;
   $for_cond$2 : while (1) {
     
-    var $cmp = ($component | 0) < 4;
+    var $cmp = $component < 4;
     if (!$cmp) {
       __label__ = 36;
       break $for_cond$2;
@@ -29874,7 +29874,7 @@ function __Z18DecodeIntra4x4ModeP12tagCommonObjP13tagMacroblockP15tagDecBitstrea
     $SubBlock_indx = 0;
     while (1) {
       
-      var $cmp3 = ($SubBlock_indx | 0) < 4;
+      var $cmp3 = $SubBlock_indx < 4;
       if (!$cmp3) {
         __label__ = 34;
         break;
@@ -29887,7 +29887,7 @@ function __Z18DecodeIntra4x4ModeP12tagCommonObjP13tagMacroblockP15tagDecBitstrea
       
       
       
-      if ((HEAP32[$prev_intra4x4_pred_mode_flag + $bindx * 4 >> 2] | 0) != 0) {
+      if (HEAP32[$prev_intra4x4_pred_mode_flag + $bindx * 4 >> 2] != 0) {
         __label__ = 6;
       } else {
         __label__ = 5;
@@ -29901,7 +29901,7 @@ function __Z18DecodeIntra4x4ModeP12tagCommonObjP13tagMacroblockP15tagDecBitstrea
       $dcOnlyPredictionFlag = 0;
       
       
-      if (($block_x | 0) > 0) {
+      if ($block_x > 0) {
         __label__ = 7;
       } else {
         __label__ = 8;
@@ -29922,7 +29922,7 @@ function __Z18DecodeIntra4x4ModeP12tagCommonObjP13tagMacroblockP15tagDecBitstrea
         
         
         
-        if ((HEAP32[$video_addr + 1220 >> 2] | 0) != 0) {
+        if (HEAP32[$video_addr + 1220 >> 2] != 0) {
           __label__ = 9;
         } else {
           __label__ = 13;
@@ -29938,7 +29938,7 @@ function __Z18DecodeIntra4x4ModeP12tagCommonObjP13tagMacroblockP15tagDecBitstrea
           
           
           
-          if ((HEAP32[HEAP32[$video_addr + 908 >> 2] + 420 * HEAP32[$video_addr + 1188 >> 2] + 164 >> 2] | 0) == 0) {
+          if (HEAP32[HEAP32[$video_addr + 908 >> 2] + 420 * HEAP32[$video_addr + 1188 >> 2] + 164 >> 2] == 0) {
             __label__ = 10;
           } else {
             __label__ = 11;
@@ -29967,7 +29967,7 @@ function __Z18DecodeIntra4x4ModeP12tagCommonObjP13tagMacroblockP15tagDecBitstrea
       }
       
       
-      if (($block_y | 0) > 0) {
+      if ($block_y > 0) {
         __label__ = 16;
       } else {
         __label__ = 17;
@@ -29988,7 +29988,7 @@ function __Z18DecodeIntra4x4ModeP12tagCommonObjP13tagMacroblockP15tagDecBitstrea
         
         
         
-        if ((HEAP32[$video_addr + 1224 >> 2] | 0) != 0) {
+        if (HEAP32[$video_addr + 1224 >> 2] != 0) {
           __label__ = 18;
         } else {
           __label__ = 22;
@@ -30004,7 +30004,7 @@ function __Z18DecodeIntra4x4ModeP12tagCommonObjP13tagMacroblockP15tagDecBitstrea
           
           
           
-          if ((HEAP32[HEAP32[$video_addr + 908 >> 2] + 420 * HEAP32[$video_addr + 1192 >> 2] + 164 >> 2] | 0) == 0) {
+          if (HEAP32[HEAP32[$video_addr + 908 >> 2] + 420 * HEAP32[$video_addr + 1192 >> 2] + 164 >> 2] == 0) {
             __label__ = 19;
           } else {
             __label__ = 20;
@@ -30032,7 +30032,7 @@ function __Z18DecodeIntra4x4ModeP12tagCommonObjP13tagMacroblockP15tagDecBitstrea
       }
       
       
-      if (($dcOnlyPredictionFlag | 0) != 0) {
+      if ($dcOnlyPredictionFlag != 0) {
         __label__ = 25;
       } else {
         __label__ = 26;
@@ -30046,13 +30046,13 @@ function __Z18DecodeIntra4x4ModeP12tagCommonObjP13tagMacroblockP15tagDecBitstrea
       
       
       
-      var $cond = ($intra4x4PredModeA | 0) < ($intra4x4PredModeB | 0) ? $intra4x4PredModeA : $intra4x4PredModeB;
+      var $cond = $intra4x4PredModeA < $intra4x4PredModeB ? $intra4x4PredModeA : $intra4x4PredModeB;
       $predIntra4x4PredMode = $cond;
       
       
       
       
-      if ((HEAP32[$prev_intra4x4_pred_mode_flag + $bindx * 4 >> 2] | 0) != 0) {
+      if (HEAP32[$prev_intra4x4_pred_mode_flag + $bindx * 4 >> 2] != 0) {
         __label__ = 27;
       } else {
         __label__ = 28;
@@ -30073,7 +30073,7 @@ function __Z18DecodeIntra4x4ModeP12tagCommonObjP13tagMacroblockP15tagDecBitstrea
         
         
         
-        if ((HEAP32[$rem_intra4x4_pred_mode + $bindx * 4 >> 2] | 0) < ($predIntra4x4PredMode | 0)) {
+        if (HEAP32[$rem_intra4x4_pred_mode + $bindx * 4 >> 2] < $predIntra4x4PredMode) {
           __label__ = 29;
         } else {
           __label__ = 30;
@@ -30149,7 +30149,7 @@ function __Z19InterpretSubMBModePP13tagMacroblockPj($mblock, $sub_mb_type) {
   $i = 0;
   while (1) {
     
-    var $cmp = ($i | 0) < 4;
+    var $cmp = $i < 4;
     if (!$cmp) {
       __label__ = 4;
       break;
@@ -30206,7 +30206,7 @@ function __Z16InterpretMBModeBP13tagMacroblockj($mblock, $mb_type) {
   HEAP32[$mblock_addr + 156 >> 2] = 0;
   
   
-  if ($mb_type_addr >>> 0 < 23) {
+  if ($mb_type_addr < 23) {
     __label__ = 1;
   } else {
     __label__ = 4;
@@ -30236,7 +30236,7 @@ function __Z16InterpretMBModeBP13tagMacroblockj($mblock, $mb_type) {
     
     
     
-    if ((HEAP32[$mblock_addr + 256 >> 2] | 0) > 1) {
+    if (HEAP32[$mblock_addr + 256 >> 2] > 1) {
       __label__ = 2;
     } else {
       __label__ = 3;
@@ -30286,7 +30286,7 @@ function __Z17InterpretMBModeSIP13tagMacroblockj($mblock, $mb_type) {
   HEAP32[$mblock_addr + 156 >> 2] = 1;
   
   
-  if (($mb_type_addr | 0) == 0) {
+  if ($mb_type_addr == 0) {
     __label__ = 1;
   } else {
     __label__ = 2;
@@ -30319,7 +30319,7 @@ function __Z19InterpretSubMBModeBP13tagMacroblockPj($mblock, $sub_mb_type) {
   $i = 0;
   $for_cond$2 : while (1) {
     
-    var $cmp = ($i | 0) < 4;
+    var $cmp = $i < 4;
     if (!$cmp) {
       __label__ = 8;
       break $for_cond$2;
@@ -30364,7 +30364,7 @@ function __Z19InterpretSubMBModeBP13tagMacroblockPj($mblock, $sub_mb_type) {
     $j = 0;
     while (1) {
       
-      var $cmp10 = ($j | 0) < 4;
+      var $cmp10 = $j < 4;
       if (!$cmp10) {
         __label__ = 6;
         break;
@@ -30448,7 +30448,7 @@ function __Z14DecodeIntraPCMP12tagCommonObjP15tagDecBitstream($video, $stream) {
   $j = 16;
   $while_cond$2 : while (1) {
     
-    var $cmp = ($j | 0) > 0;
+    var $cmp = $j > 0;
     if (!$cmp) {
       __label__ = 5;
       break $while_cond$2;
@@ -30589,7 +30589,7 @@ function __Z14DecodeIntraPCMP12tagCommonObjP15tagDecBitstream($video, $stream) {
     $pDst = $add_ptr47;
     
     
-    if (($status | 0) != 1) {
+    if ($status != 1) {
       __label__ = 3;
       break $while_cond$2;
     }
@@ -30617,7 +30617,7 @@ function __Z14DecodeIntraPCMP12tagCommonObjP15tagDecBitstream($video, $stream) {
     $j = 8;
     $while_cond54$8 : while (1) {
       
-      var $cmp55 = ($j | 0) > 0;
+      var $cmp55 = $j > 0;
       if (!$cmp55) {
         __label__ = 10;
         break $while_cond54$8;
@@ -30694,7 +30694,7 @@ function __Z14DecodeIntraPCMP12tagCommonObjP15tagDecBitstream($video, $stream) {
       $pDst = $add_ptr79;
       
       
-      if (($status | 0) != 1) {
+      if ($status != 1) {
         __label__ = 8;
         break $while_cond54$8;
       }
@@ -30713,7 +30713,7 @@ function __Z14DecodeIntraPCMP12tagCommonObjP15tagDecBitstream($video, $stream) {
       $j = 8;
       while (1) {
         
-        var $cmp87 = ($j | 0) > 0;
+        var $cmp87 = $j > 0;
         if (!$cmp87) {
           __label__ = 15;
           break;
@@ -30790,7 +30790,7 @@ function __Z14DecodeIntraPCMP12tagCommonObjP15tagDecBitstream($video, $stream) {
         $pDst = $add_ptr111;
         
         
-        if (($status | 0) != 1) {
+        if ($status != 1) {
           __label__ = 13;
           break;
         }
@@ -30890,7 +30890,7 @@ function __Z8residualP12tagDecObjectP13tagMacroblock($decvid, $currMB) {
   
   
   
-  if ((HEAP32[$currMB_addr + 164 >> 2] | 0) == 1) {
+  if (HEAP32[$currMB_addr + 164 >> 2] == 1) {
     __label__ = 1;
   } else {
     __label__ = 10;
@@ -30918,7 +30918,7 @@ function __Z8residualP12tagDecObjectP13tagMacroblock($decvid, $currMB) {
       $i = HEAP32[$numcoeff >> 2] - 1;
       while (1) {
         
-        var $cmp7 = ($i | 0) >= 0;
+        var $cmp7 = $i >= 0;
         if (!$cmp7) {
           __label__ = 7;
           break;
@@ -30932,7 +30932,7 @@ function __Z8residualP12tagDecObjectP13tagMacroblock($decvid, $currMB) {
         $coeffNum = $add8;
         
         
-        if (($coeffNum | 0) > 15) {
+        if ($coeffNum > 15) {
           __label__ = 4;
           break;
         }
@@ -30942,7 +30942,7 @@ function __Z8residualP12tagDecObjectP13tagMacroblock($decvid, $currMB) {
         
         
         
-        $idx = (HEAPU8[$zz_scan + $coeffNum >> 0] & 255) << 2;
+        $idx = HEAPU8[$zz_scan + $coeffNum >> 0] << 2;
         
         
         
@@ -30960,7 +30960,7 @@ function __Z8residualP12tagDecObjectP13tagMacroblock($decvid, $currMB) {
       if (__label__ == 7) {
         
         
-        if ((HEAP32[$numcoeff >> 2] | 0) != 0) {
+        if (HEAP32[$numcoeff >> 2] != 0) {
           __label__ = 8;
         } else {
           __label__ = 9;
@@ -31009,7 +31009,7 @@ function __Z8residualP12tagDecObjectP13tagMacroblock($decvid, $currMB) {
       $mbPartIdx = 0;
       $for_cond19$17 : while (1) {
         
-        var $cmp20 = ($mbPartIdx | 0) < 4;
+        var $cmp20 = $mbPartIdx < 4;
         if (!$cmp20) {
           __label__ = 28;
           break $for_cond19$17;
@@ -31028,7 +31028,7 @@ function __Z8residualP12tagDecObjectP13tagMacroblock($decvid, $currMB) {
         
         
         
-        if ((HEAP32[$currMB_addr + 184 >> 2] & 1 << $mbPartIdx | 0) != 0) {
+        if ((HEAP32[$currMB_addr + 184 >> 2] & 1 << $mbPartIdx) != 0) {
           __label__ = 13;
         } else {
           __label__ = 26;
@@ -31037,7 +31037,7 @@ function __Z8residualP12tagDecObjectP13tagMacroblock($decvid, $currMB) {
           $subMbPartIdx = 0;
           $for_cond28$22 : while (1) {
             
-            var $cmp29 = ($subMbPartIdx | 0) < 4;
+            var $cmp29 = $subMbPartIdx < 4;
             if (!$cmp29) {
               __label__ = 25;
               break $for_cond28$22;
@@ -31084,7 +31084,7 @@ function __Z8residualP12tagDecObjectP13tagMacroblock($decvid, $currMB) {
             $k = HEAP32[$numcoeff >> 2] - 1;
             while (1) {
               
-              var $cmp47 = ($k | 0) >= 0;
+              var $cmp47 = $k >= 0;
               if (!$cmp47) {
                 __label__ = 21;
                 break;
@@ -31098,7 +31098,7 @@ function __Z8residualP12tagDecObjectP13tagMacroblock($decvid, $currMB) {
               $coeffNum = $add51;
               
               
-              if (($coeffNum | 0) > 15) {
+              if ($coeffNum > 15) {
                 __label__ = 18;
                 break $for_cond19$17;
               }
@@ -31107,7 +31107,7 @@ function __Z8residualP12tagDecObjectP13tagMacroblock($decvid, $currMB) {
               
               
               
-              $idx = HEAPU8[$zz_scan + $coeffNum >> 0] & 255;
+              $idx = HEAPU8[$zz_scan + $coeffNum >> 0];
               
               
               
@@ -31142,7 +31142,7 @@ function __Z8residualP12tagDecObjectP13tagMacroblock($decvid, $currMB) {
             HEAP8[$currMB_addr + 380 + (($j << 2) + $i) >> 0] = HEAP32[$numcoeff >> 2] & 255;
             
             
-            if ((HEAP32[$numcoeff >> 2] | 0) != 0) {
+            if (HEAP32[$numcoeff >> 2] != 0) {
               __label__ = 22;
             } else {
               __label__ = 23;
@@ -31184,7 +31184,7 @@ function __Z8residualP12tagDecObjectP13tagMacroblock($decvid, $currMB) {
         
         
         
-        if ((HEAP32[$currMB_addr + 184 >> 2] & 48 | 0) != 0) {
+        if ((HEAP32[$currMB_addr + 184 >> 2] & 48) != 0) {
           __label__ = 29;
         } else {
           __label__ = 42;
@@ -31193,7 +31193,7 @@ function __Z8residualP12tagDecObjectP13tagMacroblock($decvid, $currMB) {
           $iCbCr = 0;
           $for_cond87$42 : while (1) {
             
-            var $cmp88 = ($iCbCr | 0) < 2;
+            var $cmp88 = $iCbCr < 2;
             if (!$cmp88) {
               __label__ = 41;
               break $for_cond87$42;
@@ -31219,7 +31219,7 @@ function __Z8residualP12tagDecObjectP13tagMacroblock($decvid, $currMB) {
             $i = HEAP32[$numcoeff >> 2] - 1;
             while (1) {
               
-              var $cmp101 = ($i | 0) >= 0;
+              var $cmp101 = $i >= 0;
               if (!$cmp101) {
                 __label__ = 37;
                 break;
@@ -31233,7 +31233,7 @@ function __Z8residualP12tagDecObjectP13tagMacroblock($decvid, $currMB) {
               $coeffNum = $add105;
               
               
-              if (($coeffNum | 0) > 3) {
+              if ($coeffNum > 3) {
                 __label__ = 34;
                 break $for_cond87$42;
               }
@@ -31259,7 +31259,7 @@ function __Z8residualP12tagDecObjectP13tagMacroblock($decvid, $currMB) {
             }
             
             
-            if ((HEAP32[$numcoeff >> 2] | 0) != 0) {
+            if (HEAP32[$numcoeff >> 2] != 0) {
               __label__ = 38;
             } else {
               __label__ = 39;
@@ -31271,7 +31271,7 @@ function __Z8residualP12tagDecObjectP13tagMacroblock($decvid, $currMB) {
               __Z13ChromaDCTransPsii($block, $Qq, $Rq);
               
               
-              var $cond = ($iCbCr | 0) != 0 ? 13369344 : 3342336;
+              var $cond = $iCbCr != 0 ? 13369344 : 3342336;
               
               var $or123 = $cbp4x4 | $cond;
               $cbp4x4 = $or123;
@@ -31295,7 +31295,7 @@ function __Z8residualP12tagDecObjectP13tagMacroblock($decvid, $currMB) {
         
         
         
-        if ((HEAP32[$currMB_addr + 184 >> 2] & 32 | 0) != 0) {
+        if ((HEAP32[$currMB_addr + 184 >> 2] & 32) != 0) {
           __label__ = 43;
         } else {
           __label__ = 64;
@@ -31304,7 +31304,7 @@ function __Z8residualP12tagDecObjectP13tagMacroblock($decvid, $currMB) {
           $block_x = 0;
           $for_cond133$61 : while (1) {
             
-            var $cmp134 = ($block_x | 0) < 4;
+            var $cmp134 = $block_x < 4;
             if (!$cmp134) {
               __label__ = 63;
               break $for_cond133$61;
@@ -31312,7 +31312,7 @@ function __Z8residualP12tagDecObjectP13tagMacroblock($decvid, $currMB) {
             $j = 4;
             $for_cond136$64 : while (1) {
               
-              var $cmp137 = ($j | 0) < 6;
+              var $cmp137 = $j < 6;
               if (!$cmp137) {
                 __label__ = 61;
                 break $for_cond136$64;
@@ -31323,7 +31323,7 @@ function __Z8residualP12tagDecObjectP13tagMacroblock($decvid, $currMB) {
                 
                 
                 
-                var $cmp141 = ($i | 0) < ($block_x + 2 | 0);
+                var $cmp141 = $i < $block_x + 2;
                 if (!$cmp141) {
                   __label__ = 59;
                   break $for_cond139$67;
@@ -31357,7 +31357,7 @@ function __Z8residualP12tagDecObjectP13tagMacroblock($decvid, $currMB) {
                 $k = HEAP32[$numcoeff >> 2] - 1;
                 while (1) {
                   
-                  var $cmp156 = ($k | 0) >= 0;
+                  var $cmp156 = $k >= 0;
                   if (!$cmp156) {
                     __label__ = 55;
                     break;
@@ -31371,7 +31371,7 @@ function __Z8residualP12tagDecObjectP13tagMacroblock($decvid, $currMB) {
                   $coeffNum = $add160;
                   
                   
-                  if (($coeffNum | 0) > 15) {
+                  if ($coeffNum > 15) {
                     __label__ = 52;
                     break $for_cond133$61;
                   }
@@ -31380,7 +31380,7 @@ function __Z8residualP12tagDecObjectP13tagMacroblock($decvid, $currMB) {
                   
                   
                   
-                  $idx = HEAPU8[$zz_scan + $coeffNum >> 0] & 255;
+                  $idx = HEAPU8[$zz_scan + $coeffNum >> 0];
                   
                   
                   
@@ -31415,7 +31415,7 @@ function __Z8residualP12tagDecObjectP13tagMacroblock($decvid, $currMB) {
                 HEAP8[$currMB_addr + 380 + (($j << 2) + $i) >> 0] = HEAP32[$numcoeff >> 2] & 255;
                 
                 
-                if ((HEAP32[$numcoeff >> 2] | 0) != 0) {
+                if (HEAP32[$numcoeff >> 2] != 0) {
                   __label__ = 56;
                 } else {
                   __label__ = 57;
@@ -31507,7 +31507,7 @@ function __Z20residual_block_cavlcP12tagDecObjectiiPiS1_S1_($decvid, $nC, $maxNu
   $stream = HEAP32[$decvid_addr + 4 >> 2];
   
   
-  if (($nC_addr | 0) >= 0) {
+  if ($nC_addr >= 0) {
     __label__ = 1;
   } else {
     __label__ = 2;
@@ -31525,7 +31525,7 @@ function __Z20residual_block_cavlcP12tagDecObjectiiPiS1_S1_($decvid, $nC, $maxNu
   HEAP32[$numcoeff_addr >> 2] = $6;
   
   
-  if ((HEAP32[$TotalCoeff >> 2] | 0) == 0) {
+  if (HEAP32[$TotalCoeff >> 2] == 0) {
     __label__ = 4;
   } else {
     __label__ = 5;
@@ -31535,7 +31535,7 @@ function __Z20residual_block_cavlcP12tagDecObjectiiPiS1_S1_($decvid, $nC, $maxNu
   } else if (__label__ == 5) {
     
     
-    if ((HEAP32[$TrailingOnes >> 2] | 0) != 0) {
+    if (HEAP32[$TrailingOnes >> 2] != 0) {
       __label__ = 6;
     } else {
       __label__ = 11;
@@ -31551,7 +31551,7 @@ function __Z20residual_block_cavlcP12tagDecObjectiiPiS1_S1_($decvid, $nC, $maxNu
       while (1) {
         
         
-        var $cmp7 = ($i | 0) < (HEAP32[$TrailingOnes >> 2] | 0);
+        var $cmp7 = $i < HEAP32[$TrailingOnes >> 2];
         if (!$cmp7) {
           __label__ = 10;
           break;
@@ -31563,7 +31563,7 @@ function __Z20residual_block_cavlcP12tagDecObjectiiPiS1_S1_($decvid, $nC, $maxNu
         
         
         
-        var $sub9 = 1 - (HEAPU32[$trailing_ones_sign_flag >> 2] >>> (HEAP32[$TrailingOnes >> 2] - $i - 1 >>> 0) & 2);
+        var $sub9 = 1 - (HEAPU32[$trailing_ones_sign_flag >> 2] >>> HEAP32[$TrailingOnes >> 2] - $i - 1 & 2);
         
         
         
@@ -31581,7 +31581,7 @@ function __Z20residual_block_cavlcP12tagDecObjectiiPiS1_S1_($decvid, $nC, $maxNu
     
     
     
-    if ((HEAP32[$TotalCoeff >> 2] | 0) > (HEAP32[$TrailingOnes >> 2] | 0)) {
+    if (HEAP32[$TotalCoeff >> 2] > HEAP32[$TrailingOnes >> 2]) {
       __label__ = 12;
     } else {
       __label__ = 32;
@@ -31591,7 +31591,7 @@ function __Z20residual_block_cavlcP12tagDecObjectiiPiS1_S1_($decvid, $nC, $maxNu
       var $call13 = __Z14ce_LevelPrefixP15tagDecBitstreamPj($stream, $level_prefix);
       
       
-      if ((HEAP32[$TotalCoeff >> 2] | 0) < 11) {
+      if (HEAP32[$TotalCoeff >> 2] < 11) {
         __label__ = 14;
       } else {
         __label__ = 13;
@@ -31600,13 +31600,13 @@ function __Z20residual_block_cavlcP12tagDecObjectiiPiS1_S1_($decvid, $nC, $maxNu
         if (__label__ == 13) {
           
           
-          if ((HEAP32[$TrailingOnes >> 2] | 0) == 3) {
+          if (HEAP32[$TrailingOnes >> 2] == 3) {
             __label__ = 14;
             break $if_then16$$lor_lhs_false$19;
           }
           
           
-          if (HEAPU32[$level_prefix >> 2] >>> 0 < 15) {
+          if (HEAPU32[$level_prefix >> 2] < 15) {
             __label__ = 22;
           } else {
             __label__ = 23;
@@ -31632,7 +31632,7 @@ function __Z20residual_block_cavlcP12tagDecObjectiiPiS1_S1_($decvid, $nC, $maxNu
       if (__label__ == 14) {
         
         
-        if (HEAPU32[$level_prefix >> 2] >>> 0 < 14) {
+        if (HEAPU32[$level_prefix >> 2] < 14) {
           __label__ = 15;
         } else {
           __label__ = 16;
@@ -31643,7 +31643,7 @@ function __Z20residual_block_cavlcP12tagDecObjectiiPiS1_S1_($decvid, $nC, $maxNu
         } else if (__label__ == 16) {
           
           
-          if ((HEAP32[$level_prefix >> 2] | 0) == 14) {
+          if (HEAP32[$level_prefix >> 2] == 14) {
             __label__ = 17;
           } else {
             __label__ = 18;
@@ -31665,7 +31665,7 @@ function __Z20residual_block_cavlcP12tagDecObjectiiPiS1_S1_($decvid, $nC, $maxNu
       }
       
       
-      if ((HEAP32[$TrailingOnes >> 2] | 0) < 3) {
+      if (HEAP32[$TrailingOnes >> 2] < 3) {
         __label__ = 26;
       } else {
         __label__ = 27;
@@ -31687,7 +31687,7 @@ function __Z20residual_block_cavlcP12tagDecObjectiiPiS1_S1_($decvid, $nC, $maxNu
       
       
       
-      if ((HEAP32[$level_addr + 4 * $i >> 2] | 0) > 3) {
+      if (HEAP32[$level_addr + 4 * $i >> 2] > 3) {
         __label__ = 28;
       } else {
         __label__ = 29;
@@ -31698,7 +31698,7 @@ function __Z20residual_block_cavlcP12tagDecObjectiiPiS1_S1_($decvid, $nC, $maxNu
       
       
       
-      if (($levelCode & 1 | 0) != 0) {
+      if (($levelCode & 1) != 0) {
         __label__ = 30;
       } else {
         __label__ = 31;
@@ -31724,7 +31724,7 @@ function __Z20residual_block_cavlcP12tagDecObjectiiPiS1_S1_($decvid, $nC, $maxNu
     $j = HEAP32[$TotalCoeff >> 2] - $i;
     $for_cond58$47 : while (1) {
       
-      var $cmp59 = ($j | 0) > 0;
+      var $cmp59 = $j > 0;
       if (!$cmp59) {
         __label__ = 44;
         break $for_cond58$47;
@@ -31733,7 +31733,7 @@ function __Z20residual_block_cavlcP12tagDecObjectiiPiS1_S1_($decvid, $nC, $maxNu
       var $call61 = __Z14ce_LevelPrefixP15tagDecBitstreamPj($stream, $level_prefix);
       
       
-      if (HEAPU32[$level_prefix >> 2] >>> 0 < 15) {
+      if (HEAPU32[$level_prefix >> 2] < 15) {
         __label__ = 35;
       } else {
         __label__ = 36;
@@ -31768,7 +31768,7 @@ function __Z20residual_block_cavlcP12tagDecObjectiiPiS1_S1_($decvid, $nC, $maxNu
       
       
       
-      if ((HEAP32[$level_addr + 4 * $i >> 2] | 0) > (3 << $suffixLength - 1 | 0)) {
+      if (HEAP32[$level_addr + 4 * $i >> 2] > 3 << $suffixLength - 1) {
         __label__ = 38;
       } else {
         __label__ = 40;
@@ -31776,7 +31776,7 @@ function __Z20residual_block_cavlcP12tagDecObjectiiPiS1_S1_($decvid, $nC, $maxNu
       $land_lhs_true$$if_end79$54 : do {
         if (__label__ == 38) {
           
-          var $cmp76 = ($suffixLength | 0) < 6;
+          var $cmp76 = $suffixLength < 6;
           if (!$cmp76) {
             __label__ = 40;
             break $land_lhs_true$$if_end79$54;
@@ -31789,7 +31789,7 @@ function __Z20residual_block_cavlcP12tagDecObjectiiPiS1_S1_($decvid, $nC, $maxNu
       
       
       
-      if (($levelCode & 1 | 0) != 0) {
+      if (($levelCode & 1) != 0) {
         __label__ = 41;
       } else {
         __label__ = 42;
@@ -31817,7 +31817,7 @@ function __Z20residual_block_cavlcP12tagDecObjectiiPiS1_S1_($decvid, $nC, $maxNu
     
     
     
-    if ((HEAP32[$TotalCoeff >> 2] | 0) < ($maxNumCoeff_addr | 0)) {
+    if (HEAP32[$TotalCoeff >> 2] < $maxNumCoeff_addr) {
       __label__ = 45;
     } else {
       __label__ = 49;
@@ -31825,7 +31825,7 @@ function __Z20residual_block_cavlcP12tagDecObjectiiPiS1_S1_($decvid, $nC, $maxNu
     if (__label__ == 45) {
       
       
-      if (($nC_addr | 0) >= 0) {
+      if ($nC_addr >= 0) {
         __label__ = 46;
       } else {
         __label__ = 47;
@@ -31847,14 +31847,14 @@ function __Z20residual_block_cavlcP12tagDecObjectiiPiS1_S1_($decvid, $nC, $maxNu
       
       
       
-      var $cmp102 = ($i | 0) < (HEAP32[$TotalCoeff >> 2] - 1 | 0);
+      var $cmp102 = $i < HEAP32[$TotalCoeff >> 2] - 1;
       if (!$cmp102) {
         __label__ = 57;
         break;
       }
       
       
-      if ((HEAP32[$zerosLeft >> 2] | 0) > 0) {
+      if (HEAP32[$zerosLeft >> 2] > 0) {
         __label__ = 53;
       } else {
         __label__ = 54;
@@ -31890,7 +31890,7 @@ function __Z20residual_block_cavlcP12tagDecObjectiiPiS1_S1_($decvid, $nC, $maxNu
     }
     
     
-    if ((HEAP32[$zerosLeft >> 2] | 0) < 0) {
+    if (HEAP32[$zerosLeft >> 2] < 0) {
       __label__ = 58;
     } else {
       __label__ = 59;
@@ -31964,7 +31964,7 @@ function __Z14DeblockPictureP12tagCommonObj($video) {
     
     
     
-    var $cmp = $i >>> 0 < HEAPU32[$video_addr + 1296 >> 2] >>> 0;
+    var $cmp = $i < HEAPU32[$video_addr + 1296 >> 2];
     if (!$cmp) {
       __label__ = 8;
       break $for_cond$2;
@@ -31975,7 +31975,7 @@ function __Z14DeblockPictureP12tagCommonObj($video) {
       
       
       
-      var $cmp8 = $j >>> 0 < HEAPU32[$video_addr + 1248 >> 2] >>> 0;
+      var $cmp8 = $j < HEAPU32[$video_addr + 1248 >> 2];
       if (!$cmp8) {
         __label__ = 6;
         break;
@@ -32075,11 +32075,11 @@ function __ZL9DeblockMbP12tagCommonObjiiPhS1_S1_($video, $mb_x, $mb_y, $SrcY, $S
   
   
   
-  $filterLeftMbEdgeFlag = ($mb_x_addr | 0) != 0 & 1;
+  $filterLeftMbEdgeFlag = $mb_x_addr != 0;
   
   
   
-  $filterTopMbEdgeFlag = ($mb_y_addr | 0) != 0 & 1;
+  $filterTopMbEdgeFlag = $mb_y_addr != 0;
   
   
   
@@ -32106,7 +32106,7 @@ function __ZL9DeblockMbP12tagCommonObjiiPhS1_S1_($video, $mb_x, $mb_y, $SrcY, $S
   
   
   
-  if ((HEAP32[HEAP32[$video_addr + 880 >> 2] + 2148 >> 2] | 0) == 1) {
+  if (HEAP32[HEAP32[$video_addr + 880 >> 2] + 2148 >> 2] == 1) {
     __label__ = 1;
   } else {
     __label__ = 2;
@@ -32120,7 +32120,7 @@ function __ZL9DeblockMbP12tagCommonObjiiPhS1_S1_($video, $mb_x, $mb_y, $SrcY, $S
     
     
     
-    if ((HEAP32[HEAP32[$video_addr + 880 >> 2] + 2148 >> 2] | 0) == 2) {
+    if (HEAP32[HEAP32[$video_addr + 880 >> 2] + 2148 >> 2] == 2) {
       __label__ = 3;
     } else {
       __label__ = 4;
@@ -32137,7 +32137,7 @@ function __ZL9DeblockMbP12tagCommonObjiiPhS1_S1_($video, $mb_x, $mb_y, $SrcY, $S
       
       var $call = __Z15mb_is_availableP13tagMacroblockjii($19, $21, $mbNum - 1, $mbNum);
       
-      $filterLeftMbEdgeFlag = $call & 1;
+      $filterLeftMbEdgeFlag = $call;
       
       
       var $25 = HEAP32[$video_addr + 908 >> 2];
@@ -32152,12 +32152,12 @@ function __ZL9DeblockMbP12tagCommonObjiiPhS1_S1_($video, $mb_x, $mb_y, $SrcY, $S
       
       var $call25 = __Z15mb_is_availableP13tagMacroblockjii($25, $27, $sub24, $mbNum);
       
-      $filterTopMbEdgeFlag = $call25 & 1;
+      $filterTopMbEdgeFlag = $call25;
     }
     $qp_clip_tab = __ZL11QP_CLIP_TAB + 48;
     
     
-    if (($filterLeftMbEdgeFlag | 0) != 0) {
+    if ($filterLeftMbEdgeFlag != 0) {
       __label__ = 5;
     } else {
       __label__ = 14;
@@ -32176,7 +32176,7 @@ function __ZL9DeblockMbP12tagCommonObjiiPhS1_S1_($video, $mb_x, $mb_y, $SrcY, $S
       
       
       
-      if ((HEAP32[$str >> 2] | 0) != 0) {
+      if (HEAP32[$str >> 2] != 0) {
         __label__ = 6;
       } else {
         __label__ = 13;
@@ -32228,7 +32228,7 @@ function __ZL9DeblockMbP12tagCommonObjiiPhS1_S1_($video, $mb_x, $mb_y, $SrcY, $S
         $clipTable = __ZL8CLIP_TAB + $indexA * 20;
         
         
-        if (($Alpha | 0) > 0) {
+        if ($Alpha > 0) {
           __label__ = 7;
         } else {
           __label__ = 9;
@@ -32236,7 +32236,7 @@ function __ZL9DeblockMbP12tagCommonObjiiPhS1_S1_($video, $mb_x, $mb_y, $SrcY, $S
         $land_lhs_true$$if_end47$12 : do {
           if (__label__ == 7) {
             
-            var $cmp44 = ($Beta | 0) > 0;
+            var $cmp44 = $Beta > 0;
             if (!$cmp44) {
               __label__ = 9;
               break $land_lhs_true$$if_end47$12;
@@ -32296,7 +32296,7 @@ function __ZL9DeblockMbP12tagCommonObjiiPhS1_S1_($video, $mb_x, $mb_y, $SrcY, $S
         $clipTable = __ZL8CLIP_TAB + $indexA * 20;
         
         
-        if (($Alpha | 0) > 0) {
+        if ($Alpha > 0) {
           __label__ = 10;
         } else {
           __label__ = 12;
@@ -32304,7 +32304,7 @@ function __ZL9DeblockMbP12tagCommonObjiiPhS1_S1_($video, $mb_x, $mb_y, $SrcY, $S
         $land_lhs_true63$$if_end70$16 : do {
           if (__label__ == 10) {
             
-            var $cmp64 = ($Beta | 0) > 0;
+            var $cmp64 = $Beta > 0;
             if (!$cmp64) {
               __label__ = 12;
               break $land_lhs_true63$$if_end70$16;
@@ -32421,7 +32421,7 @@ function __ZL9DeblockMbP12tagCommonObjiiPhS1_S1_($video, $mb_x, $mb_y, $SrcY, $S
     $edge = 1;
     $for_cond$22 : while (1) {
       
-      var $cmp99 = ($edge | 0) < 4;
+      var $cmp99 = $edge < 4;
       if (!$cmp99) {
         __label__ = 27;
         break $for_cond$22;
@@ -32433,7 +32433,7 @@ function __ZL9DeblockMbP12tagCommonObjiiPhS1_S1_($video, $mb_x, $mb_y, $SrcY, $S
       
       
       
-      if ((HEAP32[$Strength + ($edge << 2) >> 2] | 0) != 0) {
+      if (HEAP32[$Strength + ($edge << 2) >> 2] != 0) {
         __label__ = 17;
       } else {
         __label__ = 25;
@@ -32441,7 +32441,7 @@ function __ZL9DeblockMbP12tagCommonObjiiPhS1_S1_($video, $mb_x, $mb_y, $SrcY, $S
       if (__label__ == 17) {
         
         
-        if (($Alpha | 0) > 0) {
+        if ($Alpha > 0) {
           __label__ = 18;
         } else {
           __label__ = 20;
@@ -32449,7 +32449,7 @@ function __ZL9DeblockMbP12tagCommonObjiiPhS1_S1_($video, $mb_x, $mb_y, $SrcY, $S
         $land_lhs_true105$$if_end113$27 : do {
           if (__label__ == 18) {
             
-            var $cmp106 = ($Beta | 0) > 0;
+            var $cmp106 = $Beta > 0;
             if (!$cmp106) {
               __label__ = 20;
               break $land_lhs_true105$$if_end113$27;
@@ -32472,7 +32472,7 @@ function __ZL9DeblockMbP12tagCommonObjiiPhS1_S1_($video, $mb_x, $mb_y, $SrcY, $S
         
         
         
-        if (($edge & 1 | 0) != 0) {
+        if (($edge & 1) != 0) {
           __label__ = 24;
         } else {
           __label__ = 21;
@@ -32480,13 +32480,13 @@ function __ZL9DeblockMbP12tagCommonObjiiPhS1_S1_($video, $mb_x, $mb_y, $SrcY, $S
         $if_end132$$land_lhs_true115$31 : do {
           if (__label__ == 21) {
             
-            var $cmp116 = ($Alpha_c | 0) > 0;
+            var $cmp116 = $Alpha_c > 0;
             if (!$cmp116) {
               __label__ = 24;
               break $if_end132$$land_lhs_true115$31;
             }
             
-            var $cmp118 = ($Beta_c | 0) > 0;
+            var $cmp118 = $Beta_c > 0;
             if (!$cmp118) {
               __label__ = 24;
               break $if_end132$$land_lhs_true115$31;
@@ -32530,7 +32530,7 @@ function __ZL9DeblockMbP12tagCommonObjiiPhS1_S1_($video, $mb_x, $mb_y, $SrcY, $S
     }
     
     
-    if (($filterTopMbEdgeFlag | 0) != 0) {
+    if ($filterTopMbEdgeFlag != 0) {
       __label__ = 28;
     } else {
       __label__ = 37;
@@ -32553,7 +32553,7 @@ function __ZL9DeblockMbP12tagCommonObjiiPhS1_S1_($video, $mb_x, $mb_y, $SrcY, $S
       
       
       
-      if ((HEAP32[$str >> 2] | 0) != 0) {
+      if (HEAP32[$str >> 2] != 0) {
         __label__ = 29;
       } else {
         __label__ = 36;
@@ -32605,7 +32605,7 @@ function __ZL9DeblockMbP12tagCommonObjiiPhS1_S1_($video, $mb_x, $mb_y, $SrcY, $S
         $clipTable = __ZL8CLIP_TAB + $indexA * 20;
         
         
-        if (($Alpha | 0) > 0) {
+        if ($Alpha > 0) {
           __label__ = 30;
         } else {
           __label__ = 32;
@@ -32613,7 +32613,7 @@ function __ZL9DeblockMbP12tagCommonObjiiPhS1_S1_($video, $mb_x, $mb_y, $SrcY, $S
         $land_lhs_true158$$if_end162$43 : do {
           if (__label__ == 30) {
             
-            var $cmp159 = ($Beta | 0) > 0;
+            var $cmp159 = $Beta > 0;
             if (!$cmp159) {
               __label__ = 32;
               break $land_lhs_true158$$if_end162$43;
@@ -32673,7 +32673,7 @@ function __ZL9DeblockMbP12tagCommonObjiiPhS1_S1_($video, $mb_x, $mb_y, $SrcY, $S
         $clipTable = __ZL8CLIP_TAB + $indexA * 20;
         
         
-        if (($Alpha | 0) > 0) {
+        if ($Alpha > 0) {
           __label__ = 33;
         } else {
           __label__ = 35;
@@ -32681,7 +32681,7 @@ function __ZL9DeblockMbP12tagCommonObjiiPhS1_S1_($video, $mb_x, $mb_y, $SrcY, $S
         $land_lhs_true179$$if_end186$47 : do {
           if (__label__ == 33) {
             
-            var $cmp180 = ($Beta | 0) > 0;
+            var $cmp180 = $Beta > 0;
             if (!$cmp180) {
               __label__ = 35;
               break $land_lhs_true179$$if_end186$47;
@@ -32722,7 +32722,7 @@ function __ZL9DeblockMbP12tagCommonObjiiPhS1_S1_($video, $mb_x, $mb_y, $SrcY, $S
     $edge = 1;
     $for_cond191$53 : while (1) {
       
-      var $cmp192 = ($edge | 0) < 4;
+      var $cmp192 = $edge < 4;
       if (!$cmp192) {
         __label__ = 50;
         break $for_cond191$53;
@@ -32734,7 +32734,7 @@ function __ZL9DeblockMbP12tagCommonObjiiPhS1_S1_($video, $mb_x, $mb_y, $SrcY, $S
       
       
       
-      if ((HEAP32[$Strength + ($edge << 2) >> 2] | 0) != 0) {
+      if (HEAP32[$Strength + ($edge << 2) >> 2] != 0) {
         __label__ = 40;
       } else {
         __label__ = 48;
@@ -32742,7 +32742,7 @@ function __ZL9DeblockMbP12tagCommonObjiiPhS1_S1_($video, $mb_x, $mb_y, $SrcY, $S
       if (__label__ == 40) {
         
         
-        if (($Alpha | 0) > 0) {
+        if ($Alpha > 0) {
           __label__ = 41;
         } else {
           __label__ = 43;
@@ -32750,7 +32750,7 @@ function __ZL9DeblockMbP12tagCommonObjiiPhS1_S1_($video, $mb_x, $mb_y, $SrcY, $S
         $land_lhs_true200$$if_end209$58 : do {
           if (__label__ == 41) {
             
-            var $cmp201 = ($Beta | 0) > 0;
+            var $cmp201 = $Beta > 0;
             if (!$cmp201) {
               __label__ = 43;
               break $land_lhs_true200$$if_end209$58;
@@ -32775,7 +32775,7 @@ function __ZL9DeblockMbP12tagCommonObjiiPhS1_S1_($video, $mb_x, $mb_y, $SrcY, $S
         
         
         
-        if (($edge & 1 | 0) != 0) {
+        if (($edge & 1) != 0) {
           __label__ = 47;
         } else {
           __label__ = 44;
@@ -32783,13 +32783,13 @@ function __ZL9DeblockMbP12tagCommonObjiiPhS1_S1_($video, $mb_x, $mb_y, $SrcY, $S
         $if_end233$$land_lhs_true212$62 : do {
           if (__label__ == 44) {
             
-            var $cmp213 = ($Alpha_c | 0) > 0;
+            var $cmp213 = $Alpha_c > 0;
             if (!$cmp213) {
               __label__ = 47;
               break $if_end233$$land_lhs_true212$62;
             }
             
-            var $cmp215 = ($Beta_c | 0) > 0;
+            var $cmp215 = $Beta_c > 0;
             if (!$cmp215) {
               __label__ = 47;
               break $if_end233$$land_lhs_true212$62;
@@ -32864,7 +32864,7 @@ function __ZL17GetStrength_Edge0PhP13tagMacroblockS1_i($Strength, $MbP, $MbQ, $d
   
   
   
-  if ((HEAP32[$MbP_addr + 164 >> 2] | 0) == 0) {
+  if (HEAP32[$MbP_addr + 164 >> 2] == 0) {
     __label__ = 4;
   } else {
     __label__ = 1;
@@ -32875,7 +32875,7 @@ function __ZL17GetStrength_Edge0PhP13tagMacroblockS1_i($Strength, $MbP, $MbQ, $d
       
       
       
-      if ((HEAP32[$MbP_addr + 164 >> 2] | 0) == 1) {
+      if (HEAP32[$MbP_addr + 164 >> 2] == 1) {
         __label__ = 4;
         break $if_then$$lor_lhs_false$2;
       }
@@ -32883,7 +32883,7 @@ function __ZL17GetStrength_Edge0PhP13tagMacroblockS1_i($Strength, $MbP, $MbQ, $d
       
       
       
-      if ((HEAP32[$MbQ_addr + 164 >> 2] | 0) == 0) {
+      if (HEAP32[$MbQ_addr + 164 >> 2] == 0) {
         __label__ = 4;
         break $if_then$$lor_lhs_false$2;
       }
@@ -32891,7 +32891,7 @@ function __ZL17GetStrength_Edge0PhP13tagMacroblockS1_i($Strength, $MbP, $MbQ, $d
       
       
       
-      if ((HEAP32[$MbQ_addr + 164 >> 2] | 0) == 1) {
+      if (HEAP32[$MbQ_addr + 164 >> 2] == 1) {
         __label__ = 4;
         break $if_then$$lor_lhs_false$2;
       }
@@ -32900,7 +32900,7 @@ function __ZL17GetStrength_Edge0PhP13tagMacroblockS1_i($Strength, $MbP, $MbQ, $d
       HEAP32[$Strength_addr >> 2] = 0;
       
       
-      if (($dir_addr | 0) == 0) {
+      if ($dir_addr == 0) {
         __label__ = 6;
       } else {
         __label__ = 63;
@@ -32927,13 +32927,13 @@ function __ZL17GetStrength_Edge0PhP13tagMacroblockS1_i($Strength, $MbP, $MbQ, $d
         
         
         
-        var $conv = (tempInt = HEAP16[$ptrQ >> 1], tempInt >= 32768 ? tempInt - 65536 : tempInt);
         
         
         
-        var $conv19 = (tempInt = HEAP16[$ptrP + 2 >> 1], tempInt >= 32768 ? tempInt - 65536 : tempInt);
         
-        if (($conv | 0) != ($conv19 | 0)) {
+        
+        
+        if (HEAP16[$ptrQ >> 1] != HEAP16[$ptrP + 2 >> 1]) {
           __label__ = 7;
         } else {
           __label__ = 8;
@@ -32946,13 +32946,13 @@ function __ZL17GetStrength_Edge0PhP13tagMacroblockS1_i($Strength, $MbP, $MbQ, $d
         
         
         
-        var $conv24 = (tempInt = HEAP16[$ptrQ + 4 >> 1], tempInt >= 32768 ? tempInt - 65536 : tempInt);
         
         
         
-        var $conv26 = (tempInt = HEAP16[$ptrP + 6 >> 1], tempInt >= 32768 ? tempInt - 65536 : tempInt);
         
-        if (($conv24 | 0) != ($conv26 | 0)) {
+        
+        
+        if (HEAP16[$ptrQ + 4 >> 1] != HEAP16[$ptrP + 6 >> 1]) {
           __label__ = 9;
         } else {
           __label__ = 10;
@@ -32980,7 +32980,7 @@ function __ZL17GetStrength_Edge0PhP13tagMacroblockS1_i($Strength, $MbP, $MbQ, $d
         
         
         
-        if ((HEAPU8[$MbQ_addr + 380 >> 0] & 255 | 0) != 0) {
+        if (HEAPU8[$MbQ_addr + 380 >> 0] != 0) {
           __label__ = 12;
         } else {
           __label__ = 11;
@@ -32993,7 +32993,7 @@ function __ZL17GetStrength_Edge0PhP13tagMacroblockS1_i($Strength, $MbP, $MbQ, $d
             
             
             
-            if ((HEAPU8[$MbP_addr + 380 + 3 >> 0] & 255 | 0) != 0) {
+            if (HEAPU8[$MbP_addr + 380 + 3 >> 0] != 0) {
               __label__ = 12;
               break $if_then43$$lor_lhs_false38$15;
             } else {
@@ -33013,7 +33013,7 @@ function __ZL17GetStrength_Edge0PhP13tagMacroblockS1_i($Strength, $MbP, $MbQ, $d
         
         
         
-        if ((HEAPU8[$MbQ_addr + 380 + 4 >> 0] & 255 | 0) != 0) {
+        if (HEAPU8[$MbQ_addr + 380 + 4 >> 0] != 0) {
           __label__ = 15;
         } else {
           __label__ = 14;
@@ -33026,7 +33026,7 @@ function __ZL17GetStrength_Edge0PhP13tagMacroblockS1_i($Strength, $MbP, $MbQ, $d
             
             
             
-            if ((HEAPU8[$MbP_addr + 380 + 7 >> 0] & 255 | 0) != 0) {
+            if (HEAPU8[$MbP_addr + 380 + 7 >> 0] != 0) {
               __label__ = 15;
               break $if_then55$$lor_lhs_false50$20;
             } else {
@@ -33046,7 +33046,7 @@ function __ZL17GetStrength_Edge0PhP13tagMacroblockS1_i($Strength, $MbP, $MbQ, $d
         
         
         
-        if ((HEAPU8[$MbQ_addr + 380 + 8 >> 0] & 255 | 0) != 0) {
+        if (HEAPU8[$MbQ_addr + 380 + 8 >> 0] != 0) {
           __label__ = 18;
         } else {
           __label__ = 17;
@@ -33059,7 +33059,7 @@ function __ZL17GetStrength_Edge0PhP13tagMacroblockS1_i($Strength, $MbP, $MbQ, $d
             
             
             
-            if ((HEAPU8[$MbP_addr + 380 + 11 >> 0] & 255 | 0) != 0) {
+            if (HEAPU8[$MbP_addr + 380 + 11 >> 0] != 0) {
               __label__ = 18;
               break $if_then67$$lor_lhs_false62$25;
             } else {
@@ -33079,7 +33079,7 @@ function __ZL17GetStrength_Edge0PhP13tagMacroblockS1_i($Strength, $MbP, $MbQ, $d
         
         
         
-        if ((HEAPU8[$MbQ_addr + 380 + 12 >> 0] & 255 | 0) != 0) {
+        if (HEAPU8[$MbQ_addr + 380 + 12 >> 0] != 0) {
           __label__ = 21;
         } else {
           __label__ = 20;
@@ -33092,7 +33092,7 @@ function __ZL17GetStrength_Edge0PhP13tagMacroblockS1_i($Strength, $MbP, $MbQ, $d
             
             
             
-            if ((HEAPU8[$MbP_addr + 380 + 15 >> 0] & 255 | 0) != 0) {
+            if (HEAPU8[$MbP_addr + 380 + 15 >> 0] != 0) {
               __label__ = 21;
               break $if_then79$$lor_lhs_false74$30;
             } else {
@@ -33124,7 +33124,7 @@ function __ZL17GetStrength_Edge0PhP13tagMacroblockS1_i($Strength, $MbP, $MbQ, $d
         
         
         
-        if ((HEAPU8[$pStrength >> 0] & 255 | 0) == 0) {
+        if (HEAPU8[$pStrength >> 0] == 0) {
           __label__ = 23;
         } else {
           __label__ = 32;
@@ -33134,17 +33134,17 @@ function __ZL17GetStrength_Edge0PhP13tagMacroblockS1_i($Strength, $MbP, $MbQ, $d
           var $incdec_ptr = $67 + 2;
           $ptrQ = $incdec_ptr;
           
-          var $conv88 = (tempInt = HEAP16[$67 >> 1], tempInt >= 32768 ? tempInt - 65536 : tempInt);
+          var $conv88 = HEAP16[$67 >> 1];
           var $69 = $ptrP;
           var $incdec_ptr89 = $69 + 2;
           $ptrP = $incdec_ptr89;
           
-          var $conv90 = (tempInt = HEAP16[$69 >> 1], tempInt >= 32768 ? tempInt - 65536 : tempInt);
-          
-          $tmp = $conv88 - $conv90;
           
           
-          if (($tmp | 0) < 0) {
+          $tmp = $conv88 - HEAP16[$69 >> 1];
+          
+          
+          if ($tmp < 0) {
             __label__ = 24;
           } else {
             __label__ = 25;
@@ -33156,7 +33156,7 @@ function __ZL17GetStrength_Edge0PhP13tagMacroblockS1_i($Strength, $MbP, $MbQ, $d
           }
           
           
-          if (($tmp | 0) >= 4) {
+          if ($tmp >= 4) {
             __label__ = 26;
           } else {
             __label__ = 27;
@@ -33169,17 +33169,17 @@ function __ZL17GetStrength_Edge0PhP13tagMacroblockS1_i($Strength, $MbP, $MbQ, $d
           var $incdec_ptr98 = $75 + -2;
           $ptrQ = $incdec_ptr98;
           
-          var $conv99 = (tempInt = HEAP16[$75 >> 1], tempInt >= 32768 ? tempInt - 65536 : tempInt);
+          var $conv99 = HEAP16[$75 >> 1];
           var $77 = $ptrP;
           var $incdec_ptr100 = $77 + -2;
           $ptrP = $incdec_ptr100;
           
-          var $conv101 = (tempInt = HEAP16[$77 >> 1], tempInt >= 32768 ? tempInt - 65536 : tempInt);
-          
-          $tmp = $conv99 - $conv101;
           
           
-          if (($tmp | 0) < 0) {
+          $tmp = $conv99 - HEAP16[$77 >> 1];
+          
+          
+          if ($tmp < 0) {
             __label__ = 28;
           } else {
             __label__ = 29;
@@ -33191,7 +33191,7 @@ function __ZL17GetStrength_Edge0PhP13tagMacroblockS1_i($Strength, $MbP, $MbQ, $d
           }
           
           
-          if (($tmp | 0) >= 4) {
+          if ($tmp >= 4) {
             __label__ = 30;
           } else {
             __label__ = 31;
@@ -33214,7 +33214,7 @@ function __ZL17GetStrength_Edge0PhP13tagMacroblockS1_i($Strength, $MbP, $MbQ, $d
         
         
         
-        if ((HEAPU8[$pStrength >> 0] & 255 | 0) == 0) {
+        if (HEAPU8[$pStrength >> 0] == 0) {
           __label__ = 33;
         } else {
           __label__ = 42;
@@ -33224,17 +33224,17 @@ function __ZL17GetStrength_Edge0PhP13tagMacroblockS1_i($Strength, $MbP, $MbQ, $d
           var $incdec_ptr117 = $88 + 2;
           $ptrQ = $incdec_ptr117;
           
-          var $conv118 = (tempInt = HEAP16[$88 >> 1], tempInt >= 32768 ? tempInt - 65536 : tempInt);
+          var $conv118 = HEAP16[$88 >> 1];
           var $90 = $ptrP;
           var $incdec_ptr119 = $90 + 2;
           $ptrP = $incdec_ptr119;
           
-          var $conv120 = (tempInt = HEAP16[$90 >> 1], tempInt >= 32768 ? tempInt - 65536 : tempInt);
-          
-          $tmp = $conv118 - $conv120;
           
           
-          if (($tmp | 0) < 0) {
+          $tmp = $conv118 - HEAP16[$90 >> 1];
+          
+          
+          if ($tmp < 0) {
             __label__ = 34;
           } else {
             __label__ = 35;
@@ -33246,7 +33246,7 @@ function __ZL17GetStrength_Edge0PhP13tagMacroblockS1_i($Strength, $MbP, $MbQ, $d
           }
           
           
-          if (($tmp | 0) >= 4) {
+          if ($tmp >= 4) {
             __label__ = 36;
           } else {
             __label__ = 37;
@@ -33259,17 +33259,17 @@ function __ZL17GetStrength_Edge0PhP13tagMacroblockS1_i($Strength, $MbP, $MbQ, $d
           var $incdec_ptr129 = $96 + -2;
           $ptrQ = $incdec_ptr129;
           
-          var $conv130 = (tempInt = HEAP16[$96 >> 1], tempInt >= 32768 ? tempInt - 65536 : tempInt);
+          var $conv130 = HEAP16[$96 >> 1];
           var $98 = $ptrP;
           var $incdec_ptr131 = $98 + -2;
           $ptrP = $incdec_ptr131;
           
-          var $conv132 = (tempInt = HEAP16[$98 >> 1], tempInt >= 32768 ? tempInt - 65536 : tempInt);
-          
-          $tmp = $conv130 - $conv132;
           
           
-          if (($tmp | 0) < 0) {
+          $tmp = $conv130 - HEAP16[$98 >> 1];
+          
+          
+          if ($tmp < 0) {
             __label__ = 38;
           } else {
             __label__ = 39;
@@ -33281,7 +33281,7 @@ function __ZL17GetStrength_Edge0PhP13tagMacroblockS1_i($Strength, $MbP, $MbQ, $d
           }
           
           
-          if (($tmp | 0) >= 4) {
+          if ($tmp >= 4) {
             __label__ = 40;
           } else {
             __label__ = 41;
@@ -33304,7 +33304,7 @@ function __ZL17GetStrength_Edge0PhP13tagMacroblockS1_i($Strength, $MbP, $MbQ, $d
         
         
         
-        if ((HEAPU8[$pStrength >> 0] & 255 | 0) == 0) {
+        if (HEAPU8[$pStrength >> 0] == 0) {
           __label__ = 43;
         } else {
           __label__ = 52;
@@ -33314,17 +33314,17 @@ function __ZL17GetStrength_Edge0PhP13tagMacroblockS1_i($Strength, $MbP, $MbQ, $d
           var $incdec_ptr148 = $109 + 2;
           $ptrQ = $incdec_ptr148;
           
-          var $conv149 = (tempInt = HEAP16[$109 >> 1], tempInt >= 32768 ? tempInt - 65536 : tempInt);
+          var $conv149 = HEAP16[$109 >> 1];
           var $111 = $ptrP;
           var $incdec_ptr150 = $111 + 2;
           $ptrP = $incdec_ptr150;
           
-          var $conv151 = (tempInt = HEAP16[$111 >> 1], tempInt >= 32768 ? tempInt - 65536 : tempInt);
-          
-          $tmp = $conv149 - $conv151;
           
           
-          if (($tmp | 0) < 0) {
+          $tmp = $conv149 - HEAP16[$111 >> 1];
+          
+          
+          if ($tmp < 0) {
             __label__ = 44;
           } else {
             __label__ = 45;
@@ -33336,7 +33336,7 @@ function __ZL17GetStrength_Edge0PhP13tagMacroblockS1_i($Strength, $MbP, $MbQ, $d
           }
           
           
-          if (($tmp | 0) >= 4) {
+          if ($tmp >= 4) {
             __label__ = 46;
           } else {
             __label__ = 47;
@@ -33349,17 +33349,17 @@ function __ZL17GetStrength_Edge0PhP13tagMacroblockS1_i($Strength, $MbP, $MbQ, $d
           var $incdec_ptr160 = $117 + -2;
           $ptrQ = $incdec_ptr160;
           
-          var $conv161 = (tempInt = HEAP16[$117 >> 1], tempInt >= 32768 ? tempInt - 65536 : tempInt);
+          var $conv161 = HEAP16[$117 >> 1];
           var $119 = $ptrP;
           var $incdec_ptr162 = $119 + -2;
           $ptrP = $incdec_ptr162;
           
-          var $conv163 = (tempInt = HEAP16[$119 >> 1], tempInt >= 32768 ? tempInt - 65536 : tempInt);
-          
-          $tmp = $conv161 - $conv163;
           
           
-          if (($tmp | 0) < 0) {
+          $tmp = $conv161 - HEAP16[$119 >> 1];
+          
+          
+          if ($tmp < 0) {
             __label__ = 48;
           } else {
             __label__ = 49;
@@ -33371,7 +33371,7 @@ function __ZL17GetStrength_Edge0PhP13tagMacroblockS1_i($Strength, $MbP, $MbQ, $d
           }
           
           
-          if (($tmp | 0) >= 4) {
+          if ($tmp >= 4) {
             __label__ = 50;
           } else {
             __label__ = 51;
@@ -33394,7 +33394,7 @@ function __ZL17GetStrength_Edge0PhP13tagMacroblockS1_i($Strength, $MbP, $MbQ, $d
         
         
         
-        if ((HEAPU8[$pStrength >> 0] & 255 | 0) == 0) {
+        if (HEAPU8[$pStrength >> 0] == 0) {
           __label__ = 53;
         } else {
           __label__ = 62;
@@ -33404,17 +33404,17 @@ function __ZL17GetStrength_Edge0PhP13tagMacroblockS1_i($Strength, $MbP, $MbQ, $d
           var $incdec_ptr179 = $130 + 2;
           $ptrQ = $incdec_ptr179;
           
-          var $conv180 = (tempInt = HEAP16[$130 >> 1], tempInt >= 32768 ? tempInt - 65536 : tempInt);
+          var $conv180 = HEAP16[$130 >> 1];
           var $132 = $ptrP;
           var $incdec_ptr181 = $132 + 2;
           $ptrP = $incdec_ptr181;
           
-          var $conv182 = (tempInt = HEAP16[$132 >> 1], tempInt >= 32768 ? tempInt - 65536 : tempInt);
-          
-          $tmp = $conv180 - $conv182;
           
           
-          if (($tmp | 0) < 0) {
+          $tmp = $conv180 - HEAP16[$132 >> 1];
+          
+          
+          if ($tmp < 0) {
             __label__ = 54;
           } else {
             __label__ = 55;
@@ -33426,7 +33426,7 @@ function __ZL17GetStrength_Edge0PhP13tagMacroblockS1_i($Strength, $MbP, $MbQ, $d
           }
           
           
-          if (($tmp | 0) >= 4) {
+          if ($tmp >= 4) {
             __label__ = 56;
           } else {
             __label__ = 57;
@@ -33439,17 +33439,17 @@ function __ZL17GetStrength_Edge0PhP13tagMacroblockS1_i($Strength, $MbP, $MbQ, $d
           var $incdec_ptr191 = $138 + -2;
           $ptrQ = $incdec_ptr191;
           
-          var $conv192 = (tempInt = HEAP16[$138 >> 1], tempInt >= 32768 ? tempInt - 65536 : tempInt);
+          var $conv192 = HEAP16[$138 >> 1];
           var $140 = $ptrP;
           var $incdec_ptr193 = $140 + -2;
           $ptrP = $incdec_ptr193;
           
-          var $conv194 = (tempInt = HEAP16[$140 >> 1], tempInt >= 32768 ? tempInt - 65536 : tempInt);
-          
-          $tmp = $conv192 - $conv194;
           
           
-          if (($tmp | 0) < 0) {
+          $tmp = $conv192 - HEAP16[$140 >> 1];
+          
+          
+          if ($tmp < 0) {
             __label__ = 58;
           } else {
             __label__ = 59;
@@ -33461,7 +33461,7 @@ function __ZL17GetStrength_Edge0PhP13tagMacroblockS1_i($Strength, $MbP, $MbQ, $d
           }
           
           
-          if (($tmp | 0) >= 4) {
+          if ($tmp >= 4) {
             __label__ = 60;
           } else {
             __label__ = 61;
@@ -33493,13 +33493,13 @@ function __ZL17GetStrength_Edge0PhP13tagMacroblockS1_i($Strength, $MbP, $MbQ, $d
         
         
         
-        var $conv210 = (tempInt = HEAP16[$ptrQ >> 1], tempInt >= 32768 ? tempInt - 65536 : tempInt);
         
         
         
-        var $conv212 = (tempInt = HEAP16[$ptrP + 4 >> 1], tempInt >= 32768 ? tempInt - 65536 : tempInt);
         
-        if (($conv210 | 0) != ($conv212 | 0)) {
+        
+        
+        if (HEAP16[$ptrQ >> 1] != HEAP16[$ptrP + 4 >> 1]) {
           __label__ = 64;
         } else {
           __label__ = 65;
@@ -33512,13 +33512,13 @@ function __ZL17GetStrength_Edge0PhP13tagMacroblockS1_i($Strength, $MbP, $MbQ, $d
         
         
         
-        var $conv218 = (tempInt = HEAP16[$ptrQ + 2 >> 1], tempInt >= 32768 ? tempInt - 65536 : tempInt);
         
         
         
-        var $conv220 = (tempInt = HEAP16[$ptrP + 6 >> 1], tempInt >= 32768 ? tempInt - 65536 : tempInt);
         
-        if (($conv218 | 0) != ($conv220 | 0)) {
+        
+        
+        if (HEAP16[$ptrQ + 2 >> 1] != HEAP16[$ptrP + 6 >> 1]) {
           __label__ = 66;
         } else {
           __label__ = 67;
@@ -33546,7 +33546,7 @@ function __ZL17GetStrength_Edge0PhP13tagMacroblockS1_i($Strength, $MbP, $MbQ, $d
         
         
         
-        if ((HEAPU8[$MbQ_addr + 380 >> 0] & 255 | 0) != 0) {
+        if (HEAPU8[$MbQ_addr + 380 >> 0] != 0) {
           __label__ = 69;
         } else {
           __label__ = 68;
@@ -33559,7 +33559,7 @@ function __ZL17GetStrength_Edge0PhP13tagMacroblockS1_i($Strength, $MbP, $MbQ, $d
             
             
             
-            if ((HEAPU8[$MbP_addr + 380 + 12 >> 0] & 255 | 0) != 0) {
+            if (HEAPU8[$MbP_addr + 380 + 12 >> 0] != 0) {
               __label__ = 69;
               break $if_then238$$lor_lhs_false233$102;
             } else {
@@ -33579,7 +33579,7 @@ function __ZL17GetStrength_Edge0PhP13tagMacroblockS1_i($Strength, $MbP, $MbQ, $d
         
         
         
-        if ((HEAPU8[$MbQ_addr + 380 + 1 >> 0] & 255 | 0) != 0) {
+        if (HEAPU8[$MbQ_addr + 380 + 1 >> 0] != 0) {
           __label__ = 72;
         } else {
           __label__ = 71;
@@ -33592,7 +33592,7 @@ function __ZL17GetStrength_Edge0PhP13tagMacroblockS1_i($Strength, $MbP, $MbQ, $d
             
             
             
-            if ((HEAPU8[$MbP_addr + 380 + 13 >> 0] & 255 | 0) != 0) {
+            if (HEAPU8[$MbP_addr + 380 + 13 >> 0] != 0) {
               __label__ = 72;
               break $if_then250$$lor_lhs_false245$107;
             } else {
@@ -33612,7 +33612,7 @@ function __ZL17GetStrength_Edge0PhP13tagMacroblockS1_i($Strength, $MbP, $MbQ, $d
         
         
         
-        if ((HEAPU8[$MbQ_addr + 380 + 2 >> 0] & 255 | 0) != 0) {
+        if (HEAPU8[$MbQ_addr + 380 + 2 >> 0] != 0) {
           __label__ = 75;
         } else {
           __label__ = 74;
@@ -33625,7 +33625,7 @@ function __ZL17GetStrength_Edge0PhP13tagMacroblockS1_i($Strength, $MbP, $MbQ, $d
             
             
             
-            if ((HEAPU8[$MbP_addr + 380 + 14 >> 0] & 255 | 0) != 0) {
+            if (HEAPU8[$MbP_addr + 380 + 14 >> 0] != 0) {
               __label__ = 75;
               break $if_then262$$lor_lhs_false257$112;
             } else {
@@ -33645,7 +33645,7 @@ function __ZL17GetStrength_Edge0PhP13tagMacroblockS1_i($Strength, $MbP, $MbQ, $d
         
         
         
-        if ((HEAPU8[$MbQ_addr + 380 + 3 >> 0] & 255 | 0) != 0) {
+        if (HEAPU8[$MbQ_addr + 380 + 3 >> 0] != 0) {
           __label__ = 78;
         } else {
           __label__ = 77;
@@ -33658,7 +33658,7 @@ function __ZL17GetStrength_Edge0PhP13tagMacroblockS1_i($Strength, $MbP, $MbQ, $d
             
             
             
-            if ((HEAPU8[$MbP_addr + 380 + 15 >> 0] & 255 | 0) != 0) {
+            if (HEAPU8[$MbP_addr + 380 + 15 >> 0] != 0) {
               __label__ = 78;
               break $if_then274$$lor_lhs_false269$117;
             } else {
@@ -33690,7 +33690,7 @@ function __ZL17GetStrength_Edge0PhP13tagMacroblockS1_i($Strength, $MbP, $MbQ, $d
         
         
         
-        if ((HEAPU8[$pStrength >> 0] & 255 | 0) == 0) {
+        if (HEAPU8[$pStrength >> 0] == 0) {
           __label__ = 80;
         } else {
           __label__ = 89;
@@ -33700,17 +33700,17 @@ function __ZL17GetStrength_Edge0PhP13tagMacroblockS1_i($Strength, $MbP, $MbQ, $d
           var $incdec_ptr285 = $199 + 2;
           $ptrQ = $incdec_ptr285;
           
-          var $conv286 = (tempInt = HEAP16[$199 >> 1], tempInt >= 32768 ? tempInt - 65536 : tempInt);
+          var $conv286 = HEAP16[$199 >> 1];
           var $201 = $ptrP;
           var $incdec_ptr287 = $201 + 2;
           $ptrP = $incdec_ptr287;
           
-          var $conv288 = (tempInt = HEAP16[$201 >> 1], tempInt >= 32768 ? tempInt - 65536 : tempInt);
-          
-          $tmp = $conv286 - $conv288;
           
           
-          if (($tmp | 0) < 0) {
+          $tmp = $conv286 - HEAP16[$201 >> 1];
+          
+          
+          if ($tmp < 0) {
             __label__ = 81;
           } else {
             __label__ = 82;
@@ -33722,7 +33722,7 @@ function __ZL17GetStrength_Edge0PhP13tagMacroblockS1_i($Strength, $MbP, $MbQ, $d
           }
           
           
-          if (($tmp | 0) >= 4) {
+          if ($tmp >= 4) {
             __label__ = 83;
           } else {
             __label__ = 84;
@@ -33735,17 +33735,17 @@ function __ZL17GetStrength_Edge0PhP13tagMacroblockS1_i($Strength, $MbP, $MbQ, $d
           var $incdec_ptr297 = $207 + -2;
           $ptrQ = $incdec_ptr297;
           
-          var $conv298 = (tempInt = HEAP16[$207 >> 1], tempInt >= 32768 ? tempInt - 65536 : tempInt);
+          var $conv298 = HEAP16[$207 >> 1];
           var $209 = $ptrP;
           var $incdec_ptr299 = $209 + -2;
           $ptrP = $incdec_ptr299;
           
-          var $conv300 = (tempInt = HEAP16[$209 >> 1], tempInt >= 32768 ? tempInt - 65536 : tempInt);
-          
-          $tmp = $conv298 - $conv300;
           
           
-          if (($tmp | 0) < 0) {
+          $tmp = $conv298 - HEAP16[$209 >> 1];
+          
+          
+          if ($tmp < 0) {
             __label__ = 85;
           } else {
             __label__ = 86;
@@ -33757,7 +33757,7 @@ function __ZL17GetStrength_Edge0PhP13tagMacroblockS1_i($Strength, $MbP, $MbQ, $d
           }
           
           
-          if (($tmp | 0) >= 4) {
+          if ($tmp >= 4) {
             __label__ = 87;
           } else {
             __label__ = 88;
@@ -33780,7 +33780,7 @@ function __ZL17GetStrength_Edge0PhP13tagMacroblockS1_i($Strength, $MbP, $MbQ, $d
         
         
         
-        if ((HEAPU8[$pStrength >> 0] & 255 | 0) == 0) {
+        if (HEAPU8[$pStrength >> 0] == 0) {
           __label__ = 90;
         } else {
           __label__ = 99;
@@ -33790,17 +33790,17 @@ function __ZL17GetStrength_Edge0PhP13tagMacroblockS1_i($Strength, $MbP, $MbQ, $d
           var $incdec_ptr316 = $220 + 2;
           $ptrQ = $incdec_ptr316;
           
-          var $conv317 = (tempInt = HEAP16[$220 >> 1], tempInt >= 32768 ? tempInt - 65536 : tempInt);
+          var $conv317 = HEAP16[$220 >> 1];
           var $222 = $ptrP;
           var $incdec_ptr318 = $222 + 2;
           $ptrP = $incdec_ptr318;
           
-          var $conv319 = (tempInt = HEAP16[$222 >> 1], tempInt >= 32768 ? tempInt - 65536 : tempInt);
-          
-          $tmp = $conv317 - $conv319;
           
           
-          if (($tmp | 0) < 0) {
+          $tmp = $conv317 - HEAP16[$222 >> 1];
+          
+          
+          if ($tmp < 0) {
             __label__ = 91;
           } else {
             __label__ = 92;
@@ -33812,7 +33812,7 @@ function __ZL17GetStrength_Edge0PhP13tagMacroblockS1_i($Strength, $MbP, $MbQ, $d
           }
           
           
-          if (($tmp | 0) >= 4) {
+          if ($tmp >= 4) {
             __label__ = 93;
           } else {
             __label__ = 94;
@@ -33825,17 +33825,17 @@ function __ZL17GetStrength_Edge0PhP13tagMacroblockS1_i($Strength, $MbP, $MbQ, $d
           var $incdec_ptr328 = $228 + -2;
           $ptrQ = $incdec_ptr328;
           
-          var $conv329 = (tempInt = HEAP16[$228 >> 1], tempInt >= 32768 ? tempInt - 65536 : tempInt);
+          var $conv329 = HEAP16[$228 >> 1];
           var $230 = $ptrP;
           var $incdec_ptr330 = $230 + -2;
           $ptrP = $incdec_ptr330;
           
-          var $conv331 = (tempInt = HEAP16[$230 >> 1], tempInt >= 32768 ? tempInt - 65536 : tempInt);
-          
-          $tmp = $conv329 - $conv331;
           
           
-          if (($tmp | 0) < 0) {
+          $tmp = $conv329 - HEAP16[$230 >> 1];
+          
+          
+          if ($tmp < 0) {
             __label__ = 95;
           } else {
             __label__ = 96;
@@ -33847,7 +33847,7 @@ function __ZL17GetStrength_Edge0PhP13tagMacroblockS1_i($Strength, $MbP, $MbQ, $d
           }
           
           
-          if (($tmp | 0) >= 4) {
+          if ($tmp >= 4) {
             __label__ = 97;
           } else {
             __label__ = 98;
@@ -33870,7 +33870,7 @@ function __ZL17GetStrength_Edge0PhP13tagMacroblockS1_i($Strength, $MbP, $MbQ, $d
         
         
         
-        if ((HEAPU8[$pStrength >> 0] & 255 | 0) == 0) {
+        if (HEAPU8[$pStrength >> 0] == 0) {
           __label__ = 100;
         } else {
           __label__ = 109;
@@ -33880,17 +33880,17 @@ function __ZL17GetStrength_Edge0PhP13tagMacroblockS1_i($Strength, $MbP, $MbQ, $d
           var $incdec_ptr347 = $241 + 2;
           $ptrQ = $incdec_ptr347;
           
-          var $conv348 = (tempInt = HEAP16[$241 >> 1], tempInt >= 32768 ? tempInt - 65536 : tempInt);
+          var $conv348 = HEAP16[$241 >> 1];
           var $243 = $ptrP;
           var $incdec_ptr349 = $243 + 2;
           $ptrP = $incdec_ptr349;
           
-          var $conv350 = (tempInt = HEAP16[$243 >> 1], tempInt >= 32768 ? tempInt - 65536 : tempInt);
-          
-          $tmp = $conv348 - $conv350;
           
           
-          if (($tmp | 0) < 0) {
+          $tmp = $conv348 - HEAP16[$243 >> 1];
+          
+          
+          if ($tmp < 0) {
             __label__ = 101;
           } else {
             __label__ = 102;
@@ -33902,7 +33902,7 @@ function __ZL17GetStrength_Edge0PhP13tagMacroblockS1_i($Strength, $MbP, $MbQ, $d
           }
           
           
-          if (($tmp | 0) >= 4) {
+          if ($tmp >= 4) {
             __label__ = 103;
           } else {
             __label__ = 104;
@@ -33915,17 +33915,17 @@ function __ZL17GetStrength_Edge0PhP13tagMacroblockS1_i($Strength, $MbP, $MbQ, $d
           var $incdec_ptr359 = $249 + -2;
           $ptrQ = $incdec_ptr359;
           
-          var $conv360 = (tempInt = HEAP16[$249 >> 1], tempInt >= 32768 ? tempInt - 65536 : tempInt);
+          var $conv360 = HEAP16[$249 >> 1];
           var $251 = $ptrP;
           var $incdec_ptr361 = $251 + -2;
           $ptrP = $incdec_ptr361;
           
-          var $conv362 = (tempInt = HEAP16[$251 >> 1], tempInt >= 32768 ? tempInt - 65536 : tempInt);
-          
-          $tmp = $conv360 - $conv362;
           
           
-          if (($tmp | 0) < 0) {
+          $tmp = $conv360 - HEAP16[$251 >> 1];
+          
+          
+          if ($tmp < 0) {
             __label__ = 105;
           } else {
             __label__ = 106;
@@ -33937,7 +33937,7 @@ function __ZL17GetStrength_Edge0PhP13tagMacroblockS1_i($Strength, $MbP, $MbQ, $d
           }
           
           
-          if (($tmp | 0) >= 4) {
+          if ($tmp >= 4) {
             __label__ = 107;
           } else {
             __label__ = 108;
@@ -33960,7 +33960,7 @@ function __ZL17GetStrength_Edge0PhP13tagMacroblockS1_i($Strength, $MbP, $MbQ, $d
         
         
         
-        if ((HEAPU8[$pStrength >> 0] & 255 | 0) == 0) {
+        if (HEAPU8[$pStrength >> 0] == 0) {
           __label__ = 110;
         } else {
           __label__ = 119;
@@ -33970,17 +33970,17 @@ function __ZL17GetStrength_Edge0PhP13tagMacroblockS1_i($Strength, $MbP, $MbQ, $d
           var $incdec_ptr378 = $262 + 2;
           $ptrQ = $incdec_ptr378;
           
-          var $conv379 = (tempInt = HEAP16[$262 >> 1], tempInt >= 32768 ? tempInt - 65536 : tempInt);
+          var $conv379 = HEAP16[$262 >> 1];
           var $264 = $ptrP;
           var $incdec_ptr380 = $264 + 2;
           $ptrP = $incdec_ptr380;
           
-          var $conv381 = (tempInt = HEAP16[$264 >> 1], tempInt >= 32768 ? tempInt - 65536 : tempInt);
-          
-          $tmp = $conv379 - $conv381;
           
           
-          if (($tmp | 0) < 0) {
+          $tmp = $conv379 - HEAP16[$264 >> 1];
+          
+          
+          if ($tmp < 0) {
             __label__ = 111;
           } else {
             __label__ = 112;
@@ -33992,7 +33992,7 @@ function __ZL17GetStrength_Edge0PhP13tagMacroblockS1_i($Strength, $MbP, $MbQ, $d
           }
           
           
-          if (($tmp | 0) >= 4) {
+          if ($tmp >= 4) {
             __label__ = 113;
           } else {
             __label__ = 114;
@@ -34005,17 +34005,17 @@ function __ZL17GetStrength_Edge0PhP13tagMacroblockS1_i($Strength, $MbP, $MbQ, $d
           var $incdec_ptr390 = $270 + -2;
           $ptrQ = $incdec_ptr390;
           
-          var $conv391 = (tempInt = HEAP16[$270 >> 1], tempInt >= 32768 ? tempInt - 65536 : tempInt);
+          var $conv391 = HEAP16[$270 >> 1];
           var $272 = $ptrP;
           var $incdec_ptr392 = $272 + -2;
           $ptrP = $incdec_ptr392;
           
-          var $conv393 = (tempInt = HEAP16[$272 >> 1], tempInt >= 32768 ? tempInt - 65536 : tempInt);
-          
-          $tmp = $conv391 - $conv393;
           
           
-          if (($tmp | 0) < 0) {
+          $tmp = $conv391 - HEAP16[$272 >> 1];
+          
+          
+          if ($tmp < 0) {
             __label__ = 115;
           } else {
             __label__ = 116;
@@ -34027,7 +34027,7 @@ function __ZL17GetStrength_Edge0PhP13tagMacroblockS1_i($Strength, $MbP, $MbQ, $d
           }
           
           
-          if (($tmp | 0) >= 4) {
+          if ($tmp >= 4) {
             __label__ = 117;
           } else {
             __label__ = 118;
@@ -34099,7 +34099,7 @@ function __ZL22EdgeLoop_Luma_verticalPhS_iiPii($SrcPtr, $Strength, $Alpha, $Beta
   
   
   
-  if ((HEAPU8[$Strength_addr >> 0] & 255 | 0) == 4) {
+  if (HEAPU8[$Strength_addr >> 0] == 4) {
     __label__ = 1;
   } else {
     __label__ = 24;
@@ -34108,7 +34108,7 @@ function __ZL22EdgeLoop_Luma_verticalPhS_iiPii($SrcPtr, $Strength, $Alpha, $Beta
     $pel = 0;
     while (1) {
       
-      var $cmp14 = ($pel | 0) < 16;
+      var $cmp14 = $pel < 16;
       if (!$cmp14) {
         __label__ = 23;
         break;
@@ -34143,7 +34143,7 @@ function __ZL22EdgeLoop_Luma_verticalPhS_iiPii($SrcPtr, $Strength, $Alpha, $Beta
       $tmp1 = ($R_in & 255) - $R1;
       
       
-      if (($tmp1 | 0) < 0) {
+      if ($tmp1 < 0) {
         __label__ = 4;
       } else {
         __label__ = 5;
@@ -34164,7 +34164,7 @@ function __ZL22EdgeLoop_Luma_verticalPhS_iiPii($SrcPtr, $Strength, $Alpha, $Beta
       $tmp1 = ($L_in >>> 24) - $L1;
       
       
-      if (($tmp1 | 0) < 0) {
+      if ($tmp1 < 0) {
         __label__ = 6;
       } else {
         __label__ = 7;
@@ -34188,7 +34188,7 @@ function __ZL22EdgeLoop_Luma_verticalPhS_iiPii($SrcPtr, $Strength, $Alpha, $Beta
       $AbsDelta = ($R_in & 255) - ($L_in >>> 24);
       
       
-      if (($AbsDelta | 0) < 0) {
+      if ($AbsDelta < 0) {
         __label__ = 8;
       } else {
         __label__ = 9;
@@ -34206,7 +34206,7 @@ function __ZL22EdgeLoop_Luma_verticalPhS_iiPii($SrcPtr, $Strength, $Alpha, $Beta
       $tmp = $and40;
       
       
-      if (($tmp | 0) < 0) {
+      if ($tmp < 0) {
         __label__ = 10;
       } else {
         __label__ = 21;
@@ -34233,7 +34233,7 @@ function __ZL22EdgeLoop_Luma_verticalPhS_iiPii($SrcPtr, $Strength, $Alpha, $Beta
         $tmp1 = ($R_in & 255) - $R2;
         
         
-        if (($tmp1 | 0) < 0) {
+        if ($tmp1 < 0) {
           __label__ = 11;
         } else {
           __label__ = 12;
@@ -34256,7 +34256,7 @@ function __ZL22EdgeLoop_Luma_verticalPhS_iiPii($SrcPtr, $Strength, $Alpha, $Beta
         $tmp1 = ($L_in >>> 24) - $L2;
         
         
-        if (($tmp1 | 0) < 0) {
+        if ($tmp1 < 0) {
           __label__ = 13;
         } else {
           __label__ = 14;
@@ -34276,7 +34276,7 @@ function __ZL22EdgeLoop_Luma_verticalPhS_iiPii($SrcPtr, $Strength, $Alpha, $Beta
         $ptr = $SrcPtr_addr;
         
         
-        if (($aq | 0) < 0) {
+        if ($aq < 0) {
           __label__ = 15;
         } else {
           __label__ = 16;
@@ -34348,7 +34348,7 @@ function __ZL22EdgeLoop_Luma_verticalPhS_iiPii($SrcPtr, $Strength, $Alpha, $Beta
         }
         
         
-        if (($ap | 0) < 0) {
+        if ($ap < 0) {
           __label__ = 18;
         } else {
           __label__ = 19;
@@ -34437,7 +34437,7 @@ function __ZL22EdgeLoop_Luma_verticalPhS_iiPii($SrcPtr, $Strength, $Alpha, $Beta
     $pel = 0;
     while (1) {
       
-      var $cmp134 = ($pel | 0) < 16;
+      var $cmp134 = $pel < 16;
       if (!$cmp134) {
         __label__ = 62;
         break;
@@ -34448,10 +34448,10 @@ function __ZL22EdgeLoop_Luma_verticalPhS_iiPii($SrcPtr, $Strength, $Alpha, $Beta
       
       
       
-      $Strng = HEAPU8[$Strength_addr + ($pel >> 2) >> 0] & 255;
+      $Strng = HEAPU8[$Strength_addr + ($pel >> 2) >> 0];
       
       
-      if (($Strng | 0) != 0) {
+      if ($Strng != 0) {
         __label__ = 27;
       } else {
         __label__ = 60;
@@ -34486,7 +34486,7 @@ function __ZL22EdgeLoop_Luma_verticalPhS_iiPii($SrcPtr, $Strength, $Alpha, $Beta
         $tmp = $R0 - $L0;
         
         
-        if (($tmp | 0) < 0) {
+        if ($tmp < 0) {
           __label__ = 28;
         } else {
           __label__ = 29;
@@ -34506,7 +34506,7 @@ function __ZL22EdgeLoop_Luma_verticalPhS_iiPii($SrcPtr, $Strength, $Alpha, $Beta
         $tmp1 = $R0 - $R1;
         
         
-        if (($tmp1 | 0) < 0) {
+        if ($tmp1 < 0) {
           __label__ = 30;
         } else {
           __label__ = 31;
@@ -34528,7 +34528,7 @@ function __ZL22EdgeLoop_Luma_verticalPhS_iiPii($SrcPtr, $Strength, $Alpha, $Beta
         $tmp1 = $L0 - $L1;
         
         
-        if (($tmp1 | 0) < 0) {
+        if ($tmp1 < 0) {
           __label__ = 32;
         } else {
           __label__ = 33;
@@ -34546,7 +34546,7 @@ function __ZL22EdgeLoop_Luma_verticalPhS_iiPii($SrcPtr, $Strength, $Alpha, $Beta
         $tmp = $and166;
         
         
-        if (($tmp | 0) < 0) {
+        if ($tmp < 0) {
           __label__ = 34;
         } else {
           __label__ = 59;
@@ -34556,19 +34556,19 @@ function __ZL22EdgeLoop_Luma_verticalPhS_iiPii($SrcPtr, $Strength, $Alpha, $Beta
           var $arrayidx169 = $SrcPtr_addr + -3;
           
           
-          $L2 = HEAPU8[$arrayidx169 >> 0] & 255;
+          $L2 = HEAPU8[$arrayidx169 >> 0];
           
           
           
           
-          $R2 = HEAPU8[$SrcPtr_addr + 2 >> 0] & 255;
+          $R2 = HEAPU8[$SrcPtr_addr + 2 >> 0];
           
           
           
           $tmp = $R0 - $R2;
           
           
-          if (($tmp | 0) < 0) {
+          if ($tmp < 0) {
             __label__ = 35;
           } else {
             __label__ = 36;
@@ -34588,7 +34588,7 @@ function __ZL22EdgeLoop_Luma_verticalPhS_iiPii($SrcPtr, $Strength, $Alpha, $Beta
           $tmp = $L0 - $L2;
           
           
-          if (($tmp | 0) < 0) {
+          if ($tmp < 0) {
             __label__ = 37;
           } else {
             __label__ = 38;
@@ -34610,7 +34610,7 @@ function __ZL22EdgeLoop_Luma_verticalPhS_iiPii($SrcPtr, $Strength, $Alpha, $Beta
           $c0 = HEAP32[$clipTable_addr + 4 * $Strng >> 2];
           
           
-          if (($ap | 0) < 0) {
+          if ($ap < 0) {
             __label__ = 39;
           } else {
             __label__ = 40;
@@ -34622,7 +34622,7 @@ function __ZL22EdgeLoop_Luma_verticalPhS_iiPii($SrcPtr, $Strength, $Alpha, $Beta
           }
           
           
-          if (($aq | 0) < 0) {
+          if ($aq < 0) {
             __label__ = 41;
           } else {
             __label__ = 42;
@@ -34684,7 +34684,7 @@ function __ZL22EdgeLoop_Luma_verticalPhS_iiPii($SrcPtr, $Strength, $Alpha, $Beta
           $L_in = $L0 + $dif;
           
           
-          if ($R_in >>> 0 > 255) {
+          if ($R_in > 255) {
             __label__ = 45;
           } else {
             __label__ = 46;
@@ -34700,7 +34700,7 @@ function __ZL22EdgeLoop_Luma_verticalPhS_iiPii($SrcPtr, $Strength, $Alpha, $Beta
           }
           
           
-          if ($L_in >>> 0 > 255) {
+          if ($L_in > 255) {
             __label__ = 47;
           } else {
             __label__ = 48;
@@ -34728,7 +34728,7 @@ function __ZL22EdgeLoop_Luma_verticalPhS_iiPii($SrcPtr, $Strength, $Alpha, $Beta
           HEAP8[$192 >> 0] = $R_in & 255;
           
           
-          if (($C0 | 0) != 0) {
+          if ($C0 != 0) {
             __label__ = 49;
           } else {
             __label__ = 58;
@@ -34736,7 +34736,7 @@ function __ZL22EdgeLoop_Luma_verticalPhS_iiPii($SrcPtr, $Strength, $Alpha, $Beta
           if (__label__ == 49) {
             
             
-            if (($ap | 0) < 0) {
+            if ($ap < 0) {
               __label__ = 50;
             } else {
               __label__ = 53;
@@ -34786,11 +34786,11 @@ function __ZL22EdgeLoop_Luma_verticalPhS_iiPii($SrcPtr, $Strength, $Alpha, $Beta
               
               
               
-              HEAP8[$ptr1 >> 0] = (HEAPU8[$ptr1 >> 0] & 255) + $L2 & 255;
+              HEAP8[$ptr1 >> 0] = HEAPU8[$ptr1 >> 0] + $L2 & 255;
             }
             
             
-            if (($aq | 0) < 0) {
+            if ($aq < 0) {
               __label__ = 54;
             } else {
               __label__ = 57;
@@ -34840,7 +34840,7 @@ function __ZL22EdgeLoop_Luma_verticalPhS_iiPii($SrcPtr, $Strength, $Alpha, $Beta
               
               
               
-              HEAP8[$ptr >> 0] = (HEAPU8[$ptr >> 0] & 255) + $R2 & 255;
+              HEAP8[$ptr >> 0] = HEAPU8[$ptr >> 0] + $R2 & 255;
             }
           }
         }
@@ -34892,7 +34892,7 @@ function __ZL24EdgeLoop_Chroma_verticalPhS_iiPii($SrcPtr, $Strength, $Alpha, $Be
   $pel = 0;
   while (1) {
     
-    var $cmp = ($pel | 0) < 16;
+    var $cmp = $pel < 16;
     if (!$cmp) {
       __label__ = 24;
       break;
@@ -34903,10 +34903,10 @@ function __ZL24EdgeLoop_Chroma_verticalPhS_iiPii($SrcPtr, $Strength, $Alpha, $Be
     
     
     
-    $Strng = HEAPU8[$Strength_addr + ($pel >> 2) >> 0] & 255;
+    $Strng = HEAPU8[$Strength_addr + ($pel >> 2) >> 0];
     
     
-    if (($Strng | 0) != 0) {
+    if ($Strng != 0) {
       __label__ = 3;
     } else {
       __label__ = 21;
@@ -34941,7 +34941,7 @@ function __ZL24EdgeLoop_Chroma_verticalPhS_iiPii($SrcPtr, $Strength, $Alpha, $Be
       $tmp1 = $R0 - $R1;
       
       
-      if (($tmp1 | 0) < 0) {
+      if ($tmp1 < 0) {
         __label__ = 4;
       } else {
         __label__ = 5;
@@ -34961,7 +34961,7 @@ function __ZL24EdgeLoop_Chroma_verticalPhS_iiPii($SrcPtr, $Strength, $Alpha, $Be
       $tmp1 = $L0 - $L1;
       
       
-      if (($tmp1 | 0) < 0) {
+      if ($tmp1 < 0) {
         __label__ = 6;
       } else {
         __label__ = 7;
@@ -34983,7 +34983,7 @@ function __ZL24EdgeLoop_Chroma_verticalPhS_iiPii($SrcPtr, $Strength, $Alpha, $Be
       $tmp1 = $R0 - $L0;
       
       
-      if (($tmp1 | 0) < 0) {
+      if ($tmp1 < 0) {
         __label__ = 8;
       } else {
         __label__ = 9;
@@ -35001,7 +35001,7 @@ function __ZL24EdgeLoop_Chroma_verticalPhS_iiPii($SrcPtr, $Strength, $Alpha, $Be
       $tmp = $and27;
       
       
-      if (($tmp | 0) < 0) {
+      if ($tmp < 0) {
         __label__ = 10;
       } else {
         __label__ = 20;
@@ -35011,7 +35011,7 @@ function __ZL24EdgeLoop_Chroma_verticalPhS_iiPii($SrcPtr, $Strength, $Alpha, $Be
         $ptr = $SrcPtr_addr;
         
         
-        if (($Strng | 0) == 4) {
+        if ($Strng == 4) {
           __label__ = 11;
         } else {
           __label__ = 12;
@@ -35095,7 +35095,7 @@ function __ZL24EdgeLoop_Chroma_verticalPhS_iiPii($SrcPtr, $Strength, $Alpha, $Be
           $R0 = $sub60;
           
           
-          if ($L0 >>> 0 > 255) {
+          if ($L0 > 255) {
             __label__ = 15;
           } else {
             __label__ = 16;
@@ -35111,7 +35111,7 @@ function __ZL24EdgeLoop_Chroma_verticalPhS_iiPii($SrcPtr, $Strength, $Alpha, $Be
           }
           
           
-          if ($R0 >>> 0 > 255) {
+          if ($R0 > 255) {
             __label__ = 17;
           } else {
             __label__ = 18;
@@ -35185,7 +35185,7 @@ function __ZL25GetStrength_VerticalEdgesPhP13tagMacroblock($Strength, $MbQ) {
   
   
   
-  if ((HEAP32[$MbQ_addr + 164 >> 2] | 0) == 0) {
+  if (HEAP32[$MbQ_addr + 164 >> 2] == 0) {
     __label__ = 2;
   } else {
     __label__ = 1;
@@ -35196,7 +35196,7 @@ function __ZL25GetStrength_VerticalEdgesPhP13tagMacroblock($Strength, $MbQ) {
       
       
       
-      if ((HEAP32[$MbQ_addr + 164 >> 2] | 0) == 1) {
+      if (HEAP32[$MbQ_addr + 164 >> 2] == 1) {
         __label__ = 2;
         break $if_then$$lor_lhs_false$2;
       }
@@ -35224,13 +35224,13 @@ function __ZL25GetStrength_VerticalEdgesPhP13tagMacroblock($Strength, $MbQ) {
       
       
       
-      var $conv = (tempInt = HEAP16[$ptr >> 1], tempInt >= 32768 ? tempInt - 65536 : tempInt);
       
       
       
-      var $conv14 = (tempInt = HEAP16[$ptr + 2 >> 1], tempInt >= 32768 ? tempInt - 65536 : tempInt);
       
-      if (($conv | 0) != ($conv14 | 0)) {
+      
+      
+      if (HEAP16[$ptr >> 1] != HEAP16[$ptr + 2 >> 1]) {
         __label__ = 4;
       } else {
         __label__ = 5;
@@ -35243,13 +35243,13 @@ function __ZL25GetStrength_VerticalEdgesPhP13tagMacroblock($Strength, $MbQ) {
       
       
       
-      var $conv19 = (tempInt = HEAP16[$ptr + 4 >> 1], tempInt >= 32768 ? tempInt - 65536 : tempInt);
       
       
       
-      var $conv21 = (tempInt = HEAP16[$ptr + 6 >> 1], tempInt >= 32768 ? tempInt - 65536 : tempInt);
       
-      if (($conv19 | 0) != ($conv21 | 0)) {
+      
+      
+      if (HEAP16[$ptr + 4 >> 1] != HEAP16[$ptr + 6 >> 1]) {
         __label__ = 6;
       } else {
         __label__ = 7;
@@ -35283,7 +35283,7 @@ function __ZL25GetStrength_VerticalEdgesPhP13tagMacroblock($Strength, $MbQ) {
       $idx = 0;
       while (1) {
         
-        var $cmp33 = ($idx | 0) < 4;
+        var $cmp33 = $idx < 4;
         if (!$cmp33) {
           __label__ = 87;
           break;
@@ -35301,7 +35301,7 @@ function __ZL25GetStrength_VerticalEdgesPhP13tagMacroblock($Strength, $MbQ) {
         
         
         
-        if ((HEAPU8[$46 >> 0] & 255 | 0) != 0) {
+        if (HEAPU8[$46 >> 0] != 0) {
           __label__ = 10;
         } else {
           __label__ = 11;
@@ -35316,7 +35316,7 @@ function __ZL25GetStrength_VerticalEdgesPhP13tagMacroblock($Strength, $MbQ) {
         
         
         
-        if ((HEAPU8[$49 >> 0] & 255 | 0) != 0) {
+        if (HEAPU8[$49 >> 0] != 0) {
           __label__ = 12;
         } else {
           __label__ = 13;
@@ -35334,7 +35334,7 @@ function __ZL25GetStrength_VerticalEdgesPhP13tagMacroblock($Strength, $MbQ) {
         
         
         
-        if ((HEAPU8[$53 >> 0] & 255 | 0) != 0) {
+        if (HEAPU8[$53 >> 0] != 0) {
           __label__ = 14;
         } else {
           __label__ = 15;
@@ -35351,7 +35351,7 @@ function __ZL25GetStrength_VerticalEdgesPhP13tagMacroblock($Strength, $MbQ) {
         
         
         
-        if ((HEAPU8[$pnz >> 0] & 255 | 0) != 0) {
+        if (HEAPU8[$pnz >> 0] != 0) {
           __label__ = 16;
         } else {
           __label__ = 17;
@@ -35365,7 +35365,7 @@ function __ZL25GetStrength_VerticalEdgesPhP13tagMacroblock($Strength, $MbQ) {
         
         
         
-        if ((HEAPU8[$pStrength >> 0] & 255 | 0) == 0) {
+        if (HEAPU8[$pStrength >> 0] == 0) {
           __label__ = 18;
         } else {
           __label__ = 27;
@@ -35373,16 +35373,16 @@ function __ZL25GetStrength_VerticalEdgesPhP13tagMacroblock($Strength, $MbQ) {
         if (__label__ == 18) {
           
           
-          var $conv61 = (tempInt = HEAP16[$pmvx >> 1], tempInt >= 32768 ? tempInt - 65536 : tempInt);
+          
           
           var $add_ptr62 = $pmvx + -4;
           
-          var $conv63 = (tempInt = HEAP16[$add_ptr62 >> 1], tempInt >= 32768 ? tempInt - 65536 : tempInt);
-          
-          $tmp = $conv61 - $conv63;
           
           
-          if (($tmp | 0) < 0) {
+          $tmp = HEAP16[$pmvx >> 1] - HEAP16[$add_ptr62 >> 1];
+          
+          
+          if ($tmp < 0) {
             __label__ = 19;
           } else {
             __label__ = 20;
@@ -35394,7 +35394,7 @@ function __ZL25GetStrength_VerticalEdgesPhP13tagMacroblock($Strength, $MbQ) {
           }
           
           
-          if (($tmp | 0) >= 4) {
+          if ($tmp >= 4) {
             __label__ = 21;
           } else {
             __label__ = 22;
@@ -35405,16 +35405,16 @@ function __ZL25GetStrength_VerticalEdgesPhP13tagMacroblock($Strength, $MbQ) {
           }
           
           
-          var $conv71 = (tempInt = HEAP16[$pmvy >> 1], tempInt >= 32768 ? tempInt - 65536 : tempInt);
+          
           
           var $add_ptr72 = $pmvy + -4;
           
-          var $conv73 = (tempInt = HEAP16[$add_ptr72 >> 1], tempInt >= 32768 ? tempInt - 65536 : tempInt);
-          
-          $tmp = $conv71 - $conv73;
           
           
-          if (($tmp | 0) < 0) {
+          $tmp = HEAP16[$pmvy >> 1] - HEAP16[$add_ptr72 >> 1];
+          
+          
+          if ($tmp < 0) {
             __label__ = 23;
           } else {
             __label__ = 24;
@@ -35426,7 +35426,7 @@ function __ZL25GetStrength_VerticalEdgesPhP13tagMacroblock($Strength, $MbQ) {
           }
           
           
-          if (($tmp | 0) >= 4) {
+          if ($tmp >= 4) {
             __label__ = 25;
           } else {
             __label__ = 26;
@@ -35449,7 +35449,7 @@ function __ZL25GetStrength_VerticalEdgesPhP13tagMacroblock($Strength, $MbQ) {
         
         
         
-        if ((HEAPU8[$pStr >> 0] & 255 | 0) == 0) {
+        if (HEAPU8[$pStr >> 0] == 0) {
           __label__ = 28;
         } else {
           __label__ = 37;
@@ -35457,16 +35457,16 @@ function __ZL25GetStrength_VerticalEdgesPhP13tagMacroblock($Strength, $MbQ) {
         if (__label__ == 28) {
           
           
-          var $conv89 = (tempInt = HEAP16[$pmvx >> 1], tempInt >= 32768 ? tempInt - 65536 : tempInt);
+          
           
           var $add_ptr90 = $pmvx + -4;
           
-          var $conv91 = (tempInt = HEAP16[$add_ptr90 >> 1], tempInt >= 32768 ? tempInt - 65536 : tempInt);
-          
-          $tmp = $conv89 - $conv91;
           
           
-          if (($tmp | 0) < 0) {
+          $tmp = HEAP16[$pmvx >> 1] - HEAP16[$add_ptr90 >> 1];
+          
+          
+          if ($tmp < 0) {
             __label__ = 29;
           } else {
             __label__ = 30;
@@ -35478,7 +35478,7 @@ function __ZL25GetStrength_VerticalEdgesPhP13tagMacroblock($Strength, $MbQ) {
           }
           
           
-          if (($tmp | 0) >= 4) {
+          if ($tmp >= 4) {
             __label__ = 31;
           } else {
             __label__ = 32;
@@ -35489,16 +35489,16 @@ function __ZL25GetStrength_VerticalEdgesPhP13tagMacroblock($Strength, $MbQ) {
           }
           
           
-          var $conv100 = (tempInt = HEAP16[$pmvy >> 1], tempInt >= 32768 ? tempInt - 65536 : tempInt);
+          
           
           var $add_ptr101 = $pmvy + -4;
           
-          var $conv102 = (tempInt = HEAP16[$add_ptr101 >> 1], tempInt >= 32768 ? tempInt - 65536 : tempInt);
-          
-          $tmp = $conv100 - $conv102;
           
           
-          if (($tmp | 0) < 0) {
+          $tmp = HEAP16[$pmvy >> 1] - HEAP16[$add_ptr101 >> 1];
+          
+          
+          if ($tmp < 0) {
             __label__ = 33;
           } else {
             __label__ = 34;
@@ -35510,7 +35510,7 @@ function __ZL25GetStrength_VerticalEdgesPhP13tagMacroblock($Strength, $MbQ) {
           }
           
           
-          if (($tmp | 0) >= 4) {
+          if ($tmp >= 4) {
             __label__ = 35;
           } else {
             __label__ = 36;
@@ -35533,7 +35533,7 @@ function __ZL25GetStrength_VerticalEdgesPhP13tagMacroblock($Strength, $MbQ) {
         
         
         
-        if ((HEAPU8[$pStr >> 0] & 255 | 0) == 0) {
+        if (HEAPU8[$pStr >> 0] == 0) {
           __label__ = 38;
         } else {
           __label__ = 47;
@@ -35541,16 +35541,16 @@ function __ZL25GetStrength_VerticalEdgesPhP13tagMacroblock($Strength, $MbQ) {
         if (__label__ == 38) {
           
           
-          var $conv118 = (tempInt = HEAP16[$pmvx >> 1], tempInt >= 32768 ? tempInt - 65536 : tempInt);
+          
           
           var $add_ptr119 = $pmvx + -4;
           
-          var $conv120 = (tempInt = HEAP16[$add_ptr119 >> 1], tempInt >= 32768 ? tempInt - 65536 : tempInt);
-          
-          $tmp = $conv118 - $conv120;
           
           
-          if (($tmp | 0) < 0) {
+          $tmp = HEAP16[$pmvx >> 1] - HEAP16[$add_ptr119 >> 1];
+          
+          
+          if ($tmp < 0) {
             __label__ = 39;
           } else {
             __label__ = 40;
@@ -35562,7 +35562,7 @@ function __ZL25GetStrength_VerticalEdgesPhP13tagMacroblock($Strength, $MbQ) {
           }
           
           
-          if (($tmp | 0) >= 4) {
+          if ($tmp >= 4) {
             __label__ = 41;
           } else {
             __label__ = 42;
@@ -35573,16 +35573,16 @@ function __ZL25GetStrength_VerticalEdgesPhP13tagMacroblock($Strength, $MbQ) {
           }
           
           
-          var $conv129 = (tempInt = HEAP16[$pmvy >> 1], tempInt >= 32768 ? tempInt - 65536 : tempInt);
+          
           
           var $add_ptr130 = $pmvy + -4;
           
-          var $conv131 = (tempInt = HEAP16[$add_ptr130 >> 1], tempInt >= 32768 ? tempInt - 65536 : tempInt);
-          
-          $tmp = $conv129 - $conv131;
           
           
-          if (($tmp | 0) < 0) {
+          $tmp = HEAP16[$pmvy >> 1] - HEAP16[$add_ptr130 >> 1];
+          
+          
+          if ($tmp < 0) {
             __label__ = 43;
           } else {
             __label__ = 44;
@@ -35594,7 +35594,7 @@ function __ZL25GetStrength_VerticalEdgesPhP13tagMacroblock($Strength, $MbQ) {
           }
           
           
-          if (($tmp | 0) >= 4) {
+          if ($tmp >= 4) {
             __label__ = 45;
           } else {
             __label__ = 46;
@@ -35618,7 +35618,7 @@ function __ZL25GetStrength_VerticalEdgesPhP13tagMacroblock($Strength, $MbQ) {
         
         
         
-        if ((HEAPU8[$122 >> 0] & 255 | 0) != 0) {
+        if (HEAPU8[$122 >> 0] != 0) {
           __label__ = 48;
         } else {
           __label__ = 49;
@@ -35634,7 +35634,7 @@ function __ZL25GetStrength_VerticalEdgesPhP13tagMacroblock($Strength, $MbQ) {
         
         
         
-        if ((HEAPU8[$125 >> 0] & 255 | 0) != 0) {
+        if (HEAPU8[$125 >> 0] != 0) {
           __label__ = 50;
         } else {
           __label__ = 51;
@@ -35653,7 +35653,7 @@ function __ZL25GetStrength_VerticalEdgesPhP13tagMacroblock($Strength, $MbQ) {
         
         
         
-        if ((HEAPU8[$129 >> 0] & 255 | 0) != 0) {
+        if (HEAPU8[$129 >> 0] != 0) {
           __label__ = 52;
         } else {
           __label__ = 53;
@@ -35670,7 +35670,7 @@ function __ZL25GetStrength_VerticalEdgesPhP13tagMacroblock($Strength, $MbQ) {
         
         
         
-        if ((HEAPU8[$pnz >> 0] & 255 | 0) != 0) {
+        if (HEAPU8[$pnz >> 0] != 0) {
           __label__ = 54;
         } else {
           __label__ = 55;
@@ -35693,7 +35693,7 @@ function __ZL25GetStrength_VerticalEdgesPhP13tagMacroblock($Strength, $MbQ) {
         
         
         
-        if ((HEAPU8[$pStr >> 0] & 255 | 0) == 0) {
+        if (HEAPU8[$pStr >> 0] == 0) {
           __label__ = 56;
         } else {
           __label__ = 65;
@@ -35701,16 +35701,16 @@ function __ZL25GetStrength_VerticalEdgesPhP13tagMacroblock($Strength, $MbQ) {
         if (__label__ == 56) {
           
           
-          var $conv176 = (tempInt = HEAP16[$pmvx >> 1], tempInt >= 32768 ? tempInt - 65536 : tempInt);
+          
           
           var $add_ptr177 = $pmvx + -4;
           
-          var $conv178 = (tempInt = HEAP16[$add_ptr177 >> 1], tempInt >= 32768 ? tempInt - 65536 : tempInt);
-          
-          $tmp = $conv176 - $conv178;
           
           
-          if (($tmp | 0) < 0) {
+          $tmp = HEAP16[$pmvx >> 1] - HEAP16[$add_ptr177 >> 1];
+          
+          
+          if ($tmp < 0) {
             __label__ = 57;
           } else {
             __label__ = 58;
@@ -35722,7 +35722,7 @@ function __ZL25GetStrength_VerticalEdgesPhP13tagMacroblock($Strength, $MbQ) {
           }
           
           
-          if (($tmp | 0) >= 4) {
+          if ($tmp >= 4) {
             __label__ = 59;
           } else {
             __label__ = 60;
@@ -35733,16 +35733,16 @@ function __ZL25GetStrength_VerticalEdgesPhP13tagMacroblock($Strength, $MbQ) {
           }
           
           
-          var $conv187 = (tempInt = HEAP16[$pmvy >> 1], tempInt >= 32768 ? tempInt - 65536 : tempInt);
+          
           
           var $add_ptr188 = $pmvy + -4;
           
-          var $conv189 = (tempInt = HEAP16[$add_ptr188 >> 1], tempInt >= 32768 ? tempInt - 65536 : tempInt);
-          
-          $tmp = $conv187 - $conv189;
           
           
-          if (($tmp | 0) < 0) {
+          $tmp = HEAP16[$pmvy >> 1] - HEAP16[$add_ptr188 >> 1];
+          
+          
+          if ($tmp < 0) {
             __label__ = 61;
           } else {
             __label__ = 62;
@@ -35754,7 +35754,7 @@ function __ZL25GetStrength_VerticalEdgesPhP13tagMacroblock($Strength, $MbQ) {
           }
           
           
-          if (($tmp | 0) >= 4) {
+          if ($tmp >= 4) {
             __label__ = 63;
           } else {
             __label__ = 64;
@@ -35777,7 +35777,7 @@ function __ZL25GetStrength_VerticalEdgesPhP13tagMacroblock($Strength, $MbQ) {
         
         
         
-        if ((HEAPU8[$pStr >> 0] & 255 | 0) == 0) {
+        if (HEAPU8[$pStr >> 0] == 0) {
           __label__ = 66;
         } else {
           __label__ = 75;
@@ -35785,16 +35785,16 @@ function __ZL25GetStrength_VerticalEdgesPhP13tagMacroblock($Strength, $MbQ) {
         if (__label__ == 66) {
           
           
-          var $conv205 = (tempInt = HEAP16[$pmvx >> 1], tempInt >= 32768 ? tempInt - 65536 : tempInt);
+          
           
           var $add_ptr206 = $pmvx + -4;
           
-          var $conv207 = (tempInt = HEAP16[$add_ptr206 >> 1], tempInt >= 32768 ? tempInt - 65536 : tempInt);
-          
-          $tmp = $conv205 - $conv207;
           
           
-          if (($tmp | 0) < 0) {
+          $tmp = HEAP16[$pmvx >> 1] - HEAP16[$add_ptr206 >> 1];
+          
+          
+          if ($tmp < 0) {
             __label__ = 67;
           } else {
             __label__ = 68;
@@ -35806,7 +35806,7 @@ function __ZL25GetStrength_VerticalEdgesPhP13tagMacroblock($Strength, $MbQ) {
           }
           
           
-          if (($tmp | 0) >= 4) {
+          if ($tmp >= 4) {
             __label__ = 69;
           } else {
             __label__ = 70;
@@ -35817,16 +35817,16 @@ function __ZL25GetStrength_VerticalEdgesPhP13tagMacroblock($Strength, $MbQ) {
           }
           
           
-          var $conv216 = (tempInt = HEAP16[$pmvy >> 1], tempInt >= 32768 ? tempInt - 65536 : tempInt);
+          
           
           var $add_ptr217 = $pmvy + -4;
           
-          var $conv218 = (tempInt = HEAP16[$add_ptr217 >> 1], tempInt >= 32768 ? tempInt - 65536 : tempInt);
-          
-          $tmp = $conv216 - $conv218;
           
           
-          if (($tmp | 0) < 0) {
+          $tmp = HEAP16[$pmvy >> 1] - HEAP16[$add_ptr217 >> 1];
+          
+          
+          if ($tmp < 0) {
             __label__ = 71;
           } else {
             __label__ = 72;
@@ -35838,7 +35838,7 @@ function __ZL25GetStrength_VerticalEdgesPhP13tagMacroblock($Strength, $MbQ) {
           }
           
           
-          if (($tmp | 0) >= 4) {
+          if ($tmp >= 4) {
             __label__ = 73;
           } else {
             __label__ = 74;
@@ -35861,7 +35861,7 @@ function __ZL25GetStrength_VerticalEdgesPhP13tagMacroblock($Strength, $MbQ) {
         
         
         
-        if ((HEAPU8[$pStr >> 0] & 255 | 0) == 0) {
+        if (HEAPU8[$pStr >> 0] == 0) {
           __label__ = 76;
         } else {
           __label__ = 85;
@@ -35869,16 +35869,16 @@ function __ZL25GetStrength_VerticalEdgesPhP13tagMacroblock($Strength, $MbQ) {
         if (__label__ == 76) {
           
           
-          var $conv234 = (tempInt = HEAP16[$pmvx >> 1], tempInt >= 32768 ? tempInt - 65536 : tempInt);
+          
           
           var $add_ptr235 = $pmvx + -4;
           
-          var $conv236 = (tempInt = HEAP16[$add_ptr235 >> 1], tempInt >= 32768 ? tempInt - 65536 : tempInt);
-          
-          $tmp = $conv234 - $conv236;
           
           
-          if (($tmp | 0) < 0) {
+          $tmp = HEAP16[$pmvx >> 1] - HEAP16[$add_ptr235 >> 1];
+          
+          
+          if ($tmp < 0) {
             __label__ = 77;
           } else {
             __label__ = 78;
@@ -35890,7 +35890,7 @@ function __ZL25GetStrength_VerticalEdgesPhP13tagMacroblock($Strength, $MbQ) {
           }
           
           
-          if (($tmp | 0) >= 4) {
+          if ($tmp >= 4) {
             __label__ = 79;
           } else {
             __label__ = 80;
@@ -35901,16 +35901,16 @@ function __ZL25GetStrength_VerticalEdgesPhP13tagMacroblock($Strength, $MbQ) {
           }
           
           
-          var $conv245 = (tempInt = HEAP16[$pmvy >> 1], tempInt >= 32768 ? tempInt - 65536 : tempInt);
+          
           
           var $add_ptr246 = $pmvy + -4;
           
-          var $conv247 = (tempInt = HEAP16[$add_ptr246 >> 1], tempInt >= 32768 ? tempInt - 65536 : tempInt);
-          
-          $tmp = $conv245 - $conv247;
           
           
-          if (($tmp | 0) < 0) {
+          $tmp = HEAP16[$pmvy >> 1] - HEAP16[$add_ptr246 >> 1];
+          
+          
+          if ($tmp < 0) {
             __label__ = 81;
           } else {
             __label__ = 82;
@@ -35922,7 +35922,7 @@ function __ZL25GetStrength_VerticalEdgesPhP13tagMacroblock($Strength, $MbQ) {
           }
           
           
-          if (($tmp | 0) >= 4) {
+          if ($tmp >= 4) {
             __label__ = 83;
           } else {
             __label__ = 84;
@@ -36013,7 +36013,7 @@ function __ZL24EdgeLoop_Luma_horizontalPhS_iiPii($SrcPtr, $Strength, $Alpha, $Be
   
   
   
-  if ((HEAPU8[$Strength_addr >> 0] & 255 | 0) == 4) {
+  if (HEAPU8[$Strength_addr >> 0] == 4) {
     __label__ = 1;
   } else {
     __label__ = 24;
@@ -36022,7 +36022,7 @@ function __ZL24EdgeLoop_Luma_horizontalPhS_iiPii($SrcPtr, $Strength, $Alpha, $Be
     $pel = 0;
     while (1) {
       
-      var $cmp9 = ($pel | 0) < 16;
+      var $cmp9 = $pel < 16;
       if (!$cmp9) {
         __label__ = 23;
         break;
@@ -36031,35 +36031,35 @@ function __ZL24EdgeLoop_Luma_horizontalPhS_iiPii($SrcPtr, $Strength, $Alpha, $Be
       
       
       
-      $R0 = HEAPU8[$SrcPtr_addr >> 0] & 255;
+      $R0 = HEAPU8[$SrcPtr_addr >> 0];
       
       
       
       
       
-      $R1 = HEAPU8[$SrcPtr_addr + $pitch_addr >> 0] & 255;
-      
-      
-      
-      
-      
-      
-      $L0 = HEAPU8[$SrcPtr_addr + (0 - $pitch_addr) >> 0] & 255;
+      $R1 = HEAPU8[$SrcPtr_addr + $pitch_addr >> 0];
       
       
       
       
       
       
+      $L0 = HEAPU8[$SrcPtr_addr + (0 - $pitch_addr) >> 0];
       
-      $L1 = HEAPU8[$SrcPtr_addr + (0 - ($pitch_addr << 1)) >> 0] & 255;
+      
+      
+      
+      
+      
+      
+      $L1 = HEAPU8[$SrcPtr_addr + (0 - ($pitch_addr << 1)) >> 0];
       
       
       
       $tmp1 = $R0 - $R1;
       
       
-      if (($tmp1 | 0) < 0) {
+      if ($tmp1 < 0) {
         __label__ = 4;
       } else {
         __label__ = 5;
@@ -36079,7 +36079,7 @@ function __ZL24EdgeLoop_Luma_horizontalPhS_iiPii($SrcPtr, $Strength, $Alpha, $Be
       $tmp1 = $L0 - $L1;
       
       
-      if (($tmp1 | 0) < 0) {
+      if ($tmp1 < 0) {
         __label__ = 6;
       } else {
         __label__ = 7;
@@ -36101,7 +36101,7 @@ function __ZL24EdgeLoop_Luma_horizontalPhS_iiPii($SrcPtr, $Strength, $Alpha, $Be
       $AbsDelta = $R0 - $L0;
       
       
-      if (($AbsDelta | 0) < 0) {
+      if ($AbsDelta < 0) {
         __label__ = 8;
       } else {
         __label__ = 9;
@@ -36119,7 +36119,7 @@ function __ZL24EdgeLoop_Luma_horizontalPhS_iiPii($SrcPtr, $Strength, $Alpha, $Be
       $tmp = $and36;
       
       
-      if (($tmp | 0) < 0) {
+      if ($tmp < 0) {
         __label__ = 10;
       } else {
         __label__ = 21;
@@ -36137,7 +36137,7 @@ function __ZL24EdgeLoop_Luma_horizontalPhS_iiPii($SrcPtr, $Strength, $Alpha, $Be
         
         
         
-        $R2 = HEAPU8[$SrcPtr_addr + ($pitch_addr << 1) >> 0] & 255;
+        $R2 = HEAPU8[$SrcPtr_addr + ($pitch_addr << 1) >> 0];
         
         
         
@@ -36147,14 +36147,14 @@ function __ZL24EdgeLoop_Luma_horizontalPhS_iiPii($SrcPtr, $Strength, $Alpha, $Be
         
         
         
-        $L2 = HEAPU8[$SrcPtr_addr + (0 - ($pitch_addr + ($pitch_addr << 1))) >> 0] & 255;
+        $L2 = HEAPU8[$SrcPtr_addr + (0 - ($pitch_addr + ($pitch_addr << 1))) >> 0];
         
         
         
         $tmp = $R0 - $R2;
         
         
-        if (($tmp | 0) < 0) {
+        if ($tmp < 0) {
           __label__ = 11;
         } else {
           __label__ = 12;
@@ -36176,7 +36176,7 @@ function __ZL24EdgeLoop_Luma_horizontalPhS_iiPii($SrcPtr, $Strength, $Alpha, $Be
         $tmp = $L0 - $L2;
         
         
-        if (($tmp | 0) < 0) {
+        if ($tmp < 0) {
           __label__ = 13;
         } else {
           __label__ = 14;
@@ -36194,7 +36194,7 @@ function __ZL24EdgeLoop_Luma_horizontalPhS_iiPii($SrcPtr, $Strength, $Alpha, $Be
         $ap = $AbsDelta & $tmp - $Beta_addr;
         
         
-        if (($aq | 0) < 0) {
+        if ($aq < 0) {
           __label__ = 15;
         } else {
           __label__ = 16;
@@ -36250,7 +36250,7 @@ function __ZL24EdgeLoop_Luma_horizontalPhS_iiPii($SrcPtr, $Strength, $Alpha, $Be
           
           
           
-          HEAP8[$SrcPtr_addr + ($pitch_addr << 1) >> 0] = ((HEAPU8[$SrcPtr_addr + ($pitch_addr + ($pitch_addr << 1)) >> 0] & 255) + $R2 << 1) + $tmp + 4 >> 3 & 255;
+          HEAP8[$SrcPtr_addr + ($pitch_addr << 1) >> 0] = (HEAPU8[$SrcPtr_addr + ($pitch_addr + ($pitch_addr << 1)) >> 0] + $R2 << 1) + $tmp + 4 >> 3 & 255;
         } else if (__label__ == 16) {
           
           
@@ -36267,7 +36267,7 @@ function __ZL24EdgeLoop_Luma_horizontalPhS_iiPii($SrcPtr, $Strength, $Alpha, $Be
         }
         
         
-        if (($ap | 0) < 0) {
+        if ($ap < 0) {
           __label__ = 18;
         } else {
           __label__ = 19;
@@ -36329,7 +36329,7 @@ function __ZL24EdgeLoop_Luma_horizontalPhS_iiPii($SrcPtr, $Strength, $Alpha, $Be
           
           
           
-          HEAP8[$SrcPtr_addr + (0 - ($pitch_addr + ($pitch_addr << 1))) >> 0] = ((HEAPU8[$SrcPtr_addr + (0 - ($pitch_addr << 2)) >> 0] & 255) + $L2 << 1) + $tmp + 4 >> 3 & 255;
+          HEAP8[$SrcPtr_addr + (0 - ($pitch_addr + ($pitch_addr << 1))) >> 0] = (HEAPU8[$SrcPtr_addr + (0 - ($pitch_addr << 2)) >> 0] + $L2 << 1) + $tmp + 4 >> 3 & 255;
         } else if (__label__ == 19) {
           
           
@@ -36360,7 +36360,7 @@ function __ZL24EdgeLoop_Luma_horizontalPhS_iiPii($SrcPtr, $Strength, $Alpha, $Be
     $pel = 0;
     while (1) {
       
-      var $cmp144 = ($pel | 0) < 16;
+      var $cmp144 = $pel < 16;
       if (!$cmp144) {
         __label__ = 62;
         break;
@@ -36371,10 +36371,10 @@ function __ZL24EdgeLoop_Luma_horizontalPhS_iiPii($SrcPtr, $Strength, $Alpha, $Be
       
       
       
-      $Strng = HEAPU8[$Strength_addr + ($pel >> 2) >> 0] & 255;
+      $Strng = HEAPU8[$Strength_addr + ($pel >> 2) >> 0];
       
       
-      if (($Strng | 0) != 0) {
+      if ($Strng != 0) {
         __label__ = 27;
       } else {
         __label__ = 60;
@@ -36384,35 +36384,35 @@ function __ZL24EdgeLoop_Luma_horizontalPhS_iiPii($SrcPtr, $Strength, $Alpha, $Be
         
         
         
-        $R0 = HEAPU8[$SrcPtr_addr >> 0] & 255;
+        $R0 = HEAPU8[$SrcPtr_addr >> 0];
         
         
         
         
         
-        $R1 = HEAPU8[$SrcPtr_addr + $pitch_addr >> 0] & 255;
-        
-        
-        
-        
-        
-        
-        $L0 = HEAPU8[$SrcPtr_addr + (0 - $pitch_addr) >> 0] & 255;
+        $R1 = HEAPU8[$SrcPtr_addr + $pitch_addr >> 0];
         
         
         
         
         
         
+        $L0 = HEAPU8[$SrcPtr_addr + (0 - $pitch_addr) >> 0];
         
-        $L1 = HEAPU8[$SrcPtr_addr + (0 - ($pitch_addr << 1)) >> 0] & 255;
+        
+        
+        
+        
+        
+        
+        $L1 = HEAPU8[$SrcPtr_addr + (0 - ($pitch_addr << 1)) >> 0];
         
         
         
         $tmp1 = $R0 - $L0;
         
         
-        if (($tmp1 | 0) < 0) {
+        if ($tmp1 < 0) {
           __label__ = 28;
         } else {
           __label__ = 29;
@@ -36432,7 +36432,7 @@ function __ZL24EdgeLoop_Luma_horizontalPhS_iiPii($SrcPtr, $Strength, $Alpha, $Be
         $tmp1 = $R0 - $R1;
         
         
-        if (($tmp1 | 0) < 0) {
+        if ($tmp1 < 0) {
           __label__ = 30;
         } else {
           __label__ = 31;
@@ -36454,7 +36454,7 @@ function __ZL24EdgeLoop_Luma_horizontalPhS_iiPii($SrcPtr, $Strength, $Alpha, $Be
         $tmp1 = $L0 - $L1;
         
         
-        if (($tmp1 | 0) < 0) {
+        if ($tmp1 < 0) {
           __label__ = 32;
         } else {
           __label__ = 33;
@@ -36472,7 +36472,7 @@ function __ZL24EdgeLoop_Luma_horizontalPhS_iiPii($SrcPtr, $Strength, $Alpha, $Be
         $tmp = $and180;
         
         
-        if (($tmp | 0) < 0) {
+        if ($tmp < 0) {
           __label__ = 34;
         } else {
           __label__ = 59;
@@ -36484,7 +36484,7 @@ function __ZL24EdgeLoop_Luma_horizontalPhS_iiPii($SrcPtr, $Strength, $Alpha, $Be
           
           
           
-          $R2 = HEAPU8[$SrcPtr_addr + ($pitch_addr << 1) >> 0] & 255;
+          $R2 = HEAPU8[$SrcPtr_addr + ($pitch_addr << 1) >> 0];
           
           
           
@@ -36494,14 +36494,14 @@ function __ZL24EdgeLoop_Luma_horizontalPhS_iiPii($SrcPtr, $Strength, $Alpha, $Be
           
           
           
-          $L2 = HEAPU8[$SrcPtr_addr + (0 - ($pitch_addr + ($pitch_addr << 1))) >> 0] & 255;
+          $L2 = HEAPU8[$SrcPtr_addr + (0 - ($pitch_addr + ($pitch_addr << 1))) >> 0];
           
           
           
           $tmp = $R0 - $R2;
           
           
-          if (($tmp | 0) < 0) {
+          if ($tmp < 0) {
             __label__ = 35;
           } else {
             __label__ = 36;
@@ -36521,7 +36521,7 @@ function __ZL24EdgeLoop_Luma_horizontalPhS_iiPii($SrcPtr, $Strength, $Alpha, $Be
           $tmp = $L0 - $L2;
           
           
-          if (($tmp | 0) < 0) {
+          if ($tmp < 0) {
             __label__ = 37;
           } else {
             __label__ = 38;
@@ -36543,7 +36543,7 @@ function __ZL24EdgeLoop_Luma_horizontalPhS_iiPii($SrcPtr, $Strength, $Alpha, $Be
           $c0 = HEAP32[$clipTable_addr + 4 * $Strng >> 2];
           
           
-          if (($ap | 0) < 0) {
+          if ($ap < 0) {
             __label__ = 39;
           } else {
             __label__ = 40;
@@ -36555,7 +36555,7 @@ function __ZL24EdgeLoop_Luma_horizontalPhS_iiPii($SrcPtr, $Strength, $Alpha, $Be
           }
           
           
-          if (($aq | 0) < 0) {
+          if ($aq < 0) {
             __label__ = 41;
           } else {
             __label__ = 42;
@@ -36616,7 +36616,7 @@ function __ZL24EdgeLoop_Luma_horizontalPhS_iiPii($SrcPtr, $Strength, $Alpha, $Be
           $L0 = $add229;
           
           
-          if ($R0 >>> 0 > 255) {
+          if ($R0 > 255) {
             __label__ = 45;
           } else {
             __label__ = 46;
@@ -36632,7 +36632,7 @@ function __ZL24EdgeLoop_Luma_horizontalPhS_iiPii($SrcPtr, $Strength, $Alpha, $Be
           }
           
           
-          if ($L0 >>> 0 > 255) {
+          if ($L0 > 255) {
             __label__ = 47;
           } else {
             __label__ = 48;
@@ -36660,7 +36660,7 @@ function __ZL24EdgeLoop_Luma_horizontalPhS_iiPii($SrcPtr, $Strength, $Alpha, $Be
           HEAP8[$SrcPtr_addr >> 0] = $R0 & 255;
           
           
-          if (($C0 | 0) != 0) {
+          if ($C0 != 0) {
             __label__ = 49;
           } else {
             __label__ = 58;
@@ -36668,7 +36668,7 @@ function __ZL24EdgeLoop_Luma_horizontalPhS_iiPii($SrcPtr, $Strength, $Alpha, $Be
           if (__label__ == 49) {
             
             
-            if (($aq | 0) < 0) {
+            if ($aq < 0) {
               __label__ = 50;
             } else {
               __label__ = 53;
@@ -36718,11 +36718,11 @@ function __ZL24EdgeLoop_Luma_horizontalPhS_iiPii($SrcPtr, $Strength, $Alpha, $Be
               
               
               
-              HEAP8[$SrcPtr_addr + $pitch_addr >> 0] = (HEAPU8[$SrcPtr_addr + $pitch_addr >> 0] & 255) + $R2 & 255;
+              HEAP8[$SrcPtr_addr + $pitch_addr >> 0] = HEAPU8[$SrcPtr_addr + $pitch_addr >> 0] + $R2 & 255;
             }
             
             
-            if (($ap | 0) < 0) {
+            if ($ap < 0) {
               __label__ = 54;
             } else {
               __label__ = 57;
@@ -36774,7 +36774,7 @@ function __ZL24EdgeLoop_Luma_horizontalPhS_iiPii($SrcPtr, $Strength, $Alpha, $Be
               
               
               
-              HEAP8[$SrcPtr_addr + (0 - ($pitch_addr << 1)) >> 0] = (HEAPU8[$SrcPtr_addr + (0 - ($pitch_addr << 1)) >> 0] & 255) + $L2 & 255;
+              HEAP8[$SrcPtr_addr + (0 - ($pitch_addr << 1)) >> 0] = HEAPU8[$SrcPtr_addr + (0 - ($pitch_addr << 1)) >> 0] + $L2 & 255;
             }
           }
         }
@@ -36822,7 +36822,7 @@ function __ZL26EdgeLoop_Chroma_horizontalPhS_iiPii($SrcPtr, $Strength, $Alpha, $
   $pel = 0;
   while (1) {
     
-    var $cmp = ($pel | 0) < 16;
+    var $cmp = $pel < 16;
     if (!$cmp) {
       __label__ = 24;
       break;
@@ -36833,10 +36833,10 @@ function __ZL26EdgeLoop_Chroma_horizontalPhS_iiPii($SrcPtr, $Strength, $Alpha, $
     
     
     
-    $Strng = HEAPU8[$Strength_addr + ($pel >> 2) >> 0] & 255;
+    $Strng = HEAPU8[$Strength_addr + ($pel >> 2) >> 0];
     
     
-    if (($Strng | 0) != 0) {
+    if ($Strng != 0) {
       __label__ = 3;
     } else {
       __label__ = 21;
@@ -36846,14 +36846,14 @@ function __ZL26EdgeLoop_Chroma_horizontalPhS_iiPii($SrcPtr, $Strength, $Alpha, $
       
       
       
-      $R0 = HEAPU8[$SrcPtr_addr >> 0] & 255;
+      $R0 = HEAPU8[$SrcPtr_addr >> 0];
       
       
       
       
       
       
-      $L0 = HEAPU8[$SrcPtr_addr + (0 - $pitch_addr) >> 0] & 255;
+      $L0 = HEAPU8[$SrcPtr_addr + (0 - $pitch_addr) >> 0];
       
       
       
@@ -36861,20 +36861,20 @@ function __ZL26EdgeLoop_Chroma_horizontalPhS_iiPii($SrcPtr, $Strength, $Alpha, $
       
       
       
-      $L1 = HEAPU8[$SrcPtr_addr + (0 - ($pitch_addr << 1)) >> 0] & 255;
+      $L1 = HEAPU8[$SrcPtr_addr + (0 - ($pitch_addr << 1)) >> 0];
       
       
       
       
       
-      $R1 = HEAPU8[$SrcPtr_addr + $pitch_addr >> 0] & 255;
+      $R1 = HEAPU8[$SrcPtr_addr + $pitch_addr >> 0];
       
       
       
       $tmp1 = $R0 - $R1;
       
       
-      if (($tmp1 | 0) < 0) {
+      if ($tmp1 < 0) {
         __label__ = 4;
       } else {
         __label__ = 5;
@@ -36894,7 +36894,7 @@ function __ZL26EdgeLoop_Chroma_horizontalPhS_iiPii($SrcPtr, $Strength, $Alpha, $
       $tmp1 = $L0 - $L1;
       
       
-      if (($tmp1 | 0) < 0) {
+      if ($tmp1 < 0) {
         __label__ = 6;
       } else {
         __label__ = 7;
@@ -36916,7 +36916,7 @@ function __ZL26EdgeLoop_Chroma_horizontalPhS_iiPii($SrcPtr, $Strength, $Alpha, $
       $tmp1 = $R0 - $L0;
       
       
-      if (($tmp1 | 0) < 0) {
+      if ($tmp1 < 0) {
         __label__ = 8;
       } else {
         __label__ = 9;
@@ -36934,7 +36934,7 @@ function __ZL26EdgeLoop_Chroma_horizontalPhS_iiPii($SrcPtr, $Strength, $Alpha, $
       $tmp = $and28;
       
       
-      if (($tmp | 0) < 0) {
+      if ($tmp < 0) {
         __label__ = 10;
       } else {
         __label__ = 20;
@@ -36942,7 +36942,7 @@ function __ZL26EdgeLoop_Chroma_horizontalPhS_iiPii($SrcPtr, $Strength, $Alpha, $
       if (__label__ == 10) {
         
         
-        if (($Strng | 0) == 4) {
+        if ($Strng == 4) {
           __label__ = 11;
         } else {
           __label__ = 12;
@@ -37028,7 +37028,7 @@ function __ZL26EdgeLoop_Chroma_horizontalPhS_iiPii($SrcPtr, $Strength, $Alpha, $
           $R0 = $sub65;
           
           
-          if ($L0 >>> 0 > 255) {
+          if ($L0 > 255) {
             __label__ = 15;
           } else {
             __label__ = 16;
@@ -37044,7 +37044,7 @@ function __ZL26EdgeLoop_Chroma_horizontalPhS_iiPii($SrcPtr, $Strength, $Alpha, $
           }
           
           
-          if ($R0 >>> 0 > 255) {
+          if ($R0 > 255) {
             __label__ = 17;
           } else {
             __label__ = 18;
@@ -37116,7 +37116,7 @@ function __ZL27GetStrength_HorizontalEdgesPhP13tagMacroblock($Strength, $MbQ) {
   
   
   
-  if ((HEAP32[$MbQ_addr + 164 >> 2] | 0) == 0) {
+  if (HEAP32[$MbQ_addr + 164 >> 2] == 0) {
     __label__ = 2;
   } else {
     __label__ = 1;
@@ -37127,7 +37127,7 @@ function __ZL27GetStrength_HorizontalEdgesPhP13tagMacroblock($Strength, $MbQ) {
       
       
       
-      if ((HEAP32[$MbQ_addr + 164 >> 2] | 0) == 1) {
+      if (HEAP32[$MbQ_addr + 164 >> 2] == 1) {
         __label__ = 2;
         break $if_then$$lor_lhs_false$2;
       }
@@ -37155,13 +37155,13 @@ function __ZL27GetStrength_HorizontalEdgesPhP13tagMacroblock($Strength, $MbQ) {
       
       
       
-      var $conv = (tempInt = HEAP16[$ptr >> 1], tempInt >= 32768 ? tempInt - 65536 : tempInt);
       
       
       
-      var $conv13 = (tempInt = HEAP16[$ptr + 4 >> 1], tempInt >= 32768 ? tempInt - 65536 : tempInt);
       
-      if (($conv | 0) != ($conv13 | 0)) {
+      
+      
+      if (HEAP16[$ptr >> 1] != HEAP16[$ptr + 4 >> 1]) {
         __label__ = 4;
       } else {
         __label__ = 5;
@@ -37174,13 +37174,13 @@ function __ZL27GetStrength_HorizontalEdgesPhP13tagMacroblock($Strength, $MbQ) {
       
       
       
-      var $conv18 = (tempInt = HEAP16[$ptr + 2 >> 1], tempInt >= 32768 ? tempInt - 65536 : tempInt);
       
       
       
-      var $conv20 = (tempInt = HEAP16[$ptr + 6 >> 1], tempInt >= 32768 ? tempInt - 65536 : tempInt);
       
-      if (($conv18 | 0) != ($conv20 | 0)) {
+      
+      
+      if (HEAP16[$ptr + 2 >> 1] != HEAP16[$ptr + 6 >> 1]) {
         __label__ = 6;
       } else {
         __label__ = 7;
@@ -37214,7 +37214,7 @@ function __ZL27GetStrength_HorizontalEdgesPhP13tagMacroblock($Strength, $MbQ) {
       $idx = 0;
       while (1) {
         
-        var $cmp32 = ($idx | 0) < 4;
+        var $cmp32 = $idx < 4;
         if (!$cmp32) {
           __label__ = 87;
           break;
@@ -37226,7 +37226,7 @@ function __ZL27GetStrength_HorizontalEdgesPhP13tagMacroblock($Strength, $MbQ) {
         
         
         
-        if ((HEAPU8[$MbQ_addr + 380 + $idx >> 0] & 255 | 0) != 0) {
+        if (HEAPU8[$MbQ_addr + 380 + $idx >> 0] != 0) {
           __label__ = 10;
         } else {
           __label__ = 11;
@@ -37243,7 +37243,7 @@ function __ZL27GetStrength_HorizontalEdgesPhP13tagMacroblock($Strength, $MbQ) {
         
         
         
-        if ((HEAPU8[$MbQ_addr + 380 + (4 + $idx) >> 0] & 255 | 0) != 0) {
+        if (HEAPU8[$MbQ_addr + 380 + (4 + $idx) >> 0] != 0) {
           __label__ = 12;
         } else {
           __label__ = 13;
@@ -37263,7 +37263,7 @@ function __ZL27GetStrength_HorizontalEdgesPhP13tagMacroblock($Strength, $MbQ) {
         
         
         
-        if ((HEAPU8[$MbQ_addr + 380 + (8 + $idx) >> 0] & 255 | 0) != 0) {
+        if (HEAPU8[$MbQ_addr + 380 + (8 + $idx) >> 0] != 0) {
           __label__ = 14;
         } else {
           __label__ = 15;
@@ -37284,7 +37284,7 @@ function __ZL27GetStrength_HorizontalEdgesPhP13tagMacroblock($Strength, $MbQ) {
         
         
         
-        if ((HEAPU8[$MbQ_addr + 380 + (12 + $idx) >> 0] & 255 | 0) != 0) {
+        if (HEAPU8[$MbQ_addr + 380 + (12 + $idx) >> 0] != 0) {
           __label__ = 16;
         } else {
           __label__ = 17;
@@ -37298,7 +37298,7 @@ function __ZL27GetStrength_HorizontalEdgesPhP13tagMacroblock($Strength, $MbQ) {
         
         
         
-        if ((HEAPU8[$pStrength >> 0] & 255 | 0) == 0) {
+        if (HEAPU8[$pStrength >> 0] == 0) {
           __label__ = 18;
         } else {
           __label__ = 27;
@@ -37306,16 +37306,16 @@ function __ZL27GetStrength_HorizontalEdgesPhP13tagMacroblock($Strength, $MbQ) {
         if (__label__ == 18) {
           
           
-          var $conv65 = (tempInt = HEAP16[$pmvx >> 1], tempInt >= 32768 ? tempInt - 65536 : tempInt);
+          
           
           var $add_ptr66 = $pmvx + -16;
           
-          var $conv67 = (tempInt = HEAP16[$add_ptr66 >> 1], tempInt >= 32768 ? tempInt - 65536 : tempInt);
-          
-          $tmp = $conv65 - $conv67;
           
           
-          if (($tmp | 0) < 0) {
+          $tmp = HEAP16[$pmvx >> 1] - HEAP16[$add_ptr66 >> 1];
+          
+          
+          if ($tmp < 0) {
             __label__ = 19;
           } else {
             __label__ = 20;
@@ -37327,7 +37327,7 @@ function __ZL27GetStrength_HorizontalEdgesPhP13tagMacroblock($Strength, $MbQ) {
           }
           
           
-          if (($tmp | 0) >= 4) {
+          if ($tmp >= 4) {
             __label__ = 21;
           } else {
             __label__ = 22;
@@ -37338,16 +37338,16 @@ function __ZL27GetStrength_HorizontalEdgesPhP13tagMacroblock($Strength, $MbQ) {
           }
           
           
-          var $conv75 = (tempInt = HEAP16[$pmvy >> 1], tempInt >= 32768 ? tempInt - 65536 : tempInt);
+          
           
           var $add_ptr76 = $pmvy + -16;
           
-          var $conv77 = (tempInt = HEAP16[$add_ptr76 >> 1], tempInt >= 32768 ? tempInt - 65536 : tempInt);
-          
-          $tmp = $conv75 - $conv77;
           
           
-          if (($tmp | 0) < 0) {
+          $tmp = HEAP16[$pmvy >> 1] - HEAP16[$add_ptr76 >> 1];
+          
+          
+          if ($tmp < 0) {
             __label__ = 23;
           } else {
             __label__ = 24;
@@ -37359,7 +37359,7 @@ function __ZL27GetStrength_HorizontalEdgesPhP13tagMacroblock($Strength, $MbQ) {
           }
           
           
-          if (($tmp | 0) >= 4) {
+          if ($tmp >= 4) {
             __label__ = 25;
           } else {
             __label__ = 26;
@@ -37382,7 +37382,7 @@ function __ZL27GetStrength_HorizontalEdgesPhP13tagMacroblock($Strength, $MbQ) {
         
         
         
-        if ((HEAPU8[$pStr >> 0] & 255 | 0) == 0) {
+        if (HEAPU8[$pStr >> 0] == 0) {
           __label__ = 28;
         } else {
           __label__ = 37;
@@ -37390,16 +37390,16 @@ function __ZL27GetStrength_HorizontalEdgesPhP13tagMacroblock($Strength, $MbQ) {
         if (__label__ == 28) {
           
           
-          var $conv93 = (tempInt = HEAP16[$pmvx >> 1], tempInt >= 32768 ? tempInt - 65536 : tempInt);
+          
           
           var $add_ptr94 = $pmvx + -16;
           
-          var $conv95 = (tempInt = HEAP16[$add_ptr94 >> 1], tempInt >= 32768 ? tempInt - 65536 : tempInt);
-          
-          $tmp = $conv93 - $conv95;
           
           
-          if (($tmp | 0) < 0) {
+          $tmp = HEAP16[$pmvx >> 1] - HEAP16[$add_ptr94 >> 1];
+          
+          
+          if ($tmp < 0) {
             __label__ = 29;
           } else {
             __label__ = 30;
@@ -37411,7 +37411,7 @@ function __ZL27GetStrength_HorizontalEdgesPhP13tagMacroblock($Strength, $MbQ) {
           }
           
           
-          if (($tmp | 0) >= 4) {
+          if ($tmp >= 4) {
             __label__ = 31;
           } else {
             __label__ = 32;
@@ -37422,16 +37422,16 @@ function __ZL27GetStrength_HorizontalEdgesPhP13tagMacroblock($Strength, $MbQ) {
           }
           
           
-          var $conv104 = (tempInt = HEAP16[$pmvy >> 1], tempInt >= 32768 ? tempInt - 65536 : tempInt);
+          
           
           var $add_ptr105 = $pmvy + -16;
           
-          var $conv106 = (tempInt = HEAP16[$add_ptr105 >> 1], tempInt >= 32768 ? tempInt - 65536 : tempInt);
-          
-          $tmp = $conv104 - $conv106;
           
           
-          if (($tmp | 0) < 0) {
+          $tmp = HEAP16[$pmvy >> 1] - HEAP16[$add_ptr105 >> 1];
+          
+          
+          if ($tmp < 0) {
             __label__ = 33;
           } else {
             __label__ = 34;
@@ -37443,7 +37443,7 @@ function __ZL27GetStrength_HorizontalEdgesPhP13tagMacroblock($Strength, $MbQ) {
           }
           
           
-          if (($tmp | 0) >= 4) {
+          if ($tmp >= 4) {
             __label__ = 35;
           } else {
             __label__ = 36;
@@ -37466,7 +37466,7 @@ function __ZL27GetStrength_HorizontalEdgesPhP13tagMacroblock($Strength, $MbQ) {
         
         
         
-        if ((HEAPU8[$pStr >> 0] & 255 | 0) == 0) {
+        if (HEAPU8[$pStr >> 0] == 0) {
           __label__ = 38;
         } else {
           __label__ = 47;
@@ -37474,16 +37474,16 @@ function __ZL27GetStrength_HorizontalEdgesPhP13tagMacroblock($Strength, $MbQ) {
         if (__label__ == 38) {
           
           
-          var $conv122 = (tempInt = HEAP16[$pmvx >> 1], tempInt >= 32768 ? tempInt - 65536 : tempInt);
+          
           
           var $add_ptr123 = $pmvx + -16;
           
-          var $conv124 = (tempInt = HEAP16[$add_ptr123 >> 1], tempInt >= 32768 ? tempInt - 65536 : tempInt);
-          
-          $tmp = $conv122 - $conv124;
           
           
-          if (($tmp | 0) < 0) {
+          $tmp = HEAP16[$pmvx >> 1] - HEAP16[$add_ptr123 >> 1];
+          
+          
+          if ($tmp < 0) {
             __label__ = 39;
           } else {
             __label__ = 40;
@@ -37495,7 +37495,7 @@ function __ZL27GetStrength_HorizontalEdgesPhP13tagMacroblock($Strength, $MbQ) {
           }
           
           
-          if (($tmp | 0) >= 4) {
+          if ($tmp >= 4) {
             __label__ = 41;
           } else {
             __label__ = 42;
@@ -37506,16 +37506,16 @@ function __ZL27GetStrength_HorizontalEdgesPhP13tagMacroblock($Strength, $MbQ) {
           }
           
           
-          var $conv133 = (tempInt = HEAP16[$pmvy >> 1], tempInt >= 32768 ? tempInt - 65536 : tempInt);
+          
           
           var $add_ptr134 = $pmvy + -16;
           
-          var $conv135 = (tempInt = HEAP16[$add_ptr134 >> 1], tempInt >= 32768 ? tempInt - 65536 : tempInt);
-          
-          $tmp = $conv133 - $conv135;
           
           
-          if (($tmp | 0) < 0) {
+          $tmp = HEAP16[$pmvy >> 1] - HEAP16[$add_ptr134 >> 1];
+          
+          
+          if ($tmp < 0) {
             __label__ = 43;
           } else {
             __label__ = 44;
@@ -37527,7 +37527,7 @@ function __ZL27GetStrength_HorizontalEdgesPhP13tagMacroblock($Strength, $MbQ) {
           }
           
           
-          if (($tmp | 0) >= 4) {
+          if ($tmp >= 4) {
             __label__ = 45;
           } else {
             __label__ = 46;
@@ -37545,7 +37545,7 @@ function __ZL27GetStrength_HorizontalEdgesPhP13tagMacroblock($Strength, $MbQ) {
         
         
         
-        if ((HEAPU8[$MbQ_addr + 380 + ($idx + 1) >> 0] & 255 | 0) != 0) {
+        if (HEAPU8[$MbQ_addr + 380 + ($idx + 1) >> 0] != 0) {
           __label__ = 48;
         } else {
           __label__ = 49;
@@ -37564,7 +37564,7 @@ function __ZL27GetStrength_HorizontalEdgesPhP13tagMacroblock($Strength, $MbQ) {
         
         
         
-        if ((HEAPU8[$MbQ_addr + 380 + (4 + $idx + 1) >> 0] & 255 | 0) != 0) {
+        if (HEAPU8[$MbQ_addr + 380 + (4 + $idx + 1) >> 0] != 0) {
           __label__ = 50;
         } else {
           __label__ = 51;
@@ -37586,7 +37586,7 @@ function __ZL27GetStrength_HorizontalEdgesPhP13tagMacroblock($Strength, $MbQ) {
         
         
         
-        if ((HEAPU8[$MbQ_addr + 380 + (8 + $idx + 1) >> 0] & 255 | 0) != 0) {
+        if (HEAPU8[$MbQ_addr + 380 + (8 + $idx + 1) >> 0] != 0) {
           __label__ = 52;
         } else {
           __label__ = 53;
@@ -37608,7 +37608,7 @@ function __ZL27GetStrength_HorizontalEdgesPhP13tagMacroblock($Strength, $MbQ) {
         
         
         
-        if ((HEAPU8[$MbQ_addr + 380 + (12 + $idx + 1) >> 0] & 255 | 0) != 0) {
+        if (HEAPU8[$MbQ_addr + 380 + (12 + $idx + 1) >> 0] != 0) {
           __label__ = 54;
         } else {
           __label__ = 55;
@@ -37631,7 +37631,7 @@ function __ZL27GetStrength_HorizontalEdgesPhP13tagMacroblock($Strength, $MbQ) {
         
         
         
-        if ((HEAPU8[$pStr >> 0] & 255 | 0) == 0) {
+        if (HEAPU8[$pStr >> 0] == 0) {
           __label__ = 56;
         } else {
           __label__ = 65;
@@ -37639,16 +37639,16 @@ function __ZL27GetStrength_HorizontalEdgesPhP13tagMacroblock($Strength, $MbQ) {
         if (__label__ == 56) {
           
           
-          var $conv188 = (tempInt = HEAP16[$pmvx >> 1], tempInt >= 32768 ? tempInt - 65536 : tempInt);
+          
           
           var $add_ptr189 = $pmvx + -16;
           
-          var $conv190 = (tempInt = HEAP16[$add_ptr189 >> 1], tempInt >= 32768 ? tempInt - 65536 : tempInt);
-          
-          $tmp = $conv188 - $conv190;
           
           
-          if (($tmp | 0) < 0) {
+          $tmp = HEAP16[$pmvx >> 1] - HEAP16[$add_ptr189 >> 1];
+          
+          
+          if ($tmp < 0) {
             __label__ = 57;
           } else {
             __label__ = 58;
@@ -37660,7 +37660,7 @@ function __ZL27GetStrength_HorizontalEdgesPhP13tagMacroblock($Strength, $MbQ) {
           }
           
           
-          if (($tmp | 0) >= 4) {
+          if ($tmp >= 4) {
             __label__ = 59;
           } else {
             __label__ = 60;
@@ -37671,16 +37671,16 @@ function __ZL27GetStrength_HorizontalEdgesPhP13tagMacroblock($Strength, $MbQ) {
           }
           
           
-          var $conv199 = (tempInt = HEAP16[$pmvy >> 1], tempInt >= 32768 ? tempInt - 65536 : tempInt);
+          
           
           var $add_ptr200 = $pmvy + -16;
           
-          var $conv201 = (tempInt = HEAP16[$add_ptr200 >> 1], tempInt >= 32768 ? tempInt - 65536 : tempInt);
-          
-          $tmp = $conv199 - $conv201;
           
           
-          if (($tmp | 0) < 0) {
+          $tmp = HEAP16[$pmvy >> 1] - HEAP16[$add_ptr200 >> 1];
+          
+          
+          if ($tmp < 0) {
             __label__ = 61;
           } else {
             __label__ = 62;
@@ -37692,7 +37692,7 @@ function __ZL27GetStrength_HorizontalEdgesPhP13tagMacroblock($Strength, $MbQ) {
           }
           
           
-          if (($tmp | 0) >= 4) {
+          if ($tmp >= 4) {
             __label__ = 63;
           } else {
             __label__ = 64;
@@ -37715,7 +37715,7 @@ function __ZL27GetStrength_HorizontalEdgesPhP13tagMacroblock($Strength, $MbQ) {
         
         
         
-        if ((HEAPU8[$pStr >> 0] & 255 | 0) == 0) {
+        if (HEAPU8[$pStr >> 0] == 0) {
           __label__ = 66;
         } else {
           __label__ = 75;
@@ -37723,16 +37723,16 @@ function __ZL27GetStrength_HorizontalEdgesPhP13tagMacroblock($Strength, $MbQ) {
         if (__label__ == 66) {
           
           
-          var $conv217 = (tempInt = HEAP16[$pmvx >> 1], tempInt >= 32768 ? tempInt - 65536 : tempInt);
+          
           
           var $add_ptr218 = $pmvx + -16;
           
-          var $conv219 = (tempInt = HEAP16[$add_ptr218 >> 1], tempInt >= 32768 ? tempInt - 65536 : tempInt);
-          
-          $tmp = $conv217 - $conv219;
           
           
-          if (($tmp | 0) < 0) {
+          $tmp = HEAP16[$pmvx >> 1] - HEAP16[$add_ptr218 >> 1];
+          
+          
+          if ($tmp < 0) {
             __label__ = 67;
           } else {
             __label__ = 68;
@@ -37744,7 +37744,7 @@ function __ZL27GetStrength_HorizontalEdgesPhP13tagMacroblock($Strength, $MbQ) {
           }
           
           
-          if (($tmp | 0) >= 4) {
+          if ($tmp >= 4) {
             __label__ = 69;
           } else {
             __label__ = 70;
@@ -37755,16 +37755,16 @@ function __ZL27GetStrength_HorizontalEdgesPhP13tagMacroblock($Strength, $MbQ) {
           }
           
           
-          var $conv228 = (tempInt = HEAP16[$pmvy >> 1], tempInt >= 32768 ? tempInt - 65536 : tempInt);
+          
           
           var $add_ptr229 = $pmvy + -16;
           
-          var $conv230 = (tempInt = HEAP16[$add_ptr229 >> 1], tempInt >= 32768 ? tempInt - 65536 : tempInt);
-          
-          $tmp = $conv228 - $conv230;
           
           
-          if (($tmp | 0) < 0) {
+          $tmp = HEAP16[$pmvy >> 1] - HEAP16[$add_ptr229 >> 1];
+          
+          
+          if ($tmp < 0) {
             __label__ = 71;
           } else {
             __label__ = 72;
@@ -37776,7 +37776,7 @@ function __ZL27GetStrength_HorizontalEdgesPhP13tagMacroblock($Strength, $MbQ) {
           }
           
           
-          if (($tmp | 0) >= 4) {
+          if ($tmp >= 4) {
             __label__ = 73;
           } else {
             __label__ = 74;
@@ -37799,7 +37799,7 @@ function __ZL27GetStrength_HorizontalEdgesPhP13tagMacroblock($Strength, $MbQ) {
         
         
         
-        if ((HEAPU8[$pStr >> 0] & 255 | 0) == 0) {
+        if (HEAPU8[$pStr >> 0] == 0) {
           __label__ = 76;
         } else {
           __label__ = 85;
@@ -37807,16 +37807,16 @@ function __ZL27GetStrength_HorizontalEdgesPhP13tagMacroblock($Strength, $MbQ) {
         if (__label__ == 76) {
           
           
-          var $conv246 = (tempInt = HEAP16[$pmvx >> 1], tempInt >= 32768 ? tempInt - 65536 : tempInt);
+          
           
           var $add_ptr247 = $pmvx + -16;
           
-          var $conv248 = (tempInt = HEAP16[$add_ptr247 >> 1], tempInt >= 32768 ? tempInt - 65536 : tempInt);
-          
-          $tmp = $conv246 - $conv248;
           
           
-          if (($tmp | 0) < 0) {
+          $tmp = HEAP16[$pmvx >> 1] - HEAP16[$add_ptr247 >> 1];
+          
+          
+          if ($tmp < 0) {
             __label__ = 77;
           } else {
             __label__ = 78;
@@ -37828,7 +37828,7 @@ function __ZL27GetStrength_HorizontalEdgesPhP13tagMacroblock($Strength, $MbQ) {
           }
           
           
-          if (($tmp | 0) >= 4) {
+          if ($tmp >= 4) {
             __label__ = 79;
           } else {
             __label__ = 80;
@@ -37839,16 +37839,16 @@ function __ZL27GetStrength_HorizontalEdgesPhP13tagMacroblock($Strength, $MbQ) {
           }
           
           
-          var $conv257 = (tempInt = HEAP16[$pmvy >> 1], tempInt >= 32768 ? tempInt - 65536 : tempInt);
+          
           
           var $add_ptr258 = $pmvy + -16;
           
-          var $conv259 = (tempInt = HEAP16[$add_ptr258 >> 1], tempInt >= 32768 ? tempInt - 65536 : tempInt);
-          
-          $tmp = $conv257 - $conv259;
           
           
-          if (($tmp | 0) < 0) {
+          $tmp = HEAP16[$pmvy >> 1] - HEAP16[$add_ptr258 >> 1];
+          
+          
+          if ($tmp < 0) {
             __label__ = 81;
           } else {
             __label__ = 82;
@@ -37860,7 +37860,7 @@ function __ZL27GetStrength_HorizontalEdgesPhP13tagMacroblock($Strength, $MbQ) {
           }
           
           
-          if (($tmp | 0) >= 4) {
+          if ($tmp >= 4) {
             __label__ = 83;
           } else {
             __label__ = 84;
@@ -37940,7 +37940,7 @@ function __Z7FMOInitP12tagCommonObj($video) {
   
   
   
-  if ((HEAP32[$currPPS + 16 >> 2] | 0) == 0) {
+  if (HEAP32[$currPPS + 16 >> 2] == 0) {
     __label__ = 1;
   } else {
     __label__ = 2;
@@ -38094,7 +38094,7 @@ function __Z26FmoGenerateType0MapUnitMapPiPjjj($mapUnitToSliceGroupMap, $run_len
       
       
       
-      if ($iGroup >>> 0 <= $num_slice_groups_minus1_addr >>> 0) {
+      if ($iGroup <= $num_slice_groups_minus1_addr) {
         __lastLabel__ = 2;
         __label__ = 3;
       } else {
@@ -38104,7 +38104,7 @@ function __Z26FmoGenerateType0MapUnitMapPiPjjj($mapUnitToSliceGroupMap, $run_len
       if (__label__ == 3) {
         
         
-        var $cmp1 = $i >>> 0 < $PicSizeInMapUnits_addr >>> 0;
+        var $cmp1 = $i < $PicSizeInMapUnits_addr;
         __lastLabel__ = 3;
       }
       var $4 = __lastLabel__ == 2 ? 0 : $cmp1;
@@ -38120,7 +38120,7 @@ function __Z26FmoGenerateType0MapUnitMapPiPjjj($mapUnitToSliceGroupMap, $run_len
         
         
         
-        if ($j >>> 0 <= HEAPU32[$run_length_minus1_addr + 4 * $iGroup >> 2] >>> 0) {
+        if ($j <= HEAPU32[$run_length_minus1_addr + 4 * $iGroup >> 2]) {
           __lastLabel__ = 6;
           __label__ = 7;
         } else {
@@ -38132,7 +38132,7 @@ function __Z26FmoGenerateType0MapUnitMapPiPjjj($mapUnitToSliceGroupMap, $run_len
           
           
           
-          var $cmp5 = $i + $j >>> 0 < $PicSizeInMapUnits_addr >>> 0;
+          var $cmp5 = $i + $j < $PicSizeInMapUnits_addr;
           __lastLabel__ = 7;
         }
         var $12 = __lastLabel__ == 6 ? 0 : $cmp5;
@@ -38169,7 +38169,7 @@ function __Z26FmoGenerateType0MapUnitMapPiPjjj($mapUnitToSliceGroupMap, $run_len
     
     
     
-    if ($i >>> 0 < $PicSizeInMapUnits_addr >>> 0) {
+    if ($i < $PicSizeInMapUnits_addr) {
       __label__ = 1;
       continue $do_body$2;
     } else {
@@ -38198,21 +38198,21 @@ function __Z26FmoGenerateType1MapUnitMapPiijj($mapUnitToSliceGroupMap, $PicWidth
   while (1) {
     
     
-    var $cmp = $i >>> 0 < $PicSizeInMapUnits_addr >>> 0;
+    var $cmp = $i < $PicSizeInMapUnits_addr;
     if (!$cmp) {
       __label__ = 4;
       break;
     }
     
     
-    var $rem = ($i >>> 0) % ($PicWidthInMbs_addr >>> 0);
+    var $rem = $i % $PicWidthInMbs_addr;
     
     
-    var $div = Math.floor(($i >>> 0) / ($PicWidthInMbs_addr >>> 0));
+    var $div = Math.floor($i / $PicWidthInMbs_addr);
     
     
     var $mul = $div * ($num_slice_groups_minus1_addr + 1);
-    var $div1 = Math.floor(($mul >>> 0) / 2);
+    var $div1 = Math.floor($mul / 2);
     
     
     
@@ -38220,7 +38220,7 @@ function __Z26FmoGenerateType1MapUnitMapPiijj($mapUnitToSliceGroupMap, $PicWidth
     
     
     
-    HEAP32[$mapUnitToSliceGroupMap_addr + 4 * $i >> 2] = ($rem + $div1 >>> 0) % ($num_slice_groups_minus1_addr + 1 >>> 0);
+    HEAP32[$mapUnitToSliceGroupMap_addr + 4 * $i >> 2] = ($rem + $div1) % ($num_slice_groups_minus1_addr + 1);
     
     var $inc = $i + 1;
     $i = $inc;
@@ -38257,7 +38257,7 @@ function __Z26FmoGenerateType2MapUnitMapP14tagPicParamSetPiijj($pps, $mapUnitToS
   $for_cond$2 : while (1) {
     
     
-    var $cmp = $i >>> 0 < $PicSizeInMapUnits_addr >>> 0;
+    var $cmp = $i < $PicSizeInMapUnits_addr;
     if (!$cmp) {
       __label__ = 4;
       break $for_cond$2;
@@ -38278,7 +38278,7 @@ function __Z26FmoGenerateType2MapUnitMapP14tagPicParamSetPiijj($pps, $mapUnitToS
   $iGroup = $num_slice_groups_minus1_addr - 1;
   $for_cond1$7 : while (1) {
     
-    var $cmp2 = ($iGroup | 0) >= 0;
+    var $cmp2 = $iGroup >= 0;
     if (!$cmp2) {
       __label__ = 16;
       break $for_cond1$7;
@@ -38289,7 +38289,7 @@ function __Z26FmoGenerateType2MapUnitMapP14tagPicParamSetPiijj($pps, $mapUnitToS
     
     var $10 = HEAPU32[$pps_addr + 56 + $iGroup * 4 >> 2];
     
-    var $div = Math.floor(($10 >>> 0) / ($PicWidthInMbs_addr >>> 0));
+    var $div = Math.floor($10 / $PicWidthInMbs_addr);
     $yTopLeft = $div;
     
     
@@ -38298,14 +38298,14 @@ function __Z26FmoGenerateType2MapUnitMapP14tagPicParamSetPiijj($pps, $mapUnitToS
     
     
     
-    $xTopLeft = (HEAPU32[$pps_addr + 56 + $iGroup * 4 >> 2] >>> 0) % ($PicWidthInMbs_addr >>> 0);
+    $xTopLeft = HEAPU32[$pps_addr + 56 + $iGroup * 4 >> 2] % $PicWidthInMbs_addr;
     
     
     
     
     var $18 = HEAPU32[$pps_addr + 84 + $iGroup * 4 >> 2];
     
-    var $div8 = Math.floor(($18 >>> 0) / ($PicWidthInMbs_addr >>> 0));
+    var $div8 = Math.floor($18 / $PicWidthInMbs_addr);
     $yBottomRight = $div8;
     
     
@@ -38314,13 +38314,13 @@ function __Z26FmoGenerateType2MapUnitMapP14tagPicParamSetPiijj($pps, $mapUnitToS
     
     
     
-    $xBottomRight = (HEAPU32[$pps_addr + 84 + $iGroup * 4 >> 2] >>> 0) % ($PicWidthInMbs_addr >>> 0);
+    $xBottomRight = HEAPU32[$pps_addr + 84 + $iGroup * 4 >> 2] % $PicWidthInMbs_addr;
     
     $y = $yTopLeft;
     $for_cond12$10 : while (1) {
       
       
-      var $cmp13 = $y >>> 0 <= $yBottomRight >>> 0;
+      var $cmp13 = $y <= $yBottomRight;
       if (!$cmp13) {
         __label__ = 14;
         break $for_cond12$10;
@@ -38330,7 +38330,7 @@ function __Z26FmoGenerateType2MapUnitMapP14tagPicParamSetPiijj($pps, $mapUnitToS
       while (1) {
         
         
-        var $cmp16 = $x >>> 0 <= $xBottomRight >>> 0;
+        var $cmp16 = $x <= $xBottomRight;
         if (!$cmp16) {
           __label__ = 12;
           break;
@@ -38404,7 +38404,7 @@ function __Z26FmoGenerateType3MapUnitMapP12tagCommonObjP14tagPicParamSetPii($vid
   $for_cond$2 : while (1) {
     
     
-    var $cmp = $i >>> 0 < $PicSizeInMapUnits >>> 0;
+    var $cmp = $i < $PicSizeInMapUnits;
     if (!$cmp) {
       __label__ = 4;
       break $for_cond$2;
@@ -38424,7 +38424,7 @@ function __Z26FmoGenerateType3MapUnitMapP12tagCommonObjP14tagPicParamSetPii($vid
   
   
   var $sub = $PicWidthInMbs_addr - HEAP32[$pps_addr + 112 >> 2];
-  var $div = Math.floor(($sub >>> 0) / 2);
+  var $div = Math.floor($sub / 2);
   $x = $div;
   
   
@@ -38433,7 +38433,7 @@ function __Z26FmoGenerateType3MapUnitMapP12tagCommonObjP14tagPicParamSetPii($vid
   
   
   var $sub4 = HEAP32[$video_addr + 1260 >> 2] - HEAP32[$pps_addr + 112 >> 2];
-  var $div5 = Math.floor(($sub4 >>> 0) / 2);
+  var $div5 = Math.floor($sub4 / 2);
   $y = $div5;
   
   $leftBound = $x;
@@ -38456,7 +38456,7 @@ function __Z26FmoGenerateType3MapUnitMapP12tagCommonObjP14tagPicParamSetPii($vid
   $for_cond9$7 : while (1) {
     
     
-    var $cmp10 = $k >>> 0 < $MapUnitsInSliceGroup0 >>> 0;
+    var $cmp10 = $k < $MapUnitsInSliceGroup0;
     if (!$cmp10) {
       __label__ = 38;
       break $for_cond9$7;
@@ -38471,10 +38471,10 @@ function __Z26FmoGenerateType3MapUnitMapP12tagCommonObjP14tagPicParamSetPii($vid
     
     
     
-    $mapUnitVacant = (HEAP32[$mapUnitToSliceGroupMap_addr + 4 * ($y * $PicWidthInMbs_addr + $x) >> 2] | 0) == 1 & 1;
+    $mapUnitVacant = HEAP32[$mapUnitToSliceGroupMap_addr + 4 * ($y * $PicWidthInMbs_addr + $x) >> 2] == 1;
     
     
-    if (($mapUnitVacant | 0) != 0) {
+    if ($mapUnitVacant != 0) {
       __label__ = 7;
     } else {
       __label__ = 8;
@@ -38490,7 +38490,7 @@ function __Z26FmoGenerateType3MapUnitMapP12tagCommonObjP14tagPicParamSetPii($vid
       HEAP32[$mapUnitToSliceGroupMap_addr + 4 * ($y * $PicWidthInMbs_addr + $x) >> 2] = 0;
     }
     
-    var $cmp17 = ($xDir | 0) == -1;
+    var $cmp17 = $xDir == -1;
     if ($cmp17) {
       __label__ = 9;
     } else {
@@ -38500,7 +38500,7 @@ function __Z26FmoGenerateType3MapUnitMapP12tagCommonObjP14tagPicParamSetPii($vid
       if (__label__ == 9) {
         
         
-        var $cmp18 = ($x | 0) == ($leftBound | 0);
+        var $cmp18 = $x == $leftBound;
         if (!$cmp18) {
           __label__ = 14;
           break $land_lhs_true$$if_else$13;
@@ -38508,7 +38508,7 @@ function __Z26FmoGenerateType3MapUnitMapP12tagCommonObjP14tagPicParamSetPii($vid
         
         
         
-        if (($leftBound - 1 | 0) > 0) {
+        if ($leftBound - 1 > 0) {
           __label__ = 11;
         } else {
           __label__ = 12;
@@ -38538,7 +38538,7 @@ function __Z26FmoGenerateType3MapUnitMapP12tagCommonObjP14tagPicParamSetPii($vid
     if (__label__ == 14) {
       
       
-      if (($xDir | 0) == 1) {
+      if ($xDir == 1) {
         __label__ = 15;
       } else {
         __label__ = 20;
@@ -38547,7 +38547,7 @@ function __Z26FmoGenerateType3MapUnitMapP12tagCommonObjP14tagPicParamSetPii($vid
         if (__label__ == 15) {
           
           
-          var $cmp28 = ($x | 0) == ($rightBound | 0);
+          var $cmp28 = $x == $rightBound;
           if (!$cmp28) {
             __label__ = 20;
             break $land_lhs_true27$$if_else42$22;
@@ -38557,7 +38557,7 @@ function __Z26FmoGenerateType3MapUnitMapP12tagCommonObjP14tagPicParamSetPii($vid
           
           
           
-          if (($rightBound + 1 | 0) < ($PicWidthInMbs_addr - 1 | 0)) {
+          if ($rightBound + 1 < $PicWidthInMbs_addr - 1) {
             __label__ = 17;
           } else {
             __label__ = 18;
@@ -38588,7 +38588,7 @@ function __Z26FmoGenerateType3MapUnitMapP12tagCommonObjP14tagPicParamSetPii($vid
       } while (0);
       if (__label__ == 20) {
         
-        var $cmp43 = ($yDir | 0) == -1;
+        var $cmp43 = $yDir == -1;
         if ($cmp43) {
           __label__ = 21;
         } else {
@@ -38598,7 +38598,7 @@ function __Z26FmoGenerateType3MapUnitMapP12tagCommonObjP14tagPicParamSetPii($vid
           if (__label__ == 21) {
             
             
-            var $cmp45 = ($y | 0) == ($topBound | 0);
+            var $cmp45 = $y == $topBound;
             if (!$cmp45) {
               __label__ = 26;
               break $land_lhs_true44$$if_else57$31;
@@ -38606,7 +38606,7 @@ function __Z26FmoGenerateType3MapUnitMapP12tagCommonObjP14tagPicParamSetPii($vid
             
             
             
-            if (($topBound - 1 | 0) > 0) {
+            if ($topBound - 1 > 0) {
               __label__ = 23;
             } else {
               __label__ = 24;
@@ -38636,7 +38636,7 @@ function __Z26FmoGenerateType3MapUnitMapP12tagCommonObjP14tagPicParamSetPii($vid
         if (__label__ == 26) {
           
           
-          if (($yDir | 0) == 1) {
+          if ($yDir == 1) {
             __label__ = 27;
           } else {
             __label__ = 32;
@@ -38645,7 +38645,7 @@ function __Z26FmoGenerateType3MapUnitMapP12tagCommonObjP14tagPicParamSetPii($vid
             if (__label__ == 27) {
               
               
-              var $cmp60 = ($y | 0) == ($bottomBound | 0);
+              var $cmp60 = $y == $bottomBound;
               if (!$cmp60) {
                 __label__ = 32;
                 break $land_lhs_true59$$if_else76$40;
@@ -38657,7 +38657,7 @@ function __Z26FmoGenerateType3MapUnitMapP12tagCommonObjP14tagPicParamSetPii($vid
               
               
               
-              if (($bottomBound + 1 | 0) < (HEAP32[$video_addr + 1260 >> 2] - 1 | 0)) {
+              if ($bottomBound + 1 < HEAP32[$video_addr + 1260 >> 2] - 1) {
                 __label__ = 29;
               } else {
                 __label__ = 30;
@@ -38729,7 +38729,7 @@ function __Z26FmoGenerateType4MapUnitMapPiiij($mapUnitToSliceGroupMap, $MapUnits
   $PicSizeInMapUnits_addr = $PicSizeInMapUnits;
   
   
-  if (($slice_group_change_direction_flag_addr | 0) != 0) {
+  if ($slice_group_change_direction_flag_addr != 0) {
     __label__ = 1;
   } else {
     __label__ = 2;
@@ -38749,7 +38749,7 @@ function __Z26FmoGenerateType4MapUnitMapPiiij($mapUnitToSliceGroupMap, $MapUnits
   while (1) {
     
     
-    var $cmp = $i >>> 0 < $PicSizeInMapUnits_addr >>> 0;
+    var $cmp = $i < $PicSizeInMapUnits_addr;
     if (!$cmp) {
       __label__ = 10;
       break;
@@ -38757,7 +38757,7 @@ function __Z26FmoGenerateType4MapUnitMapPiiij($mapUnitToSliceGroupMap, $MapUnits
     
     
     
-    if ($i >>> 0 < $sizeOfUpperLeftGroup >>> 0) {
+    if ($i < $sizeOfUpperLeftGroup) {
       __label__ = 6;
     } else {
       __label__ = 7;
@@ -38820,7 +38820,7 @@ function __Z26FmoGenerateType5MapUnitMapPiP12tagCommonObjij($mapUnitToSliceGroup
   $MapUnitsInSliceGroup0 = HEAP32[$video_addr + 1340 >> 2];
   
   
-  if (($slice_group_change_direction_flag_addr | 0) != 0) {
+  if ($slice_group_change_direction_flag_addr != 0) {
     __label__ = 1;
   } else {
     __label__ = 2;
@@ -38841,7 +38841,7 @@ function __Z26FmoGenerateType5MapUnitMapPiP12tagCommonObjij($mapUnitToSliceGroup
   $for_cond$6 : while (1) {
     
     
-    var $cmp = ($j | 0) < ($PicWidthInMbs | 0);
+    var $cmp = $j < $PicWidthInMbs;
     if (!$cmp) {
       __label__ = 14;
       break $for_cond$6;
@@ -38850,7 +38850,7 @@ function __Z26FmoGenerateType5MapUnitMapPiP12tagCommonObjij($mapUnitToSliceGroup
     while (1) {
       
       
-      var $cmp5 = ($i | 0) < ($PicHeightInMapUnits | 0);
+      var $cmp5 = $i < $PicHeightInMapUnits;
       if (!$cmp5) {
         __label__ = 12;
         break;
@@ -38860,7 +38860,7 @@ function __Z26FmoGenerateType5MapUnitMapPiP12tagCommonObjij($mapUnitToSliceGroup
       $k = $inc;
       
       
-      if (($14 | 0) < ($sizeOfUpperLeftGroup | 0)) {
+      if ($14 < $sizeOfUpperLeftGroup) {
         __label__ = 8;
       } else {
         __label__ = 9;
@@ -38918,7 +38918,7 @@ function __Z26FmoGenerateType6MapUnitMapPiS_j($mapUnitToSliceGroupMap, $slice_gr
   while (1) {
     
     
-    var $cmp = $i >>> 0 < $PicSizeInMapUnits_addr >>> 0;
+    var $cmp = $i < $PicSizeInMapUnits_addr;
     if (!$cmp) {
       __label__ = 4;
       break;
@@ -38969,7 +38969,7 @@ function __Z11RefListInitP12tagCommonObj($video) {
   $list0idx = 0;
   
   
-  if (($slice_type | 0) == 2) {
+  if ($slice_type == 2) {
     __label__ = 1;
   } else {
     __label__ = 12;
@@ -38987,7 +38987,7 @@ function __Z11RefListInitP12tagCommonObj($video) {
       
       
       
-      var $cmp3 = ($i | 0) < (HEAP32[$dpb + 80 >> 2] | 0);
+      var $cmp3 = $i < HEAP32[$dpb + 80 >> 2];
       if (!$cmp3) {
         __label__ = 11;
         break $for_cond$4;
@@ -39000,7 +39000,7 @@ function __Z11RefListInitP12tagCommonObj($video) {
       
       
       
-      if ((HEAP32[HEAP32[$dpb + 12 + $i * 4 >> 2] + 4 >> 2] | 0) == 3) {
+      if (HEAP32[HEAP32[$dpb + 12 + $i * 4 >> 2] + 4 >> 2] == 3) {
         __label__ = 4;
       } else {
         __label__ = 9;
@@ -39015,7 +39015,7 @@ function __Z11RefListInitP12tagCommonObj($video) {
           
           
           
-          if ((HEAP32[HEAP32[$dpb + 12 + $i * 4 >> 2] + 8 >> 2] | 0) != 0) {
+          if (HEAP32[HEAP32[$dpb + 12 + $i * 4 >> 2] + 8 >> 2] != 0) {
             __label__ = 9;
             break $land_lhs_true$$if_end28$7;
           }
@@ -39030,7 +39030,7 @@ function __Z11RefListInitP12tagCommonObj($video) {
           
           
           
-          if ((HEAP32[HEAP32[$dpb + 12 + $i * 4 >> 2] + 72 >> 2] | 0) > (HEAP32[$sliceHdr + 12 >> 2] | 0)) {
+          if (HEAP32[HEAP32[$dpb + 12 + $i * 4 >> 2] + 72 >> 2] > HEAP32[$sliceHdr + 12 >> 2]) {
             __label__ = 6;
           } else {
             __label__ = 7;
@@ -39096,7 +39096,7 @@ function __Z11RefListInitP12tagCommonObj($video) {
   } else if (__label__ == 12) {
     
     
-    if (($slice_type | 0) == 0) {
+    if ($slice_type == 0) {
       __label__ = 13;
     } else {
       __label__ = 32;
@@ -39108,7 +39108,7 @@ function __Z11RefListInitP12tagCommonObj($video) {
         
         
         
-        var $cmp34 = ($i | 0) < (HEAP32[$dpb + 80 >> 2] | 0);
+        var $cmp34 = $i < HEAP32[$dpb + 80 >> 2];
         if (!$cmp34) {
           __label__ = 23;
           break $for_cond32$20;
@@ -39121,7 +39121,7 @@ function __Z11RefListInitP12tagCommonObj($video) {
         
         
         
-        if ((HEAP32[HEAP32[$dpb + 12 + $i * 4 >> 2] + 4 >> 2] | 0) == 3) {
+        if (HEAP32[HEAP32[$dpb + 12 + $i * 4 >> 2] + 4 >> 2] == 3) {
           __label__ = 16;
         } else {
           __label__ = 21;
@@ -39136,7 +39136,7 @@ function __Z11RefListInitP12tagCommonObj($video) {
             
             
             
-            if ((HEAP32[HEAP32[$dpb + 12 + $i * 4 >> 2] + 8 >> 2] | 0) != 0) {
+            if (HEAP32[HEAP32[$dpb + 12 + $i * 4 >> 2] + 8 >> 2] != 0) {
               __label__ = 21;
               break $land_lhs_true40$$if_end80$23;
             }
@@ -39151,7 +39151,7 @@ function __Z11RefListInitP12tagCommonObj($video) {
             
             
             
-            if ((HEAP32[HEAP32[$dpb + 12 + $i * 4 >> 2] + 72 >> 2] | 0) > (HEAP32[$sliceHdr + 12 >> 2] | 0)) {
+            if (HEAP32[HEAP32[$dpb + 12 + $i * 4 >> 2] + 72 >> 2] > HEAP32[$sliceHdr + 12 >> 2]) {
               __label__ = 18;
             } else {
               __label__ = 19;
@@ -39229,7 +39229,7 @@ function __Z11RefListInitP12tagCommonObj($video) {
       }
       
       
-      if (($list0idx | 0) == 0) {
+      if ($list0idx == 0) {
         __label__ = 24;
       } else {
         __label__ = 25;
@@ -39267,7 +39267,7 @@ function __Z11RefListInitP12tagCommonObj($video) {
         
         
         
-        var $cmp99 = ($i | 0) < (HEAP32[$dpb + 80 >> 2] | 0);
+        var $cmp99 = $i < HEAP32[$dpb + 80 >> 2];
         if (!$cmp99) {
           __label__ = 31;
           break;
@@ -39280,7 +39280,7 @@ function __Z11RefListInitP12tagCommonObj($video) {
         
         
         
-        if ((HEAP32[HEAP32[$dpb + 12 + $i * 4 >> 2] + 8 >> 2] | 0) == 3) {
+        if (HEAP32[HEAP32[$dpb + 12 + $i * 4 >> 2] + 8 >> 2] == 3) {
           __label__ = 28;
         } else {
           __label__ = 29;
@@ -39348,7 +39348,7 @@ function __Z11RefListInitP12tagCommonObj($video) {
     
     
     
-    if ((HEAP32[$video_addr + 2064 >> 2] | 0) == (HEAP32[$video_addr + 2068 >> 2] | 0)) {
+    if (HEAP32[$video_addr + 2064 >> 2] == HEAP32[$video_addr + 2068 >> 2]) {
       __label__ = 33;
     } else {
       __label__ = 43;
@@ -39358,7 +39358,7 @@ function __Z11RefListInitP12tagCommonObj($video) {
         
         
         
-        var $cmp134 = (HEAP32[$video_addr + 2064 >> 2] | 0) > 1;
+        var $cmp134 = HEAP32[$video_addr + 2064 >> 2] > 1;
         if (!$cmp134) {
           __label__ = 43;
           break $land_lhs_true132$$if_end161$45;
@@ -39369,7 +39369,7 @@ function __Z11RefListInitP12tagCommonObj($video) {
           
           
           
-          var $cmp138 = ($i | 0) < (HEAP32[$video_addr + 2064 >> 2] | 0);
+          var $cmp138 = $i < HEAP32[$video_addr + 2064 >> 2];
           if (!$cmp138) {
             __label__ = 40;
             break;
@@ -39385,7 +39385,7 @@ function __Z11RefListInitP12tagCommonObj($video) {
           
           
           
-          if ((HEAP32[$video_addr + 1416 + $i * 4 >> 2] | 0) != (HEAP32[$video_addr + 1548 + $i * 4 >> 2] | 0)) {
+          if (HEAP32[$video_addr + 1416 + $i * 4 >> 2] != HEAP32[$video_addr + 1548 + $i * 4 >> 2]) {
             __label__ = 37;
             break;
           }
@@ -39403,7 +39403,7 @@ function __Z11RefListInitP12tagCommonObj($video) {
         
         
         
-        if (($i | 0) == (HEAP32[$video_addr + 2064 >> 2] | 0)) {
+        if ($i == HEAP32[$video_addr + 2064 >> 2]) {
           __label__ = 41;
         } else {
           __label__ = 42;
@@ -39440,7 +39440,7 @@ function __Z11RefListInitP12tagCommonObj($video) {
     
     
     
-    if ((HEAP32[$video_addr + 2064 >> 2] | 0) < (HEAP32[HEAP32[$video_addr + 880 >> 2] + 56 >> 2] + 1 | 0)) {
+    if (HEAP32[$video_addr + 2064 >> 2] < HEAP32[HEAP32[$video_addr + 880 >> 2] + 56 >> 2] + 1) {
       __label__ = 44;
     } else {
       __label__ = 45;
@@ -39473,7 +39473,7 @@ function __Z11RefListInitP12tagCommonObj($video) {
     
     
     
-    if ((HEAP32[$video_addr + 2068 >> 2] | 0) < (HEAP32[HEAP32[$video_addr + 880 >> 2] + 60 >> 2] + 1 | 0)) {
+    if (HEAP32[$video_addr + 2068 >> 2] < HEAP32[HEAP32[$video_addr + 880 >> 2] + 60 >> 2] + 1) {
       __label__ = 47;
     } else {
       __label__ = 48;
@@ -39517,7 +39517,7 @@ function __Z15SortPicByPicNumPP14tagPictureDatai($data, $num) {
     
     
     
-    var $cmp = ($i | 0) < ($num_addr - 1 | 0);
+    var $cmp = $i < $num_addr - 1;
     if (!$cmp) {
       __label__ = 10;
       break $for_cond$2;
@@ -39528,7 +39528,7 @@ function __Z15SortPicByPicNumPP14tagPictureDatai($data, $num) {
     while (1) {
       
       
-      var $cmp2 = ($j | 0) < ($num_addr | 0);
+      var $cmp2 = $j < $num_addr;
       if (!$cmp2) {
         __label__ = 8;
         break;
@@ -39546,7 +39546,7 @@ function __Z15SortPicByPicNumPP14tagPictureDatai($data, $num) {
       
       
       
-      if ((HEAP32[HEAP32[$data_addr + 4 * $j >> 2] + 32 >> 2] | 0) > (HEAP32[HEAP32[$data_addr + 4 * $i >> 2] + 32 >> 2] | 0)) {
+      if (HEAP32[HEAP32[$data_addr + 4 * $j >> 2] + 32 >> 2] > HEAP32[HEAP32[$data_addr + 4 * $i >> 2] + 32 >> 2]) {
         __label__ = 5;
       } else {
         __label__ = 6;
@@ -39603,7 +39603,7 @@ function __Z23SortPicByPicNumLongTermPP14tagPictureDatai($data, $num) {
     
     
     
-    var $cmp = ($i | 0) < ($num_addr - 1 | 0);
+    var $cmp = $i < $num_addr - 1;
     if (!$cmp) {
       __label__ = 10;
       break $for_cond$2;
@@ -39614,7 +39614,7 @@ function __Z23SortPicByPicNumLongTermPP14tagPictureDatai($data, $num) {
     while (1) {
       
       
-      var $cmp2 = ($j | 0) < ($num_addr | 0);
+      var $cmp2 = $j < $num_addr;
       if (!$cmp2) {
         __label__ = 8;
         break;
@@ -39632,7 +39632,7 @@ function __Z23SortPicByPicNumLongTermPP14tagPictureDatai($data, $num) {
       
       
       
-      if ((HEAP32[HEAP32[$data_addr + 4 * $j >> 2] + 36 >> 2] | 0) < (HEAP32[HEAP32[$data_addr + 4 * $i >> 2] + 36 >> 2] | 0)) {
+      if (HEAP32[HEAP32[$data_addr + 4 * $j >> 2] + 36 >> 2] < HEAP32[HEAP32[$data_addr + 4 * $i >> 2] + 36 >> 2]) {
         __label__ = 5;
       } else {
         __label__ = 6;
@@ -39694,7 +39694,7 @@ function __Z11ReOrderListP12tagCommonObj($video) {
   $slice_type = HEAP32[$video_addr + 860 >> 2];
   
   
-  if (($slice_type | 0) != 2) {
+  if ($slice_type != 2) {
     __label__ = 1;
   } else {
     __label__ = 8;
@@ -39705,7 +39705,7 @@ function __Z11ReOrderListP12tagCommonObj($video) {
       
       
       
-      if ((HEAP32[$sliceHdr + 64 >> 2] | 0) != 0) {
+      if (HEAP32[$sliceHdr + 64 >> 2] != 0) {
         __label__ = 2;
       } else {
         __label__ = 5;
@@ -39716,7 +39716,7 @@ function __Z11ReOrderListP12tagCommonObj($video) {
         $status = $call;
         
         
-        if (($status | 0) != 1) {
+        if ($status != 1) {
           __label__ = 3;
         } else {
           __label__ = 4;
@@ -39734,7 +39734,7 @@ function __Z11ReOrderListP12tagCommonObj($video) {
       
       
       
-      if ((HEAP32[$video_addr + 2064 >> 2] | 0) == 0) {
+      if (HEAP32[$video_addr + 2064 >> 2] == 0) {
         __label__ = 6;
       } else {
         __label__ = 7;
@@ -39789,7 +39789,7 @@ function __Z17ReorderRefPicListP12tagCommonObji($video, $isL1) {
   HEAP32[$refIdxLX >> 2] = 0;
   
   
-  if (($isL1_addr | 0) != 0) {
+  if ($isL1_addr != 0) {
     __label__ = 2;
   } else {
     __label__ = 1;
@@ -39867,7 +39867,7 @@ function __Z17ReorderRefPicListP12tagCommonObji($video, $isL1) {
     
     
     
-    var $cmp = (HEAP32[$remapping_of_pic_nums_idc + 4 * $i >> 2] | 0) != 3;
+    var $cmp = HEAP32[$remapping_of_pic_nums_idc + 4 * $i >> 2] != 3;
     if (!$cmp) {
       __label__ = 29;
       break;
@@ -39877,13 +39877,13 @@ function __Z17ReorderRefPicListP12tagCommonObji($video, $isL1) {
     
     
     
-    if (HEAPU32[$remapping_of_pic_nums_idc + 4 * $i >> 2] >>> 0 > 3) {
+    if (HEAPU32[$remapping_of_pic_nums_idc + 4 * $i >> 2] > 3) {
       __label__ = 7;
       break;
     }
     
     
-    if (($i | 0) >= 32) {
+    if ($i >= 32) {
       __label__ = 7;
       break;
     }
@@ -39892,7 +39892,7 @@ function __Z17ReorderRefPicListP12tagCommonObji($video, $isL1) {
     
     
     
-    if (HEAPU32[$remapping_of_pic_nums_idc + 4 * $i >> 2] >>> 0 < 2) {
+    if (HEAPU32[$remapping_of_pic_nums_idc + 4 * $i >> 2] < 2) {
       __label__ = 9;
     } else {
       __label__ = 24;
@@ -39903,7 +39903,7 @@ function __Z17ReorderRefPicListP12tagCommonObji($video, $isL1) {
       
       
       
-      if ((HEAP32[$remapping_of_pic_nums_idc + 4 * $i >> 2] | 0) == 0) {
+      if (HEAP32[$remapping_of_pic_nums_idc + 4 * $i >> 2] == 0) {
         __label__ = 10;
       } else {
         __label__ = 14;
@@ -39917,7 +39917,7 @@ function __Z17ReorderRefPicListP12tagCommonObji($video, $isL1) {
         
         
         
-        if (($picNumLXPred - (HEAP32[$abs_diff_pic_num_minus1 + 4 * $i >> 2] + 1) | 0) < 0) {
+        if ($picNumLXPred - (HEAP32[$abs_diff_pic_num_minus1 + 4 * $i >> 2] + 1) < 0) {
           __label__ = 11;
         } else {
           __label__ = 12;
@@ -39953,7 +39953,7 @@ function __Z17ReorderRefPicListP12tagCommonObji($video, $isL1) {
         
         
         
-        if (($picNumLXPred + (HEAP32[$abs_diff_pic_num_minus1 + 4 * $i >> 2] + 1) | 0) >= ($maxPicNum | 0)) {
+        if ($picNumLXPred + (HEAP32[$abs_diff_pic_num_minus1 + 4 * $i >> 2] + 1) >= $maxPicNum) {
           __label__ = 15;
         } else {
           __label__ = 16;
@@ -39985,7 +39985,7 @@ function __Z17ReorderRefPicListP12tagCommonObji($video, $isL1) {
       
       
       
-      if (($picNumLXNoWrap | 0) > ($currPicNum | 0)) {
+      if ($picNumLXNoWrap > $currPicNum) {
         __label__ = 19;
       } else {
         __label__ = 20;
@@ -40006,7 +40006,7 @@ function __Z17ReorderRefPicListP12tagCommonObji($video, $isL1) {
       $status = $call;
       
       
-      if (($status | 0) != 1) {
+      if ($status != 1) {
         __label__ = 22;
         break;
       }
@@ -40021,7 +40021,7 @@ function __Z17ReorderRefPicListP12tagCommonObji($video, $isL1) {
       $status = $call56;
       
       
-      if (($status | 0) != 1) {
+      if ($status != 1) {
         __label__ = 25;
         break;
       }
@@ -40072,7 +40072,7 @@ function __Z16ReorderShortTermP12tagCommonObjiPii($video, $picNumLX, $refIdxLX, 
   $isL1_addr = $isL1;
   
   
-  if (($isL1_addr | 0) != 0) {
+  if ($isL1_addr != 0) {
     __label__ = 2;
   } else {
     __label__ = 1;
@@ -40106,7 +40106,7 @@ function __Z16ReorderShortTermP12tagCommonObjiPii($video, $picNumLX, $refIdxLX, 
   $picLX = $call;
   
   
-  if (($picLX | 0) == 0) {
+  if ($picLX == 0) {
     __label__ = 4;
   } else {
     __label__ = 5;
@@ -40117,7 +40117,7 @@ function __Z16ReorderShortTermP12tagCommonObjiPii($video, $picNumLX, $refIdxLX, 
     
     
     
-    if (($num_ref_idx_lX_active_minus1 + 1 | 0) >= 33) {
+    if ($num_ref_idx_lX_active_minus1 + 1 >= 33) {
       __label__ = 6;
     } else {
       __label__ = 7;
@@ -40132,7 +40132,7 @@ function __Z16ReorderShortTermP12tagCommonObjiPii($video, $picNumLX, $refIdxLX, 
         
         
         
-        var $cmp9 = ($cIdx | 0) > (HEAP32[$refIdxLX_addr >> 2] | 0);
+        var $cmp9 = $cIdx > HEAP32[$refIdxLX_addr >> 2];
         if (!$cmp9) {
           __label__ = 11;
           break $for_cond$12;
@@ -40170,7 +40170,7 @@ function __Z16ReorderShortTermP12tagCommonObjiPii($video, $picNumLX, $refIdxLX, 
         
         
         
-        var $cmp14 = ($cIdx | 0) <= ($num_ref_idx_lX_active_minus1 + 1 | 0);
+        var $cmp14 = $cIdx <= $num_ref_idx_lX_active_minus1 + 1;
         if (!$cmp14) {
           __label__ = 20;
           break $for_cond12$17;
@@ -40180,7 +40180,7 @@ function __Z16ReorderShortTermP12tagCommonObjiPii($video, $picNumLX, $refIdxLX, 
         
         
         
-        if ((HEAP32[$RefPicListX + 4 * $cIdx >> 2] | 0) != 0) {
+        if (HEAP32[$RefPicListX + 4 * $cIdx >> 2] != 0) {
           __label__ = 14;
         } else {
           __label__ = 18;
@@ -40193,7 +40193,7 @@ function __Z16ReorderShortTermP12tagCommonObjiPii($video, $picNumLX, $refIdxLX, 
           
           
           
-          if ((HEAP32[HEAP32[$RefPicListX + 4 * $cIdx >> 2] + 24 >> 2] | 0) != 0) {
+          if (HEAP32[HEAP32[$RefPicListX + 4 * $cIdx >> 2] + 24 >> 2] != 0) {
             __label__ = 16;
           } else {
             __label__ = 15;
@@ -40208,7 +40208,7 @@ function __Z16ReorderShortTermP12tagCommonObjiPii($video, $picNumLX, $refIdxLX, 
               
               
               
-              if ((HEAP32[HEAP32[$RefPicListX + 4 * $cIdx >> 2] + 32 >> 2] | 0) != ($picNumLX_addr | 0)) {
+              if (HEAP32[HEAP32[$RefPicListX + 4 * $cIdx >> 2] + 32 >> 2] != $picNumLX_addr) {
                 __label__ = 16;
                 break $if_then23$$lor_lhs_false$22;
               } else {
@@ -40264,7 +40264,7 @@ function __Z15ReorderLongTermP12tagCommonObjiPii($video, $LongTermPicNum, $refId
   $isL1_addr = $isL1;
   
   
-  if (($isL1_addr | 0) != 0) {
+  if ($isL1_addr != 0) {
     __label__ = 2;
   } else {
     __label__ = 1;
@@ -40298,7 +40298,7 @@ function __Z15ReorderLongTermP12tagCommonObjiPii($video, $LongTermPicNum, $refId
   $picLX = $call;
   
   
-  if (($picLX | 0) == 0) {
+  if ($picLX == 0) {
     __label__ = 4;
   } else {
     __label__ = 5;
@@ -40309,7 +40309,7 @@ function __Z15ReorderLongTermP12tagCommonObjiPii($video, $LongTermPicNum, $refId
     
     
     
-    if (($num_ref_idx_lX_active_minus1 + 1 | 0) >= 33) {
+    if ($num_ref_idx_lX_active_minus1 + 1 >= 33) {
       __label__ = 6;
     } else {
       __label__ = 7;
@@ -40324,7 +40324,7 @@ function __Z15ReorderLongTermP12tagCommonObjiPii($video, $LongTermPicNum, $refId
         
         
         
-        var $cmp9 = ($cIdx | 0) > (HEAP32[$refIdxLX_addr >> 2] | 0);
+        var $cmp9 = $cIdx > HEAP32[$refIdxLX_addr >> 2];
         if (!$cmp9) {
           __label__ = 11;
           break $for_cond$12;
@@ -40362,7 +40362,7 @@ function __Z15ReorderLongTermP12tagCommonObjiPii($video, $LongTermPicNum, $refId
         
         
         
-        var $cmp14 = ($cIdx | 0) <= ($num_ref_idx_lX_active_minus1 + 1 | 0);
+        var $cmp14 = $cIdx <= $num_ref_idx_lX_active_minus1 + 1;
         if (!$cmp14) {
           __label__ = 18;
           break $for_cond12$17;
@@ -40374,7 +40374,7 @@ function __Z15ReorderLongTermP12tagCommonObjiPii($video, $LongTermPicNum, $refId
         
         
         
-        if ((HEAP32[HEAP32[$RefPicListX + 4 * $cIdx >> 2] + 24 >> 2] | 0) != 0) {
+        if (HEAP32[HEAP32[$RefPicListX + 4 * $cIdx >> 2] + 24 >> 2] != 0) {
           __label__ = 14;
         } else {
           __label__ = 15;
@@ -40389,7 +40389,7 @@ function __Z15ReorderLongTermP12tagCommonObjiPii($video, $LongTermPicNum, $refId
             
             
             
-            if ((HEAP32[HEAP32[$RefPicListX + 4 * $cIdx >> 2] + 36 >> 2] | 0) != ($LongTermPicNum_addr | 0)) {
+            if (HEAP32[HEAP32[$RefPicListX + 4 * $cIdx >> 2] + 36 >> 2] != $LongTermPicNum_addr) {
               __label__ = 15;
               break $lor_lhs_false$$if_then21$20;
             } else {
@@ -40445,7 +40445,7 @@ function __Z15GetShortTermPicP12tagCommonObji($video, $picNum) {
     
     
     
-    var $cmp = ($i | 0) < (HEAP32[$dpb + 80 >> 2] | 0);
+    var $cmp = $i < HEAP32[$dpb + 80 >> 2];
     if (!$cmp) {
       __label__ = 9;
       break;
@@ -40458,7 +40458,7 @@ function __Z15GetShortTermPicP12tagCommonObji($video, $picNum) {
     
     
     
-    if ((HEAP32[HEAP32[$dpb + 12 + $i * 4 >> 2] + 4 >> 2] | 0) == 3) {
+    if (HEAP32[HEAP32[$dpb + 12 + $i * 4 >> 2] + 4 >> 2] == 3) {
       __label__ = 3;
     } else {
       __label__ = 7;
@@ -40473,7 +40473,7 @@ function __Z15GetShortTermPicP12tagCommonObji($video, $picNum) {
       
       
       
-      if ((HEAP32[HEAP32[$dpb + 12 + $i * 4 >> 2] + 16 + 24 >> 2] | 0) == 0) {
+      if (HEAP32[HEAP32[$dpb + 12 + $i * 4 >> 2] + 16 + 24 >> 2] == 0) {
         __label__ = 4;
       } else {
         __label__ = 6;
@@ -40489,7 +40489,7 @@ function __Z15GetShortTermPicP12tagCommonObji($video, $picNum) {
         
         
         
-        if ((HEAP32[HEAP32[$dpb + 12 + $i * 4 >> 2] + 16 + 32 >> 2] | 0) == ($picNum_addr | 0)) {
+        if (HEAP32[HEAP32[$dpb + 12 + $i * 4 >> 2] + 16 + 32 >> 2] == $picNum_addr) {
           __label__ = 5;
           break;
         }
@@ -40538,7 +40538,7 @@ function __Z14GetLongTermPicP12tagCommonObji($video, $LongtermPicNum) {
     
     
     
-    var $cmp = ($i | 0) < (HEAP32[$dpb + 80 >> 2] | 0);
+    var $cmp = $i < HEAP32[$dpb + 80 >> 2];
     if (!$cmp) {
       __label__ = 9;
       break;
@@ -40551,7 +40551,7 @@ function __Z14GetLongTermPicP12tagCommonObji($video, $LongtermPicNum) {
     
     
     
-    if ((HEAP32[HEAP32[$dpb + 12 + $i * 4 >> 2] + 4 >> 2] | 0) == 3) {
+    if (HEAP32[HEAP32[$dpb + 12 + $i * 4 >> 2] + 4 >> 2] == 3) {
       __label__ = 3;
     } else {
       __label__ = 7;
@@ -40566,7 +40566,7 @@ function __Z14GetLongTermPicP12tagCommonObji($video, $LongtermPicNum) {
       
       
       
-      if ((HEAP32[HEAP32[$dpb + 12 + $i * 4 >> 2] + 16 + 24 >> 2] | 0) == 1) {
+      if (HEAP32[HEAP32[$dpb + 12 + $i * 4 >> 2] + 16 + 24 >> 2] == 1) {
         __label__ = 4;
       } else {
         __label__ = 6;
@@ -40582,7 +40582,7 @@ function __Z14GetLongTermPicP12tagCommonObji($video, $LongtermPicNum) {
         
         
         
-        if ((HEAP32[HEAP32[$dpb + 12 + $i * 4 >> 2] + 16 + 36 >> 2] | 0) == ($LongtermPicNum_addr | 0)) {
+        if (HEAP32[HEAP32[$dpb + 12 + $i * 4 >> 2] + 16 + 36 >> 2] == $LongtermPicNum_addr) {
           __label__ = 5;
           break;
         }
@@ -40621,7 +40621,7 @@ function __Z12is_short_refP14tagPictureData($s) {
   
   
   
-  if ((HEAP32[$s_addr + 20 >> 2] | 0) != 0) {
+  if (HEAP32[$s_addr + 20 >> 2] != 0) {
     __lastLabel__ = 0;
     __label__ = 1;
   } else {
@@ -40633,11 +40633,11 @@ function __Z12is_short_refP14tagPictureData($s) {
     
     
     
-    var $lnot = (HEAP32[$s_addr + 24 >> 2] | 0) != 0 ^ 1;
+    var $lnot = HEAP32[$s_addr + 24 >> 2] != 0 ^ 1;
     __lastLabel__ = 1;
   }
   var $4 = __lastLabel__ == 0 ? 0 : $lnot;
-  var $conv = $4 & 1;
+  var $conv = $4;
   STACKTOP = __stackBase__;
   return $conv;
   return null;
@@ -40653,7 +40653,7 @@ function __Z11is_long_refP14tagPictureData($s) {
   
   
   
-  if ((HEAP32[$s_addr + 20 >> 2] | 0) != 0) {
+  if (HEAP32[$s_addr + 20 >> 2] != 0) {
     __lastLabel__ = 0;
     __label__ = 1;
   } else {
@@ -40664,11 +40664,11 @@ function __Z11is_long_refP14tagPictureData($s) {
     
     
     
-    var $tobool1 = (HEAP32[$s_addr + 24 >> 2] | 0) != 0;
+    var $tobool1 = HEAP32[$s_addr + 24 >> 2] != 0;
     __lastLabel__ = 1;
   }
   var $4 = __lastLabel__ == 0 ? 0 : $tobool1;
-  var $conv = $4 & 1;
+  var $conv = $4;
   STACKTOP = __stackBase__;
   return $conv;
   return null;
@@ -40689,7 +40689,7 @@ function __Z23SortFrameByFrameNumWrapPP13tagFrameStorei($data, $num) {
     
     
     
-    var $cmp = ($i | 0) < ($num_addr - 1 | 0);
+    var $cmp = $i < $num_addr - 1;
     if (!$cmp) {
       __label__ = 10;
       break $for_cond$2;
@@ -40700,7 +40700,7 @@ function __Z23SortFrameByFrameNumWrapPP13tagFrameStorei($data, $num) {
     while (1) {
       
       
-      var $cmp2 = ($j | 0) < ($num_addr | 0);
+      var $cmp2 = $j < $num_addr;
       if (!$cmp2) {
         __label__ = 8;
         break;
@@ -40718,7 +40718,7 @@ function __Z23SortFrameByFrameNumWrapPP13tagFrameStorei($data, $num) {
       
       
       
-      if ((HEAP32[HEAP32[$data_addr + 4 * $j >> 2] + 76 >> 2] | 0) > (HEAP32[HEAP32[$data_addr + 4 * $i >> 2] + 76 >> 2] | 0)) {
+      if (HEAP32[HEAP32[$data_addr + 4 * $j >> 2] + 76 >> 2] > HEAP32[HEAP32[$data_addr + 4 * $i >> 2] + 76 >> 2]) {
         __label__ = 5;
       } else {
         __label__ = 6;
@@ -40775,7 +40775,7 @@ function __Z21SortFrameByLTFrameIdxPP13tagFrameStorei($data, $num) {
     
     
     
-    var $cmp = ($i | 0) < ($num_addr - 1 | 0);
+    var $cmp = $i < $num_addr - 1;
     if (!$cmp) {
       __label__ = 10;
       break $for_cond$2;
@@ -40786,7 +40786,7 @@ function __Z21SortFrameByLTFrameIdxPP13tagFrameStorei($data, $num) {
     while (1) {
       
       
-      var $cmp2 = ($j | 0) < ($num_addr | 0);
+      var $cmp2 = $j < $num_addr;
       if (!$cmp2) {
         __label__ = 8;
         break;
@@ -40804,7 +40804,7 @@ function __Z21SortFrameByLTFrameIdxPP13tagFrameStorei($data, $num) {
       
       
       
-      if ((HEAP32[HEAP32[$data_addr + 4 * $j >> 2] + 80 >> 2] | 0) < (HEAP32[HEAP32[$data_addr + 4 * $i >> 2] + 80 >> 2] | 0)) {
+      if (HEAP32[HEAP32[$data_addr + 4 * $j >> 2] + 80 >> 2] < HEAP32[HEAP32[$data_addr + 4 * $i >> 2] + 80 >> 2]) {
         __label__ = 5;
       } else {
         __label__ = 6;
@@ -40860,7 +40860,7 @@ function __Z12SortPicByPOCPP14tagPictureDataii($data, $num, $descending) {
   $descending_addr = $descending;
   
   
-  if (($descending_addr | 0) != 0) {
+  if ($descending_addr != 0) {
     __label__ = 1;
   } else {
     __label__ = 12;
@@ -40871,7 +40871,7 @@ function __Z12SortPicByPOCPP14tagPictureDataii($data, $num, $descending) {
       
       
       
-      var $cmp = ($i | 0) < ($num_addr - 1 | 0);
+      var $cmp = $i < $num_addr - 1;
       if (!$cmp) {
         __label__ = 11;
         break $for_cond$4;
@@ -40882,7 +40882,7 @@ function __Z12SortPicByPOCPP14tagPictureDataii($data, $num, $descending) {
       while (1) {
         
         
-        var $cmp2 = ($j | 0) < ($num_addr | 0);
+        var $cmp2 = $j < $num_addr;
         if (!$cmp2) {
           __label__ = 9;
           break;
@@ -40900,7 +40900,7 @@ function __Z12SortPicByPOCPP14tagPictureDataii($data, $num, $descending) {
         
         
         
-        if ((HEAP32[HEAP32[$data_addr + 4 * $j >> 2] + 28 >> 2] | 0) > (HEAP32[HEAP32[$data_addr + 4 * $i >> 2] + 28 >> 2] | 0)) {
+        if (HEAP32[HEAP32[$data_addr + 4 * $j >> 2] + 28 >> 2] > HEAP32[HEAP32[$data_addr + 4 * $i >> 2] + 28 >> 2]) {
           __label__ = 6;
         } else {
           __label__ = 7;
@@ -40943,7 +40943,7 @@ function __Z12SortPicByPOCPP14tagPictureDataii($data, $num, $descending) {
       
       
       
-      var $cmp17 = ($i | 0) < ($num_addr - 1 | 0);
+      var $cmp17 = $i < $num_addr - 1;
       if (!$cmp17) {
         __label__ = 22;
         break $for_cond15$18;
@@ -40954,7 +40954,7 @@ function __Z12SortPicByPOCPP14tagPictureDataii($data, $num, $descending) {
       while (1) {
         
         
-        var $cmp21 = ($j | 0) < ($num_addr | 0);
+        var $cmp21 = $j < $num_addr;
         if (!$cmp21) {
           __label__ = 20;
           break;
@@ -40972,7 +40972,7 @@ function __Z12SortPicByPOCPP14tagPictureDataii($data, $num, $descending) {
         
         
         
-        if ((HEAP32[HEAP32[$data_addr + 4 * $j >> 2] + 28 >> 2] | 0) < (HEAP32[HEAP32[$data_addr + 4 * $i >> 2] + 28 >> 2] | 0)) {
+        if (HEAP32[HEAP32[$data_addr + 4 * $j >> 2] + 28 >> 2] < HEAP32[HEAP32[$data_addr + 4 * $i >> 2] + 28 >> 2]) {
           __label__ = 17;
         } else {
           __label__ = 18;
@@ -41030,7 +41030,7 @@ function __Z17SortPicByLTPicNumPP14tagPictureDatai($data, $num) {
     
     
     
-    var $cmp = ($i | 0) < ($num_addr - 1 | 0);
+    var $cmp = $i < $num_addr - 1;
     if (!$cmp) {
       __label__ = 10;
       break $for_cond$2;
@@ -41041,7 +41041,7 @@ function __Z17SortPicByLTPicNumPP14tagPictureDatai($data, $num) {
     while (1) {
       
       
-      var $cmp2 = ($j | 0) < ($num_addr | 0);
+      var $cmp2 = $j < $num_addr;
       if (!$cmp2) {
         __label__ = 8;
         break;
@@ -41059,7 +41059,7 @@ function __Z17SortPicByLTPicNumPP14tagPictureDatai($data, $num) {
       
       
       
-      if ((HEAP32[HEAP32[$data_addr + 4 * $j >> 2] + 36 >> 2] | 0) < (HEAP32[HEAP32[$data_addr + 4 * $i >> 2] + 36 >> 2] | 0)) {
+      if (HEAP32[HEAP32[$data_addr + 4 * $j >> 2] + 36 >> 2] < HEAP32[HEAP32[$data_addr + 4 * $i >> 2] + 36 >> 2]) {
         __label__ = 5;
       } else {
         __label__ = 6;
@@ -41115,7 +41115,7 @@ function __Z14SortFrameByPOCPP13tagFrameStoreii($data, $num, $descending) {
   $descending_addr = $descending;
   
   
-  if (($descending_addr | 0) != 0) {
+  if ($descending_addr != 0) {
     __label__ = 1;
   } else {
     __label__ = 12;
@@ -41126,7 +41126,7 @@ function __Z14SortFrameByPOCPP13tagFrameStoreii($data, $num, $descending) {
       
       
       
-      var $cmp = ($i | 0) < ($num_addr - 1 | 0);
+      var $cmp = $i < $num_addr - 1;
       if (!$cmp) {
         __label__ = 11;
         break $for_cond$4;
@@ -41137,7 +41137,7 @@ function __Z14SortFrameByPOCPP13tagFrameStoreii($data, $num, $descending) {
       while (1) {
         
         
-        var $cmp2 = ($j | 0) < ($num_addr | 0);
+        var $cmp2 = $j < $num_addr;
         if (!$cmp2) {
           __label__ = 9;
           break;
@@ -41155,7 +41155,7 @@ function __Z14SortFrameByPOCPP13tagFrameStoreii($data, $num, $descending) {
         
         
         
-        if ((HEAP32[HEAP32[$data_addr + 4 * $j >> 2] + 84 >> 2] | 0) > (HEAP32[HEAP32[$data_addr + 4 * $i >> 2] + 84 >> 2] | 0)) {
+        if (HEAP32[HEAP32[$data_addr + 4 * $j >> 2] + 84 >> 2] > HEAP32[HEAP32[$data_addr + 4 * $i >> 2] + 84 >> 2]) {
           __label__ = 6;
         } else {
           __label__ = 7;
@@ -41198,7 +41198,7 @@ function __Z14SortFrameByPOCPP13tagFrameStoreii($data, $num, $descending) {
       
       
       
-      var $cmp17 = ($i | 0) < ($num_addr - 1 | 0);
+      var $cmp17 = $i < $num_addr - 1;
       if (!$cmp17) {
         __label__ = 22;
         break $for_cond15$18;
@@ -41209,7 +41209,7 @@ function __Z14SortFrameByPOCPP13tagFrameStoreii($data, $num, $descending) {
       while (1) {
         
         
-        var $cmp21 = ($j | 0) < ($num_addr | 0);
+        var $cmp21 = $j < $num_addr;
         if (!$cmp21) {
           __label__ = 20;
           break;
@@ -41227,7 +41227,7 @@ function __Z14SortFrameByPOCPP13tagFrameStoreii($data, $num, $descending) {
         
         
         
-        if ((HEAP32[HEAP32[$data_addr + 4 * $j >> 2] + 84 >> 2] | 0) < (HEAP32[HEAP32[$data_addr + 4 * $i >> 2] + 84 >> 2] | 0)) {
+        if (HEAP32[HEAP32[$data_addr + 4 * $j >> 2] + 84 >> 2] < HEAP32[HEAP32[$data_addr + 4 * $i >> 2] + 84 >> 2]) {
           __label__ = 17;
         } else {
           __label__ = 18;
@@ -41286,7 +41286,7 @@ function __Z8readFilePKcPi($filename, $size) {
   $file = $call;
   
   
-  if (($file | 0) != 0) {
+  if ($file != 0) {
     __label__ = 2;
   } else {
     __label__ = 1;
@@ -41305,7 +41305,7 @@ function __Z8readFilePKcPi($filename, $size) {
     $buffer = $call5;
     
     
-    if (($buffer | 0) != 0) {
+    if ($buffer != 0) {
       __label__ = 4;
     } else {
       __label__ = 3;
@@ -41389,7 +41389,7 @@ function _main($argc, $argv) {
   HEAP32[_size >> 2] = 0;
   
   
-  if (($argc_addr | 0) == 2) {
+  if ($argc_addr == 2) {
     __label__ = 1;
   } else {
     __label__ = 2;
@@ -41427,14 +41427,14 @@ function __Z11runMainLoopv() {
   while (1) {
     var $call = __Z17mainLoopIterationv();
     $status = $call;
-    var $cmp = ($call | 0) != 0;
+    var $cmp = $call != 0;
     if (!$cmp) {
       __label__ = 5;
       break;
     }
     
     
-    if (($status | 0) == 2) {
+    if ($status == 2) {
       __label__ = 3;
     } else {
       __label__ = 4;
@@ -41486,7 +41486,7 @@ function __Z17mainLoopIterationv() {
   var $0 = HEAP32[_stream >> 2];
   var $call = _PVAVCAnnexBGetNALUnit($0, _nal_unit, _nal_size);
   
-  if (($call | 0) != 1) {
+  if ($call != 1) {
     __label__ = 1;
   } else {
     __label__ = 2;
@@ -41504,7 +41504,7 @@ function __Z17mainLoopIterationv() {
     var $call1 = _PVAVCDecGetNALType($1, $2, $nal_type, $nal_ref_idc);
     
     
-    if ((HEAP32[$nal_type >> 2] | 0) == 7) {
+    if (HEAP32[$nal_type >> 2] == 7) {
       __label__ = 3;
     } else {
       __label__ = 4;
@@ -41516,7 +41516,7 @@ function __Z17mainLoopIterationv() {
     } else if (__label__ == 4) {
       
       
-      if ((HEAP32[$nal_type >> 2] | 0) == 8) {
+      if (HEAP32[$nal_type >> 2] == 8) {
         __label__ = 5;
       } else {
         __label__ = 6;
@@ -41528,7 +41528,7 @@ function __Z17mainLoopIterationv() {
       } else if (__label__ == 6) {
         
         
-        if ((HEAP32[$nal_type >> 2] | 0) == 1) {
+        if (HEAP32[$nal_type >> 2] == 1) {
           __label__ = 8;
         } else {
           __label__ = 7;
@@ -41537,7 +41537,7 @@ function __Z17mainLoopIterationv() {
           if (__label__ == 7) {
             
             
-            if ((HEAP32[$nal_type >> 2] | 0) == 5) {
+            if (HEAP32[$nal_type >> 2] == 5) {
               __label__ = 8;
               break $if_then11$$lor_lhs_false$11;
             }
@@ -41555,7 +41555,7 @@ function __Z17mainLoopIterationv() {
           var $call13 = _PVAVCDecGetOutput(_decoder, $indx, $release, $output);
           
           
-          if ((HEAP32[_screen >> 2] | 0) != 0) {
+          if (HEAP32[_screen >> 2] != 0) {
             __label__ = 10;
           } else {
             __label__ = 9;
@@ -41599,7 +41599,7 @@ function __Z17mainLoopIterationv() {
             
             
             
-            var $cmp25 = ($y | 0) < (HEAP32[$output + 20 >> 2] | 0);
+            var $cmp25 = $y < HEAP32[$output + 20 >> 2];
             if (!$cmp25) {
               __label__ = 36;
               break $for_cond$19;
@@ -41618,7 +41618,7 @@ function __Z17mainLoopIterationv() {
               
               
               
-              var $cmp30 = ($x | 0) < (HEAP32[$output + 16 >> 2] | 0);
+              var $cmp30 = $x < HEAP32[$output + 16 >> 2];
               if (!$cmp30) {
                 __label__ = 34;
                 break;
@@ -41631,7 +41631,7 @@ function __Z17mainLoopIterationv() {
               
               
               
-              $c = (HEAPU8[$luma + ($lineOffLuma + $x) >> 0] & 255) - 16;
+              $c = HEAPU8[$luma + ($lineOffLuma + $x) >> 0] - 16;
               
               
               
@@ -41641,7 +41641,7 @@ function __Z17mainLoopIterationv() {
               
               
               
-              $d = (HEAPU8[$cb + ($lineOffChroma + ($x >> 1)) >> 0] & 255) - 128;
+              $d = HEAPU8[$cb + ($lineOffChroma + ($x >> 1)) >> 0] - 128;
               
               
               
@@ -41651,7 +41651,7 @@ function __Z17mainLoopIterationv() {
               
               
               
-              $e = (HEAPU8[$cr + ($lineOffChroma + ($x >> 1)) >> 0] & 255) - 128;
+              $e = HEAPU8[$cr + ($lineOffChroma + ($x >> 1)) >> 0] - 128;
               
               
               
@@ -41662,7 +41662,7 @@ function __Z17mainLoopIterationv() {
               $red = 298 * $c + 409 * $e + 128 >> 8;
               
               
-              if (($red | 0) < 0) {
+              if ($red < 0) {
                 __label__ = 15;
               } else {
                 __label__ = 16;
@@ -41672,7 +41672,7 @@ function __Z17mainLoopIterationv() {
               } else if (__label__ == 16) {
                 
                 
-                if (($red | 0) > 255) {
+                if ($red > 255) {
                   __label__ = 17;
                 } else {
                   __label__ = 18;
@@ -41701,7 +41701,7 @@ function __Z17mainLoopIterationv() {
               $green = 298 * $c - 100 * $d - 208 * $e + 128 >> 8;
               
               
-              if (($green | 0) < 0) {
+              if ($green < 0) {
                 __label__ = 21;
               } else {
                 __label__ = 22;
@@ -41711,7 +41711,7 @@ function __Z17mainLoopIterationv() {
               } else if (__label__ == 22) {
                 
                 
-                if (($green | 0) > 255) {
+                if ($green > 255) {
                   __label__ = 23;
                 } else {
                   __label__ = 24;
@@ -41737,7 +41737,7 @@ function __Z17mainLoopIterationv() {
               $blue = 298 * $c + 516 * $d + 128 >> 8;
               
               
-              if (($blue | 0) < 0) {
+              if ($blue < 0) {
                 __label__ = 27;
               } else {
                 __label__ = 28;
@@ -41747,7 +41747,7 @@ function __Z17mainLoopIterationv() {
               } else if (__label__ == 28) {
                 
                 
-                if (($blue | 0) > 255) {
+                if ($blue > 255) {
                   __label__ = 29;
                 } else {
                   __label__ = 30;
@@ -41802,7 +41802,7 @@ function __Z17mainLoopIterationv() {
           $status = 2;
           while (1) {
             var $call98 = _SDL_PollEvent($event);
-            var $tobool99 = ($call98 | 0) != 0;
+            var $tobool99 = $call98 != 0;
             if (!$tobool99) {
               __label__ = 41;
               break;
@@ -41810,7 +41810,7 @@ function __Z17mainLoopIterationv() {
             
             
             
-            if ((HEAPU8[$event >> 0] & 255) == 12) {
+            if (HEAPU8[$event >> 0] == 12) {
               __label__ = 39;
               break;
             } else {
@@ -41868,7 +41868,7 @@ function __Z4ue_vP15tagDecBitstreamPj($bitstream, $codeNum) {
   while (1) {
     
     
-    var $cmp = ($tmp_cnt & 32768 | 0) == 0;
+    var $cmp = ($tmp_cnt & 32768) == 0;
     if (!$cmp) {
       __label__ = 3;
       break;
@@ -41884,7 +41884,7 @@ function __Z4ue_vP15tagDecBitstreamPj($bitstream, $codeNum) {
   }
   
   
-  if (($leading_zeros | 0) < 8) {
+  if ($leading_zeros < 8) {
     __label__ = 4;
   } else {
     __label__ = 5;
@@ -41897,7 +41897,7 @@ function __Z4ue_vP15tagDecBitstreamPj($bitstream, $codeNum) {
     
     
     
-    HEAP32[$codeNum_addr >> 2] = (HEAPU32[$temp >> 2] >>> (15 - ($leading_zeros << 1) >>> 0)) - 1;
+    HEAP32[$codeNum_addr >> 2] = (HEAPU32[$temp >> 2] >>> 15 - ($leading_zeros << 1)) - 1;
     
     
     
@@ -41957,7 +41957,7 @@ function __Z4se_vP15tagDecBitstreamPi($bitstream, $value) {
   while (1) {
     
     
-    var $cmp = ($tmp_cnt & 32768 | 0) == 0;
+    var $cmp = ($tmp_cnt & 32768) == 0;
     if (!$cmp) {
       __label__ = 3;
       break;
@@ -41973,7 +41973,7 @@ function __Z4se_vP15tagDecBitstreamPi($bitstream, $value) {
   }
   
   
-  if (($leading_zeros | 0) < 8) {
+  if ($leading_zeros < 8) {
     __label__ = 4;
   } else {
     __label__ = 5;
@@ -41984,7 +41984,7 @@ function __Z4se_vP15tagDecBitstreamPi($bitstream, $value) {
     
     
     
-    HEAP32[$temp >> 2] = HEAPU32[$temp >> 2] >>> (15 - ($leading_zeros << 1) >>> 0);
+    HEAP32[$temp >> 2] = HEAPU32[$temp >> 2] >>> 15 - ($leading_zeros << 1);
     
     
     
@@ -42023,7 +42023,7 @@ function __Z4se_vP15tagDecBitstreamPi($bitstream, $value) {
   
   
   
-  if ((HEAP32[$temp >> 2] & 1 | 0) != 0) {
+  if ((HEAP32[$temp >> 2] & 1) != 0) {
     __label__ = 7;
   } else {
     __label__ = 8;
@@ -42054,7 +42054,7 @@ function __Z9se_v32bitP15tagDecBitstreamPi($bitstream, $value) {
   
   var $call = __Z19GetEGBitstring32bitP15tagDecBitstreamPiPj($bitstream_addr, $leadingZeros, $infobits);
   
-  if (1 != ($call | 0)) {
+  if (1 != $call) {
     __label__ = 1;
   } else {
     __label__ = 2;
@@ -42070,13 +42070,13 @@ function __Z9se_v32bitP15tagDecBitstreamPi($bitstream, $value) {
     $codeNum = (1 << HEAP32[$leadingZeros >> 2]) - 1 + HEAP32[$infobits >> 2];
     
     
-    var $div = Math.floor(($codeNum + 1 >>> 0) / 2);
+    var $div = Math.floor(($codeNum + 1) / 2);
     
     HEAP32[$value_addr >> 2] = $div;
     
     
     
-    if (($codeNum & 1 | 0) == 0) {
+    if (($codeNum & 1) == 0) {
       __label__ = 3;
     } else {
       __label__ = 4;
@@ -42114,7 +42114,7 @@ function __Z19GetEGBitstring32bitP15tagDecBitstreamPiPj($bitstream, $leadingZero
   while (1) {
     
     
-    var $lnot = (HEAP32[$bit_value >> 2] | 0) != 0 ^ 1;
+    var $lnot = HEAP32[$bit_value >> 2] != 0 ^ 1;
     if (!$lnot) {
       __label__ = 3;
       break;
@@ -42131,7 +42131,7 @@ function __Z19GetEGBitstring32bitP15tagDecBitstreamPiPj($bitstream, $leadingZero
   
   
   
-  if ((HEAP32[$leadingZeros_addr >> 2] | 0) > 0) {
+  if (HEAP32[$leadingZeros_addr >> 2] > 0) {
     __label__ = 4;
   } else {
     __label__ = 5;
@@ -42164,7 +42164,7 @@ function __Z4te_vP15tagDecBitstreamPjj($bitstream, $value, $range) {
   $range_addr = $range;
   
   
-  if ($range_addr >>> 0 > 1) {
+  if ($range_addr > 1) {
     __label__ = 1;
   } else {
     __label__ = 2;
@@ -42202,7 +42202,7 @@ function __Z9DecodeCBPP13tagMacroblockP15tagDecBitstream($currMB, $stream) {
   var $call = __Z4ue_vP15tagDecBitstreamPj($stream_addr, $codeNum);
   
   
-  if (HEAPU32[$codeNum >> 2] >>> 0 > 47) {
+  if (HEAPU32[$codeNum >> 2] > 47) {
     __label__ = 1;
   } else {
     __label__ = 2;
@@ -42214,7 +42214,7 @@ function __Z9DecodeCBPP13tagMacroblockP15tagDecBitstream($currMB, $stream) {
     
     
     
-    if ((HEAP32[$currMB_addr + 164 >> 2] | 0) == 0) {
+    if (HEAP32[$currMB_addr + 164 >> 2] == 0) {
       __label__ = 3;
     } else {
       __label__ = 4;
@@ -42225,14 +42225,14 @@ function __Z9DecodeCBPP13tagMacroblockP15tagDecBitstream($currMB, $stream) {
       
       
       
-      $coded_block_pattern = HEAPU8[__ZL6MapCBP + HEAP32[$codeNum >> 2] * 2 >> 0] & 255;
+      $coded_block_pattern = HEAPU8[__ZL6MapCBP + HEAP32[$codeNum >> 2] * 2 >> 0];
     } else if (__label__ == 4) {
       
       
       
       
       
-      $coded_block_pattern = HEAPU8[__ZL6MapCBP + HEAP32[$codeNum >> 2] * 2 + 1 >> 0] & 255;
+      $coded_block_pattern = HEAPU8[__ZL6MapCBP + HEAP32[$codeNum >> 2] * 2 + 1 >> 0];
     }
     
     
@@ -42261,7 +42261,7 @@ function __Z25ce_TotalCoeffTrailingOnesP15tagDecBitstreamPiS1_i($stream, $Traili
   $nC_addr = $nC;
   
   
-  if (($nC_addr | 0) < 2) {
+  if ($nC_addr < 2) {
     __label__ = 1;
   } else {
     __label__ = 29;
@@ -42271,7 +42271,7 @@ function __Z25ce_TotalCoeffTrailingOnesP15tagDecBitstreamPiS1_i($stream, $Traili
     var $call = _BitstreamShowBits($stream_addr, 16, $code);
     
     
-    if (HEAPU32[$code >> 2] >>> 0 >= 8192) {
+    if (HEAPU32[$code >> 2] >= 8192) {
       __label__ = 2;
     } else {
       __label__ = 3;
@@ -42287,7 +42287,7 @@ function __Z25ce_TotalCoeffTrailingOnesP15tagDecBitstreamPiS1_i($stream, $Traili
     } else if (__label__ == 3) {
       
       
-      if (HEAPU32[$code >> 2] >>> 0 >= 2048) {
+      if (HEAPU32[$code >> 2] >= 2048) {
         __label__ = 4;
       } else {
         __label__ = 5;
@@ -42303,7 +42303,7 @@ function __Z25ce_TotalCoeffTrailingOnesP15tagDecBitstreamPiS1_i($stream, $Traili
       } else if (__label__ == 5) {
         
         
-        if (HEAPU32[$code >> 2] >>> 0 >= 1024) {
+        if (HEAPU32[$code >> 2] >= 1024) {
           __label__ = 6;
         } else {
           __label__ = 7;
@@ -42319,7 +42319,7 @@ function __Z25ce_TotalCoeffTrailingOnesP15tagDecBitstreamPiS1_i($stream, $Traili
         } else if (__label__ == 7) {
           
           
-          if (HEAPU32[$code >> 2] >>> 0 >= 512) {
+          if (HEAPU32[$code >> 2] >= 512) {
             __label__ = 8;
           } else {
             __label__ = 9;
@@ -42335,7 +42335,7 @@ function __Z25ce_TotalCoeffTrailingOnesP15tagDecBitstreamPiS1_i($stream, $Traili
           } else if (__label__ == 9) {
             
             
-            if (HEAPU32[$code >> 2] >>> 0 >= 256) {
+            if (HEAPU32[$code >> 2] >= 256) {
               __label__ = 10;
             } else {
               __label__ = 11;
@@ -42351,7 +42351,7 @@ function __Z25ce_TotalCoeffTrailingOnesP15tagDecBitstreamPiS1_i($stream, $Traili
             } else if (__label__ == 11) {
               
               
-              if (HEAPU32[$code >> 2] >>> 0 >= 128) {
+              if (HEAPU32[$code >> 2] >= 128) {
                 __label__ = 12;
               } else {
                 __label__ = 13;
@@ -42367,7 +42367,7 @@ function __Z25ce_TotalCoeffTrailingOnesP15tagDecBitstreamPiS1_i($stream, $Traili
               } else if (__label__ == 13) {
                 
                 
-                if (HEAPU32[$code >> 2] >>> 0 >= 64) {
+                if (HEAPU32[$code >> 2] >= 64) {
                   __label__ = 14;
                 } else {
                   __label__ = 15;
@@ -42383,7 +42383,7 @@ function __Z25ce_TotalCoeffTrailingOnesP15tagDecBitstreamPiS1_i($stream, $Traili
                 } else if (__label__ == 15) {
                   
                   
-                  if (HEAPU32[$code >> 2] >>> 0 >= 32) {
+                  if (HEAPU32[$code >> 2] >= 32) {
                     __label__ = 16;
                   } else {
                     __label__ = 17;
@@ -42399,7 +42399,7 @@ function __Z25ce_TotalCoeffTrailingOnesP15tagDecBitstreamPiS1_i($stream, $Traili
                   } else if (__label__ == 17) {
                     
                     
-                    if (HEAPU32[$code >> 2] >>> 0 >= 16) {
+                    if (HEAPU32[$code >> 2] >= 16) {
                       __label__ = 18;
                     } else {
                       __label__ = 19;
@@ -42433,13 +42433,13 @@ function __Z25ce_TotalCoeffTrailingOnesP15tagDecBitstreamPiS1_i($stream, $Traili
     
     
     
-    HEAP32[$TrailingOnes_addr >> 2] = HEAPU8[$pcode >> 0] & 255;
+    HEAP32[$TrailingOnes_addr >> 2] = HEAPU8[$pcode >> 0];
     
     
     
     
     
-    HEAP32[$TotalCoeff_addr >> 2] = HEAPU8[$pcode + 1 >> 0] & 255;
+    HEAP32[$TotalCoeff_addr >> 2] = HEAPU8[$pcode + 1 >> 0];
     
     
     
@@ -42447,7 +42447,7 @@ function __Z25ce_TotalCoeffTrailingOnesP15tagDecBitstreamPiS1_i($stream, $Traili
     
     
     
-    var $add85 = HEAP32[$stream_addr + 36 >> 2] + (HEAPU8[$pcode + 2 >> 0] & 255);
+    var $add85 = HEAP32[$stream_addr + 36 >> 2] + HEAPU8[$pcode + 2 >> 0];
     HEAP32[$stream_addr + 36 >> 2] = $add85;
     
     
@@ -42456,7 +42456,7 @@ function __Z25ce_TotalCoeffTrailingOnesP15tagDecBitstreamPiS1_i($stream, $Traili
     
     
     
-    var $sub88 = HEAP32[$stream_addr + 28 >> 2] - (HEAPU8[$pcode + 2 >> 0] & 255);
+    var $sub88 = HEAP32[$stream_addr + 28 >> 2] - HEAPU8[$pcode + 2 >> 0];
     HEAP32[$stream_addr + 28 >> 2] = $sub88;
     
     
@@ -42465,12 +42465,12 @@ function __Z25ce_TotalCoeffTrailingOnesP15tagDecBitstreamPiS1_i($stream, $Traili
     
     
     
-    var $shl = HEAP32[$stream_addr + 16 >> 2] << (HEAPU8[$pcode + 2 >> 0] & 255);
+    var $shl = HEAP32[$stream_addr + 16 >> 2] << HEAPU8[$pcode + 2 >> 0];
     HEAP32[$stream_addr + 16 >> 2] = $shl;
   } else if (__label__ == 29) {
     
     
-    if (($nC_addr | 0) < 4) {
+    if ($nC_addr < 4) {
       __label__ = 30;
     } else {
       __label__ = 52;
@@ -42480,7 +42480,7 @@ function __Z25ce_TotalCoeffTrailingOnesP15tagDecBitstreamPiS1_i($stream, $Traili
       var $call94 = _BitstreamShowBits($stream_addr, 14, $code);
       
       
-      if (HEAPU32[$code >> 2] >>> 0 >= 4096) {
+      if (HEAPU32[$code >> 2] >= 4096) {
         __label__ = 31;
       } else {
         __label__ = 32;
@@ -42496,7 +42496,7 @@ function __Z25ce_TotalCoeffTrailingOnesP15tagDecBitstreamPiS1_i($stream, $Traili
       } else if (__label__ == 32) {
         
         
-        if (HEAPU32[$code >> 2] >>> 0 >= 2048) {
+        if (HEAPU32[$code >> 2] >= 2048) {
           __label__ = 33;
         } else {
           __label__ = 34;
@@ -42512,7 +42512,7 @@ function __Z25ce_TotalCoeffTrailingOnesP15tagDecBitstreamPiS1_i($stream, $Traili
         } else if (__label__ == 34) {
           
           
-          if (HEAPU32[$code >> 2] >>> 0 >= 512) {
+          if (HEAPU32[$code >> 2] >= 512) {
             __label__ = 35;
           } else {
             __label__ = 36;
@@ -42528,7 +42528,7 @@ function __Z25ce_TotalCoeffTrailingOnesP15tagDecBitstreamPiS1_i($stream, $Traili
           } else if (__label__ == 36) {
             
             
-            if (HEAPU32[$code >> 2] >>> 0 >= 128) {
+            if (HEAPU32[$code >> 2] >= 128) {
               __label__ = 37;
             } else {
               __label__ = 38;
@@ -42544,7 +42544,7 @@ function __Z25ce_TotalCoeffTrailingOnesP15tagDecBitstreamPiS1_i($stream, $Traili
             } else if (__label__ == 38) {
               
               
-              if (HEAPU32[$code >> 2] >>> 0 >= 64) {
+              if (HEAPU32[$code >> 2] >= 64) {
                 __label__ = 39;
               } else {
                 __label__ = 40;
@@ -42560,7 +42560,7 @@ function __Z25ce_TotalCoeffTrailingOnesP15tagDecBitstreamPiS1_i($stream, $Traili
               } else if (__label__ == 40) {
                 
                 
-                if (HEAPU32[$code >> 2] >>> 0 >= 32) {
+                if (HEAPU32[$code >> 2] >= 32) {
                   __label__ = 41;
                 } else {
                   __label__ = 42;
@@ -42576,7 +42576,7 @@ function __Z25ce_TotalCoeffTrailingOnesP15tagDecBitstreamPiS1_i($stream, $Traili
                 } else if (__label__ == 42) {
                   
                   
-                  if (HEAPU32[$code >> 2] >>> 0 >= 16) {
+                  if (HEAPU32[$code >> 2] >= 16) {
                     __label__ = 43;
                   } else {
                     __label__ = 44;
@@ -42608,13 +42608,13 @@ function __Z25ce_TotalCoeffTrailingOnesP15tagDecBitstreamPiS1_i($stream, $Traili
       
       
       
-      HEAP32[$TrailingOnes_addr >> 2] = HEAPU8[$pcode >> 0] & 255;
+      HEAP32[$TrailingOnes_addr >> 2] = HEAPU8[$pcode >> 0];
       
       
       
       
       
-      HEAP32[$TotalCoeff_addr >> 2] = HEAPU8[$pcode + 1 >> 0] & 255;
+      HEAP32[$TotalCoeff_addr >> 2] = HEAPU8[$pcode + 1 >> 0];
       
       
       
@@ -42622,7 +42622,7 @@ function __Z25ce_TotalCoeffTrailingOnesP15tagDecBitstreamPiS1_i($stream, $Traili
       
       
       
-      var $add169 = HEAP32[$stream_addr + 36 >> 2] + (HEAPU8[$pcode + 2 >> 0] & 255);
+      var $add169 = HEAP32[$stream_addr + 36 >> 2] + HEAPU8[$pcode + 2 >> 0];
       HEAP32[$stream_addr + 36 >> 2] = $add169;
       
       
@@ -42631,7 +42631,7 @@ function __Z25ce_TotalCoeffTrailingOnesP15tagDecBitstreamPiS1_i($stream, $Traili
       
       
       
-      var $sub173 = HEAP32[$stream_addr + 28 >> 2] - (HEAPU8[$pcode + 2 >> 0] & 255);
+      var $sub173 = HEAP32[$stream_addr + 28 >> 2] - HEAPU8[$pcode + 2 >> 0];
       HEAP32[$stream_addr + 28 >> 2] = $sub173;
       
       
@@ -42640,12 +42640,12 @@ function __Z25ce_TotalCoeffTrailingOnesP15tagDecBitstreamPiS1_i($stream, $Traili
       
       
       
-      var $shl177 = HEAP32[$stream_addr + 16 >> 2] << (HEAPU8[$pcode + 2 >> 0] & 255);
+      var $shl177 = HEAP32[$stream_addr + 16 >> 2] << HEAPU8[$pcode + 2 >> 0];
       HEAP32[$stream_addr + 16 >> 2] = $shl177;
     } else if (__label__ == 52) {
       
       
-      if (($nC_addr | 0) < 8) {
+      if ($nC_addr < 8) {
         __label__ = 53;
       } else {
         __label__ = 72;
@@ -42655,7 +42655,7 @@ function __Z25ce_TotalCoeffTrailingOnesP15tagDecBitstreamPiS1_i($stream, $Traili
         var $call181 = _BitstreamShowBits($stream_addr, 10, $code);
         
         
-        if (HEAPU32[$code >> 2] >>> 0 >= 512) {
+        if (HEAPU32[$code >> 2] >= 512) {
           __label__ = 54;
         } else {
           __label__ = 55;
@@ -42671,7 +42671,7 @@ function __Z25ce_TotalCoeffTrailingOnesP15tagDecBitstreamPiS1_i($stream, $Traili
         } else if (__label__ == 55) {
           
           
-          if (HEAPU32[$code >> 2] >>> 0 >= 256) {
+          if (HEAPU32[$code >> 2] >= 256) {
             __label__ = 56;
           } else {
             __label__ = 57;
@@ -42687,7 +42687,7 @@ function __Z25ce_TotalCoeffTrailingOnesP15tagDecBitstreamPiS1_i($stream, $Traili
           } else if (__label__ == 57) {
             
             
-            if (HEAPU32[$code >> 2] >>> 0 >= 128) {
+            if (HEAPU32[$code >> 2] >= 128) {
               __label__ = 58;
             } else {
               __label__ = 59;
@@ -42703,7 +42703,7 @@ function __Z25ce_TotalCoeffTrailingOnesP15tagDecBitstreamPiS1_i($stream, $Traili
             } else if (__label__ == 59) {
               
               
-              if (HEAPU32[$code >> 2] >>> 0 >= 64) {
+              if (HEAPU32[$code >> 2] >= 64) {
                 __label__ = 60;
               } else {
                 __label__ = 61;
@@ -42719,7 +42719,7 @@ function __Z25ce_TotalCoeffTrailingOnesP15tagDecBitstreamPiS1_i($stream, $Traili
               } else if (__label__ == 61) {
                 
                 
-                if (HEAPU32[$code >> 2] >>> 0 >= 32) {
+                if (HEAPU32[$code >> 2] >= 32) {
                   __label__ = 62;
                 } else {
                   __label__ = 63;
@@ -42735,7 +42735,7 @@ function __Z25ce_TotalCoeffTrailingOnesP15tagDecBitstreamPiS1_i($stream, $Traili
                 } else if (__label__ == 63) {
                   
                   
-                  if (HEAPU32[$code >> 2] >>> 0 >= 16) {
+                  if (HEAPU32[$code >> 2] >= 16) {
                     __label__ = 64;
                   } else {
                     __label__ = 65;
@@ -42766,13 +42766,13 @@ function __Z25ce_TotalCoeffTrailingOnesP15tagDecBitstreamPiS1_i($stream, $Traili
         
         
         
-        HEAP32[$TrailingOnes_addr >> 2] = HEAPU8[$pcode >> 0] & 255;
+        HEAP32[$TrailingOnes_addr >> 2] = HEAPU8[$pcode >> 0];
         
         
         
         
         
-        HEAP32[$TotalCoeff_addr >> 2] = HEAPU8[$pcode + 1 >> 0] & 255;
+        HEAP32[$TotalCoeff_addr >> 2] = HEAPU8[$pcode + 1 >> 0];
         
         
         
@@ -42780,7 +42780,7 @@ function __Z25ce_TotalCoeffTrailingOnesP15tagDecBitstreamPiS1_i($stream, $Traili
         
         
         
-        var $add247 = HEAP32[$stream_addr + 36 >> 2] + (HEAPU8[$pcode + 2 >> 0] & 255);
+        var $add247 = HEAP32[$stream_addr + 36 >> 2] + HEAPU8[$pcode + 2 >> 0];
         HEAP32[$stream_addr + 36 >> 2] = $add247;
         
         
@@ -42789,7 +42789,7 @@ function __Z25ce_TotalCoeffTrailingOnesP15tagDecBitstreamPiS1_i($stream, $Traili
         
         
         
-        var $sub251 = HEAP32[$stream_addr + 28 >> 2] - (HEAPU8[$pcode + 2 >> 0] & 255);
+        var $sub251 = HEAP32[$stream_addr + 28 >> 2] - HEAPU8[$pcode + 2 >> 0];
         HEAP32[$stream_addr + 28 >> 2] = $sub251;
         
         
@@ -42798,7 +42798,7 @@ function __Z25ce_TotalCoeffTrailingOnesP15tagDecBitstreamPiS1_i($stream, $Traili
         
         
         
-        var $shl255 = HEAP32[$stream_addr + 16 >> 2] << (HEAPU8[$pcode + 2 >> 0] & 255);
+        var $shl255 = HEAP32[$stream_addr + 16 >> 2] << HEAPU8[$pcode + 2 >> 0];
         HEAP32[$stream_addr + 16 >> 2] = $shl255;
       } else if (__label__ == 72) {
         
@@ -42815,7 +42815,7 @@ function __Z25ce_TotalCoeffTrailingOnesP15tagDecBitstreamPiS1_i($stream, $Traili
         
         
         
-        if ((HEAP32[$TotalCoeff_addr >> 2] | 0) > 16) {
+        if (HEAP32[$TotalCoeff_addr >> 2] > 16) {
           __label__ = 73;
         } else {
           __label__ = 74;
@@ -42826,7 +42826,7 @@ function __Z25ce_TotalCoeffTrailingOnesP15tagDecBitstreamPiS1_i($stream, $Traili
         }
         
         
-        if ((HEAP32[$code >> 2] | 0) == 3) {
+        if (HEAP32[$code >> 2] == 3) {
           __label__ = 75;
         } else {
           __label__ = 76;
@@ -42864,7 +42864,7 @@ function __Z33ce_TotalCoeffTrailingOnesChromaDCP15tagDecBitstreamPiS1_($stream, 
   $status = $call;
   
   
-  if (HEAPU32[$code >> 2] >>> 0 >= 32) {
+  if (HEAPU32[$code >> 2] >= 32) {
     __label__ = 1;
   } else {
     __label__ = 2;
@@ -42879,7 +42879,7 @@ function __Z33ce_TotalCoeffTrailingOnesChromaDCP15tagDecBitstreamPiS1_($stream, 
   } else if (__label__ == 2) {
     
     
-    if (HEAPU32[$code >> 2] >>> 0 >= 8) {
+    if (HEAPU32[$code >> 2] >= 8) {
       __label__ = 3;
     } else {
       __label__ = 4;
@@ -42903,13 +42903,13 @@ function __Z33ce_TotalCoeffTrailingOnesChromaDCP15tagDecBitstreamPiS1_($stream, 
   
   
   
-  HEAP32[$TrailingOnes_addr >> 2] = HEAPU8[$pcode >> 0] & 255;
+  HEAP32[$TrailingOnes_addr >> 2] = HEAPU8[$pcode >> 0];
   
   
   
   
   
-  HEAP32[$TotalCoeff_addr >> 2] = HEAPU8[$pcode + 1 >> 0] & 255;
+  HEAP32[$TotalCoeff_addr >> 2] = HEAPU8[$pcode + 1 >> 0];
   
   
   
@@ -42917,7 +42917,7 @@ function __Z33ce_TotalCoeffTrailingOnesChromaDCP15tagDecBitstreamPiS1_($stream, 
   
   
   
-  var $add17 = HEAP32[$stream_addr + 36 >> 2] + (HEAPU8[$pcode + 2 >> 0] & 255);
+  var $add17 = HEAP32[$stream_addr + 36 >> 2] + HEAPU8[$pcode + 2 >> 0];
   HEAP32[$stream_addr + 36 >> 2] = $add17;
   
   
@@ -42926,7 +42926,7 @@ function __Z33ce_TotalCoeffTrailingOnesChromaDCP15tagDecBitstreamPiS1_($stream, 
   
   
   
-  var $sub = HEAP32[$stream_addr + 28 >> 2] - (HEAPU8[$pcode + 2 >> 0] & 255);
+  var $sub = HEAP32[$stream_addr + 28 >> 2] - HEAPU8[$pcode + 2 >> 0];
   HEAP32[$stream_addr + 28 >> 2] = $sub;
   
   
@@ -42935,7 +42935,7 @@ function __Z33ce_TotalCoeffTrailingOnesChromaDCP15tagDecBitstreamPiS1_($stream, 
   
   
   
-  var $shl = HEAP32[$stream_addr + 16 >> 2] << (HEAPU8[$pcode + 2 >> 0] & 255);
+  var $shl = HEAP32[$stream_addr + 16 >> 2] << HEAPU8[$pcode + 2 >> 0];
   HEAP32[$stream_addr + 16 >> 2] = $shl;
   var $24 = $status;
   STACKTOP = __stackBase__;
@@ -42961,7 +42961,7 @@ function __Z14ce_LevelPrefixP15tagDecBitstreamPj($stream, $code) {
   while (1) {
     
     
-    var $cmp = (HEAP32[$temp >> 2] & 32768 | 0) == 0;
+    var $cmp = (HEAP32[$temp >> 2] & 32768) == 0;
     if (!$cmp) {
       __label__ = 3;
       break;
@@ -43020,7 +43020,7 @@ function __Z13ce_TotalZerosP15tagDecBitstreamPii($stream, $code, $TotalCoeff) {
   $TotalCoeff_addr = $TotalCoeff;
   
   
-  if (($TotalCoeff_addr | 0) == 1) {
+  if ($TotalCoeff_addr == 1) {
     __label__ = 1;
   } else {
     __label__ = 11;
@@ -43030,7 +43030,7 @@ function __Z13ce_TotalZerosP15tagDecBitstreamPii($stream, $code, $TotalCoeff) {
     var $call = _BitstreamShowBits($stream_addr, 9, $temp);
     
     
-    if (HEAPU32[$temp >> 2] >>> 0 >= 256) {
+    if (HEAPU32[$temp >> 2] >= 256) {
       __label__ = 2;
     } else {
       __label__ = 3;
@@ -43040,7 +43040,7 @@ function __Z13ce_TotalZerosP15tagDecBitstreamPii($stream, $code, $TotalCoeff) {
     } else if (__label__ == 3) {
       
       
-      if (HEAPU32[$temp >> 2] >>> 0 >= 64) {
+      if (HEAPU32[$temp >> 2] >= 64) {
         __label__ = 4;
       } else {
         __label__ = 5;
@@ -43055,7 +43055,7 @@ function __Z13ce_TotalZerosP15tagDecBitstreamPii($stream, $code, $TotalCoeff) {
       } else if (__label__ == 5) {
         
         
-        if (HEAPU32[$temp >> 2] >>> 0 >= 8) {
+        if (HEAPU32[$temp >> 2] >= 8) {
           __label__ = 6;
         } else {
           __label__ = 7;
@@ -43079,7 +43079,7 @@ function __Z13ce_TotalZerosP15tagDecBitstreamPii($stream, $code, $TotalCoeff) {
   } else if (__label__ == 11) {
     
     
-    if (($TotalCoeff_addr | 0) == 2) {
+    if ($TotalCoeff_addr == 2) {
       __label__ = 13;
     } else {
       __label__ = 12;
@@ -43088,13 +43088,13 @@ function __Z13ce_TotalZerosP15tagDecBitstreamPii($stream, $code, $TotalCoeff) {
       if (__label__ == 12) {
         
         
-        if (($TotalCoeff_addr | 0) == 3) {
+        if ($TotalCoeff_addr == 3) {
           __label__ = 13;
           break $if_then21$$lor_lhs_false$17;
         }
         
         
-        if (($TotalCoeff_addr | 0) == 4) {
+        if ($TotalCoeff_addr == 4) {
           __label__ = 21;
         } else {
           __label__ = 25;
@@ -43104,7 +43104,7 @@ function __Z13ce_TotalZerosP15tagDecBitstreamPii($stream, $code, $TotalCoeff) {
           var $call50 = _BitstreamShowBits($stream_addr, 5, $temp);
           
           
-          if (HEAPU32[$temp >> 2] >>> 0 >= 12) {
+          if (HEAPU32[$temp >> 2] >= 12) {
             __label__ = 22;
           } else {
             __label__ = 23;
@@ -43125,7 +43125,7 @@ function __Z13ce_TotalZerosP15tagDecBitstreamPii($stream, $code, $TotalCoeff) {
         } else if (__label__ == 25) {
           
           
-          if (($TotalCoeff_addr | 0) == 5) {
+          if ($TotalCoeff_addr == 5) {
             __label__ = 26;
           } else {
             __label__ = 33;
@@ -43135,7 +43135,7 @@ function __Z13ce_TotalZerosP15tagDecBitstreamPii($stream, $code, $TotalCoeff) {
             var $call64 = _BitstreamShowBits($stream_addr, 5, $temp);
             
             
-            if (HEAPU32[$temp >> 2] >>> 0 >= 16) {
+            if (HEAPU32[$temp >> 2] >= 16) {
               __label__ = 27;
             } else {
               __label__ = 28;
@@ -43150,7 +43150,7 @@ function __Z13ce_TotalZerosP15tagDecBitstreamPii($stream, $code, $TotalCoeff) {
             } else if (__label__ == 28) {
               
               
-              if (HEAPU32[$temp >> 2] >>> 0 >= 2) {
+              if (HEAPU32[$temp >> 2] >= 2) {
                 __label__ = 29;
               } else {
                 __label__ = 30;
@@ -43172,7 +43172,7 @@ function __Z13ce_TotalZerosP15tagDecBitstreamPii($stream, $code, $TotalCoeff) {
           } else if (__label__ == 33) {
             
             
-            if (($TotalCoeff_addr | 0) >= 6) {
+            if ($TotalCoeff_addr >= 6) {
               __label__ = 34;
             } else {
               __label__ = 42;
@@ -43180,14 +43180,14 @@ function __Z13ce_TotalZerosP15tagDecBitstreamPii($stream, $code, $TotalCoeff) {
             $land_lhs_true$$if_else107$38 : do {
               if (__label__ == 34) {
                 
-                var $cmp85 = ($TotalCoeff_addr | 0) <= 10;
+                var $cmp85 = $TotalCoeff_addr <= 10;
                 if (!$cmp85) {
                   __label__ = 42;
                   break $land_lhs_true$$if_else107$38;
                 }
                 
                 
-                if (($TotalCoeff_addr | 0) == 10) {
+                if ($TotalCoeff_addr == 10) {
                   __label__ = 36;
                 } else {
                   __label__ = 37;
@@ -43201,7 +43201,7 @@ function __Z13ce_TotalZerosP15tagDecBitstreamPii($stream, $code, $TotalCoeff) {
                 }
                 
                 
-                if (HEAPU32[$temp >> 2] >>> 0 >= 8) {
+                if (HEAPU32[$temp >> 2] >= 8) {
                   __label__ = 39;
                 } else {
                   __label__ = 40;
@@ -43232,7 +43232,7 @@ function __Z13ce_TotalZerosP15tagDecBitstreamPii($stream, $code, $TotalCoeff) {
             if (__label__ == 42) {
               
               
-              if (($TotalCoeff_addr | 0) == 11) {
+              if ($TotalCoeff_addr == 11) {
                 __label__ = 43;
               } else {
                 __label__ = 50;
@@ -43242,7 +43242,7 @@ function __Z13ce_TotalZerosP15tagDecBitstreamPii($stream, $code, $TotalCoeff) {
                 var $call110 = _BitstreamShowBits($stream_addr, 4, $temp);
                 
                 
-                if (HEAPU32[$temp >> 2] >>> 0 >= 8) {
+                if (HEAPU32[$temp >> 2] >= 8) {
                   __label__ = 44;
                 } else {
                   __label__ = 45;
@@ -43252,7 +43252,7 @@ function __Z13ce_TotalZerosP15tagDecBitstreamPii($stream, $code, $TotalCoeff) {
                 } else if (__label__ == 45) {
                   
                   
-                  if (HEAPU32[$temp >> 2] >>> 0 >= 4) {
+                  if (HEAPU32[$temp >> 2] >= 4) {
                     __label__ = 46;
                   } else {
                     __label__ = 47;
@@ -43286,7 +43286,7 @@ function __Z13ce_TotalZerosP15tagDecBitstreamPii($stream, $code, $TotalCoeff) {
                   
                   
                   
-                  if ((HEAP32[$temp >> 2] & $mask | 0) == 0) {
+                  if ((HEAP32[$temp >> 2] & $mask) == 0) {
                     __lastLabel__ = 51;
                     __label__ = 52;
                   } else {
@@ -43297,7 +43297,7 @@ function __Z13ce_TotalZerosP15tagDecBitstreamPii($stream, $code, $TotalCoeff) {
                     
                     
                     
-                    var $cmp131 = ($indx | 0) < (16 - $TotalCoeff_addr | 0);
+                    var $cmp131 = $indx < 16 - $TotalCoeff_addr;
                     __lastLabel__ = 52;
                   }
                   var $54 = __lastLabel__ == 51 ? 0 : $cmp131;
@@ -43334,7 +43334,7 @@ function __Z13ce_TotalZerosP15tagDecBitstreamPii($stream, $code, $TotalCoeff) {
       var $call22 = _BitstreamShowBits($stream_addr, 6, $temp);
       
       
-      if (HEAPU32[$temp >> 2] >>> 0 >= 32) {
+      if (HEAPU32[$temp >> 2] >= 32) {
         __label__ = 14;
       } else {
         __label__ = 15;
@@ -43352,7 +43352,7 @@ function __Z13ce_TotalZerosP15tagDecBitstreamPii($stream, $code, $TotalCoeff) {
       } else if (__label__ == 15) {
         
         
-        if (HEAPU32[$temp >> 2] >>> 0 >= 8) {
+        if (HEAPU32[$temp >> 2] >= 8) {
           __label__ = 16;
         } else {
           __label__ = 17;
@@ -43384,7 +43384,7 @@ function __Z13ce_TotalZerosP15tagDecBitstreamPii($stream, $code, $TotalCoeff) {
   
   
   
-  HEAP32[$code_addr >> 2] = HEAPU8[$pcode >> 0] & 255;
+  HEAP32[$code_addr >> 2] = HEAPU8[$pcode >> 0];
   
   
   
@@ -43392,7 +43392,7 @@ function __Z13ce_TotalZerosP15tagDecBitstreamPii($stream, $code, $TotalCoeff) {
   
   
   
-  var $add145 = HEAP32[$stream_addr + 36 >> 2] + (HEAPU8[$pcode + 1 >> 0] & 255);
+  var $add145 = HEAP32[$stream_addr + 36 >> 2] + HEAPU8[$pcode + 1 >> 0];
   HEAP32[$stream_addr + 36 >> 2] = $add145;
   
   
@@ -43401,7 +43401,7 @@ function __Z13ce_TotalZerosP15tagDecBitstreamPii($stream, $code, $TotalCoeff) {
   
   
   
-  var $sub148 = HEAP32[$stream_addr + 28 >> 2] - (HEAPU8[$pcode + 1 >> 0] & 255);
+  var $sub148 = HEAP32[$stream_addr + 28 >> 2] - HEAPU8[$pcode + 1 >> 0];
   HEAP32[$stream_addr + 28 >> 2] = $sub148;
   
   
@@ -43410,7 +43410,7 @@ function __Z13ce_TotalZerosP15tagDecBitstreamPii($stream, $code, $TotalCoeff) {
   
   
   
-  var $shl151 = HEAP32[$stream_addr + 16 >> 2] << (HEAPU8[$pcode + 1 >> 0] & 255);
+  var $shl151 = HEAP32[$stream_addr + 16 >> 2] << HEAPU8[$pcode + 1 >> 0];
   HEAP32[$stream_addr + 16 >> 2] = $shl151;
   STACKTOP = __stackBase__;
   return 1;
@@ -43442,7 +43442,7 @@ function __Z21ce_TotalZerosChromaDCP15tagDecBitstreamPii($stream, $code, $TotalC
   
   
   
-  HEAP32[$code_addr >> 2] = HEAPU8[$pcode >> 0] & 255;
+  HEAP32[$code_addr >> 2] = HEAPU8[$pcode >> 0];
   
   
   
@@ -43450,7 +43450,7 @@ function __Z21ce_TotalZerosChromaDCP15tagDecBitstreamPii($stream, $code, $TotalC
   
   
   
-  var $add = HEAP32[$stream_addr + 36 >> 2] + (HEAPU8[$pcode + 1 >> 0] & 255);
+  var $add = HEAP32[$stream_addr + 36 >> 2] + HEAPU8[$pcode + 1 >> 0];
   HEAP32[$stream_addr + 36 >> 2] = $add;
   
   
@@ -43459,7 +43459,7 @@ function __Z21ce_TotalZerosChromaDCP15tagDecBitstreamPii($stream, $code, $TotalC
   
   
   
-  var $sub7 = HEAP32[$stream_addr + 28 >> 2] - (HEAPU8[$pcode + 1 >> 0] & 255);
+  var $sub7 = HEAP32[$stream_addr + 28 >> 2] - HEAPU8[$pcode + 1 >> 0];
   HEAP32[$stream_addr + 28 >> 2] = $sub7;
   
   
@@ -43468,7 +43468,7 @@ function __Z21ce_TotalZerosChromaDCP15tagDecBitstreamPii($stream, $code, $TotalC
   
   
   
-  var $shl = HEAP32[$stream_addr + 16 >> 2] << (HEAPU8[$pcode + 1 >> 0] & 255);
+  var $shl = HEAP32[$stream_addr + 16 >> 2] << HEAPU8[$pcode + 1 >> 0];
   HEAP32[$stream_addr + 16 >> 2] = $shl;
   STACKTOP = __stackBase__;
   return 1;
@@ -43489,7 +43489,7 @@ function __Z12ce_RunBeforeP15tagDecBitstreamPii($stream, $code, $zerosLeft) {
   $zerosLeft_addr = $zerosLeft;
   
   
-  if (($zerosLeft_addr | 0) <= 6) {
+  if ($zerosLeft_addr <= 6) {
     __label__ = 1;
   } else {
     __label__ = 2;
@@ -43513,7 +43513,7 @@ function __Z12ce_RunBeforeP15tagDecBitstreamPii($stream, $code, $zerosLeft) {
     
     
     
-    HEAP32[$code_addr >> 2] = HEAPU8[$pcode >> 0] & 255;
+    HEAP32[$code_addr >> 2] = HEAPU8[$pcode >> 0];
     
     
     
@@ -43521,7 +43521,7 @@ function __Z12ce_RunBeforeP15tagDecBitstreamPii($stream, $code, $zerosLeft) {
     
     
     
-    var $add = HEAP32[$stream_addr + 36 >> 2] + (HEAPU8[$pcode + 1 >> 0] & 255);
+    var $add = HEAP32[$stream_addr + 36 >> 2] + HEAPU8[$pcode + 1 >> 0];
     HEAP32[$stream_addr + 36 >> 2] = $add;
     
     
@@ -43530,7 +43530,7 @@ function __Z12ce_RunBeforeP15tagDecBitstreamPii($stream, $code, $zerosLeft) {
     
     
     
-    var $sub10 = HEAP32[$stream_addr + 28 >> 2] - (HEAPU8[$pcode + 1 >> 0] & 255);
+    var $sub10 = HEAP32[$stream_addr + 28 >> 2] - HEAPU8[$pcode + 1 >> 0];
     HEAP32[$stream_addr + 28 >> 2] = $sub10;
     
     
@@ -43539,14 +43539,14 @@ function __Z12ce_RunBeforeP15tagDecBitstreamPii($stream, $code, $zerosLeft) {
     
     
     
-    var $shl = HEAP32[$stream_addr + 16 >> 2] << (HEAPU8[$pcode + 1 >> 0] & 255);
+    var $shl = HEAP32[$stream_addr + 16 >> 2] << HEAPU8[$pcode + 1 >> 0];
     HEAP32[$stream_addr + 16 >> 2] = $shl;
   } else if (__label__ == 2) {
     
     var $call13 = _BitstreamReadBits($stream_addr, 3, $temp);
     
     
-    if ((HEAP32[$temp >> 2] | 0) != 0) {
+    if (HEAP32[$temp >> 2] != 0) {
       __label__ = 3;
     } else {
       __label__ = 4;
@@ -43569,7 +43569,7 @@ function __Z12ce_RunBeforeP15tagDecBitstreamPii($stream, $code, $zerosLeft) {
       while (1) {
         
         
-        var $cmp19 = (HEAP32[$temp >> 2] & 32768 | 0) == 0;
+        var $cmp19 = (HEAP32[$temp >> 2] & 32768) == 0;
         if (!$cmp19) {
           __label__ = 7;
           break;
@@ -43632,14 +43632,14 @@ function __Z10EBSPtoRBSPPhPi($nal_unit, $size) {
     
     
     
-    var $cmp = ($i | 0) < (HEAP32[$size_addr >> 2] | 0);
+    var $cmp = $i < HEAP32[$size_addr >> 2];
     if (!$cmp) {
       __label__ = 10;
       break $for_cond$2;
     }
     
     
-    if (($count | 0) == 2) {
+    if ($count == 2) {
       __label__ = 3;
     } else {
       __label__ = 5;
@@ -43651,7 +43651,7 @@ function __Z10EBSPtoRBSPPhPi($nal_unit, $size) {
         
         
         
-        var $cmp2 = (HEAPU8[$nal_unit_addr + $i >> 0] & 255 | 0) == 3;
+        var $cmp2 = HEAPU8[$nal_unit_addr + $i >> 0] == 3;
         if (!$cmp2) {
           __label__ = 5;
           break $land_lhs_true$$if_end$5;
@@ -43676,7 +43676,7 @@ function __Z10EBSPtoRBSPPhPi($nal_unit, $size) {
     
     
     
-    if ((HEAPU8[$nal_unit_addr + $i >> 0] & 255 | 0) == 0) {
+    if (HEAPU8[$nal_unit_addr + $i >> 0] == 0) {
       __label__ = 6;
     } else {
       __label__ = 7;
@@ -43729,7 +43729,7 @@ function _PVAVCAnnexBGetNALUnit($bitstream, $nal_unit, $size) {
     
     
     
-    if ((HEAPU8[$bitstream_addr + $i >> 0] & 255 | 0) == 0) {
+    if (HEAPU8[$bitstream_addr + $i >> 0] == 0) {
       __lastLabel__ = 1;
       __label__ = 2;
     } else {
@@ -43740,7 +43740,7 @@ function _PVAVCAnnexBGetNALUnit($bitstream, $nal_unit, $size) {
       
       
       
-      var $cmp1 = ($i | 0) < (HEAP32[$size_addr >> 2] | 0);
+      var $cmp1 = $i < HEAP32[$size_addr >> 2];
       __lastLabel__ = 2;
     }
     var $6 = __lastLabel__ == 1 ? 0 : $cmp1;
@@ -43758,7 +43758,7 @@ function _PVAVCAnnexBGetNALUnit($bitstream, $nal_unit, $size) {
   
   
   
-  if (($i | 0) >= (HEAP32[$size_addr >> 2] | 0)) {
+  if ($i >= HEAP32[$size_addr >> 2]) {
     __label__ = 6;
   } else {
     __label__ = 7;
@@ -43775,7 +43775,7 @@ function _PVAVCAnnexBGetNALUnit($bitstream, $nal_unit, $size) {
     
     
     
-    if ((HEAPU8[$bitstream_addr + $i >> 0] & 255 | 0) != 1) {
+    if (HEAPU8[$bitstream_addr + $i >> 0] != 1) {
       __label__ = 8;
     } else {
       __label__ = 9;
@@ -43797,7 +43797,7 @@ function _PVAVCAnnexBGetNALUnit($bitstream, $nal_unit, $size) {
     $while_cond9$16 : while (1) {
       
       
-      var $lnot = ($FoundStartCode | 0) != 0 ^ 1;
+      var $lnot = $FoundStartCode != 0 ^ 1;
       if (!$lnot) {
         __label__ = 30;
         break $while_cond9$16;
@@ -43808,7 +43808,7 @@ function _PVAVCAnnexBGetNALUnit($bitstream, $nal_unit, $size) {
         
         
         
-        if (($j + 1 | 0) < (HEAP32[$size_addr >> 2] | 0)) {
+        if ($j + 1 < HEAP32[$size_addr >> 2]) {
           __lastLabel__ = 13;
           __label__ = 14;
         } else {
@@ -43822,7 +43822,7 @@ function _PVAVCAnnexBGetNALUnit($bitstream, $nal_unit, $size) {
           
           
           
-          if ((HEAPU8[$bitstream_addr + $j >> 0] & 255 | 0) != 0) {
+          if (HEAPU8[$bitstream_addr + $j >> 0] != 0) {
             __lastLabel__ = 14;
             __label__ = 16;
           } else {
@@ -43836,7 +43836,7 @@ function _PVAVCAnnexBGetNALUnit($bitstream, $nal_unit, $size) {
             
             
             
-            var $cmp20 = (HEAPU8[$bitstream_addr + ($j + 1) >> 0] & 255 | 0) != 0;
+            var $cmp20 = HEAPU8[$bitstream_addr + ($j + 1) >> 0] != 0;
             __lastLabel__ = 15;
           }
           var $31 = __lastLabel__ == 14 ? 1 : $cmp20;
@@ -43861,7 +43861,7 @@ function _PVAVCAnnexBGetNALUnit($bitstream, $nal_unit, $size) {
         
         
         
-        if (($j + 2 | 0) < (HEAP32[$size_addr >> 2] | 0)) {
+        if ($j + 2 < HEAP32[$size_addr >> 2]) {
           __lastLabel__ = 20;
           __label__ = 21;
         } else {
@@ -43875,7 +43875,7 @@ function _PVAVCAnnexBGetNALUnit($bitstream, $nal_unit, $size) {
           
           
           
-          var $cmp32 = (HEAPU8[$bitstream_addr + ($j + 2) >> 0] & 255 | 0) == 0;
+          var $cmp32 = HEAPU8[$bitstream_addr + ($j + 2) >> 0] == 0;
           __lastLabel__ = 21;
         }
         var $41 = __lastLabel__ == 20 ? 0 : $cmp32;
@@ -43894,7 +43894,7 @@ function _PVAVCAnnexBGetNALUnit($bitstream, $nal_unit, $size) {
       
       
       
-      if (($j + 2 | 0) >= (HEAP32[$size_addr >> 2] | 0)) {
+      if ($j + 2 >= HEAP32[$size_addr >> 2]) {
         __label__ = 25;
         break $while_cond9$16;
       }
@@ -43905,7 +43905,7 @@ function _PVAVCAnnexBGetNALUnit($bitstream, $nal_unit, $size) {
       
       
       
-      if ((HEAPU8[$bitstream_addr + ($j + 2) >> 0] & 255 | 0) == 1) {
+      if (HEAPU8[$bitstream_addr + ($j + 2) >> 0] == 1) {
         __label__ = 27;
       } else {
         __label__ = 28;
@@ -43957,7 +43957,7 @@ function _PVAVCDecGetNALType($bitstream, $size, $nal_type, $nal_ref_idc) {
   $nal_ref_idc_addr = $nal_ref_idc;
   
   
-  if (($size_addr | 0) > 0) {
+  if ($size_addr > 0) {
     __label__ = 1;
   } else {
     __label__ = 4;
@@ -43968,10 +43968,10 @@ function _PVAVCDecGetNALType($bitstream, $size, $nal_type, $nal_ref_idc) {
     
     
     
-    $forbidden_zero_bit = (HEAPU8[$bitstream_addr >> 0] & 255) >> 7;
+    $forbidden_zero_bit = HEAPU8[$bitstream_addr >> 0] >> 7;
     
     
-    if (($forbidden_zero_bit | 0) != 0) {
+    if ($forbidden_zero_bit != 0) {
       __label__ = 2;
     } else {
       __label__ = 3;
@@ -43986,14 +43986,14 @@ function _PVAVCDecGetNALType($bitstream, $size, $nal_type, $nal_ref_idc) {
       
       
       
-      HEAP32[$nal_ref_idc_addr >> 2] = (HEAPU8[$bitstream_addr >> 0] & 255 & 96) >> 5;
+      HEAP32[$nal_ref_idc_addr >> 2] = (HEAPU8[$bitstream_addr >> 0] & 96) >> 5;
       
       
       
       
       
       
-      HEAP32[$nal_type_addr >> 2] = HEAPU8[$bitstream_addr >> 0] & 255 & 31;
+      HEAP32[$nal_type_addr >> 2] = HEAPU8[$bitstream_addr >> 0] & 31;
       $retval = 1;
     }
   } else if (__label__ == 4) {
@@ -44031,7 +44031,7 @@ function _PVAVCDecSeqParamSet($avcHandle, $nal_unit, $nal_size) {
   
   
   
-  if ((HEAP32[$avcHandle_addr >> 2] | 0) == 0) {
+  if (HEAP32[$avcHandle_addr >> 2] == 0) {
     __label__ = 1;
   } else {
     __label__ = 8;
@@ -44052,7 +44052,7 @@ function _PVAVCDecSeqParamSet($avcHandle, $nal_unit, $nal_size) {
       
       
       
-      if ((HEAP32[$avcHandle_addr >> 2] | 0) == 0) {
+      if (HEAP32[$avcHandle_addr >> 2] == 0) {
         __label__ = 2;
       } else {
         __label__ = 3;
@@ -44100,7 +44100,7 @@ function _PVAVCDecSeqParamSet($avcHandle, $nal_unit, $nal_size) {
         
         
         
-        if ((HEAP32[$decvid >> 2] | 0) == 0) {
+        if (HEAP32[$decvid >> 2] == 0) {
           __label__ = 4;
         } else {
           __label__ = 5;
@@ -44150,7 +44150,7 @@ function _PVAVCDecSeqParamSet($avcHandle, $nal_unit, $nal_size) {
           
           
           
-          if ((HEAP32[$decvid + 4 >> 2] | 0) == 0) {
+          if (HEAP32[$decvid + 4 >> 2] == 0) {
             __label__ = 6;
           } else {
             __label__ = 7;
@@ -44207,12 +44207,12 @@ function _PVAVCDecSeqParamSet($avcHandle, $nal_unit, $nal_size) {
       
       
       
-      HEAP32[$video + 840 >> 2] = (HEAPU8[$nal_unit_addr >> 0] & 255) >> 7;
+      HEAP32[$video + 840 >> 2] = HEAPU8[$nal_unit_addr >> 0] >> 7;
       
       
       
       
-      if ((HEAP32[$video + 840 >> 2] | 0) != 0) {
+      if (HEAP32[$video + 840 >> 2] != 0) {
         __label__ = 9;
       } else {
         __label__ = 10;
@@ -44228,7 +44228,7 @@ function _PVAVCDecSeqParamSet($avcHandle, $nal_unit, $nal_size) {
         
         
         
-        HEAP32[$video + 844 >> 2] = (HEAPU8[$nal_unit_addr >> 0] & 255 & 96) >> 5;
+        HEAP32[$video + 844 >> 2] = (HEAPU8[$nal_unit_addr >> 0] & 96) >> 5;
         
         
         
@@ -44236,12 +44236,12 @@ function _PVAVCDecSeqParamSet($avcHandle, $nal_unit, $nal_size) {
         
         
         
-        HEAP32[$video + 848 >> 2] = HEAPU8[$nal_unit_addr >> 0] & 255 & 31;
+        HEAP32[$video + 848 >> 2] = HEAPU8[$nal_unit_addr >> 0] & 31;
         
         
         
         
-        if ((HEAP32[$video + 848 >> 2] | 0) != 7) {
+        if (HEAP32[$video + 848 >> 2] != 7) {
           __label__ = 11;
         } else {
           __label__ = 12;
@@ -44259,7 +44259,7 @@ function _PVAVCDecSeqParamSet($avcHandle, $nal_unit, $nal_size) {
           
           
           
-          if (($first_seq & 1 & 1 | 0) == 1) {
+          if (($first_seq & 1) == 1) {
             __label__ = 13;
           } else {
             __label__ = 26;
@@ -44274,7 +44274,7 @@ function _PVAVCDecSeqParamSet($avcHandle, $nal_unit, $nal_size) {
             $i = 0;
             $for_cond$23 : while (1) {
               
-              var $cmp48 = ($i | 0) < 32;
+              var $cmp48 = $i < 32;
               if (!$cmp48) {
                 __label__ = 17;
                 break $for_cond$23;
@@ -44293,7 +44293,7 @@ function _PVAVCDecSeqParamSet($avcHandle, $nal_unit, $nal_size) {
             $i = 0;
             while (1) {
               
-              var $cmp51 = ($i | 0) < 256;
+              var $cmp51 = $i < 256;
               if (!$cmp51) {
                 __label__ = 21;
                 break;
@@ -44346,7 +44346,7 @@ function _PVAVCDecSeqParamSet($avcHandle, $nal_unit, $nal_size) {
             
             
             
-            if ((HEAP32[$video + 880 >> 2] | 0) == 0) {
+            if (HEAP32[$video + 880 >> 2] == 0) {
               __label__ = 22;
             } else {
               __label__ = 23;
@@ -44369,7 +44369,7 @@ function _PVAVCDecSeqParamSet($avcHandle, $nal_unit, $nal_size) {
               
               
               
-              if ((HEAP32[$video + 864 >> 2] | 0) == 0) {
+              if (HEAP32[$video + 864 >> 2] == 0) {
                 __label__ = 24;
               } else {
                 __label__ = 25;
@@ -44410,7 +44410,7 @@ function _PVAVCDecSeqParamSet($avcHandle, $nal_unit, $nal_size) {
           $status = $call71;
           
           
-          if (($status | 0) != 1) {
+          if ($status != 1) {
             __label__ = 27;
           } else {
             __label__ = 28;
@@ -44451,7 +44451,7 @@ function _PVAVCDecGetSeqInfo($avcHandle, $seqInfo) {
   $decvid = HEAP32[$avcHandle_addr >> 2];
   
   
-  if (($decvid | 0) == 0) {
+  if ($decvid == 0) {
     __label__ = 2;
   } else {
     __label__ = 1;
@@ -44463,7 +44463,7 @@ function _PVAVCDecGetSeqInfo($avcHandle, $seqInfo) {
       
       
       
-      if ((HEAP32[$decvid + 8 >> 2] | 0) == 0) {
+      if (HEAP32[$decvid + 8 >> 2] == 0) {
         __label__ = 2;
         break $if_then$$lor_lhs_false$2;
       }
@@ -44523,7 +44523,7 @@ function _PVAVCDecGetSeqInfo($avcHandle, $seqInfo) {
       
       
       
-      if ((HEAP32[HEAP32[$decvid + 8 >> 2] + 1108 >> 2] | 0) != 0) {
+      if (HEAP32[HEAP32[$decvid + 8 >> 2] + 1108 >> 2] != 0) {
         __label__ = 4;
       } else {
         __label__ = 8;
@@ -44558,7 +44558,7 @@ function _PVAVCDecGetSeqInfo($avcHandle, $seqInfo) {
         
         
         
-        if ((HEAP32[$seqInfo_addr + 8 >> 2] | 0) != 0) {
+        if (HEAP32[$seqInfo_addr + 8 >> 2] != 0) {
           __label__ = 5;
         } else {
           __label__ = 6;
@@ -44673,7 +44673,7 @@ function _PVAVCDecPicParamSet($avcHandle, $nal_unit, $nal_size) {
   $decvid = HEAP32[$avcHandle_addr >> 2];
   
   
-  if (($decvid | 0) == 0) {
+  if ($decvid == 0) {
     __label__ = 1;
   } else {
     __label__ = 2;
@@ -44696,7 +44696,7 @@ function _PVAVCDecPicParamSet($avcHandle, $nal_unit, $nal_size) {
     
     
     
-    HEAP32[$video + 840 >> 2] = (HEAPU8[$nal_unit_addr >> 0] & 255) >> 7;
+    HEAP32[$video + 840 >> 2] = HEAPU8[$nal_unit_addr >> 0] >> 7;
     
     
     
@@ -44705,7 +44705,7 @@ function _PVAVCDecPicParamSet($avcHandle, $nal_unit, $nal_size) {
     
     
     
-    HEAP32[$video + 844 >> 2] = (HEAPU8[$nal_unit_addr >> 0] & 255 & 96) >> 5;
+    HEAP32[$video + 844 >> 2] = (HEAPU8[$nal_unit_addr >> 0] & 96) >> 5;
     
     
     
@@ -44713,12 +44713,12 @@ function _PVAVCDecPicParamSet($avcHandle, $nal_unit, $nal_size) {
     
     
     
-    HEAP32[$video + 848 >> 2] = HEAPU8[$nal_unit_addr >> 0] & 255 & 31;
+    HEAP32[$video + 848 >> 2] = HEAPU8[$nal_unit_addr >> 0] & 31;
     
     
     
     
-    if ((HEAP32[$video + 848 >> 2] | 0) != 8) {
+    if (HEAP32[$video + 848 >> 2] != 8) {
       __label__ = 3;
     } else {
       __label__ = 4;
@@ -44739,7 +44739,7 @@ function _PVAVCDecPicParamSet($avcHandle, $nal_unit, $nal_size) {
       $status = $call12;
       
       
-      if (($status | 0) != 1) {
+      if ($status != 1) {
         __label__ = 5;
       } else {
         __label__ = 6;
@@ -44804,7 +44804,7 @@ function _PVAVCDecodeSlice($avcHandle, $buffer, $buf_size) {
   $decvid = HEAP32[$avcHandle_addr >> 2];
   
   
-  if (($decvid | 0) == 0) {
+  if ($decvid == 0) {
     __label__ = 1;
   } else {
     __label__ = 2;
@@ -44825,7 +44825,7 @@ function _PVAVCDecodeSlice($avcHandle, $buffer, $buf_size) {
       
       
       
-      if ((HEAP32[$video + 1352 >> 2] | 0) != 0) {
+      if (HEAP32[$video + 1352 >> 2] != 0) {
         __label__ = 3;
       } else {
         __label__ = 4;
@@ -44837,7 +44837,7 @@ function _PVAVCDecodeSlice($avcHandle, $buffer, $buf_size) {
         
         
         
-        if ((HEAP32[$video + 900 >> 2] | 0) != 0) {
+        if (HEAP32[$video + 900 >> 2] != 0) {
           __label__ = 5;
         } else {
           __label__ = 34;
@@ -44845,7 +44845,7 @@ function _PVAVCDecodeSlice($avcHandle, $buffer, $buf_size) {
         if (__label__ == 5) {
           
           
-          if (($buffer_addr | 0) == 0) {
+          if ($buffer_addr == 0) {
             __label__ = 6;
           } else {
             __label__ = 7;
@@ -44868,7 +44868,7 @@ function _PVAVCDecodeSlice($avcHandle, $buffer, $buf_size) {
             
             
             
-            HEAP32[$video + 840 >> 2] = (HEAPU8[$buffer_addr >> 0] & 255) >> 7;
+            HEAP32[$video + 840 >> 2] = HEAPU8[$buffer_addr >> 0] >> 7;
             
             
             
@@ -44877,7 +44877,7 @@ function _PVAVCDecodeSlice($avcHandle, $buffer, $buf_size) {
             
             
             
-            HEAP32[$video + 844 >> 2] = (HEAPU8[$buffer_addr >> 0] & 255 & 96) >> 5;
+            HEAP32[$video + 844 >> 2] = (HEAPU8[$buffer_addr >> 0] & 96) >> 5;
             
             
             
@@ -44885,12 +44885,12 @@ function _PVAVCDecodeSlice($avcHandle, $buffer, $buf_size) {
             
             
             
-            HEAP32[$video + 848 >> 2] = HEAPU8[$buffer_addr >> 0] & 255 & 31;
+            HEAP32[$video + 848 >> 2] = HEAPU8[$buffer_addr >> 0] & 31;
             
             
             
             
-            if ((HEAP32[$video + 848 >> 2] | 0) == 9) {
+            if (HEAP32[$video + 848 >> 2] == 9) {
               __label__ = 8;
             } else {
               __label__ = 9;
@@ -44904,7 +44904,7 @@ function _PVAVCDecodeSlice($avcHandle, $buffer, $buf_size) {
               
               
               
-              if ((HEAP32[$video + 848 >> 2] | 0) != 1) {
+              if (HEAP32[$video + 848 >> 2] != 1) {
                 __label__ = 10;
               } else {
                 __label__ = 12;
@@ -44914,7 +44914,7 @@ function _PVAVCDecodeSlice($avcHandle, $buffer, $buf_size) {
                   
                   
                   
-                  var $cmp23 = (HEAP32[$video + 848 >> 2] | 0) != 5;
+                  var $cmp23 = HEAP32[$video + 848 >> 2] != 5;
                   if (!$cmp23) {
                     __label__ = 12;
                     break $land_lhs_true$$if_end25$16;
@@ -44928,7 +44928,7 @@ function _PVAVCDecodeSlice($avcHandle, $buffer, $buf_size) {
               
               
               
-              if ((HEAP32[$video + 848 >> 2] | 0) >= 2) {
+              if (HEAP32[$video + 848 >> 2] >= 2) {
                 __label__ = 13;
               } else {
                 __label__ = 15;
@@ -44938,7 +44938,7 @@ function _PVAVCDecodeSlice($avcHandle, $buffer, $buf_size) {
                   
                   
                   
-                  var $cmp30 = (HEAP32[$video + 848 >> 2] | 0) <= 4;
+                  var $cmp30 = HEAP32[$video + 848 >> 2] <= 4;
                   if (!$cmp30) {
                     __label__ = 15;
                     break $land_lhs_true28$$if_else$20;
@@ -44967,7 +44967,7 @@ function _PVAVCDecodeSlice($avcHandle, $buffer, $buf_size) {
               $status = $call34;
               
               
-              if (($status | 0) != 1) {
+              if ($status != 1) {
                 __label__ = 17;
               } else {
                 __label__ = 18;
@@ -44990,7 +44990,7 @@ function _PVAVCDecodeSlice($avcHandle, $buffer, $buf_size) {
                 
                 
                 
-                if ((HEAP32[HEAP32[$video + 880 >> 2] + 12 >> 2] | 0) != (HEAP32[$video + 1388 >> 2] | 0)) {
+                if (HEAP32[HEAP32[$video + 880 >> 2] + 12 >> 2] != HEAP32[$video + 1388 >> 2]) {
                   __label__ = 21;
                 } else {
                   __label__ = 19;
@@ -45005,7 +45005,7 @@ function _PVAVCDecodeSlice($avcHandle, $buffer, $buf_size) {
                     
                     
                     
-                    var $cmp41 = HEAPU32[HEAP32[$video + 880 >> 2] >> 2] >>> 0 < HEAPU32[$video + 916 >> 2] >>> 0;
+                    var $cmp41 = HEAPU32[HEAP32[$video + 880 >> 2] >> 2] < HEAPU32[$video + 916 >> 2];
                     if (!$cmp41) {
                       __label__ = 24;
                       break $if_then44$$lor_lhs_false$28;
@@ -45016,7 +45016,7 @@ function _PVAVCDecodeSlice($avcHandle, $buffer, $buf_size) {
                     
                     
                     
-                    if ((HEAP32[HEAP32[$video + 868 >> 2] + 12 >> 2] | 0) == 1) {
+                    if (HEAP32[HEAP32[$video + 868 >> 2] + 12 >> 2] == 1) {
                       __label__ = 21;
                       break $if_then44$$lor_lhs_false$28;
                     } else {
@@ -45033,7 +45033,7 @@ function _PVAVCDecodeSlice($avcHandle, $buffer, $buf_size) {
                   
                   
                   
-                  if ((HEAP32[$video + 1316 >> 2] | 0) > 0) {
+                  if (HEAP32[$video + 1316 >> 2] > 0) {
                     __label__ = 22;
                   } else {
                     __label__ = 23;
@@ -45085,7 +45085,7 @@ function _PVAVCDecodeSlice($avcHandle, $buffer, $buf_size) {
                 
                 
                 
-                if ((HEAP32[$video + 848 >> 2] | 0) == 5) {
+                if (HEAP32[$video + 848 >> 2] == 5) {
                   __label__ = 25;
                 } else {
                   __label__ = 26;
@@ -45104,7 +45104,7 @@ function _PVAVCDecodeSlice($avcHandle, $buffer, $buf_size) {
                 
                 
                 
-                if ((HEAP32[HEAP32[$video + 868 >> 2] + 1084 >> 2] | 0) != 0) {
+                if (HEAP32[HEAP32[$video + 868 >> 2] + 1084 >> 2] != 0) {
                   __label__ = 33;
                 } else {
                   __label__ = 27;
@@ -45119,7 +45119,7 @@ function _PVAVCDecodeSlice($avcHandle, $buffer, $buf_size) {
                   
                   
                   
-                  if ((HEAP32[HEAP32[$video + 880 >> 2] + 12 >> 2] | 0) != (HEAP32[$video + 1288 >> 2] | 0)) {
+                  if (HEAP32[HEAP32[$video + 880 >> 2] + 12 >> 2] != HEAP32[$video + 1288 >> 2]) {
                     __label__ = 28;
                   } else {
                     __label__ = 32;
@@ -45139,7 +45139,7 @@ function _PVAVCDecodeSlice($avcHandle, $buffer, $buf_size) {
                       
                       
                       
-                      var $cmp76 = (HEAP32[HEAP32[$video + 880 >> 2] + 12 >> 2] | 0) != ((HEAP32[$video + 1288 >> 2] + 1 >>> 0) % (HEAPU32[$video + 1240 >> 2] >>> 0) | 0);
+                      var $cmp76 = HEAP32[HEAP32[$video + 880 >> 2] + 12 >> 2] != (HEAP32[$video + 1288 >> 2] + 1) % HEAPU32[$video + 1240 >> 2];
                       if (!$cmp76) {
                         __label__ = 32;
                         break $land_lhs_true72$$if_end103$42;
@@ -45173,7 +45173,7 @@ function _PVAVCDecodeSlice($avcHandle, $buffer, $buf_size) {
                       $status = $call86;
                       
                       
-                      if (($status | 0) != 1) {
+                      if ($status != 1) {
                         __label__ = 30;
                       } else {
                         __label__ = 31;
@@ -45208,7 +45208,7 @@ function _PVAVCDecodeSlice($avcHandle, $buffer, $buf_size) {
                         
                         
                         
-                        var $rem95 = (HEAPU32[$video + 1288 >> 2] >>> 0) % (HEAPU32[$video + 1240 >> 2] >>> 0);
+                        var $rem95 = HEAPU32[$video + 1288 >> 2] % HEAPU32[$video + 1240 >> 2];
                         __Z10DPBInitPicP12tagCommonObji($video, $rem95);
                         
                         __Z11RefListInitP12tagCommonObj($video);
@@ -45249,7 +45249,7 @@ function _PVAVCDecodeSlice($avcHandle, $buffer, $buf_size) {
         
         
         
-        if ((HEAP32[$video + 896 >> 2] | 0) == 1) {
+        if (HEAP32[$video + 896 >> 2] == 1) {
           __label__ = 35;
         } else {
           __label__ = 38;
@@ -45261,7 +45261,7 @@ function _PVAVCDecodeSlice($avcHandle, $buffer, $buf_size) {
           $status = $call109;
           
           
-          if (($status | 0) != 1) {
+          if ($status != 1) {
             __label__ = 36;
           } else {
             __label__ = 37;
@@ -45285,7 +45285,7 @@ function _PVAVCDecodeSlice($avcHandle, $buffer, $buf_size) {
         
         
         
-        if ((HEAP32[$video + 896 >> 2] | 0) == 1) {
+        if (HEAP32[$video + 896 >> 2] == 1) {
           __label__ = 39;
         } else {
           __label__ = 53;
@@ -45301,7 +45301,7 @@ function _PVAVCDecodeSlice($avcHandle, $buffer, $buf_size) {
           
           
           
-          if ((HEAP32[$video + 848 >> 2] | 0) != 5) {
+          if (HEAP32[$video + 848 >> 2] != 5) {
             __label__ = 40;
           } else {
             __label__ = 48;
@@ -45313,7 +45313,7 @@ function _PVAVCDecodeSlice($avcHandle, $buffer, $buf_size) {
               
               
               
-              var $tobool125 = (HEAP32[HEAP32[$video + 868 >> 2] + 1084 >> 2] | 0) != 0;
+              var $tobool125 = HEAP32[HEAP32[$video + 868 >> 2] + 1084 >> 2] != 0;
               if (!$tobool125) {
                 __label__ = 48;
                 break $land_lhs_true122$$if_end146$59;
@@ -45332,7 +45332,7 @@ function _PVAVCDecodeSlice($avcHandle, $buffer, $buf_size) {
               
               
               
-              if ((HEAP32[HEAP32[$video + 880 >> 2] + 12 >> 2] | 0) != ((HEAP32[$video + 1288 >> 2] + 1 >>> 0) % (HEAPU32[$video + 1240 >> 2] >>> 0) | 0)) {
+              if (HEAP32[HEAP32[$video + 880 >> 2] + 12 >> 2] != (HEAP32[$video + 1288 >> 2] + 1) % HEAPU32[$video + 1240 >> 2]) {
                 __label__ = 42;
               } else {
                 __label__ = 47;
@@ -45344,7 +45344,7 @@ function _PVAVCDecodeSlice($avcHandle, $buffer, $buf_size) {
                 $status = $call135;
                 
                 
-                if (($status | 0) != 1) {
+                if ($status != 1) {
                   __label__ = 43;
                 } else {
                   __label__ = 44;
@@ -45364,7 +45364,7 @@ function _PVAVCDecodeSlice($avcHandle, $buffer, $buf_size) {
                   $status = $call140;
                   
                   
-                  if (($status | 0) != 1) {
+                  if ($status != 1) {
                     __label__ = 45;
                   } else {
                     __label__ = 46;
@@ -45400,7 +45400,7 @@ function _PVAVCDecodeSlice($avcHandle, $buffer, $buf_size) {
           
           
           
-          if ((HEAP32[$video + 844 >> 2] | 0) == 0) {
+          if (HEAP32[$video + 844 >> 2] == 0) {
             __label__ = 49;
           } else {
             __label__ = 50;
@@ -45427,7 +45427,7 @@ function _PVAVCDecodeSlice($avcHandle, $buffer, $buf_size) {
           
           
           
-          if ((HEAP32[HEAP32[$video + 884 >> 2] + 20 >> 2] | 0) != 0) {
+          if (HEAP32[HEAP32[$video + 884 >> 2] + 20 >> 2] != 0) {
             __label__ = 51;
           } else {
             __label__ = 52;
@@ -45461,7 +45461,7 @@ function _PVAVCDecodeSlice($avcHandle, $buffer, $buf_size) {
         $status = $call171;
         
         
-        if (($status | 0) != 1) {
+        if ($status != 1) {
           __label__ = 54;
         } else {
           __label__ = 55;
@@ -45479,7 +45479,7 @@ function _PVAVCDecodeSlice($avcHandle, $buffer, $buf_size) {
           HEAP32[$video + 1280 >> 2] = $inc176;
           
           
-          if (($status | 0) == 3) {
+          if ($status == 3) {
             __label__ = 56;
           } else {
             __label__ = 62;
@@ -45493,7 +45493,7 @@ function _PVAVCDecodeSlice($avcHandle, $buffer, $buf_size) {
             $status = $call180;
             
             
-            if (($status | 0) != 1) {
+            if ($status != 1) {
               __label__ = 57;
             } else {
               __label__ = 58;
@@ -45505,7 +45505,7 @@ function _PVAVCDecodeSlice($avcHandle, $buffer, $buf_size) {
               
               
               
-              if ((HEAP32[$video + 1352 >> 2] | 0) != 0) {
+              if (HEAP32[$video + 1352 >> 2] != 0) {
                 __label__ = 59;
               } else {
                 __label__ = 60;
@@ -45556,7 +45556,7 @@ function _PVAVCDecodeSlice($avcHandle, $buffer, $buf_size) {
           } else if (__label__ == 62) {
             
             
-            if (($status | 0) != 1) {
+            if ($status != 1) {
               __label__ = 63;
             } else {
               __label__ = 64;
@@ -45612,7 +45612,7 @@ function _PVAVCDecGetOutput($avcHandle, $indx, $release, $output) {
   $min_poc = 0;
   
   
-  if (($decvid | 0) == 0) {
+  if ($decvid == 0) {
     __label__ = 1;
   } else {
     __label__ = 2;
@@ -45632,7 +45632,7 @@ function _PVAVCDecGetOutput($avcHandle, $indx, $release, $output) {
     
     
     
-    if ((HEAP32[$dpb + 80 >> 2] | 0) == 0) {
+    if (HEAP32[$dpb + 80 >> 2] == 0) {
       __label__ = 3;
     } else {
       __label__ = 4;
@@ -45644,7 +45644,7 @@ function _PVAVCDecGetOutput($avcHandle, $indx, $release, $output) {
       
       
       
-      if ((HEAP32[$video + 1352 >> 2] | 0) == 0) {
+      if (HEAP32[$video + 1352 >> 2] == 0) {
         __label__ = 5;
       } else {
         __label__ = 16;
@@ -45656,7 +45656,7 @@ function _PVAVCDecGetOutput($avcHandle, $indx, $release, $output) {
           
           
           
-          var $cmp7 = ($i | 0) < (HEAP32[$dpb + 80 >> 2] | 0);
+          var $cmp7 = $i < HEAP32[$dpb + 80 >> 2];
           if (!$cmp7) {
             __label__ = 15;
             break;
@@ -45670,7 +45670,7 @@ function _PVAVCDecGetOutput($avcHandle, $indx, $release, $output) {
           
           
           
-          if ((HEAP32[HEAP32[$dpb + 12 + $i * 4 >> 2] + 12 >> 2] & 1 | 0) == 0) {
+          if ((HEAP32[HEAP32[$dpb + 12 + $i * 4 >> 2] + 12 >> 2] & 1) == 0) {
             __label__ = 8;
           } else {
             __label__ = 13;
@@ -45681,7 +45681,7 @@ function _PVAVCDecGetOutput($avcHandle, $indx, $release, $output) {
             $count_frame = $inc;
             
             
-            if (($first | 0) != 0) {
+            if ($first != 0) {
               __label__ = 9;
             } else {
               __label__ = 10;
@@ -45714,7 +45714,7 @@ function _PVAVCDecGetOutput($avcHandle, $indx, $release, $output) {
             
             
             
-            if ((HEAP32[HEAP32[$dpb + 12 + $i * 4 >> 2] + 84 >> 2] | 0) < ($min_poc | 0)) {
+            if (HEAP32[HEAP32[$dpb + 12 + $i * 4 >> 2] + 84 >> 2] < $min_poc) {
               __label__ = 11;
             } else {
               __label__ = 12;
@@ -45751,7 +45751,7 @@ function _PVAVCDecGetOutput($avcHandle, $indx, $release, $output) {
           
           
           
-          var $cmp31 = ($i | 0) < (HEAP32[$dpb + 80 >> 2] | 0);
+          var $cmp31 = $i < HEAP32[$dpb + 80 >> 2];
           if (!$cmp31) {
             __label__ = 27;
             break $for_cond29$25;
@@ -45765,7 +45765,7 @@ function _PVAVCDecGetOutput($avcHandle, $indx, $release, $output) {
           
           
           
-          if ((HEAP32[HEAP32[$dpb + 12 + $i * 4 >> 2] + 12 >> 2] & 1 | 0) == 0) {
+          if ((HEAP32[HEAP32[$dpb + 12 + $i * 4 >> 2] + 12 >> 2] & 1) == 0) {
             __label__ = 19;
           } else {
             __label__ = 25;
@@ -45780,7 +45780,7 @@ function _PVAVCDecGetOutput($avcHandle, $indx, $release, $output) {
               
               
               
-              var $cmp40 = (HEAP32[$dpb + 12 + $i * 4 >> 2] | 0) != (HEAP32[$video + 888 >> 2] | 0);
+              var $cmp40 = HEAP32[$dpb + 12 + $i * 4 >> 2] != HEAP32[$video + 888 >> 2];
               if (!$cmp40) {
                 __label__ = 25;
                 break $land_lhs_true$$if_end62$28;
@@ -45790,7 +45790,7 @@ function _PVAVCDecGetOutput($avcHandle, $indx, $release, $output) {
               $count_frame = $inc42;
               
               
-              if (($first | 0) != 0) {
+              if ($first != 0) {
                 __label__ = 21;
               } else {
                 __label__ = 22;
@@ -45823,7 +45823,7 @@ function _PVAVCDecGetOutput($avcHandle, $indx, $release, $output) {
               
               
               
-              if ((HEAP32[HEAP32[$dpb + 12 + $i * 4 >> 2] + 84 >> 2] | 0) < ($min_poc | 0)) {
+              if (HEAP32[HEAP32[$dpb + 12 + $i * 4 >> 2] + 84 >> 2] < $min_poc) {
                 __label__ = 23;
               } else {
                 __label__ = 24;
@@ -45856,7 +45856,7 @@ function _PVAVCDecGetOutput($avcHandle, $indx, $release, $output) {
         }
         
         
-        if (($count_frame | 0) < 2) {
+        if ($count_frame < 2) {
           __label__ = 28;
         } else {
           __label__ = 30;
@@ -45866,7 +45866,7 @@ function _PVAVCDecGetOutput($avcHandle, $indx, $release, $output) {
             
             
             
-            var $cmp68 = (HEAP32[$video + 848 >> 2] | 0) != 5;
+            var $cmp68 = HEAP32[$video + 848 >> 2] != 5;
             if (!$cmp68) {
               __label__ = 30;
               break $land_lhs_true67$$if_else71$40;
@@ -45881,7 +45881,7 @@ function _PVAVCDecGetOutput($avcHandle, $indx, $release, $output) {
         if (__label__ == 30) {
           
           
-          if (($count_frame | 0) < 1) {
+          if ($count_frame < 1) {
             __label__ = 31;
           } else {
             __label__ = 40;
@@ -45891,7 +45891,7 @@ function _PVAVCDecGetOutput($avcHandle, $indx, $release, $output) {
               
               
               
-              var $cmp75 = (HEAP32[$video + 848 >> 2] | 0) == 5;
+              var $cmp75 = HEAP32[$video + 848 >> 2] == 5;
               if (!$cmp75) {
                 __label__ = 40;
                 break $land_lhs_true73$$if_end99$45;
@@ -45902,7 +45902,7 @@ function _PVAVCDecGetOutput($avcHandle, $indx, $release, $output) {
                 
                 
                 
-                var $cmp79 = ($i | 0) < (HEAP32[$dpb + 80 >> 2] | 0);
+                var $cmp79 = $i < HEAP32[$dpb + 80 >> 2];
                 if (!$cmp79) {
                   __label__ = 39;
                   break;
@@ -45916,7 +45916,7 @@ function _PVAVCDecGetOutput($avcHandle, $indx, $release, $output) {
                 
                 
                 
-                if ((HEAP32[$dpb + 12 + $i * 4 >> 2] | 0) == (HEAP32[$video + 888 >> 2] | 0)) {
+                if (HEAP32[$dpb + 12 + $i * 4 >> 2] == HEAP32[$video + 888 >> 2]) {
                   __label__ = 35;
                 } else {
                   __label__ = 37;
@@ -45931,7 +45931,7 @@ function _PVAVCDecGetOutput($avcHandle, $indx, $release, $output) {
                   
                   
                   
-                  if ((HEAP32[HEAP32[$dpb + 12 + $i * 4 >> 2] + 12 >> 2] & 1 | 0) == 0) {
+                  if ((HEAP32[HEAP32[$dpb + 12 + $i * 4 >> 2] + 12 >> 2] & 1) == 0) {
                     __label__ = 36;
                     break;
                   }
@@ -45961,7 +45961,7 @@ function _PVAVCDecGetOutput($avcHandle, $indx, $release, $output) {
       }
       
       
-      if (($oldestFrame | 0) == 0) {
+      if ($oldestFrame == 0) {
         __label__ = 43;
       } else {
         __label__ = 62;
@@ -45973,7 +45973,7 @@ function _PVAVCDecGetOutput($avcHandle, $indx, $release, $output) {
           
           
           
-          var $cmp106 = ($i | 0) < (HEAP32[$dpb + 80 >> 2] | 0);
+          var $cmp106 = $i < HEAP32[$dpb + 80 >> 2];
           if (!$cmp106) {
             __label__ = 50;
             break $for_cond104$63;
@@ -45986,7 +45986,7 @@ function _PVAVCDecGetOutput($avcHandle, $indx, $release, $output) {
           
           
           
-          if ((HEAP32[HEAP32[$dpb + 12 + $i * 4 >> 2] + 4 >> 2] | 0) == 0) {
+          if (HEAP32[HEAP32[$dpb + 12 + $i * 4 >> 2] + 4 >> 2] == 0) {
             __label__ = 46;
           } else {
             __label__ = 48;
@@ -46000,7 +46000,7 @@ function _PVAVCDecGetOutput($avcHandle, $indx, $release, $output) {
             
             
             
-            if ((HEAP32[HEAP32[$dpb + 12 + $i * 4 >> 2] + 12 >> 2] | 0) == 3) {
+            if (HEAP32[HEAP32[$dpb + 12 + $i * 4 >> 2] + 12 >> 2] == 3) {
               __label__ = 47;
               break $for_cond104$63;
             }
@@ -46019,7 +46019,7 @@ function _PVAVCDecGetOutput($avcHandle, $indx, $release, $output) {
         
         
         
-        if (($i | 0) < (HEAP32[$dpb + 80 >> 2] | 0)) {
+        if ($i < HEAP32[$dpb + 80 >> 2]) {
           __label__ = 51;
         } else {
           __label__ = 52;
@@ -46035,7 +46035,7 @@ function _PVAVCDecGetOutput($avcHandle, $indx, $release, $output) {
             
             
             
-            var $cmp127 = ($i | 0) < (HEAP32[$dpb + 80 >> 2] | 0);
+            var $cmp127 = $i < HEAP32[$dpb + 80 >> 2];
             if (!$cmp127) {
               __label__ = 61;
               break $for_cond125$76;
@@ -46048,7 +46048,7 @@ function _PVAVCDecGetOutput($avcHandle, $indx, $release, $output) {
             
             
             
-            if ((HEAP32[HEAP32[$dpb + 12 + $i * 4 >> 2] + 4 >> 2] | 0) != 0) {
+            if (HEAP32[HEAP32[$dpb + 12 + $i * 4 >> 2] + 4 >> 2] != 0) {
               __label__ = 55;
             } else {
               __label__ = 59;
@@ -46063,7 +46063,7 @@ function _PVAVCDecGetOutput($avcHandle, $indx, $release, $output) {
                 
                 
                 
-                if ((HEAP32[HEAP32[$dpb + 12 + $i * 4 >> 2] + 8 >> 2] | 0) != 0) {
+                if (HEAP32[HEAP32[$dpb + 12 + $i * 4 >> 2] + 8 >> 2] != 0) {
                   __label__ = 59;
                   break $land_lhs_true133$$if_end146$79;
                 }
@@ -46076,7 +46076,7 @@ function _PVAVCDecGetOutput($avcHandle, $indx, $release, $output) {
                 
                 
                 
-                if ((HEAP32[HEAP32[$dpb + 12 + $i * 4 >> 2] + 76 >> 2] | 0) < ($MinFrameNumWrap | 0)) {
+                if (HEAP32[HEAP32[$dpb + 12 + $i * 4 >> 2] + 76 >> 2] < $MinFrameNumWrap) {
                   __label__ = 57;
                 } else {
                   __label__ = 58;
@@ -46152,7 +46152,7 @@ function _PVAVCDecGetOutput($avcHandle, $indx, $release, $output) {
         
         
         
-        if ((HEAP32[$oldestFrame + 12 >> 2] | 0) == 3) {
+        if (HEAP32[$oldestFrame + 12 >> 2] == 3) {
           __label__ = 63;
         } else {
           __label__ = 64;
@@ -46250,7 +46250,7 @@ function _PVAVCDecReset($avcHandle) {
   $decvid = HEAP32[$avcHandle_addr >> 2];
   
   
-  if (($decvid | 0) == 0) {
+  if ($decvid == 0) {
     __label__ = 1;
   } else {
     __label__ = 2;
@@ -46272,7 +46272,7 @@ function _PVAVCDecReset($avcHandle) {
       
       
       
-      var $cmp1 = ($i | 0) < (HEAP32[$dpb + 80 >> 2] | 0);
+      var $cmp1 = $i < HEAP32[$dpb + 80 >> 2];
       if (!$cmp1) {
         __label__ = 6;
         break;
@@ -46382,7 +46382,7 @@ function _PVAVCCleanUpDecoder($avcHandle) {
   $userData = HEAP32[$avcHandle_addr + 4 >> 2];
   
   
-  if (($decvid | 0) != 0) {
+  if ($decvid != 0) {
     __label__ = 1;
   } else {
     __label__ = 28;
@@ -46394,7 +46394,7 @@ function _PVAVCCleanUpDecoder($avcHandle) {
     $video = HEAP32[$decvid >> 2];
     
     
-    if (($video | 0) != 0) {
+    if ($video != 0) {
       __label__ = 2;
     } else {
       __label__ = 11;
@@ -46404,7 +46404,7 @@ function _PVAVCCleanUpDecoder($avcHandle) {
       
       
       
-      if ((HEAP32[$video + 1412 >> 2] | 0) != 0) {
+      if (HEAP32[$video + 1412 >> 2] != 0) {
         __label__ = 3;
       } else {
         __label__ = 4;
@@ -46424,7 +46424,7 @@ function _PVAVCCleanUpDecoder($avcHandle) {
       
       
       
-      if ((HEAP32[$video + 908 >> 2] | 0) != 0) {
+      if (HEAP32[$video + 908 >> 2] != 0) {
         __label__ = 5;
       } else {
         __label__ = 6;
@@ -46444,7 +46444,7 @@ function _PVAVCCleanUpDecoder($avcHandle) {
       
       
       
-      if ((HEAP32[$video + 864 >> 2] | 0) != 0) {
+      if (HEAP32[$video + 864 >> 2] != 0) {
         __label__ = 7;
       } else {
         __label__ = 8;
@@ -46467,7 +46467,7 @@ function _PVAVCCleanUpDecoder($avcHandle) {
       
       
       
-      if ((HEAP32[$video + 880 >> 2] | 0) != 0) {
+      if (HEAP32[$video + 880 >> 2] != 0) {
         __label__ = 9;
       } else {
         __label__ = 10;
@@ -46494,7 +46494,7 @@ function _PVAVCCleanUpDecoder($avcHandle) {
     $i = 0;
     $for_cond$19 : while (1) {
       
-      var $cmp24 = ($i | 0) < 256;
+      var $cmp24 = $i < 256;
       if (!$cmp24) {
         __label__ = 19;
         break $for_cond$19;
@@ -46505,7 +46505,7 @@ function _PVAVCCleanUpDecoder($avcHandle) {
       
       
       
-      if ((HEAP32[$decvid + 136 + $i * 4 >> 2] | 0) != 0) {
+      if (HEAP32[$decvid + 136 + $i * 4 >> 2] != 0) {
         __label__ = 14;
       } else {
         __label__ = 17;
@@ -46519,7 +46519,7 @@ function _PVAVCCleanUpDecoder($avcHandle) {
         
         
         
-        if ((HEAP32[HEAP32[$decvid + 136 + $i * 4 >> 2] + 124 >> 2] | 0) != 0) {
+        if (HEAP32[HEAP32[$decvid + 136 + $i * 4 >> 2] + 124 >> 2] != 0) {
           __label__ = 15;
         } else {
           __label__ = 16;
@@ -46560,7 +46560,7 @@ function _PVAVCCleanUpDecoder($avcHandle) {
     $i = 0;
     while (1) {
       
-      var $cmp41 = ($i | 0) < 32;
+      var $cmp41 = $i < 32;
       if (!$cmp41) {
         __label__ = 25;
         break;
@@ -46571,7 +46571,7 @@ function _PVAVCCleanUpDecoder($avcHandle) {
       
       
       
-      if ((HEAP32[$decvid + 8 + $i * 4 >> 2] | 0) != 0) {
+      if (HEAP32[$decvid + 8 + $i * 4 >> 2] != 0) {
         __label__ = 22;
       } else {
         __label__ = 23;
@@ -46599,7 +46599,7 @@ function _PVAVCCleanUpDecoder($avcHandle) {
     
     
     
-    if ((HEAP32[$decvid + 4 >> 2] | 0) != 0) {
+    if (HEAP32[$decvid + 4 >> 2] != 0) {
       __label__ = 26;
     } else {
       __label__ = 27;
@@ -46748,7 +46748,7 @@ if (!Module["noInitialRun"]) {
 Module["FS"] = FS;
 FS["createDataFile"] = FS.createDataFile;
 __Z11runMainLoopv = (function() {
-  setInterval(__Z17mainLoopIterationv, 1e3 / 50);
+  Module.mainLoopInterval = setInterval(__Z17mainLoopIterationv, 1e3 / 50);
 });
 var frameCounter = 0, totalFrameCounter = 0;
 var frameTime = 0, totalFrameTime = 0;

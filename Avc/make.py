@@ -16,7 +16,8 @@ EMSCRIPTEN_SETTINGS = {
   'CHECK_SIGNED_OVERFLOWS': 0,
   'CORRECT_OVERFLOWS': 0,
   'CHECK_SIGNS': 0,
-  'CORRECT_SIGNS': 1, # TODO: PGO
+  'CORRECT_SIGNS': 2,
+  'CORRECT_SIGNS_LINES': emscripten.read_auto_optimize_data('avc.pgo')['signs_lines'],
   'DISABLE_EXCEPTION_CATCHING': 1,
   'RUNTIME_TYPE_INFO': 0,
   'TOTAL_MEMORY': 50*1024*1024,
@@ -85,7 +86,7 @@ else:
 
       __Z11runMainLoopv = function() {
           // TODO: only delay when proper to do so
-          setInterval(__Z17mainLoopIterationv, 1000/50);
+          Module.mainLoopInterval = setInterval(__Z17mainLoopIterationv, 1000/50);
       }
 
       // SDL hook
@@ -100,6 +101,19 @@ else:
           return;
         }
         var now = Date.now();
+
+        /*
+        console.log('frame:' + totalFrameCounter);
+        if (totalFrameCounter == 30*30) {
+          print = function(x) {
+            document.getElementById('fps').innerHTML += x + '<br>\n';
+          }
+          CorrectionsMonitor.print();
+          clearInterval(Module.mainLoopInterval);
+          return;
+        }
+        */
+
         var diff = now - frameTime;
         if (diff > 500) {
           document.getElementById('fps').innerHTML = 'FPS: <b>' + (frameCounter*1000/diff).toFixed(2) +
