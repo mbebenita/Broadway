@@ -39,6 +39,8 @@ print 'Build'
 env = os.environ.copy()
 env['CC'] = env['CXX'] = env['RANLIB'] = env['AR'] = emscripten.EMMAKEN
 env['LINUX'] = '1'
+env['EMMAKEN_CFLAGS'] = '-U__APPLE__'
+
 Popen(['make', '-j', '4'], env=env).communicate()
 
 print 'LLVM binary => LL assembly'
@@ -131,16 +133,22 @@ else:
   )
 src.close()
 
-print 'Eliminating unneeded variables'
+if 1:
+  print 'Eliminating unneeded variables'
 
-eliminatoed = Popen([emscripten.COFFEESCRIPT, emscripten.VARIABLE_ELIMINATOR], stdin=PIPE, stdout=PIPE).communicate(open('avc.js', 'r').read())[0]
-f = open('avc.elim.js', 'w')
-f.write(eliminatoed)
-f.close()
+  eliminatoed = Popen([emscripten.COFFEESCRIPT, emscripten.VARIABLE_ELIMINATOR], stdin=PIPE, stdout=PIPE).communicate(open('avc.js', 'r').read())[0]
+  f = open('avc.elim.js', 'w')
+  f.write(eliminatoed)
+  f.close()
 
-print 'Closure compiler'
+  print 'Closure compiler'
 
-Popen(['java', '-jar', emscripten.CLOSURE_COMPILER,
-               '--compilation_level', 'ADVANCED_OPTIMIZATIONS',
-               '--js', 'avc.elim.js', '--js_output_file', 'avc.elim.cc.js'], stdout=PIPE, stderr=STDOUT).communicate()
+  Popen(['java', '-jar', emscripten.CLOSURE_COMPILER,
+                 '--compilation_level', 'ADVANCED_OPTIMIZATIONS',
+                 '--js', 'avc.elim.js', '--js_output_file', 'avc.elim.cc.js'], stdout=PIPE, stderr=STDOUT).communicate()
+else:
+  print 'Closure compiler'
 
+  Popen(['java', '-jar', emscripten.CLOSURE_COMPILER,
+                 '--compilation_level', 'ADVANCED_OPTIMIZATIONS',
+                 '--js', 'avc.js', '--js_output_file', 'avc.cc.js'], stdout=PIPE, stderr=STDOUT).communicate()
