@@ -34,6 +34,12 @@ EMSCRIPTEN_SETTINGS = {
 }
 EMSCRIPTEN_ARGS = []#['--dlmalloc'] # Optimize does not appear to help
 
+JS_DIR = "js"
+
+if not os.path.exists(JS_DIR):
+  os.makedirs(JS_DIR)
+
+
 print 'Build'
 
 env = os.environ.copy()
@@ -62,11 +68,11 @@ print 'Emscripten: LL assembly => JavaScript'
 settings = ['-s %s=%s' % (k, json.dumps(v)) for k, v in EMSCRIPTEN_SETTINGS.items()]
 
 print Popen(['python', os.path.join(EMSCRIPTEN_ROOT, 'emscripten.py')] + EMSCRIPTEN_ARGS + ['avc.ll'] + settings,#  ).communicate()
-            stdout=open('avc.js', 'w'), stderr=STDOUT).communicate()
+            stdout=open(JS_DIR + '/avc.js', 'w'), stderr=STDOUT).communicate()
 
 print 'Appending stuff'
 
-src = open('avc.js', 'a')
+src = open(JS_DIR + '/avc.js', 'a')
 if 0: # Console debugging
   src.write(
     '''
@@ -136,8 +142,8 @@ src.close()
 if 1:
   print 'Eliminating unneeded variables'
 
-  eliminatoed = Popen([emscripten.COFFEESCRIPT, emscripten.VARIABLE_ELIMINATOR], stdin=PIPE, stdout=PIPE).communicate(open('avc.js', 'r').read())[0]
-  f = open('avc.elim.js', 'w')
+  eliminatoed = Popen([emscripten.COFFEESCRIPT, emscripten.VARIABLE_ELIMINATOR], stdin=PIPE, stdout=PIPE).communicate(open(JS_DIR + '/avc.js', 'r').read())[0]
+  f = open(JS_DIR + '/avc.elim.js', 'w')
   f.write(eliminatoed)
   f.close()
 
@@ -145,10 +151,10 @@ if 1:
 
   Popen(['java', '-jar', emscripten.CLOSURE_COMPILER,
                  '--compilation_level', 'ADVANCED_OPTIMIZATIONS',
-                 '--js', 'avc.elim.js', '--js_output_file', 'avc.elim.cc.js'], stdout=PIPE, stderr=STDOUT).communicate()
+                 '--js', JS_DIR + '/avc.elim.js', '--js_output_file', JS_DIR + '/avc.elim.cc.js'], stdout=PIPE, stderr=STDOUT).communicate()
 else:
   print 'Closure compiler'
 
   Popen(['java', '-jar', emscripten.CLOSURE_COMPILER,
                  '--compilation_level', 'ADVANCED_OPTIMIZATIONS',
-                 '--js', 'avc.js', '--js_output_file', 'avc.cc.js'], stdout=PIPE, stderr=STDOUT).communicate()
+                 '--js', JS_DIR + '/avc.js', '--js_output_file', JS_DIR + '/avc.cc.js'], stdout=PIPE, stderr=STDOUT).communicate()
