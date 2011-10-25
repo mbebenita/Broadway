@@ -23,7 +23,24 @@
 #define PV_CLZ(A,B) __asm{CLZ (A),(B)}  \
     A -= 16;
 #else
-#define PV_CLZ(A,B) while (((B) & 0x8000) == 0) {(B) <<=1; A++;}
+// #define PV_CLZ(A,B) while (((B) & 0x8000) == 0) {(B) <<=1; A++;}
+
+// A Leading Zeros, B tmp (number, but has one bit set)
+#define PV_CLZ(A,B)     \
+    A = 1;              \
+    if (B >> 8 == 0) {  \
+        A += 8;         \
+        B <<= 8;        \
+    }                   \
+    if (B >> 12 == 0) { \
+        A += 4;         \
+        B <<= 4;        \
+    }                   \
+    if (B >> 14 == 0) { \
+        A += 2;         \
+        B <<= 2;        \
+    }                   \
+    A -= B >> 15;
 #endif
 
 
