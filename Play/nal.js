@@ -1,6 +1,46 @@
+var Video = (function() {
+    function constructor() {
+    }
+    return constructor;
+})();
+
+/**
+ * Represents a video decoder capturing all of its internal state. 
+ */
+var Decoder = (function() {
+    function constructor() {
+        this.SequenceParameterSets = [];
+        this.PictureParameterSets = [];
+        this.Video = new Video();
+    }
+
+    constructor.prototype = {
+        decode : function(ptr) {
+            var reader = new AnnexBNALUnitReader(ptr);
+
+            var i = 0;
+            do {
+                var nal = reader.readNALUnit();
+                if (nal != null) {
+                    println("NAL Unit: " + (i++) + " " + nal.toString());
+                    var unit = nal.createUnit();
+                    if (unit != null) {
+                        unit.decode(new Bitstream(nal.rbsp));
+                        println(unit.toString());
+                    }
+                }
+            } while (nal != null);
+        }
+    };
+
+    return constructor;
+})();
+
+
 /*
- * Represents an Annex B (B) byte stream that encodes NAL Units. In the Annex B byte stream NAL Units are prefixed by
- * a 3 byte start code prefix. The actual NAL Unit payload data is interleaved with 'emulation prevention' bytes.
+ * Represents an Annex B (B) byte stream that encodes NAL Units. In the Annex B
+ * byte stream NAL Units are prefixed by a 3 byte start code prefix. The actual
+ * NAL Unit payload data is interleaved with 'emulation prevention' bytes.
  */
 var AnnexBNALUnitReader = (function () {
 	var ptr = null;
@@ -10,7 +50,7 @@ var AnnexBNALUnitReader = (function () {
 
 	constructor.prototype = {
 
-        ReadNALUnit : function() {
+        readNALUnit : function() {
             if (this.ptr == null) {
                 return null;
             }
@@ -72,17 +112,16 @@ var AnnexBNALUnitReader = (function () {
     return constructor;
 })();
 
-/*
+/**
  * Indicates the type of the NAL Unit. The decoder needs to know how slices are coded. Some information can change from
  * slice to slice and can be encoded in each slice. Other information such as coding parameters, picture format, size,
  * type of entropy coder, bit rate, etc. does not change as often and does not need to be retransmitted as often.
  * 
  * Combinations of coding parameters are stored on both the encoder and decoder side in various tables.
  * 
- * There are two parameter sets:
- *   Picture Parameter Set (PPS) contains information about the slices of one or more pictures.
- *   Sequence Parameter Set (SPS) contains information about the sequence.
- *   
+ * There are two parameter sets: Picture Parameter Set (PPS) contains information about the slices of one or more
+ * pictures. Sequence Parameter Set (SPS) contains information about the sequence.
+ * 
  * Instantaneous Decoding Refresh (IDR) picture contains only slices with I and SI slice types. IDR pictures invalidate
  * all reference pictures in the buffer prior to itself and can thus confine drifting errors. IDR pictures are always
  * the first in a sequence of pictures.
@@ -108,10 +147,10 @@ NALU_TYPE = {
     VDRD : 24
 };
 
-/*
- * Indicates the importance of the NAL Unit for the reconstruction process. The higher the value the more important
- * the NAL Unit. For instance, a value of 0 indicates that the NAL Unit is not used as a reference by any other units
- * can be safely discarded.
+/**
+ * Indicates the importance of the NAL Unit for the reconstruction process. The higher the value the more important the
+ * NAL Unit. For instance, a value of 0 indicates that the NAL Unit is not used as a reference by any other units can be
+ * safely DISCARDED.
  */
 NALU_REF_IDC = {
     NALU_PRIORITY_HIGHEST : 3,
@@ -119,30 +158,50 @@ NALU_REF_IDC = {
     NALU_PRIORITY_LOW : 1,
     NALU_PRIORITY_DISPOSABLE : 0
 };
+
+SLICE_TYPE = {
+    /**
+     * Intra prediction (I) and/or prediction from one reference per macroblock partition (P).
+     */
+    P_SLICE : 0,
     
-/*
+    /**
+     * Intra prediction (I), prediction from one reference frame (P) or biprediction from two references (B).
+     */
+    B_SLICE : 1,
+    
+    /** Intra prediction only. */
+    I_SLICE : 2,
+    SP_SLICE : 3,
+    SI_SLICE : 4,
+    P_ALL_SLICE : 5,
+    B_ALL_SLICE : 6,
+    I_ALL_SLICE : 7,
+    SP_ALL_SLICE : 8,
+    SI_ALL_SLICE : 9
+};
+
+/**
  * Represents a NAL (Network Abstraction Layer) Unit
  * 
  * NAL Unit Header Format:
  * 
- * forbidden_zero_bit (F):
- *   Usually set to 0 at source, set to 1 to indicate errors in the NAL Unit.
+ * forbidden_zero_bit (F): Usually set to 0 at source, set to 1 to indicate
+ * errors in the NAL Unit.
  * 
- * nal_ref_idc (NRI):
- *   Indicates the importance of the NAL Unit, from 0 (low) to 3 (high).
+ * nal_ref_idc (NRI): Indicates the importance of the NAL Unit, from 0 (low) to
+ * 3 (high).
  * 
- * nal_unit_type (TYPE):
- *   Indicates the type of the NAL Unit. Although this field encodes 32 possible values, only 12 are used by H.264.
+ * nal_unit_type (TYPE): Indicates the type of the NAL Unit. Although this field
+ * encodes 32 possible values, only 12 are used by H.264.
  * 
- * Payload:
- *   A buffer that contains an encapsulated byte sequence payload (EBSP) which needs to be decoded to a 
- *   raw byte sequence payload (RBSP) before further processing.
+ * Payload: A buffer that contains an encapsulated byte sequence payload (EBSP)
+ * which needs to be decoded to a raw byte sequence payload (RBSP) before
+ * further processing.
  * 
- *  <1> <-2-> <-----5-----> <--------- ? --------->
+ *  <1> <-2-> <-----5-----> <--------- ? ---------> 
+ * +---+-----+-------------+-----------------------+ | F | NRI | TYPE | Payload |
  * +---+-----+-------------+-----------------------+
- * | F | NRI | TYPE        | Payload               |
- * +---+-----+-------------+-----------------------+
- *  
  */
 var NALUnit = (function () {
 	function constructor(ptr) {
@@ -161,7 +220,7 @@ var NALUnit = (function () {
 	    }
 	}
 	
-	/*
+	/**
 	 * Converts an encapsulated byte sequence payload (EBSP) to a raw byte sequence payload (RBSP).
 	 */
     function convertEBSPToRBSP(ptr) {
@@ -188,15 +247,15 @@ var NALUnit = (function () {
         toString : function toString() {
             return getProperties(this);
         },
-        decode : function() {
+        createUnit : function() {
             switch (this.type) {
             case NALU_TYPE.SPS:
-                return new SPS(this.rbsp);
+                return new SPS();
             case NALU_TYPE.PPS:
-                return new PPS(this.rbsp);
+                return new PPS();
             case NALU_TYPE.SLICE:
             case NALU_TYPE.IDR:
-                return new SliceHeader(this.rbsp);
+                return new Slice();
             default:
                 return null;
                 // unexpected();
@@ -207,36 +266,15 @@ var NALUnit = (function () {
 	return constructor;
 })();
 
-var Video = (function() {
-    function constructor() {
-    }
-    return constructor;
-})();
-
-
-/**
- * Represents a video decoder capturing all of its internal state. 
- */
-var Decoder = (function() {
-    function constructor() {
-        this.SequenceParameterSets = [];
-        this.PictureParameterSets = [];
-        this.Video = new Video();
-    }
-    return constructor;
-})();
-
-var decoder = new Decoder();
-
 /**
  * Represents a Sequence Parameter Set (SPS)
  * 
  * Clause 7.4.2.2
  */
 var SPS = (function() {
-    function constructor(ptr) {
-        var stream = new Bitstream(ptr);
-
+    function constructor() {};
+    
+    constructor.prototype.decode = function (stream) {
         this.profile_idc = stream.readBits(8);
         this.constrained_set0_flag = stream.readBit();
         this.constrained_set1_flag = stream.readBit();
@@ -290,7 +328,7 @@ var SPS = (function() {
             unexpected();
         }
         decoder.SequenceParameterSets[this.seq_parameter_set_id] = this;
-    }
+    };
     
     constructor.prototype.toString = function () {
         return "SPS: " + getProperties(this, true);
@@ -299,16 +337,57 @@ var SPS = (function() {
     return constructor;
 })();
 
+
+var Slice = (function() {
+    function constructor() {
+        this.header = new SliceHeader();
+        this.data = new SliceData(this.header);
+    }
+    
+    constructor.prototype.decode = function (stream) {
+        this.header.decode(stream);
+        // this.data.decode(stream);
+    };
+    
+    constructor.prototype.toString = function () {
+        return "Slice: " + getProperties(this, true);
+    };
+    
+    return constructor;
+})();
+
+/**
+ * Represents a Slice's Data
+ */
+var SliceData = (function() {
+    function constructor(header) {
+        this.header = header;
+    }
+    
+    constructor.prototype.decode = function (stream) {
+        
+    };
+    
+    constructor.prototype.toString = function () {
+        return "Slice Data: " + getProperties(this, true);
+    };
+    
+    return constructor;
+})();
+
+    
 /**
  * Represents a Slice Header
  * 
  * Clause 7.4.3
  */
 var SliceHeader = (function() {
-    function constructor(ptr) {
-        var stream = new Bitstream(ptr);
+    function constructor() { }
+    
+    constructor.prototype.decode = function (stream) {
+        var video = decoder.Video;
         
-        this.first_mb_in_slice = stream.uev();
+        this.first_mb_in_slice = stream.uev();  
         this.slice_type = stream.uev();
         if (this.first_mb_in_slice != 0) {
             notImplemented();
@@ -316,18 +395,21 @@ var SliceHeader = (function() {
         this.pic_parameter_set_id = stream.uev();
         assertRange(this.pic_parameter_set_id, 0, 255);
         
-        var currentPPS = decoder.Video.CurrentPPS = decoder.PictureParameterSets[this.pic_parameter_set_id];
+        var currentPPS = video.CurrentPPS = decoder.PictureParameterSets[this.pic_parameter_set_id];
         if (currentPPS == null) {
-            unexpected();
+            unexpected("pic_parameter_set_id: " + this.pic_parameter_set_id);
         }
         
-        var currentSPS = decoder.Video.CurrentSPS = decoder.PictureParameterSets[currentPPS.seq_parameter_set_id];
+        var currentSPS = video.CurrentSPS = decoder.SequenceParameterSets[currentPPS.seq_parameter_set_id];
         if (currentSPS == null) {
             unexpected();
         }
         
-        if (currentPPS.seq_parameter_set_id != video.seq_parameter_set_id) {
-            notImplemented();
+        if (video.CurrentPPS !== currentPPS) {
+            video.CurrentPPS = currentPPS;  
+            
+//            notImplemented("currentPPS.seq_parameter_set_id: " + currentPPS.seq_parameter_set_id +
+//                           " != decoder.Video.seq_parameter_set_id: " + decoder.Video.seq_parameter_set_id);
         }
         
         /* derived variables from SPS */
@@ -345,15 +427,16 @@ var SliceHeader = (function() {
 
         this.frame_num = stream.readBits(currentSPS.log2_max_frame_num_minus4 + 4);
         
+        /* Book 5.3.4, if the frame_mbs_only_flag is set to zero, special coding of fields or interlaced video
+         * is enabled. */
         if (!currentSPS.frame_mbs_only_flag) {
+            /* Clause 7.4.3, a field_pic_flag set to zero indicates the slice is a coded frame, otherwise it's
+             * a coded field. We don't support interlaced video. */ 
             this.field_pic_flag = stream.readBit();
-            assert (this.field_pic_flag == false);
-            if (this.field_pic_flag) {
-                unexpected();
-            }
+            assertFalse (this.field_pic_flag);
         }
         
-        /* derived variables from slice header*/
+        /* derived variables from slice header */
         video.PicHeightInMbs = video.FrameHeightInMbs;
         video.PicHeightInSamplesL = video.PicHeightInMbs * 16;
         video.PicHeightInSamplesC = video.PicHeightInMbs * 8;
@@ -365,7 +448,7 @@ var SliceHeader = (function() {
         video.MaxPicNum = video.MaxFrameNum;
         video.CurrPicNum = this.frame_num;
 
-        if (video.nal_unit_type == NALTYPE.IDR) {
+        if (video.nal_unit_type == NALU_TYPE.IDR) {
             if (this.frame_num != 0) {
                 unexpected();
             }
@@ -373,8 +456,7 @@ var SliceHeader = (function() {
         }
         
         this.delta_pic_order_cnt_bottom = 0; /* default value */
-        this.delta_pic_order_cnt[0] = 0; /* default value */
-        this.delta_pic_order_cnt[1] = 0; /* default value */
+        this.delta_pic_order_cnt = [0, 0];
         
         if (currentSPS.pic_order_cnt_type == 0) {
             this.pic_order_cnt_lsb = stream.readBits(currentSPS.log2_max_pic_order_cnt_lsb_minus4 + 4);
@@ -410,13 +492,13 @@ var SliceHeader = (function() {
         this.num_ref_idx_l0_active_minus1 = currentPPS.num_ref_idx_l0_active_minus1;
         this.num_ref_idx_l1_active_minus1 = currentPPS.num_ref_idx_l1_active_minus1;
 
-        if (slice_type == P_SLICE) {
+        if (this.slice_type == SLICE_TYPE.P_SLICE) {
             this.num_ref_idx_active_override_flag = stream.readBit();
             if (this.num_ref_idx_active_override_flag) {
                 this.num_ref_idx_l0_active_minus1 = stream.uev();
             } else   {
                 /* the following condition is not allowed if the flag is zero */
-                if ((slice_type == P_SLICE) && currentPPS.num_ref_idx_l0_active_minus1 > 15) {
+                if ((slice_type == SLICE_TYPE.P_SLICE) && currentPPS.num_ref_idx_l0_active_minus1 > 15) {
                     unexpected(); /* not allowed */
                 }
             }
@@ -430,28 +512,23 @@ var SliceHeader = (function() {
         max value of index is num_ref_idx_l0_active_minus1 for frame MBs and
         2*this.num_ref_idx_l0_active_minus1 + 1 for field MBs */
 
-        /* ref_pic_list_reordering() */
-        status = ref_pic_list_reordering(video, stream, this, slice_type);
-        if (status != AVCDEC_SUCCESS) {
-            return status;
-        }
-
+        this.ref_pic_list_reordering(video, stream);
 
         if (video.nal_ref_idc != 0) {
-            dec_ref_pic_marking(video, stream, this);
+            this.dec_ref_pic_marking(video, stream, this);
         }
         this.slice_qp_delta = stream.sev();
 
         video.QPy = 26 + currentPPS.pic_init_qp_minus26 + this.slice_qp_delta;
         if (video.QPy > 51 || video.QPy < 0) {
-            video.QPy = AVC_CLIP3(0, 51, video.QPy);
+            video.QPy = clip(0, 51, video.QPy);
         }
-        video.QPc = mapQPi2QPc[AVC_CLIP3(0, 51, video.QPy + video.currPicParams.chroma_qp_index_offset)];
+        video.QPc = mapQPi2QPc[clip(0, 51, video.QPy + video.CurrentPPS.chroma_qp_index_offset)];
 
-        video.QPy_div_6 = (video.QPy * 43) >> 8;
+        video.QPy_div_6 = (video.QPy * 43) >>> 8;
         video.QPy_mod_6 = video.QPy - 6 * video.QPy_div_6;
 
-        video.QPc_div_6 = (video.QPc * 43) >> 8;
+        video.QPc_div_6 = (video.QPc * 43) >>> 8;
         video.QPc_mod_6 = video.QPc - 6 * video.QPc_div_6;
 
         this.slice_alpha_c0_offset_div2 = 0;
@@ -494,12 +571,83 @@ var SliceHeader = (function() {
                 i++;
             }
             this.slice_group_change_cycle = stream.readBits(i); 
-            video.MapUnitsInSliceGroup0 = AVC_MIN(this.slice_group_change_cycle * video.SliceGroupChangeRate, video.PicSizeInMapUnits);
+            video.MapUnitsInSliceGroup0 = min(this.slice_group_change_cycle * video.SliceGroupChangeRate, video.PicSizeInMapUnits);
         }
-    }
+    };
+   
+    /**
+     * Book 5.3.3.2
+     * Clause 7.3.3.1
+     * 
+     * The reference picture list order can be change for the current slice only using this command. The
+     * ref_pic_list_reordering_flag indicates that such an operation should occur.
+     */
+    constructor.prototype.ref_pic_list_reordering = function(video, stream) {
+        if (this.slice_type != SLICE_TYPE.I_SLICE) {
+            this.ref_pic_list_reordering_flag_l0 = stream.readBit();
+            if (this.ref_pic_list_reordering_flag_l0) {
+                var i = 0;
+                this.reordering_of_pic_nums_idc_l0 = [];
+                this.abs_diff_pic_num_minus1_l0 = [];
+                do {
+                    var res = this.reordering_of_pic_nums_idc_l0[i] = stream.uev();
+                    if (res == 0 || res == 1) {
+                        this.abs_diff_pic_num_minus1_l0[i] = stream.uev();
+                        assertFalse (res == 0 && this.abs_diff_pic_num_minus1_l0[i] > video.MaxPicNum / 2 - 1);
+                        assertFalse (res == 1 && this.abs_diff_pic_num_minus1_l0[i] > video.MaxPicNum / 2 - 2);
+                    } else if (res == 2) {
+                        this.long_term_pic_num_l0[i] = stream.uev();
+                    }
+                    i++;
+                } while (this.reordering_of_pic_nums_idc_l0[i - 1] != 3 && i <= this.num_ref_idx_l0_active_minus1 + 1);
+            }
+        }
+    };
+    
+    /**
+     * Clause 7.4.3.3
+     */
+    constructor.prototype.dec_ref_pic_marking = function(video, stream) {
+        if (video.nal_unit_type == NALU_TYPE.IDR) {
+            this.no_output_of_prior_pics_flag = stream.readBit();
+            this.long_term_reference_flag = stream.readBit();
+            if (this.long_term_reference_flag == 0) {
+                video.MaxLongTermFrameIdx = -1;
+            } else {
+                video.MaxLongTermFrameIdx = 0;
+                video.LongTermFrameIdx = 0;
+            }
+        } else {
+            this.adaptive_ref_pic_marking_mode_flag = stream.readBit();
+            if (this.adaptive_ref_pic_marking_mode_flag) {
+                this.memory_management_control_operation = [];
+                this.difference_of_pic_nums_minus1 = [];
+                this.long_term_pic_num = [];
+                this.max_long_term_frame_idx_plus1 = [];
+                var i = 0;
+                do {
+                    var res = this.memory_management_control_operation[i] = stream.uev();
+                    if (res == 1 || res == 3) {
+                        this.difference_of_pic_nums_minus1[i] = stream.uev();
+                    }
+                    if (res == 2) {
+                        this.long_term_pic_num[i] = stream.uev();
+                    }
+                    if (res == 3 || res == 6) {
+                        this.long_term_frame_idx[i] = stream.uev();
+                    }
+                    if (res == 4) {
+                        this.max_long_term_frame_idx_plus1[i] = stream.uev();
+                    }
+                    i++;
+                } while (this.memory_management_control_operation[i - 1] != 0 && i < MAX_DEC_REF_PIC_MARKING);
+                assertFalse(i >= MAX_DEC_REF_PIC_MARKING);
+            }
+        }
+    };
     
     constructor.prototype.toString = function () {
-        return "SliceHeader: " + getProperties(this, true);
+        return "Slice Header: " + getProperties(this, true);
     };
     
     return constructor;
@@ -509,15 +657,24 @@ var SliceHeader = (function() {
  * Represents a Picture Parameter Set (PPS)
  * 
  * Clause 7.4.2.2
+ * 
+ * Book 5.5, Parameter sets remain inactive, until they are activated when referenced in slice headers. Slice
+ * headers activate PPSs which in turn activate SPSs.
  */
 var PPS = (function() {
-    function constructor(ptr) {
-        var stream = new Bitstream(ptr);
+    function constructor() { }
+    
+    constructor.prototype.decode = function (stream) {
         this.pic_parameter_set_id = stream.uev();
         assertRange(this.pic_parameter_set_id, 0, 255);
+        
+        /* Register Picture Parameter Set */ 
+        decoder.PictureParameterSets[this.pic_parameter_set_id] = this;
+        
         this.seq_parameter_set_id = stream.uev();
         assertRange(this.seq_parameter_set_id, 0, 31);
         this.entropy_coding_mode_flag = stream.readBit();
+        /* Only CAVLC (entropy_coding_mode_flag == false) is supported. */
         if (this.entropy_coding_mode_flag) {
             unexpected();
         }
@@ -579,9 +736,9 @@ var PPS = (function() {
             }
         }
 
+        /* Number of reference pictures in listX. */
         this.num_ref_idx_l0_active_minus1 = stream.uev();
         assertRange(this.num_ref_idx_l0_active_minus1, 0, 31);
-
         this.num_ref_idx_l1_active_minus1 = stream.uev();
         assertRange(this.num_ref_idx_l1_active_minus1, 0, 31);
 
@@ -598,7 +755,7 @@ var PPS = (function() {
         this.deblocking_filter_control_present_flag = this.pic_parameter_set_id >> 2;
         this.constrained_intra_pred_flag = (this.pic_parameter_set_id >> 1) & 1;
         this.redundant_pic_cnt_present_flag = this.pic_parameter_set_id & 1;
-    }
+    };
     
     constructor.prototype.toString = function () {
         return "PPS: " + getProperties(this, true);
@@ -607,57 +764,5 @@ var PPS = (function() {
     return constructor;
 })();
 
-function printNALUnit(nalu) {
-
-}
-
-function getAllAnnexBNALUnits(ptr) {
-    var reader = new AnnexBNALUnitReader(ptr);
-
-    var i = 0;
-    do {
-        var nal = reader.ReadNALUnit();
-        if (nal != null) {
-            println("NAL: " + (i++) + " " + nal.toString());
-            var pay = nal.decode();
-            if (pay != null) {
-                println(pay.toString());
-            }
-        }
-    } while (nal != null);
-}
 
 
-function Stream(buf) {
-	this.buf = buf;
-	this.ptr = new Uint8Array(buf);
-	this.pos = 0;
-}
-
-Stream.prototype = {
-	getBits: function() {
-		return this.buf[this.pos ++];
-	}	
-};
-
-println("\n============================ \n");
-
-// var stream = new Stream(read("Media/test_cat2.h264"));
-var stream = new Stream(read("Media/admiral.264"))
-
-time = new Date();
-getAllAnnexBNALUnits(stream.ptr);
-
-println("Elapsed: " + (new Date().getTime() - time.getTime()) + " ms");
-
-println("\n============================ \n");
-
-//time = new Date();
-//
-//var sum = 0;
-//for (var i = 0; i < 100000000; i++) {
-//    sum += countLeadingZeros(i);
-//}
-//println ("Sum: " + sum);
-//
-//println("Elapsed: " + (new Date().getTime() - time.getTime()) + " ms");

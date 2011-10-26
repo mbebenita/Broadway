@@ -163,8 +163,8 @@ int SDL_main(int argc, char **argv) {
 		}
 	}
 
-	Stage stage(rt, cx, global);
-	stage.Play();
+	// Stage stage(rt, cx, global);
+	// stage.Play();
 
 	/* Cleanup. */
 	JS_DestroyContext(cx);

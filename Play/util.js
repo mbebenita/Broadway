@@ -94,6 +94,12 @@ function assert(cond, msg) {
     }
 }
 
+function assertFalse(cond, msg) {
+    if (cond) {
+        error(msg);
+    }
+}
+
 function assertRange(value, min, max) {
     if (value < min || value > max) {
         error("Value " + value + " is out of range [" + min + "," + max + "]");
