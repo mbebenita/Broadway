@@ -4,6 +4,7 @@
 #include <js/jsapi.h>
 #include <SDL/SDL.h>
 #include "Stage.h"
+#include "Avc.h"
 
 /* The class of the global object. */
 static JSClass global_class = {
@@ -120,6 +121,12 @@ int SDL_main(int argc, char **argv) {
 		return 1;
 	}
 
+	if (strcmp(argv[1], "-ref") == 0) {
+	    Avc avc;
+	    avc.Play();
+	    return 1;
+	}
+
 	/* JS variables. */
 	JSRuntime *rt;
 	JSContext *cx;
@@ -165,6 +172,8 @@ int SDL_main(int argc, char **argv) {
 
 	// Stage stage(rt, cx, global);
 	// stage.Play();
+
+
 
 	/* Cleanup. */
 	JS_DestroyContext(cx);

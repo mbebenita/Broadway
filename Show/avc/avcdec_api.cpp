@@ -22,10 +22,21 @@ This file contains application function interfaces to the AVC decoder library.
 
 #include <string.h>
 #include <stdint.h>
+#include <stdio.h>
+#include <stdarg.h>
 
 #include "avcdec_api.h"
 #include "avcdec_lib.h"
 #include "avcdec_bitstream.h"
+
+void trace(const char *format, ...) {
+    va_list argp;
+    va_start(argp, format);
+    vprintf(format, argp);
+    va_end(argp);
+}
+
+
 
 /* ======================================================================== */
 /*  Function : EBSPtoRBSP()                                                 */
@@ -201,6 +212,8 @@ OSCL_EXPORT_REF AVCDec_Status   PVAVCDecSeqParamSet(AVCHandle *avcHandle, uint8 
     int i;
 
 
+    trace("| + Sequence Parameter Set\n");
+
     DEBUG_LOG(userData, AVC_LOGTYPE_INFO, "PVAVCDecSeqParamSet", -1, -1);
 
     if (avcHandle->AVCObject == NULL)
@@ -253,6 +266,8 @@ OSCL_EXPORT_REF AVCDec_Status   PVAVCDecSeqParamSet(AVCHandle *avcHandle, uint8 
     if (video->forbidden_bit) return AVCDEC_FAIL;
     video->nal_ref_idc = (nal_unit[0] & 0x60) >> 5;
     video->nal_unit_type = (AVCNalUnitType)(nal_unit[0] & 0x1F);
+
+
 
     if (video->nal_unit_type != AVC_NALTYPE_SPS) /* not a SPS NAL */
     {
@@ -394,6 +409,8 @@ OSCL_EXPORT_REF AVCDec_Status   PVAVCDecPicParamSet(AVCHandle *avcHandle, uint8 
     AVCCommonObj *video;
     AVCDecBitstream *bitstream;
 
+    trace("| + Picture Parameter Set\n");
+
     if (decvid == NULL)
     {
         return AVCDEC_FAIL;
@@ -513,7 +530,9 @@ OSCL_EXPORT_REF AVCDec_Status PVAVCDecodeSlice(AVCHandle *avcHandle, uint8 *buff
             return status;
         }
 
-        if (video->sliceHdr->frame_num != video->prevFrameNum || (video->sliceHdr->first_mb_in_slice < (uint)video->mbNum && video->currSeqParams->constrained_set1_flag == 1))
+        if (video->sliceHdr->frame_num != video->prevFrameNum ||
+            (video->sliceHdr->first_mb_in_slice < (uint)video->mbNum &&
+             video->currSeqParams->constrained_set1_flag == 1))
         {
             video->newPic = TRUE;
             if (video->numMBs > 0)
@@ -602,7 +621,8 @@ OSCL_EXPORT_REF AVCDec_Status PVAVCDecodeSlice(AVCHandle *avcHandle, uint8 *buff
     {
         video->numMBs = video->PicSizeInMbs;
 
-        if (video->nal_unit_type != AVC_NALTYPE_IDR && video->currSeqParams->gaps_in_frame_num_value_allowed_flag)
+        if (video->nal_unit_type != AVC_NALTYPE_IDR &&
+            video->currSeqParams->gaps_in_frame_num_value_allowed_flag)
         {
             if (video->sliceHdr->frame_num != (video->PrevRefFrameNum + 1) % video->MaxFrameNum)
             {

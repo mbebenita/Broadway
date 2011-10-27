@@ -34,15 +34,20 @@ AVCDec_Status DecodeSPS(AVCDecObject *decvid, AVCDecBitstream *stream)
     DEBUG_LOG(userData, AVC_LOGTYPE_INFO, "DecodeSPS", -1, -1);
 
     BitstreamReadBits(stream, 8, &profile_idc);
+    trace("| | profile_idc: %d\n", profile_idc);
     BitstreamRead1Bit(stream, &constrained_set0_flag);
+    trace("| | constrained_set0_flag: %d\n", constrained_set0_flag);
 //  if (profile_idc != 66 && constrained_set0_flag != 1)
 //  {
 //      return AVCDEC_FAIL;
 //  }
     BitstreamRead1Bit(stream, &constrained_set1_flag);
+    trace("| | constrained_set1_flag: %d\n", constrained_set1_flag);
     BitstreamRead1Bit(stream, &constrained_set2_flag);
+    trace("| | constrained_set2_flag: %d\n", constrained_set2_flag);
     BitstreamReadBits(stream, 5, &temp);
     BitstreamReadBits(stream, 8, &level_idc);
+    trace("| | level_idc: %d\n", level_idc);
     if (level_idc > 51)
     {
         return AVCDEC_FAIL;
@@ -52,7 +57,7 @@ AVCDec_Status DecodeSPS(AVCDecObject *decvid, AVCDecBitstream *stream)
         return AVCDEC_FAIL;
     }
     ue_v(stream, &seq_parameter_set_id);
-
+    trace("| | seq_parameter_set_id: %d\n", seq_parameter_set_id);
     if (seq_parameter_set_id > 31)
     {
         return AVCDEC_FAIL;
@@ -90,27 +95,35 @@ AVCDec_Status DecodeSPS(AVCDecObject *decvid, AVCDecBitstream *stream)
     }
 
     ue_v(stream, &(seqParam->pic_order_cnt_type));
+    trace("| | pic_order_cnt_type: %d\n", seqParam->pic_order_cnt_type);
 
     DEBUG_LOG(userData, AVC_LOGTYPE_INFO, "check point 1", seqParam->log2_max_frame_num_minus4, seqParam->pic_order_cnt_type);
 
     if (seqParam->pic_order_cnt_type == 0)
     {
         ue_v(stream, &(seqParam->log2_max_pic_order_cnt_lsb_minus4));
+        trace("| | log2_max_pic_order_cnt_lsb_minus4: %d\n", seqParam->log2_max_pic_order_cnt_lsb_minus4);
     }
     else if (seqParam->pic_order_cnt_type == 1)
     {               // MC_CHECK
         BitstreamRead1Bit(stream, (uint*)&(seqParam->delta_pic_order_always_zero_flag));
+        trace("| | delta_pic_order_always_zero_flag: %d\n", seqParam->delta_pic_order_always_zero_flag);
         se_v32bit(stream, &(seqParam->offset_for_non_ref_pic));
+        trace("| | offset_for_non_ref_pic: %d\n", seqParam->offset_for_non_ref_pic);
         se_v32bit(stream, &(seqParam->offset_for_top_to_bottom_field));
+        trace("| | offset_for_top_to_bottom_field: %d\n", seqParam->offset_for_top_to_bottom_field);
         ue_v(stream, &(seqParam->num_ref_frames_in_pic_order_cnt_cycle));
+        trace("| | num_ref_frames_in_pic_order_cnt_cycle: %d\n", seqParam->num_ref_frames_in_pic_order_cnt_cycle);
 
         for (i = 0; i < (int)(seqParam->num_ref_frames_in_pic_order_cnt_cycle); i++)
         {
             se_v32bit(stream, &(seqParam->offset_for_ref_frame[i]));
+            trace("| | offset_for_ref_frame[%d]: %d\n", i, seqParam->offset_for_ref_frame[i]);
         }
     }
 
     ue_v(stream, &(seqParam->num_ref_frames));
+    trace("| | num_ref_frames: %d\n", seqParam->num_ref_frames);
 
     if (seqParam->num_ref_frames > 16)
     {
@@ -120,29 +133,37 @@ AVCDec_Status DecodeSPS(AVCDecObject *decvid, AVCDecBitstream *stream)
     DEBUG_LOG(userData, AVC_LOGTYPE_INFO, "check point 2", seqParam->num_ref_frames, -1);
 
     BitstreamRead1Bit(stream, (uint*)&(seqParam->gaps_in_frame_num_value_allowed_flag));
+    trace("| | gaps_in_frame_num_value_allowed_flag: %d\n", seqParam->gaps_in_frame_num_value_allowed_flag);
     ue_v(stream, &(seqParam->pic_width_in_mbs_minus1));
+    trace("| | pic_width_in_mbs_minus1: %d\n", seqParam->pic_width_in_mbs_minus1);
 
     DEBUG_LOG(userData, AVC_LOGTYPE_INFO, "picwidth", seqParam->pic_width_in_mbs_minus1, -1);
 
     ue_v(stream, &(seqParam->pic_height_in_map_units_minus1));
+    trace("| | pic_height_in_map_units_minus1: %d\n", seqParam->pic_height_in_map_units_minus1);
 
     DEBUG_LOG(userData, AVC_LOGTYPE_INFO, "picwidth", seqParam->pic_height_in_map_units_minus1, -1);
 
     BitstreamRead1Bit(stream, (uint*)&(seqParam->frame_mbs_only_flag));
+    trace("| | frame_mbs_only_flag: %d\n", seqParam->frame_mbs_only_flag);
 
     seqParam->mb_adaptive_frame_field_flag = 0; /* default value */
     if (!seqParam->frame_mbs_only_flag)
     {
         BitstreamRead1Bit(stream, (uint*)&(seqParam->mb_adaptive_frame_field_flag));
+        trace("| | mb_adaptive_frame_field_flag: %d\n", seqParam->mb_adaptive_frame_field_flag);
     }
 
     DEBUG_LOG(userData, AVC_LOGTYPE_INFO, "check point 3", seqParam->frame_mbs_only_flag, -1);
 
     BitstreamRead1Bit(stream, (uint*)&(seqParam->direct_8x8_inference_flag));
+    trace("| | direct_8x8_inference_flag: %d\n", seqParam->direct_8x8_inference_flag);
 
     DEBUG_LOG(userData, AVC_LOGTYPE_INFO, "check point 4", seqParam->direct_8x8_inference_flag, -1);
 
     BitstreamRead1Bit(stream, (uint*)&(seqParam->frame_cropping_flag));
+    trace("| | frame_cropping_flag: %d\n", seqParam->frame_cropping_flag);
+
     seqParam->frame_crop_left_offset = 0;  /* default value */
     seqParam->frame_crop_right_offset = 0;/* default value */
     seqParam->frame_crop_top_offset = 0;/* default value */
@@ -153,11 +174,17 @@ AVCDec_Status DecodeSPS(AVCDecObject *decvid, AVCDecBitstream *stream)
         ue_v(stream, &(seqParam->frame_crop_right_offset));
         ue_v(stream, &(seqParam->frame_crop_top_offset));
         ue_v(stream, &(seqParam->frame_crop_bottom_offset));
+
+        trace("| | frame_crop_left_offset: %d\n", seqParam->frame_crop_left_offset);
+        trace("| | frame_crop_right_offset: %d\n", seqParam->frame_crop_right_offset);
+        trace("| | frame_crop_top_offset: %d\n", seqParam->frame_crop_top_offset);
+        trace("| | frame_crop_bottom_offset: %d\n", seqParam->frame_crop_bottom_offset);
     }
 
     DEBUG_LOG(userData, AVC_LOGTYPE_INFO, "check point 5", seqParam->frame_cropping_flag, -1);
 
     BitstreamRead1Bit(stream, (uint*)&(seqParam->vui_parameters_present_flag));
+    trace("| | vui_parameters_present_flag: %d\n", seqParam->vui_parameters_present_flag);
     if (seqParam->vui_parameters_present_flag)
     {
         status = vui_parameters(decvid, stream, seqParam);
@@ -326,12 +353,15 @@ AVCDec_Status DecodePPS(AVCDecObject *decvid, AVCCommonObj *video, AVCDecBitstre
     AVCHandle *avcHandle = decvid->avcHandle;
 
     ue_v(stream, &pic_parameter_set_id);
+
+    trace("| | pic_parameter_set_id: %d\n", pic_parameter_set_id);
     if (pic_parameter_set_id > 255)
     {
         return AVCDEC_FAIL;
     }
 
     ue_v(stream, &seq_parameter_set_id);
+    trace("| | seq_parameter_set_id: %d\n", seq_parameter_set_id);
 
     if (seq_parameter_set_id > 31)
     {
@@ -356,13 +386,16 @@ AVCDec_Status DecodePPS(AVCDecObject *decvid, AVCCommonObj *video, AVCDecBitstre
     picParam->pic_parameter_set_id = pic_parameter_set_id;
 
     BitstreamRead1Bit(stream, (uint*)&(picParam->entropy_coding_mode_flag));
+    trace("| | entropy_coding_mode_flag: %d\n", picParam->entropy_coding_mode_flag);
     if (picParam->entropy_coding_mode_flag)
     {
         status = AVCDEC_FAIL;
         goto clean_up;
     }
     BitstreamRead1Bit(stream, (uint*)&(picParam->pic_order_present_flag));
+    trace("| | pic_order_present_flag: %d\n", picParam->pic_order_present_flag);
     ue_v(stream, &(picParam->num_slice_groups_minus1));
+    trace("| | num_slice_groups_minus1: %d\n", picParam->num_slice_groups_minus1);
 
     if (picParam->num_slice_groups_minus1 > MAX_NUM_SLICE_GROUP - 1)
     {
@@ -374,11 +407,13 @@ AVCDec_Status DecodePPS(AVCDecObject *decvid, AVCCommonObj *video, AVCDecBitstre
     if (picParam->num_slice_groups_minus1 > 0)
     {
         ue_v(stream, &(picParam->slice_group_map_type));
+        trace("| | slice_group_map_type: %d\n", picParam->slice_group_map_type);
         if (picParam->slice_group_map_type == 0)
         {
             for (iGroup = 0; iGroup <= (int)picParam->num_slice_groups_minus1; iGroup++)
             {
                 ue_v(stream, &(picParam->run_length_minus1[iGroup]));
+                trace("| | run_length_minus1[%d]: %d\n", iGroup, picParam->run_length_minus1[iGroup]);
             }
         }
         else if (picParam->slice_group_map_type == 2)
@@ -387,6 +422,9 @@ AVCDec_Status DecodePPS(AVCDecObject *decvid, AVCCommonObj *video, AVCDecBitstre
             {
                 ue_v(stream, &(picParam->top_left[iGroup]));
                 ue_v(stream, &(picParam->bottom_right[iGroup]));
+
+                trace("| | top_left[%d]: %d\n", iGroup, picParam->top_left[iGroup]);
+                trace("| | bottom_right[%d]: %d\n", iGroup, picParam->bottom_right[iGroup]);
             }
         }
         else if (picParam->slice_group_map_type == 3 ||
@@ -394,11 +432,14 @@ AVCDec_Status DecodePPS(AVCDecObject *decvid, AVCCommonObj *video, AVCDecBitstre
                  picParam->slice_group_map_type == 5)
         {
             BitstreamRead1Bit(stream, (uint*)&(picParam->slice_group_change_direction_flag));
+            trace("| | slice_group_change_direction_flag: %d\n", picParam->slice_group_change_direction_flag);
             ue_v(stream, &(picParam->slice_group_change_rate_minus1));
+            trace("| | slice_group_change_rate_minus1: %d\n", picParam->slice_group_change_rate_minus1);
         }
         else if (picParam->slice_group_map_type == 6)
         {
             ue_v(stream, &(picParam->pic_size_in_map_units_minus1));
+            trace("| | pic_size_in_map_units_minus1: %d\n", picParam->pic_size_in_map_units_minus1);
 
             numBits = 0;/* ceil(log2(num_slice_groups_minus1+1)) bits */
             i = picParam->num_slice_groups_minus1;
@@ -441,12 +482,14 @@ AVCDec_Status DecodePPS(AVCDecObject *decvid, AVCCommonObj *video, AVCDecBitstre
             for (i = 0; i < PicSizeInMapUnits; i++)
             {
                 BitstreamReadBits(stream, numBits, &(picParam->slice_group_id[i]));
+                trace("| | slice_group_id[%d]: %d\n", i, picParam->slice_group_id[i]);
             }
         }
 
     }
 
     ue_v(stream, &(picParam->num_ref_idx_l0_active_minus1));
+    trace("| | num_ref_idx_l0_active_minus1: %d\n", picParam->num_ref_idx_l0_active_minus1);
     if (picParam->num_ref_idx_l0_active_minus1 > 31)
     {
         status = AVCDEC_FAIL; /* out of range */
@@ -454,6 +497,7 @@ AVCDec_Status DecodePPS(AVCDecObject *decvid, AVCCommonObj *video, AVCDecBitstre
     }
 
     ue_v(stream, &(picParam->num_ref_idx_l1_active_minus1));
+    trace("| | num_ref_idx_l1_active_minus1: %d\n", picParam->num_ref_idx_l1_active_minus1);
     if (picParam->num_ref_idx_l1_active_minus1 > 31)
     {
         status = AVCDEC_FAIL; /* out of range */
@@ -461,7 +505,9 @@ AVCDec_Status DecodePPS(AVCDecObject *decvid, AVCCommonObj *video, AVCDecBitstre
     }
 
     BitstreamRead1Bit(stream, (uint*)&(picParam->weighted_pred_flag));
+    trace("| | weighted_pred_flag: %d\n", picParam->weighted_pred_flag);
     BitstreamReadBits(stream, 2, &(picParam->weighted_bipred_idc));
+    trace("| | weighted_bipred_idc: %d\n", picParam->weighted_bipred_idc);
     if (picParam->weighted_bipred_idc > 2)
     {
         status = AVCDEC_FAIL; /* out of range */
@@ -469,6 +515,7 @@ AVCDec_Status DecodePPS(AVCDecObject *decvid, AVCCommonObj *video, AVCDecBitstre
     }
 
     se_v(stream, &(picParam->pic_init_qp_minus26));
+    trace("| | pic_init_qp_minus26: %d\n", picParam->pic_init_qp_minus26);
     if (picParam->pic_init_qp_minus26 < -26 || picParam->pic_init_qp_minus26 > 25)
     {
         status = AVCDEC_FAIL; /* out of range */
@@ -476,6 +523,7 @@ AVCDec_Status DecodePPS(AVCDecObject *decvid, AVCCommonObj *video, AVCDecBitstre
     }
 
     se_v(stream, &(picParam->pic_init_qs_minus26));
+    trace("| | pic_init_qs_minus26: %d\n", picParam->pic_init_qs_minus26);
     if (picParam->pic_init_qs_minus26 < -26 || picParam->pic_init_qs_minus26 > 25)
     {
         status = AVCDEC_FAIL; /* out of range */
@@ -483,6 +531,7 @@ AVCDec_Status DecodePPS(AVCDecObject *decvid, AVCCommonObj *video, AVCDecBitstre
     }
 
     se_v(stream, &(picParam->chroma_qp_index_offset));
+    trace("| | chroma_qp_index_offset: %d\n", picParam->chroma_qp_index_offset);
     if (picParam->chroma_qp_index_offset < -12 || picParam->chroma_qp_index_offset > 12)
     {
         status = AVCDEC_FAIL; /* out of range */
@@ -524,8 +573,15 @@ AVCDec_Status DecodeSliceHeader(AVCDecObject *decvid, AVCCommonObj *video, AVCDe
     uint idr_pic_id;
     int slice_type, temp, i;
 
+    trace("| + Slice Header\n");
+
     ue_v(stream, &(sliceHdr->first_mb_in_slice));
+
+    trace("| | first_mb_in_slice: %d\n", sliceHdr->first_mb_in_slice);
+
     ue_v(stream, (uint*)&slice_type);
+
+    trace("| | slice_type: %d\n", slice_type);
 
     if (sliceHdr->first_mb_in_slice != 0)
     {
@@ -548,6 +604,7 @@ AVCDec_Status DecodeSliceHeader(AVCDecObject *decvid, AVCCommonObj *video, AVCDe
     video->slice_type = (AVCSliceType) slice_type;
 
     ue_v(stream, &(sliceHdr->pic_parameter_set_id));
+    trace("| | pic_parameter_set_id: %d\n", sliceHdr->pic_parameter_set_id);
     /* end FirstPartSliceHeader() */
     /* begin RestOfSliceHeader() */
     /* after getting pic_parameter_set_id, we have to load corresponding SPS and PPS */
@@ -592,6 +649,8 @@ AVCDec_Status DecodeSliceHeader(AVCDecObject *decvid, AVCCommonObj *video, AVCDe
 
     BitstreamReadBits(stream, currSPS->log2_max_frame_num_minus4 + 4, &(sliceHdr->frame_num));
 
+    trace("| | frame_num: %d\n", sliceHdr->frame_num);
+
     if (video->currFS == NULL && sliceHdr->frame_num != 0)
     {
         video->prevFrameNum = video->PrevRefFrameNum = sliceHdr->frame_num - 1;
@@ -600,6 +659,7 @@ AVCDec_Status DecodeSliceHeader(AVCDecObject *decvid, AVCCommonObj *video, AVCDe
     if (!currSPS->frame_mbs_only_flag)
     {
         BitstreamRead1Bit(stream, &(sliceHdr->field_pic_flag));
+        trace("| | field_pic_flag: %d\n", sliceHdr->field_pic_flag);
         if (sliceHdr->field_pic_flag)
         {
             return AVCDEC_FAIL;
@@ -627,6 +687,7 @@ AVCDec_Status DecodeSliceHeader(AVCDecObject *decvid, AVCCommonObj *video, AVCDe
             return AVCDEC_FAIL;
         }
         ue_v(stream, &idr_pic_id);
+        trace("| | idr_pic_id: %d\n", idr_pic_id);
     }
 
     sliceHdr->delta_pic_order_cnt_bottom = 0; /* default value */
@@ -636,6 +697,7 @@ AVCDec_Status DecodeSliceHeader(AVCDecObject *decvid, AVCCommonObj *video, AVCDe
     {
         BitstreamReadBits(stream, currSPS->log2_max_pic_order_cnt_lsb_minus4 + 4,
                           &(sliceHdr->pic_order_cnt_lsb));
+        trace("| | pic_order_cnt_lsb: %d\n", sliceHdr->pic_order_cnt_lsb);
         video->MaxPicOrderCntLsb =  1 << (currSPS->log2_max_pic_order_cnt_lsb_minus4 + 4);
         if (sliceHdr->pic_order_cnt_lsb > video->MaxPicOrderCntLsb - 1)
             return AVCDEC_FAIL; /* out of range */
@@ -643,14 +705,17 @@ AVCDec_Status DecodeSliceHeader(AVCDecObject *decvid, AVCCommonObj *video, AVCDe
         if (currPPS->pic_order_present_flag)
         {
             se_v32bit(stream, &(sliceHdr->delta_pic_order_cnt_bottom));
+            trace("| | delta_pic_order_cnt_bottom: %d\n", sliceHdr->delta_pic_order_cnt_bottom);
         }
     }
     if (currSPS->pic_order_cnt_type == 1 && !currSPS->delta_pic_order_always_zero_flag)
     {
         se_v32bit(stream, &(sliceHdr->delta_pic_order_cnt[0]));
+        trace("| | delta_pic_order_cnt[0]: %d\n", sliceHdr->delta_pic_order_cnt[0]);
         if (currPPS->pic_order_present_flag)
         {
             se_v32bit(stream, &(sliceHdr->delta_pic_order_cnt[1]));
+            trace("| | delta_pic_order_cnt[1]: %d\n", sliceHdr->delta_pic_order_cnt[1]);
         }
     }
 
@@ -659,6 +724,7 @@ AVCDec_Status DecodeSliceHeader(AVCDecObject *decvid, AVCCommonObj *video, AVCDe
     {
         // MC_CHECK
         ue_v(stream, &(sliceHdr->redundant_pic_cnt));
+        trace("| | redundant_pic_cnt: %d\n", sliceHdr->redundant_pic_cnt);
         if (sliceHdr->redundant_pic_cnt > 127) /* out of range */
             return AVCDEC_FAIL;
 
@@ -671,9 +737,11 @@ AVCDec_Status DecodeSliceHeader(AVCDecObject *decvid, AVCCommonObj *video, AVCDe
     if (slice_type == AVC_P_SLICE)
     {
         BitstreamRead1Bit(stream, &(sliceHdr->num_ref_idx_active_override_flag));
+        trace("| | num_ref_idx_active_override_flag: %d\n", sliceHdr->num_ref_idx_active_override_flag);
         if (sliceHdr->num_ref_idx_active_override_flag)
         {
             ue_v(stream, &(sliceHdr->num_ref_idx_l0_active_minus1));
+            trace("| | num_ref_idx_l0_active_minus1: %d\n", sliceHdr->num_ref_idx_l0_active_minus1);
         }
         else  /* the following condition is not allowed if the flag is zero */
         {
@@ -707,6 +775,7 @@ AVCDec_Status DecodeSliceHeader(AVCDecObject *decvid, AVCCommonObj *video, AVCDe
         dec_ref_pic_marking(video, stream, sliceHdr);
     }
     se_v(stream, &(sliceHdr->slice_qp_delta));
+    trace("| | slice_qp_delta: %d\n", sliceHdr->slice_qp_delta);
 
     video->QPy = 26 + currPPS->pic_init_qp_minus26 + sliceHdr->slice_qp_delta;
     if (video->QPy > 51 || video->QPy < 0)
@@ -730,6 +799,7 @@ AVCDec_Status DecodeSliceHeader(AVCDecObject *decvid, AVCCommonObj *video, AVCDe
     if (currPPS->deblocking_filter_control_present_flag)
     {
         ue_v(stream, &(sliceHdr->disable_deblocking_filter_idc));
+        trace("| | disable_deblocking_filter_idc: %d\n", sliceHdr->disable_deblocking_filter_idc);
         if (sliceHdr->disable_deblocking_filter_idc > 2)
         {
             return AVCDEC_FAIL; /* out of range */
@@ -737,6 +807,7 @@ AVCDec_Status DecodeSliceHeader(AVCDecObject *decvid, AVCCommonObj *video, AVCDe
         if (sliceHdr->disable_deblocking_filter_idc != 1)
         {
             se_v(stream, &(sliceHdr->slice_alpha_c0_offset_div2));
+            trace("| | slice_alpha_c0_offset_div2: %d\n", sliceHdr->slice_alpha_c0_offset_div2);
             if (sliceHdr->slice_alpha_c0_offset_div2 < -6 ||
                     sliceHdr->slice_alpha_c0_offset_div2 > 6)
             {
@@ -745,6 +816,7 @@ AVCDec_Status DecodeSliceHeader(AVCDecObject *decvid, AVCCommonObj *video, AVCDe
             video->FilterOffsetA = sliceHdr->slice_alpha_c0_offset_div2 << 1;
 
             se_v(stream, &(sliceHdr->slice_beta_offset_div_2));
+            trace("| | slice_beta_offset_div_2: %d\n", sliceHdr->slice_beta_offset_div_2);
             if (sliceHdr->slice_beta_offset_div_2 < -6 ||
                     sliceHdr->slice_beta_offset_div_2 > 6)
             {
@@ -772,6 +844,7 @@ AVCDec_Status DecodeSliceHeader(AVCDecObject *decvid, AVCCommonObj *video, AVCDe
         }
 
         BitstreamReadBits(stream, i, &(sliceHdr->slice_group_change_cycle));
+        trace("| | slice_group_change_cycle: %d\n", sliceHdr->slice_group_change_cycle);
         video->MapUnitsInSliceGroup0 =
             AVC_MIN(sliceHdr->slice_group_change_cycle * video->SliceGroupChangeRate, video->PicSizeInMapUnits);
     }
@@ -844,16 +917,21 @@ AVCDec_Status ref_pic_list_reordering(AVCCommonObj *video, AVCDecBitstream *stre
     if (slice_type != AVC_I_SLICE)
     {
         BitstreamRead1Bit(stream, &(sliceHdr->ref_pic_list_reordering_flag_l0));
+        trace("| | ref_pic_list_reordering_flag_l0: %d\n", sliceHdr->ref_pic_list_reordering_flag_l0);
         if (sliceHdr->ref_pic_list_reordering_flag_l0)
         {
+            trace("| | + Reference Picture List Reordering Commands\n");
+
             i = 0;
             do
             {
                 ue_v(stream, &(sliceHdr->reordering_of_pic_nums_idc_l0[i]));
+                trace("| | | reordering_of_pic_nums_idc_l0[%d]: %d\n", i, sliceHdr->reordering_of_pic_nums_idc_l0[i]);
                 if (sliceHdr->reordering_of_pic_nums_idc_l0[i] == 0 ||
                         sliceHdr->reordering_of_pic_nums_idc_l0[i] == 1)
                 {
                     ue_v(stream, &(sliceHdr->abs_diff_pic_num_minus1_l0[i]));
+                    trace("| | | abs_diff_pic_num_minus1_l0[%d]: %d\n", i, sliceHdr->abs_diff_pic_num_minus1_l0[i]);
                     if (sliceHdr->reordering_of_pic_nums_idc_l0[i] == 0 &&
                             sliceHdr->abs_diff_pic_num_minus1_l0[i] > video->MaxPicNum / 2 - 1)
                     {
@@ -868,6 +946,7 @@ AVCDec_Status ref_pic_list_reordering(AVCCommonObj *video, AVCDecBitstream *stre
                 else if (sliceHdr->reordering_of_pic_nums_idc_l0[i] == 2)
                 {
                     ue_v(stream, &(sliceHdr->long_term_pic_num_l0[i]));
+                    trace("| | | long_term_pic_num_l0[%d]: %d\n", i, sliceHdr->long_term_pic_num_l0[i]);
                 }
                 i++;
             }
@@ -881,11 +960,16 @@ AVCDec_Status ref_pic_list_reordering(AVCCommonObj *video, AVCDecBitstream *stre
 /** see subclause 7.4.3.3 */
 AVCDec_Status dec_ref_pic_marking(AVCCommonObj *video, AVCDecBitstream *stream, AVCSliceHeader *sliceHdr)
 {
+    trace("| | + dec_ref_pic_marking\n");
+
     int i;
     if (video->nal_unit_type == AVC_NALTYPE_IDR)
     {
         BitstreamRead1Bit(stream, &(sliceHdr->no_output_of_prior_pics_flag));
+        trace("| | | no_output_of_prior_pics_flag: %d\n", sliceHdr->no_output_of_prior_pics_flag);
+
         BitstreamRead1Bit(stream, &(sliceHdr->long_term_reference_flag));
+        trace("| | | long_term_reference_flag: %d\n", sliceHdr->long_term_reference_flag);
         if (sliceHdr->long_term_reference_flag == 0) /* used for short-term */
         {
             video->MaxLongTermFrameIdx = -1; /* no long-term frame indx */
@@ -899,29 +983,36 @@ AVCDec_Status dec_ref_pic_marking(AVCCommonObj *video, AVCDecBitstream *stream, 
     else
     {
         BitstreamRead1Bit(stream, &(sliceHdr->adaptive_ref_pic_marking_mode_flag));
+        trace("| | | adaptive_ref_pic_marking_mode_flag: %d\n", sliceHdr->adaptive_ref_pic_marking_mode_flag);
         if (sliceHdr->adaptive_ref_pic_marking_mode_flag)
         {
             i = 0;
             do
             {
                 ue_v(stream, &(sliceHdr->memory_management_control_operation[i]));
+                trace("| | | memory_management_control_operation[%d]: %d\n", i, sliceHdr->memory_management_control_operation[i]);
+
                 if (sliceHdr->memory_management_control_operation[i] == 1 ||
                         sliceHdr->memory_management_control_operation[i] == 3)
                 {
                     ue_v(stream, &(sliceHdr->difference_of_pic_nums_minus1[i]));
+                    trace("| | | difference_of_pic_nums_minus1[%d]: %d\n", i, sliceHdr->difference_of_pic_nums_minus1[i]);
                 }
                 if (sliceHdr->memory_management_control_operation[i] == 2)
                 {
                     ue_v(stream, &(sliceHdr->long_term_pic_num[i]));
+                    trace("| | | long_term_pic_num[%d]: %d\n", i, sliceHdr->long_term_pic_num[i]);
                 }
                 if (sliceHdr->memory_management_control_operation[i] == 3 ||
                         sliceHdr->memory_management_control_operation[i] == 6)
                 {
                     ue_v(stream, &(sliceHdr->long_term_frame_idx[i]));
+                    trace("| | | long_term_frame_idx[%d]: %d\n", i, sliceHdr->long_term_frame_idx[i]);
                 }
                 if (sliceHdr->memory_management_control_operation[i] == 4)
                 {
                     ue_v(stream, &(sliceHdr->max_long_term_frame_idx_plus1[i]));
+                    trace("| | | max_long_term_frame_idx_plus1[%d]: %d\n", i, sliceHdr->max_long_term_frame_idx_plus1[i]);
                 }
                 i++;
             }

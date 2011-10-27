@@ -26,6 +26,8 @@ and necessary type defitionitions and enumerations.
 
 #include "avcapi_common.h"
 
+void trace(const char *format, ...);
+
 /**
  This enumeration is used for the status returned from the library interface.
 */
