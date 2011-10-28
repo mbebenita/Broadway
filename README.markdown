@@ -4,8 +4,6 @@ A JavaScript H.264 decoder.
 
                 THIS IS VERY EARLY PROTOTYPE WORK
 
-                JUST ENOUGH TO MAKE THE DEMO WORK
-
 Emscripten Demo
 ===============
 
@@ -36,7 +34,7 @@ Install and patch Spidermonkey with https://bugzilla.mozilla.org/show_bug.cgi?id
 Directory Structure
 ===================
 
-Avc   - Sources for the Avc (H.265) decoder extracted from the libstagefright Android library, along with
+Avc   - Sources for the Avc (H.264) decoder extracted from the libstagefright Android library, along with
         some wrapper code that makes it run. Emscripten compiles these sources to JavaScript.
 
 Demo  - Precompiled JavaScript demo, just open broadway.html in the Nightly build of Firefox. Any version
