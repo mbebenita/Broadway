@@ -6,7 +6,7 @@
 
 class Avc {
 public:
-	Avc();
+	Avc(const char *filename);
 	int Play();
 private:
 	int decodeNALUnit(uint8 *nal_uint, int nal_size);

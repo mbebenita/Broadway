@@ -88,6 +88,7 @@ AVCDec_Status DecodeSPS(AVCDecObject *decvid, AVCDecBitstream *stream)
 
     /* continue decoding SPS */
     ue_v(stream, &(seqParam->log2_max_frame_num_minus4));
+    trace("| | log2_max_frame_num_minus4: %d\n", seqParam->log2_max_frame_num_minus4);
 
     if (seqParam->log2_max_frame_num_minus4 > 12)
     {

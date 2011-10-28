@@ -5,6 +5,7 @@
 #include <SDL/SDL.h>
 #include "Stage.h"
 #include "Avc.h"
+#include <unistd.h>
 
 /* The class of the global object. */
 static JSClass global_class = {
@@ -115,71 +116,89 @@ static JSFunctionSpec globalFunctions[] = {
     JS_FS_END
 };
 
+
+
 int SDL_main(int argc, char **argv) {
-	if (argc < 2) {
-		printf("Usage %s scripts\n", argv[0]);
-		return 1;
+
+    bool referenceMode = false;
+    bool javaScriptMode = false;
+    char* scripts [32];
+    int scriptCount = 0;
+    char* args;
+
+    int o = 0;
+    while ((o = getopt (argc, argv, "rjs:a:")) != -1) {
+        switch (o) {
+        case 'r':
+            referenceMode = true;
+            break;
+        case 'j':
+            javaScriptMode = true;
+            break;
+        case 's':
+            scripts[scriptCount++] = optarg;
+            break;
+        case 'a':
+            args = optarg;
+            break;
+        case '?':
+            printf("[-r] [-s FILE] [-a ARGUMENTS]\n");
+            break;
+        }
+    }
+
+	if (referenceMode) {
+        Avc avc(args);
+        avc.Play();
+	} else if (javaScriptMode) {
+        /* JS variables. */
+        JSRuntime *rt;
+        JSContext *cx;
+        JSObject *global;
+
+        /* Create a JS runtime. */
+        rt = JS_NewRuntime(8L * 1024L * 1024L);
+        if (rt == NULL)
+            return 1;
+
+        /* Create a context. */
+        cx = JS_NewContext(rt, 8192);
+        if (cx == NULL)
+            return 1;
+        JS_SetOptions(cx, JSOPTION_VAROBJFIX | JSOPTION_JIT | JSOPTION_METHODJIT);
+        JS_SetVersion(cx, JSVERSION_LATEST);
+        JS_SetErrorReporter(cx, reportError);
+
+        /* Create the global object in a new compartment. */
+        global = JS_NewCompartmentAndGlobalObject(cx, &global_class, NULL);
+        if (global == NULL)
+            return 1;
+
+        /* Populate the global object with the standard globals,
+         like Object and Array. */
+        if (!JS_InitStandardClasses(cx, global))
+            return 1;
+
+        if (!JS_DefineFunctions(cx, global, globalFunctions))
+            return JS_FALSE;
+
+        for (int i = 0; i < scriptCount; i++) {
+            JSScript *script = JS_CompileFile(cx, global, scripts[i]);
+            if (script == NULL)
+                return 1;
+
+            jsval rval;
+            JSBool result = JS_ExecuteScript(cx, global, script, &rval);
+            if (!result) {
+                printf("Cannot execute script %s", scripts[i]);
+            }
+        }
+
+        /* Cleanup. */
+        JS_DestroyContext(cx);
+        JS_DestroyRuntime(rt);
+        JS_ShutDown();
 	}
-
-	if (strcmp(argv[1], "-ref") == 0) {
-	    Avc avc;
-	    avc.Play();
-	    return 1;
-	}
-
-	/* JS variables. */
-	JSRuntime *rt;
-	JSContext *cx;
-	JSObject *global;
-
-	/* Create a JS runtime. */
-	rt = JS_NewRuntime(8L * 1024L * 1024L);
-	if (rt == NULL)
-		return 1;
-
-	/* Create a context. */
-	cx = JS_NewContext(rt, 8192);
-	if (cx == NULL)
-		return 1;
-	JS_SetOptions(cx, JSOPTION_VAROBJFIX | JSOPTION_JIT | JSOPTION_METHODJIT);
-	JS_SetVersion(cx, JSVERSION_LATEST);
-	JS_SetErrorReporter(cx, reportError);
-
-	/* Create the global object in a new compartment. */
-	global = JS_NewCompartmentAndGlobalObject(cx, &global_class, NULL);
-	if (global == NULL)
-		return 1;
-
-	/* Populate the global object with the standard globals,
-	 like Object and Array. */
-	if (!JS_InitStandardClasses(cx, global))
-		return 1;
-
-	if (!JS_DefineFunctions(cx, global, globalFunctions))
-		return JS_FALSE;
-
-	for (int i = 1; i < argc; i++) {
-		JSScript *script = JS_CompileFile(cx, global, argv[i]);
-		if (script == NULL)
-			return 1;
-
-		jsval rval;
-		JSBool result = JS_ExecuteScript(cx, global, script, &rval);
-		if (!result) {
-			printf("Cannot execute script %s", argv[i]);
-		}
-	}
-
-	// Stage stage(rt, cx, global);
-	// stage.Play();
-
-
-
-	/* Cleanup. */
-	JS_DestroyContext(cx);
-	JS_DestroyRuntime(rt);
-	JS_ShutDown();
-
 	return 0;
 }
 

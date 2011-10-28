@@ -217,3 +217,7 @@ function printArray(uint8View) {
     }
     print("\n");
 }
+
+function traceln(s) {
+    println(s);
+}

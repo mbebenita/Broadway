@@ -22,11 +22,14 @@ var Decoder = (function() {
             do {
                 var nal = reader.readNALUnit();
                 if (nal != null) {
-                    println("NAL Unit: " + (i++) + " " + nal.toString());
+                    traceln("+ NAL Unit " + (i++));
                     var unit = nal.createUnit();
+                    traceln("| nal_size: " + (nal.rbsp.length + 1));
+                    traceln("| nal_type: " + nal.nal_type);
+                    traceln("| nal_ref_idc: " + nal.nal_ref_idc);
                     if (unit != null) {
                         unit.decode(new Bitstream(nal.rbsp));
-                        println(unit.toString());
+                        // println(unit.toString());
                     }
                 }
             } while (nal != null);
@@ -44,6 +47,7 @@ var Decoder = (function() {
  */
 var AnnexBNALUnitReader = (function () {
 	var ptr = null;
+	
     function constructor(ptr) {
         this.ptr = ptr;
     }
@@ -90,6 +94,7 @@ var AnnexBNALUnitReader = (function () {
                 if (j + 2 >= size) {
                     size -= start;
                     return {
+                        start : start,
                         nal : ptr.subarray(start, start + size),
                         next : null
                     };
@@ -103,6 +108,7 @@ var AnnexBNALUnitReader = (function () {
             }
             size = end - start;
             return {
+                start : start,
                 nal : ptr.subarray(start, start + size),
                 next : ptr.subarray(end)
             };
@@ -225,8 +231,8 @@ var NALUnit = (function () {
 	        if (forbidden_zero_bit != 0) {
 	        	unexpected();
 	        }
-	        this.ref_idc = (ptr[0] & 0x60) >> 5;
-	        this.type = ptr[0] & 0x1F;
+	        this.nal_ref_idc = (ptr[0] & 0x60) >> 5;
+	        this.nal_type = ptr[0] & 0x1F;
 	        this.rbsp = ptr.subarray(1, 1 + convertEBSPToRBSP(ptr.subarray(1)));
 	        return;
 	    }
@@ -260,14 +266,14 @@ var NALUnit = (function () {
             return getProperties(this);
         },
         createUnit : function() {
-            switch (this.type) {
+            switch (this.nal_type) {
             case NALU_TYPE.SPS:
                 return new SPS();
             case NALU_TYPE.PPS:
                 return new PPS();
             case NALU_TYPE.SLICE:
             case NALU_TYPE.IDR:
-                return new Slice(this.type);
+                return new Slice(this.nal_type);
             default:
                 return null;
                 // unexpected();
@@ -292,7 +298,7 @@ var Slice = (function() {
         var header = this.header;
         var video = decoder.video;
         
-        header.decode(stream);
+        header.decode(this.nal_unit_type, stream);
         
         if (this.nal_unit_type == NALU_TYPE.IDR) {
             // video.prevFrameNumber = 0;
@@ -336,15 +342,19 @@ var SliceData = (function() {
 var SliceHeader = (function() {
     function constructor() { }
     
-    constructor.prototype.decode = function (stream) {
+    constructor.prototype.decode = function (nal_unit_type, stream) {
         var video = decoder.Video;
         
-        this.first_mb_in_slice = stream.uev();  
+        traceln("| + Slice Header");
+        this.first_mb_in_slice = stream.uev();
+        traceln("| | first_mb_in_slice: " + this.first_mb_in_slice);
         this.slice_type = stream.uev();
+        traceln("| | slice_type: " + this.slice_type);
         if (this.first_mb_in_slice != 0) {
             notImplemented();
         }
         this.pic_parameter_set_id = stream.uev();
+        traceln("| | pic_parameter_set_id: " + this.pic_parameter_set_id);
         assertRange(this.pic_parameter_set_id, 0, 255);
         
         var currentPPS = video.CurrentPPS = decoder.PictureParameterSets[this.pic_parameter_set_id];
@@ -378,6 +388,7 @@ var SliceHeader = (function() {
         video.SliceGroupChangeRate = currentPPS.slice_group_change_rate_minus1 + 1;
 
         this.frame_num = stream.readBits(currentSPS.log2_max_frame_num_minus4 + 4);
+        traceln("| | frame_num: " + this.frame_num);
         
         /* Book 5.3.4, if the frame_mbs_only_flag is set to zero, special coding of fields or interlaced video
          * is enabled. */
@@ -385,6 +396,7 @@ var SliceHeader = (function() {
             /* Clause 7.4.3, a field_pic_flag set to zero indicates the slice is a coded frame, otherwise it's
              * a coded field. We don't support interlaced video. */ 
             this.field_pic_flag = stream.readBit();
+            traceln("| | field_pic_flag: " + this.field_pic_flag);
             assertFalse (this.field_pic_flag);
         }
         
@@ -400,11 +412,12 @@ var SliceHeader = (function() {
         video.MaxPicNum = video.MaxFrameNum;
         video.CurrPicNum = this.frame_num;
 
-        if (video.nal_unit_type == NALU_TYPE.IDR) {
+        if (nal_unit_type == NALU_TYPE.IDR) {
             if (this.frame_num != 0) {
                 unexpected();
             }
-            this.idr_pic_id = stream.ue_v();
+            this.idr_pic_id = stream.uev();
+            traceln("| | idr_pic_id: " + this.idr_pic_id);
         }
         
         this.delta_pic_order_cnt_bottom = 0; /* default value */
@@ -412,6 +425,7 @@ var SliceHeader = (function() {
         
         if (currentSPS.pic_order_cnt_type == 0) {
             this.pic_order_cnt_lsb = stream.readBits(currentSPS.log2_max_pic_order_cnt_lsb_minus4 + 4);
+            traceln("| | pic_order_cnt_lsb: " + this.pic_order_cnt_lsb);
             video.MaxPicOrderCntLsb = 1 << (currentSPS.log2_max_pic_order_cnt_lsb_minus4 + 4);
             if (this.pic_order_cnt_lsb > video.MaxPicOrderCntLsb - 1) {
                 unexpected();
@@ -420,13 +434,16 @@ var SliceHeader = (function() {
             if (currentPPS.pic_order_present_flag) {
                 notImplemented();
                 this.delta_pic_order_cnt_bottom = stream.sev32();
+                traceln("| | delta_pic_order_cnt_bottom: " + this.delta_pic_order_cnt_bottom);
             }
         }
         
         if (currentSPS.pic_order_cnt_type == 1 && !currentSPS.delta_pic_order_always_zero_flag) {
-            this.delta_pic_order_cnt[0] = stream.sev32(); 
+            this.delta_pic_order_cnt[0] = stream.sev32();
+            traceln("| | delta_pic_order_cnt[0]: " + this.delta_pic_order_cnt[0]);
             if (currentPPS.pic_order_present_flag) {
-                this.delta_pic_order_cnt[1] = stream.sev32(); 
+                this.delta_pic_order_cnt[1] = stream.sev32();
+                traceln("| | delta_pic_order_cnt[1]: " + this.delta_pic_order_cnt[1]);
             }
         }
 
@@ -446,8 +463,10 @@ var SliceHeader = (function() {
 
         if (this.slice_type == SLICE_TYPE.P_SLICE) {
             this.num_ref_idx_active_override_flag = stream.readBit();
+            traceln("| | num_ref_idx_active_override_flag: " + this.num_ref_idx_active_override_flag);
             if (this.num_ref_idx_active_override_flag) {
                 this.num_ref_idx_l0_active_minus1 = stream.uev();
+                traceln("| | num_ref_idx_l0_active_minus1: " + this.num_ref_idx_l0_active_minus1);
             } else   {
                 /* the following condition is not allowed if the flag is zero */
                 if ((slice_type == SLICE_TYPE.P_SLICE) && currentPPS.num_ref_idx_l0_active_minus1 > 15) {
@@ -471,6 +490,7 @@ var SliceHeader = (function() {
         }
         
         this.slice_qp_delta = stream.sev();
+        traceln("| | slice_qp_delta: " + this.slice_qp_delta);
 
         video.QPy = 26 + currentPPS.pic_init_qp_minus26 + this.slice_qp_delta;
         if (video.QPy > 51 || video.QPy < 0) {
@@ -491,16 +511,19 @@ var SliceHeader = (function() {
 
         if (currentPPS.deblocking_filter_control_present_flag) {
             this.disable_deblocking_filter_idc = stream.uev();
+            traceln("| | disable_deblocking_filter_idc: " + this.disable_deblocking_filter_idc);
             if (this.disable_deblocking_filter_idc > 2) {
                 unexpected(); /* out of range */
             }
             if (this.disable_deblocking_filter_idc != 1) {
                 this.slice_alpha_c0_offset_div2 = stream.sev();
+                traceln("| | slice_alpha_c0_offset_div2: " + this.slice_alpha_c0_offset_div2);
                 if (this.slice_alpha_c0_offset_div2 < -6 || this.slice_alpha_c0_offset_div2 > 6) {
                     unexpected();
                 }
                 video.FilterOffsetA = this.slice_alpha_c0_offset_div2 << 1;
-                this.slice_beta_offset_div_2 = stream.sev(); 
+                this.slice_beta_offset_div_2 = stream.sev();
+                traceln("| | slice_beta_offset_div_2: " + this.slice_beta_offset_div_2);
                 if (this.slice_beta_offset_div_2 < -6 || this.slice_beta_offset_div_2 > 6) {
                     unexpected();
                 }
@@ -523,7 +546,8 @@ var SliceHeader = (function() {
                 temp >>= 1;
                 i++;
             }
-            this.slice_group_change_cycle = stream.readBits(i); 
+            this.slice_group_change_cycle = stream.readBits(i);
+            traceln("| | slice_group_change_cycle: " + this.slice_group_change_cycle);
             video.MapUnitsInSliceGroup0 = min(this.slice_group_change_cycle * video.SliceGroupChangeRate, video.PicSizeInMapUnits);
         }
     };
@@ -538,7 +562,9 @@ var SliceHeader = (function() {
     constructor.prototype.ref_pic_list_reordering = function(video, stream) {
         if (this.slice_type != SLICE_TYPE.I_SLICE) {
             this.ref_pic_list_reordering_flag_l0 = stream.readBit();
+            traceln("| | ref_pic_list_reordering_flag_l0: " + this.ref_pic_list_reordering_flag_l0);
             if (this.ref_pic_list_reordering_flag_l0) {
+                traceln("| | + Reference Picture List Reordering Commands");
                 var i = 0;
                 this.reordering_of_pic_nums_idc_l0 = [];
                 this.abs_diff_pic_num_minus1_l0 = [];
@@ -546,10 +572,12 @@ var SliceHeader = (function() {
                     var res = this.reordering_of_pic_nums_idc_l0[i] = stream.uev();
                     if (res == 0 || res == 1) {
                         this.abs_diff_pic_num_minus1_l0[i] = stream.uev();
+                        traceln("| | abs_diff_pic_num_minus1_l0[" + i + "]: " + this.abs_diff_pic_num_minus1_l0[i]);
                         assertFalse (res == 0 && this.abs_diff_pic_num_minus1_l0[i] > video.MaxPicNum / 2 - 1);
                         assertFalse (res == 1 && this.abs_diff_pic_num_minus1_l0[i] > video.MaxPicNum / 2 - 2);
                     } else if (res == 2) {
                         this.long_term_pic_num_l0[i] = stream.uev();
+                        traceln("| | long_term_pic_num_l0[" + i + "]: " + this.long_term_pic_num_l0[i]);
                     }
                     i++;
                 } while (this.reordering_of_pic_nums_idc_l0[i - 1] != 3 && i <= this.num_ref_idx_l0_active_minus1 + 1);
@@ -561,9 +589,12 @@ var SliceHeader = (function() {
      * Clause 7.4.3.3
      */
     constructor.prototype.dec_ref_pic_marking = function(video, stream) {
+        traceln("| | + dec_ref_pic_marking");
         if (video.nal_unit_type == NALU_TYPE.IDR) {
             this.no_output_of_prior_pics_flag = stream.readBit();
+            traceln("| | | no_output_of_prior_pics_flag: " + this.no_output_of_prior_pics_flag);
             this.long_term_reference_flag = stream.readBit();
+            traceln("| | | long_term_reference_flag: " + this.long_term_reference_flag);
             if (this.long_term_reference_flag == 0) {
                 video.MaxLongTermFrameIdx = -1;
             } else {
@@ -572,6 +603,7 @@ var SliceHeader = (function() {
             }
         } else {
             this.adaptive_ref_pic_marking_mode_flag = stream.readBit();
+            traceln("| | | adaptive_ref_pic_marking_mode_flag: " + this.adaptive_ref_pic_marking_mode_flag);
             if (this.adaptive_ref_pic_marking_mode_flag) {
                 this.memory_management_control_operation = [];
                 this.difference_of_pic_nums_minus1 = [];
@@ -580,17 +612,22 @@ var SliceHeader = (function() {
                 var i = 0;
                 do {
                     var res = this.memory_management_control_operation[i] = stream.uev();
+                    traceln("| | | memory_management_control_operation[" + i + "]: " + this.memory_management_control_operation[i]);
                     if (res == 1 || res == 3) {
                         this.difference_of_pic_nums_minus1[i] = stream.uev();
+                        traceln("| | | difference_of_pic_nums_minus1[" + i + "]: " + this.difference_of_pic_nums_minus1[i]);
                     }
                     if (res == 2) {
                         this.long_term_pic_num[i] = stream.uev();
+                        traceln("| | | long_term_pic_num[" + i + "]: " + this.long_term_pic_num[i]);
                     }
                     if (res == 3 || res == 6) {
                         this.long_term_frame_idx[i] = stream.uev();
+                        traceln("| | | long_term_frame_idx[" + i + "]: " + this.long_term_frame_idx[i]);
                     }
                     if (res == 4) {
                         this.max_long_term_frame_idx_plus1[i] = stream.uev();
+                        traceln("| | | max_long_term_frame_idx_plus1[" + i + "]: " + this.max_long_term_frame_idx_plus1[i]);
                     }
                     i++;
                 } while (this.memory_management_control_operation[i - 1] != 0 && i < MAX_DEC_REF_PIC_MARKING);

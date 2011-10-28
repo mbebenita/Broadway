@@ -38,12 +38,12 @@ void my_free(void *userData, uintptr_t mem) {
     free((void *) mem);
 }
 
-Avc::Avc() {
+Avc::Avc(const char *filename) {
     decoder.AVCObject = NULL;
     decoder.CBAVC_Malloc = my_malloc;
     decoder.CBAVC_Free = my_free;
     decoder.debugEnable = true;
-    buffer = (uint8*) readFile("Media/admiral.264", &buffer_size);
+    buffer = (uint8*) readFile(filename, &buffer_size);
     screen = NULL;
 }
 
@@ -86,7 +86,6 @@ int Avc::Play() {
         }
 
         trace("+ NAL Unit %d\n", nal_number++);
-        trace("| offset: %d\n", (nal_unit - buffer));
         trace("| nal_size: %d\n", nal_size);
 
         if (decodeNALUnit(nal_unit, nal_size) == 0) {
