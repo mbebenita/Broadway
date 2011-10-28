@@ -12,7 +12,7 @@ Emscripten Demo
 ===============
 
 The demo is Android's H.264 decoder compiled with Emscripten to JavaScript, then further optimized with
-Google's JavaScript closure compiler.
+Google's JavaScript closure compiler. No hardware acceleration whatsoever!
 
 Running the demo:
 
