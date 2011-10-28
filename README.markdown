@@ -1,12 +1,10 @@
-Broadway.js - A JavaScript H.264 decoder.
-
-!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+Broadway.js
+===========
+A JavaScript H.264 decoder.
 
                 THIS IS VERY EARLY PROTOTYPE WORK
 
                 JUST ENOUGH TO MAKE THE DEMO WORK
-
-!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 Emscripten Demo
 ===============
