@@ -12,7 +12,9 @@ Google's JavaScript closure compiler. No hardware acceleration whatsoever!
 
 Running the demo:
 
-Open Demo/broadway.html in Firefox Nightly (w/ Type Inference).
+Open Demo/broadway.html in Firefox Nightly (it will run significantly slower in previous
+versions, due to JavaScript engine improvements that are not yet in a stable release, namely
+Type Inference. These improvements will reach the stable release soon).
 
 Building the demo:
 
