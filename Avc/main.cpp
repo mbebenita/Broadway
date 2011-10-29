@@ -5,6 +5,8 @@
 #include "avcdec_int.h"
 #include "avcdec_api.h"
 
+#include "yuv2rgb.h"
+
 #include "SDL/SDL.h"
 
 #define DEBUG_LOGGING 0
@@ -15,6 +17,8 @@
 #endif
 
 #define RENDER 1
+
+#define FASTYUV2RGB 0
 
 // Globals
 
@@ -91,7 +95,9 @@ int SDL_main(int argc, char **argv) {
 #if LINUX
     buffer = (uint8*) readFile(argc == 2 ? argv[1] : "../Media/mozilla.264", &size);
 #else
+    // buffer = (uint8*) readFile(argc == 2 ? argv[1] : "/Users/mbebenita/Workspaces/Broadway/Media/mozilla.264", &size);
     buffer = (uint8*) readFile(argc == 2 ? argv[1] : "../Media/mozilla.264", &size);
+
 #endif
     stream = buffer;
 
@@ -117,6 +123,34 @@ void runMainLoop() {
 #endif
         }
     }
+}
+
+extern "C" void paint(uint8 *luma, uint8 *cb, uint8 *cr, int height, int width) {
+    int chromaWidth = width >> 1;
+#if FASTYUV2RGB
+    uint8 *dst = (uint8 *)screen->pixels;
+    yuv420_2_rgb8888( (uint8*) dst, luma, cb, cr, width, height, width, chromaWidth, width << 2, yuv2rgb565_table, 0);
+#else
+    uint32 *dst = (uint32 *)screen->pixels;
+    for (int y = 0; y < height; y++) {
+        int lineOffLuma = y * width;
+        int lineOffChroma = (y >> 1) * chromaWidth;
+        for (int x = 0; x < width; x++) {
+            int c = luma[lineOffLuma + x] - 16;
+            int d = cb[lineOffChroma + (x >> 1)] - 128;
+            int e = cr[lineOffChroma + (x >> 1)] - 128;
+
+            int red = (298 * c + 409 * e + 128) >> 8;
+            red = red < 0 ? 0 : (red > 255 ? 255 : red);
+            int green = (298 * c - 100 * d - 208 * e + 128) >> 8;
+            green = green < 0 ? 0 : (green > 255 ? 255 : green);
+            int blue = (298 * c + 516 * d + 128) >> 8;
+            blue = blue < 0 ? 0 : (blue > 255 ? 255 : blue);
+            int alpha = 255;
+            dst[lineOffLuma + x] = SDL_MapRGB(screen->format, red & 0xff, green & 0xff, blue & 0xff);
+        }
+    }
+#endif
 }
 
 mainLoopStatus mainLoopIteration() {
@@ -172,37 +206,12 @@ mainLoopStatus mainLoopIteration() {
         }
 #endif
 
-        uint8 *luma = output.YCbCr[0];
-        uint8 *cb = output.YCbCr[1];
-        uint8 *cr = output.YCbCr[2];
-        uint32 *dst = (uint32*) screen->pixels;
-        int stride = output.pitch;
-        int strideChroma = output.pitch >> 1;
+
 #if !RENDER
         int mean = 0;
 #endif
-        for (int y = 0; y < output.height; y++) {
-            int lineOffLuma = y * stride;
-            int lineOffChroma = (y >> 1) * strideChroma;
-            for (int x = 0; x < output.pitch; x++) {
-                int c = luma[lineOffLuma + x] - 16;
-                int d = cb[lineOffChroma + (x >> 1)] - 128;
-                int e = cr[lineOffChroma + (x >> 1)] - 128;
-
-                int red = (298 * c + 409 * e + 128) >> 8;
-                red = red < 0 ? 0 : (red > 255 ? 255 : red);
-                int green = (298 * c - 100 * d - 208 * e + 128) >> 8;
-                green = green < 0 ? 0 : (green > 255 ? 255 : green);
-                int blue = (298 * c + 516 * d + 128) >> 8;
-                blue = blue < 0 ? 0 : (blue > 255 ? 255 : blue);
-                int alpha = 255;
-#if RENDER
-                dst[lineOffLuma + x] = SDL_MapRGB(screen->format, red & 0xff, green & 0xff, blue & 0xff);
-#else
-                dst[lineOffLuma + x] = ((red & 0xff) << 16) + ((green & 0xff) << 8) + (blue & 0xff);
-                mean += dst[lineOffLuma + x];
-#endif
-            }
+        if (1) {
+            paint(output.YCbCr[0], output.YCbCr[1], output.YCbCr[2], output.height, output.pitch);
         }
 #if !RENDER
         printf("C mean: %d\n", mean/(output.height*output.pitch));
@@ -218,7 +227,7 @@ mainLoopStatus mainLoopIteration() {
         for (int y = 0; y < min; y++) {
 //            printf("%d: %d\n", y, ((char*)screen->pixels)[y*output.pitch + y*4]);
         }
-        if (frame == 100) exit(0);
+        // if (frame == 100) exit(0);
 #endif
         status = MLS_FRAMERENDERED;
 
