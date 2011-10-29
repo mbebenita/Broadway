@@ -1,7 +1,7 @@
 #!/usr/bin/python
-import os;
-import sys;
-import argparse;
+import os
+import sys
+import argparse
 
 commands = ["build", "run", "ref", "cmp"]
 parser = argparse.ArgumentParser(description='Broadway Command Center')
