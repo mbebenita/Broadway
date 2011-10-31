@@ -141,33 +141,40 @@ else:
           var data = surface.image.data;
           var width_2 = width/2;
 
+          $luma >>= 1;
+
           var dst = 0;
           for (var y = 0; y < height; y++) {
-              var lineOffLuma = y * width;
+              var lineOffLuma = (y * width) >> 1;
               var lineOffChroma = (y >> 1) * chromaWidth;
               for (var x = 0; x < width_2; x++) {
+                  var cc = HEAPU16[$luma + lineOffLuma];
                   var c = HEAPU8[$luma + lineOffLuma] - 16;
                   var d = HEAPU8[$cb + lineOffChroma] - 128;
                   var e = HEAPU8[$cr + lineOffChroma] - 128;
 
-                  data[dst] = (298 * c + 409 * e + 128) >> 8;
-                  data[dst + 1] = (298 * c - 100 * d - 208 * e + 128) >> 8;
-                  data[dst + 2] = (298 * c + 516 * d + 128) >> 8;
+                  var c1 = cc & 0xff;
+                  var c2 = cc >> 8;
+
+                  var rmod = 409 * e + 128;
+                  var gmod = -100 * d - 208 * e + 128;
+                  var bmod = 516 * d + 128;
+
+                  data[dst] = (298 * c1 + rmod) >> 8;
+                  data[dst + 1] = (298 * c1 + gmod) >> 8;
+                  data[dst + 2] = (298 * c1 + bmod) >> 8;
                   data[dst + 3] = 0xff;
 
                   dst += 4;
-                  lineOffLuma++;
 
-                  c = HEAPU8[$luma + lineOffLuma] - 16;
-
-                  data[dst] = (298 * c + 409 * e + 128) >> 8;
-                  data[dst + 1] = (298 * c - 100 * d - 208 * e + 128) >> 8;
-                  data[dst + 2] = (298 * c + 516 * d + 128) >> 8;
+                  data[dst] = (298 * c2 + rmod) >> 8;
+                  data[dst + 1] = (298 * c2 + gmod) >> 8;
+                  data[dst + 2] = (298 * c2 + bmod) >> 8;
                   data[dst + 3] = 0xff;
 
-                  dst += 4;
                   lineOffLuma++;
                   lineOffChroma++;
+                  dst += 4;
               }
           }
           surface.ctx.putImageData(surface.image, 0, 0);
