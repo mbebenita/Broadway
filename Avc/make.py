@@ -157,12 +157,11 @@ else:
                   green = green < 0 ? 0 : (green > 255 ? 255 : green);
                   var blue = (298 * c + 516 * d + 128) >> 8;
                   blue = blue < 0 ? 0 : (blue > 255 ? 255 : blue);
-                  var alpha = 255;
 
                   // dst[lineOffLuma + x] = SDL_MapRGB(screen->format, red & 0xff, green & 0xff, blue & 0xff);
-                  data[dst] = red & 0xff;
-                  data[dst + 1] = green & 0xff;
-                  data[dst + 2] = blue & 0xff;
+                  data[dst] = red;
+                  data[dst + 1] = green;
+                  data[dst + 2] = blue;
                   data[dst + 3] = 0xff;
 
                   dst += 4;
@@ -190,11 +189,12 @@ if 1:
   print 'Closure compiler'
 
   Popen(['java', '-jar', emscripten.CLOSURE_COMPILER,
-                 '--compilation_level', 'ADVANCED_OPTIMIZATIONS',
+                 '--compilation_level', 'SIMPLE_OPTIMIZATIONS', # XXX TODO: use advanced opts for code size (they cause slow startup though)
                  '--js', JS_DIR + '/avc.elim.js', '--js_output_file', JS_DIR + '/avc.elim.cc.js'], stdout=PIPE, stderr=STDOUT).communicate()
 else:
   print 'Closure compiler'
 
   Popen(['java', '-jar', emscripten.CLOSURE_COMPILER,
-                 '--compilation_level', 'ADVANCED_OPTIMIZATIONS',
+                 '--compilation_level', 'SIMPLE_OPTIMIZATIONS',
                  '--js', JS_DIR + '/avc.js', '--js_output_file', JS_DIR + '/avc.cc.js'], stdout=PIPE, stderr=STDOUT).communicate()
+
