@@ -139,15 +139,16 @@ else:
           var chromaWidth = width >> 1;
           var surface = SDL.surfaces[SDL.screen];
           var data = surface.image.data;
+          var width_2 = width/2;
 
           var dst = 0;
           for (var y = 0; y < height; y++) {
               var lineOffLuma = y * width;
               var lineOffChroma = (y >> 1) * chromaWidth;
-              for (var x = 0; x < width; x++) {
-                  var c = HEAPU8[$luma + (lineOffLuma + x)] - 16;
-                  var d = HEAPU8[$cb + (lineOffChroma + (x >> 1))] - 128;
-                  var e = HEAPU8[$cr + (lineOffChroma + (x >> 1))] - 128;
+              for (var x = 0; x < width_2; x++) {
+                  var c = HEAPU8[$luma + lineOffLuma] - 16;
+                  var d = HEAPU8[$cb + lineOffChroma] - 128;
+                  var e = HEAPU8[$cr + lineOffChroma] - 128;
 
                   data[dst] = (298 * c + 409 * e + 128) >> 8;
                   data[dst + 1] = (298 * c - 100 * d - 208 * e + 128) >> 8;
@@ -155,6 +156,18 @@ else:
                   data[dst + 3] = 0xff;
 
                   dst += 4;
+                  lineOffLuma++;
+
+                  c = HEAPU8[$luma + lineOffLuma] - 16;
+
+                  data[dst] = (298 * c + 409 * e + 128) >> 8;
+                  data[dst + 1] = (298 * c - 100 * d - 208 * e + 128) >> 8;
+                  data[dst + 2] = (298 * c + 516 * d + 128) >> 8;
+                  data[dst + 3] = 0xff;
+
+                  dst += 4;
+                  lineOffLuma++;
+                  lineOffChroma++;
               }
           }
           surface.ctx.putImageData(surface.image, 0, 0);
