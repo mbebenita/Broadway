@@ -149,19 +149,9 @@ else:
                   var d = HEAPU8[$cb + (lineOffChroma + (x >> 1))] - 128;
                   var e = HEAPU8[$cr + (lineOffChroma + (x >> 1))] - 128;
 
-
-
-                  var red = (298 * c + 409 * e + 128) >> 8;
-                  red = red < 0 ? 0 : (red > 255 ? 255 : red);
-                  var green = (298 * c - 100 * d - 208 * e + 128) >> 8;
-                  green = green < 0 ? 0 : (green > 255 ? 255 : green);
-                  var blue = (298 * c + 516 * d + 128) >> 8;
-                  blue = blue < 0 ? 0 : (blue > 255 ? 255 : blue);
-
-                  // dst[lineOffLuma + x] = SDL_MapRGB(screen->format, red & 0xff, green & 0xff, blue & 0xff);
-                  data[dst] = red;
-                  data[dst + 1] = green;
-                  data[dst + 2] = blue;
+                  data[dst] = (298 * c + 409 * e + 128) >> 8;
+                  data[dst + 1] = (298 * c - 100 * d - 208 * e + 128) >> 8;
+                  data[dst + 2] = (298 * c + 516 * d + 128) >> 8;
                   data[dst + 3] = 0xff;
 
                   dst += 4;
