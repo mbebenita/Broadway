@@ -4,7 +4,7 @@
 
   <style>
     th {
-      font: bold 14px Verdana, Arial, Helvetica,
+      font: bold 12px Verdana, Arial, Helvetica,
       sans-serif;
       text-align: left;
       padding: 4px 4px 4px 12px;
@@ -12,7 +12,7 @@
     }
 
     td {
-      font: bold 16px Verdana, Arial, Helvetica;
+      font: bold 12px Verdana, Arial, Helvetica;
       padding-left: 8px;
       text-align: right;
     }
@@ -165,9 +165,7 @@
   </script>
 
   <div>
-
   <h1>Broadway.js</h1>
-
   <div id="tabs">
     <ul>
       <li><a href="#tabs-1">H.264 Decoding w/ Canvas</a></li>
@@ -180,30 +178,32 @@
           <option value="admiral.264">Admiral</option>
         </select>
       </div>
-      <div style="background-color: black; width: 640px; height: 480px; margin-top: 10px; margin-bottom: 10px; float: left;">
-        <canvas id='canvas'></canvas>
-      </div>
-      <!-- Stats -->
-      <div style="height: 480px; margin-top: 10px; margin-left: 10px; margin-bottom: 10px; float: left;">
-        <div id="chart" style="width:640px; height:340px;"></div>
-        <table style="margin-top: 10px; width: 400px;">
-          <tr>
-            <th>FPS</th>
-            <td><span id='fps' style="color: red;"></span></td>
-          </tr>
-          <tr>
-            <th>Average FPS (All / Steady)</th>
-            <td><span id='fpsSinceStart' style="color: green;"></span> <span id='fpsSinceSteady' style="color: green;"></span></td>
-          </tr>
-          <tr>
-            <th>Elapsed</th>
-            <td><span id='elapsed' ></span></td>
-          </tr>
-          <tr>
-            <th>Score</th>
-            <td><span id='score' style="color: brown;"></span></td>
-          </tr>
-        </table>
+      <div style="width: 1000px">
+        <div style="background-color: black; width: 640px; height: 480px; margin-top: 10px; margin-bottom: 10px; float: left;">
+          <canvas id='canvas'></canvas>
+        </div>
+        <!-- Stats -->
+        <div style="height: 480px; margin-top: 10px; margin-left: 10px; margin-bottom: 10px; float: left;">
+          <div id="chart" style="width:300px; height:340px;"></div>
+          <table style="margin-top: 10px; width: 300;">
+            <tr>
+              <th>FPS</th>
+              <td><span id='fps' style="color: red;"></span></td>
+            </tr>
+            <tr>
+              <th>Average FPS (All / Steady)</th>
+              <td><span id='fpsSinceStart' style="color: green;"></span> <span id='fpsSinceSteady' style="color: green;"></span></td>
+            </tr>
+            <tr>
+              <th>Elapsed</th>
+              <td><span id='elapsed' ></span></td>
+            </tr>
+            <tr>
+              <th>Score</th>
+              <td><span id='score' style="color: brown;"></span></td>
+            </tr>
+          </table>
+        </div>
       </div>
       <div style="clear: both;">
         <button id="plot" style="margin-right: 10px;">Plot</button>
