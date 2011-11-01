@@ -44,7 +44,6 @@
       $(function(){
         $( "#tabs" ).tabs();
         $( "button").button();
-        $( "#stop").click(function() { stop(); });
         $( "#play").click(function() { play(); });
         $( "#plot").click(function() { plot(); });
 
@@ -136,21 +135,14 @@
       function stop() {
           clearInterval(Module.mainLoopInterval);
       }
-
-      function updateProgress(evt) 
-      {
-        console.info(evt.loaded);
-        if (evt.lengthComputable) {
-          var percentComplete = (evt.loaded / evt.total) * 100;  
-          $('#downloadProgress').progressbar( "option", "value", percentComplete);
-        } 
-      }
       
       function transferComplete(evt){
-        $('#downloadProgress').progressbar( "option", "value", 100);
+        document.getElementById('downloadProgress').innerHTML = "Download Complete, Playing ...";
       }  
 
       function play() {
+
+        document.getElementById('downloadProgress').innerHTML = "Downloading, Please Wait ...";
 
         $( "#play").hide();
 
@@ -158,7 +150,6 @@
 
         // Get the file
         var xhr = new XMLHttpRequest();
-        xhr.addEventListener("progress", updateProgress, false);
         xhr.addEventListener("load", transferComplete, false);  
         xhr.open("GET", clip, false);
         xhr.responseType = "arraybuffer";
@@ -197,9 +188,7 @@
           <option value="admiral.264">Admiral</option>
         </select>
       </span>
-      <span style="margin-top: 10px"> <h4>Download Progress<h4>
-      <div id="downloadProgress" style="width: 640px; height: 16px; margin-top: 5px"></div>
-      </span>
+      <span style="margin-top: 10px; border: 0px" id="downloadProgress"></span>
       <div style="width: 1000px">
         <div style="background-color: black; width: 640px; height: 480px; margin-top: 10px; margin-bottom: 10px; float: left;">
           <canvas id='canvas'></canvas>
@@ -229,7 +218,6 @@
       </div>
       <div style="clear: both;">
         <button id="plot" style="margin-right: 10px;">Plot</button>
-        <button id="stop">Stop</button>
         <button id="play">Play</button>
       </div>
     </div>
