@@ -4,6 +4,8 @@ A JavaScript H.264 decoder.
 
                 THIS IS VERY EARLY PROTOTYPE WORK
 
+View a Live Demo at: http://mbebenita.github.com/Broadway/broadway.html
+
 Emscripten Demo
 ===============
 
