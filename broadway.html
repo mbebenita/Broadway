@@ -140,10 +140,14 @@
       function updateProgress(evt) 
       {
         console.info(evt.loaded);
-        if (evt.lengthComputable){
+        if (evt.lengthComputable) {
           var percentComplete = (evt.loaded / evt.total) * 100;  
           $('#downloadProgress').progressbar( "option", "value", percentComplete);
         } 
+      }
+      
+      function transferComplete(evt){
+        $('#downloadProgress').progressbar( "option", "value", 100);
       }  
 
       function play() {
@@ -155,6 +159,7 @@
         // Get the file
         var xhr = new XMLHttpRequest();
         xhr.addEventListener("progress", updateProgress, false);
+        xhr.addEventListener("load", transferComplete, false);  
         xhr.open("GET", clip, false);
         xhr.responseType = "arraybuffer";
         xhr.send(null);
