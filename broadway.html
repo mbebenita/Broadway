@@ -120,7 +120,7 @@
         var scoreTimeout = 60;
         if (elapsed > scoreTimeout && scoreCalculated == false) {
           scoreCalculated = true;
-          document.getElementById('score').innerHTML = fps.toFixed(2);
+          document.getElementById('score').innerHTML = fpsSinceStart.toFixed(2);
         }
         if (scoreCalculated == false) {
           if (polluted) {
