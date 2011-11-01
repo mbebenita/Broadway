@@ -42,6 +42,8 @@
         $( "button").button();
         $( "#stop").click(function() { stop(); });
         $( "#play").click(function() { play(); });
+        $( "#plot").click(function() { plot(); });
+        
       });
 
 
@@ -73,15 +75,27 @@
 
       var scoreCalculated = false;
 
+      var plotting = false;
+      var polluted = false;
+
+      function plot() {
+        plotting = !plotting;
+        if (plotting) {
+          polluted = true;
+        }
+      }
+
       function updateStats(fps, fpsSinceStart, elapsed) {
-        var maxSamples = 32;
-        if (fpsData.length > maxSamples)
-          fpsData = fpsData.slice(1);
-        fpsData.push([elapsed, fps])
-        if (fpsSinceStartData.length > maxSamples)
-          fpsSinceStartData = fpsSinceStartData.slice(1);
-        fpsSinceStartData.push([elapsed, fpsSinceStart])
-        updateChart();
+        if (plotting) {
+          var maxSamples = 32;
+          if (fpsData.length > maxSamples)
+            fpsData = fpsData.slice(1);
+          fpsData.push([elapsed, fps])
+          if (fpsSinceStartData.length > maxSamples)
+            fpsSinceStartData = fpsSinceStartData.slice(1);
+          fpsSinceStartData.push([elapsed, fpsSinceStart])
+          updateChart();
+        }
 
         document.getElementById('fps').innerHTML = fps.toFixed(2);
         document.getElementById('fpsSinceStart').innerHTML = fpsSinceStart.toFixed(2);
@@ -93,7 +107,11 @@
           document.getElementById('score').innerHTML = fps.toFixed(2);
         }
         if (scoreCalculated == false) {
-          document.getElementById('score').innerHTML = "Calculating: " + (scoreTimeout - elapsed).toFixed(0);
+          if (polluted) {
+            document.getElementById('score').innerHTML = "Invalid";
+          } else {
+            document.getElementById('score').innerHTML = "Calculating: " + (scoreTimeout - elapsed).toFixed(0);
+          }
         }
       }
   </script>
@@ -179,6 +197,7 @@
         </table>
       </div>
       <div style="clear: both;">
+        <button id="plot" style="margin-right: 10px;">Plot</button>
         <button id="stop">Stop</button>
         <button id="play">Play</button>
       </div>
