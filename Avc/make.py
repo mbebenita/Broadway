@@ -31,6 +31,7 @@ EMSCRIPTEN_SETTINGS = {
   'QUANTUM_SIZE': 4,
   'INVOKE_RUN': 0, # we do it ourselves
   'EXPORTED_FUNCTIONS': ['_main', '__Z11runMainLoopv'],
+  'IGNORED_FUNCTIONS': ['_paint'],
 }
 EMSCRIPTEN_ARGS = []#['--dlmalloc'] # Optimize does not appear to help
 
@@ -135,7 +136,7 @@ else:
         */
       }
 
-      _paint = function($luma, $cb, $cr, height, width) {
+      function _paint($luma, $cb, $cr, height, width) {
           var chromaWidth = width >> 1;
           var surface = SDL.surfaces[SDL.screen];
           var data = surface.image.data;
