@@ -146,49 +146,42 @@ else:
         */
       }
 
-      function _paint($luma, $cb, $cr, height, width) {
-          var chromaWidth = width >> 1;
-          var surface = SDL.surfaces[SDL.screen];
-          var data = surface.image.data;
-          var width_2 = width/2;
+        function _paint( $luma, $cb, $cr, h, w )
+        {
+          for( var y1,y2,u,v,ruv,guv,buv,j,w_2=w>>1,W=w*4, surface=SDL.surfaces[SDL.screen], d=surface.image.data, r=0; h-=2; )
+          {
+            for( j=w_2; j--; )
+            {
+              u = HEAPU8[$cr++];
+              v = HEAPU8[$cb++];
+              ruv = 409*u-56992;
+              guv = 34784-208*u-100*v;
+              buv = 516*v-70688;
 
-          $luma >>= 1;
+              y2 = HEAPU8[$luma+w]*298;
+              y1 = HEAPU8[$luma++]*298;
+              d[r+W] = y2+ruv>>8;
+              d[r++] = y1+ruv>>8;
+              d[r+W] = y2+guv>>8;
+              d[r++] = y1+guv>>8;
+              d[r+W] = y2+buv>>8;
+              d[r++] = y1+buv>>8;
+              r++;
 
-          var dst = 0;
-          for (var y = 0; y < height; y++) {
-              var lineOffLuma = (y * width) >> 1;
-              var lineOffChroma = (y >> 1) * chromaWidth;
-              for (var x = 0; x < width_2; x++) {
-                  var cc = HEAPU16[$luma + lineOffLuma];
-                  var c = HEAPU8[$luma + lineOffLuma] - 16;
-                  var d = HEAPU8[$cb + lineOffChroma] - 128;
-                  var e = HEAPU8[$cr + lineOffChroma] - 128;
-
-                  var c1 = cc & 0xff;
-                  var c2 = cc >> 8;
-
-                  var rmod = 409 * e + 128;
-                  var gmod = -100 * d - 208 * e + 128;
-                  var bmod = 516 * d + 128;
-
-                  data[dst] = (298 * c1 + rmod) >> 8;
-                  data[dst + 1] = (298 * c1 + gmod) >> 8;
-                  data[dst + 2] = (298 * c1 + bmod) >> 8;
-                  data[dst + 3] = 0xff;
-
-                  dst += 4;
-
-                  data[dst] = (298 * c2 + rmod) >> 8;
-                  data[dst + 1] = (298 * c2 + gmod) >> 8;
-                  data[dst + 2] = (298 * c2 + bmod) >> 8;
-                  data[dst + 3] = 0xff;
-
-                  lineOffLuma++;
-                  lineOffChroma++;
-                  dst += 4;
-              }
+              y2 = HEAPU8[$luma+w]*298;
+              y1 = HEAPU8[$luma++]*298;
+              d[r+W] = y2+ruv>>8;
+              d[r++] = y1+ruv>>8;
+              d[r+W] = y2+guv>>8;
+              d[r++] = y1+guv>>8;
+              d[r+W] = y2+buv>>8;
+              d[r++] = y1+buv>>8;
+              r++;
+            }
+            r+=W;
+            $luma+=w;
           }
-          surface.ctx.putImageData(surface.image, 0, 0);
+          surface.ctx.putImageData(surface.image, 0, 0 );
         }
 
         _SDL_UnlockSurface = function () {
