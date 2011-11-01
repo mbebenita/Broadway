@@ -4,7 +4,7 @@
 
   <style>
     th {
-      font: bold 18px Verdana, Arial, Helvetica,
+      font: bold 14px Verdana, Arial, Helvetica,
       sans-serif;
       text-align: left;
       padding: 4px 4px 4px 12px;
@@ -12,7 +12,7 @@
     }
 
     td {
-      font: bold 20px Verdana, Arial, Helvetica;
+      font: bold 16px Verdana, Arial, Helvetica;
       padding-left: 8px;
       text-align: right;
     }
@@ -85,6 +85,9 @@
         }
       }
 
+      var steadySampleCounter = 0;
+      var steadyFpsCounter = 0;
+
       function updateStats(fps, fpsSinceStart, elapsed) {
         if (plotting) {
           var maxSamples = 32;
@@ -97,8 +100,15 @@
           updateChart();
         }
 
+        var steadyElapsedThreshold = 5;
+        if (elapsed > steadyElapsedThreshold) {
+          steadySampleCounter ++;
+          steadyFpsCounter += fps;
+        }
+
         document.getElementById('fps').innerHTML = fps.toFixed(2);
         document.getElementById('fpsSinceStart').innerHTML = fpsSinceStart.toFixed(2);
+        document.getElementById('fpsSinceSteady').innerHTML = (steadyFpsCounter / steadySampleCounter).toFixed(2);
         document.getElementById('elapsed').innerHTML = elapsed.toFixed(2);
         
         var scoreTimeout = 60;
@@ -161,7 +171,6 @@
   <div id="tabs">
     <ul>
       <li><a href="#tabs-1">H.264 Decoding w/ Canvas</a></li>
-      
     </ul>
     <div id="tabs-1">
       <div>
@@ -183,8 +192,8 @@
             <td><span id='fps' style="color: red;"></span></td>
           </tr>
           <tr>
-            <th>FPS (Since Start)</th>
-            <td><span id='fpsSinceStart' style="color: green;"></span></td>
+            <th>Average FPS (All / Steady)</th>
+            <td><span id='fpsSinceStart' style="color: green;"></span> <span id='fpsSinceSteady' style="color: green;"></span></td>
           </tr>
           <tr>
             <th>Elapsed</th>
