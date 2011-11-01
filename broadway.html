@@ -20,6 +20,10 @@
     h1 {
       font: bold 32px Verdana, Arial, Helvetica sans-serif;
     }
+
+    h4 {
+      font: bold 10px Verdana, Arial, Helvetica sans-serif;
+    }
   </style>
 
   <link type="text/css" href="jquery/css/custom-theme/jquery-ui-1.8.16.custom.css" rel="stylesheet" /> 
@@ -43,6 +47,8 @@
         $( "#stop").click(function() { stop(); });
         $( "#play").click(function() { play(); });
         $( "#plot").click(function() { plot(); });
+
+        $( "#downloadProgress" ).progressbar();
         
       });
 
@@ -131,6 +137,15 @@
           clearInterval(Module.mainLoopInterval);
       }
 
+      function updateProgress(evt) 
+      {
+        console.info(evt.loaded);
+        if (evt.lengthComputable){
+          var percentComplete = (evt.loaded / evt.total) * 100;  
+          $('#downloadProgress').progressbar( "option", "value", percentComplete);
+        } 
+      }  
+
       function play() {
 
         $( "#play").hide();
@@ -139,6 +154,7 @@
 
         // Get the file
         var xhr = new XMLHttpRequest();
+        xhr.addEventListener("progress", updateProgress, false);
         xhr.open("GET", clip, false);
         xhr.responseType = "arraybuffer";
         xhr.send(null);
@@ -159,8 +175,6 @@
         console.info("Running: " + clip);
         Module.run(['video.264']);
 
-        
-
       }
   </script>
 
@@ -171,13 +185,16 @@
       <li><a href="#tabs-1">H.264 Decoding w/ Canvas</a></li>
     </ul>
     <div id="tabs-1">
-      <div>
+      <span>
         Clip: 
         <select id="clip">
           <option value="mozilla.264">Mozilla</option>
           <option value="admiral.264">Admiral</option>
         </select>
-      </div>
+      </span>
+      <span style="margin-top: 10px"> <h4>Download Progress<h4>
+      <div id="downloadProgress" style="width: 640px; height: 16px; margin-top: 5px"></div>
+      </span>
       <div style="width: 1000px">
         <div style="background-color: black; width: 640px; height: 480px; margin-top: 10px; margin-bottom: 10px; float: left;">
           <canvas id='canvas'></canvas>
