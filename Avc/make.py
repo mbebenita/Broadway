@@ -94,8 +94,11 @@ else:
       // Replace main loop handler
 
       __Z11runMainLoopv = function() {
-          // TODO: only delay when proper to do so
-          Module.mainLoopInterval = setInterval(__Z17mainLoopIterationv, 1000 / 100);
+          window.addEventListener("message", function() {
+            window.postMessage(0, "*")
+            __Z17mainLoopIterationv();
+          }, false);
+          window.postMessage(0, "*")
       }
 
       // SDL hook
