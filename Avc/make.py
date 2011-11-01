@@ -94,7 +94,7 @@ else:
 
       __Z11runMainLoopv = function() {
           // TODO: only delay when proper to do so
-          Module.mainLoopInterval = setInterval(__Z17mainLoopIterationv, 1000/50);
+          Module.mainLoopInterval = setInterval(__Z17mainLoopIterationv, 1000 / 100);
       }
 
       // SDL hook
@@ -124,12 +124,17 @@ else:
 
         var diff = now - frameTime;
         if (diff > 500) {
-          document.getElementById('fps').innerHTML = 'FPS: <b>' + (frameCounter*1000/diff).toFixed(2) +
-                                                     ' (since start: ' + (totalFrameCounter*1000/(now - totalFrameTime)).toFixed(2)  + ' FPS, ' +
-                                                     + ((now - totalFrameTime)/1000).toFixed(2) + ' seconds)</b>';
+          var fps = frameCounter * 1000 / diff;
+          var fpsSinceStart = totalFrameCounter * 1000 / (now - totalFrameTime);
+          var elapsed = (now - totalFrameTime) / 1000;
+        
           frameTime = now;
           frameCounter = 0;
+          
+          updateStats(fps, fpsSinceStart, elapsed);
         }
+        
+        
         /*
         alert('pause'); return;
         */
