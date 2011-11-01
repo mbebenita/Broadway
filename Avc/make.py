@@ -68,12 +68,14 @@ print 'Emscripten: LL assembly => JavaScript'
 
 settings = ['-s %s=%s' % (k, json.dumps(v)) for k, v in EMSCRIPTEN_SETTINGS.items()]
 
+filename = JS_DIR + '/avc.js'
+
 print Popen(['python', os.path.join(EMSCRIPTEN_ROOT, 'emscripten.py')] + EMSCRIPTEN_ARGS + ['avc.ll'] + settings,#  ).communicate()
-            stdout=open(JS_DIR + '/avc.js', 'w'), stderr=STDOUT).communicate()
+            stdout=open(filename, 'w'), stderr=STDOUT).communicate()
 
 print 'Appending stuff'
 
-src = open(JS_DIR + '/avc.js', 'a')
+src = open(filename, 'a')
 if 0: # Console debugging
   src.write(
     '''
@@ -197,23 +199,17 @@ else:
   )
 src.close()
 
-if 1:
-  print 'Eliminating unneeded variables'
+print 'Eliminating unneeded variables'
 
-  eliminatoed = Popen([emscripten.COFFEESCRIPT, emscripten.VARIABLE_ELIMINATOR], stdin=PIPE, stdout=PIPE).communicate(open(JS_DIR + '/avc.js', 'r').read())[0]
-  f = open(JS_DIR + '/avc.elim.js', 'w')
-  f.write(eliminatoed)
-  f.close()
+eliminated = Popen([emscripten.COFFEESCRIPT, emscripten.VARIABLE_ELIMINATOR], stdin=PIPE, stdout=PIPE).communicate(open(filename, 'r').read())[0]
+filename = JS_DIR + '/avc.elim.js'
+f = open(filename, 'w')
+f.write(eliminated)
+f.close()
 
-  print 'Closure compiler'
+print 'Closure compiler'
 
-  Popen(['java', '-jar', emscripten.CLOSURE_COMPILER,
-                 '--compilation_level', 'SIMPLE_OPTIMIZATIONS', # XXX TODO: use advanced opts for code size (they cause slow startup though)
-                 '--js', JS_DIR + '/avc.elim.js', '--js_output_file', JS_DIR + '/avc.elim.cc.js'], stdout=PIPE, stderr=STDOUT).communicate()
-else:
-  print 'Closure compiler'
-
-  Popen(['java', '-jar', emscripten.CLOSURE_COMPILER,
-                 '--compilation_level', 'SIMPLE_OPTIMIZATIONS',
-                 '--js', JS_DIR + '/avc.js', '--js_output_file', JS_DIR + '/avc.cc.js'], stdout=PIPE, stderr=STDOUT).communicate()
+Popen(['java', '-jar', emscripten.CLOSURE_COMPILER,
+               '--compilation_level', 'SIMPLE_OPTIMIZATIONS', # XXX TODO: use advanced opts for code size (they cause slow startup though)
+               '--js', filename, '--js_output_file', JS_DIR + '/avc.elim.cc.js'], stdout=PIPE, stderr=STDOUT).communicate()
 
