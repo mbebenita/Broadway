@@ -1,30 +1,124 @@
 <!DOCTYPE html>
 <html>
   <meta charset="utf-8">
-  <title></title>
-  <link rel="stylesheet" href="screen.css">
+
+  <style>
+    th {
+      font: bold 18px Verdana, Arial, Helvetica,
+      sans-serif;
+      text-align: left;
+      padding: 4px 4px 4px 12px;
+      background: no-repeat;
+    }
+
+    td {
+      font: bold 20px Verdana, Arial, Helvetica;
+      padding-left: 8px;
+      text-align: right;
+    }
+
+    h1 {
+      font: bold 32px Verdana, Arial, Helvetica sans-serif;
+    }
+  </style>
+
+  <link type="text/css" href="jquery/css/custom-theme/jquery-ui-1.8.16.custom.css" rel="stylesheet" /> 
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.4/jquery.min.js"></script>
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/jquery-ui.min.js"></script>
+    <script language="javascript" type="text/javascript" src="flot/jquery.flot.js"></script>
+
+  
   <script type='text/javascript'>
       var Module = {
         noInitialRun: true
       };
   </script>
   <script src='broadway.js' type='text/javascript'></script>
-  <script src="slides.js"></script>
- 
- <script type='text/javascript'>
+
+  <script type="text/javascript">
+
+      $(function(){
+        $( "#tabs" ).tabs();
+        $( "button").button();
+        $( "#stop").click(function() { stop(); });
+        $( "#play").click(function() { play(); });
+      });
+
+
+      var options = {
+          series: { shadowSize: 0 }, // drawing is faster without shadows
+          yaxis: { min: 0, max: 100 },
+          xaxis: { show: false },
+          lines: { show: true },
+          points: { show: true }
+      };
+
+      var fpsData = [];
+      var fpsSinceStartData = [];
+
+      function updateChart() {
+        var plot = $.plot($("#chart"), [ {
+              data: fpsData,
+              lines: { show: true }, 
+              color: "rgb(255, 100, 123)"
+            },
+            {
+              data: fpsSinceStartData,
+              lines: { show: true },
+              points: { show: false },
+              color: "rgb(0, 255, 0)"
+            }], options);
+        plot.draw();
+      }
+
+      var scoreCalculated = false;
+
+      function updateStats(fps, fpsSinceStart, elapsed) {
+        var maxSamples = 32;
+        if (fpsData.length > maxSamples)
+          fpsData = fpsData.slice(1);
+        fpsData.push([elapsed, fps])
+        if (fpsSinceStartData.length > maxSamples)
+          fpsSinceStartData = fpsSinceStartData.slice(1);
+        fpsSinceStartData.push([elapsed, fpsSinceStart])
+        updateChart();
+
+        document.getElementById('fps').innerHTML = fps.toFixed(2);
+        document.getElementById('fpsSinceStart').innerHTML = fpsSinceStart.toFixed(2);
+        document.getElementById('elapsed').innerHTML = elapsed.toFixed(2);
+        
+        var scoreTimeout = 60;
+        if (elapsed > scoreTimeout && scoreCalculated == false) {
+          scoreCalculated = true;
+          document.getElementById('score').innerHTML = fps.toFixed(2);
+        }
+        if (scoreCalculated == false) {
+          document.getElementById('score').innerHTML = "Calculating: " + (scoreTimeout - elapsed).toFixed(0);
+        }
+      }
+  </script>
+
+  <script type='text/javascript'>
+      function stop() {
+          clearInterval(Module.mainLoopInterval);
+      }
+
       function play() {
-        console.info("Starting");
+
+        $( "#play").hide();
+
+        var clip = $( "#clip" ).val();
+
         // Get the file
         var xhr = new XMLHttpRequest();
-        xhr.open("GET", 'mozilla.264', false);
+        xhr.open("GET", clip, false);
         xhr.responseType = "arraybuffer";
         xhr.send(null);
         var arrayBuffer = xhr.response;
         if (arrayBuffer) {
           var byteArray = new Uint8Array(arrayBuffer);
           var array = Array.prototype.slice.apply(byteArray);
-          Module.FS.createDataFile('/', 'mozilla.264', array, true, false);
-          //assert(array[0] == 0 && array[4] == 103); // sanity
+          Module.FS.createDataFile('/', 'video.264', array, true, false);
         } else alert('load fail :(');
 
         // Pass canvas and context to the generated code, and do the actual run() here
@@ -34,50 +128,61 @@
           alert('Canvas not available :(');
           return;
         }
-        Module.run(['mozilla.264']);
+        console.info("Running: " + clip);
+        Module.run(['video.264']);
 
-
-        document.getElementById('playButton').visibility = "hidden";
+        
 
       }
   </script>
 
-  <div class="title slide">
-    <div class="content">
-      <div class="header">Broadway.js</div>
-      <div class="subheader">H.264 Decoding in JavaScript Using Emscripten</div>
-      <div class="date">October 2011</div>
-    </div>
-    <div class="footer">&copy; 2011, Mozilla</div>
-  </div>
+  <div>
 
-  <!--
-  <div class="normal slide">
-    <div class="content" onLoad="start()">
-      <div class="header">H.264 Decoding in JavaScript</div>
-      <div class="main">
-      <center>
-        <img class="right" style="height: 10em;" src="img/pic1.png">  
-      </center>
+  <h1>Broadway.js</h1>
+
+  <div id="tabs">
+    <ul>
+      <li><a href="#tabs-1">H.264 Decoding w/ Canvas</a></li>
+      
+    </ul>
+    <div id="tabs-1">
+      <div>
+        Clip: 
+        <select id="clip">
+          <option value="mozilla.264">Mozilla</option>
+          <option value="admiral.264">Admiral</option>
+        </select>
       </div>
-    </div>
-  </div>
-  -->
-
-  <div class="normal slide">
-    <div class="content" onLoad="start()">
-      <div style="margin-top: 40px;">
-      <center>
+      <div style="background-color: black; width: 640px; height: 480px; margin-top: 10px; margin-bottom: 10px; float: left;">
         <canvas id='canvas'></canvas>
-        <div id='fps' style=""></div>
-        <form>
-          <input type="button" value="Play" id="playButton" onclick="play()"/>
-        </form>
-      </center>
       </div>
+      <!-- Stats -->
+      <div style="height: 480px; margin-top: 10px; margin-left: 10px; margin-bottom: 10px; float: left;">
+        <div id="chart" style="width:640px; height:340px;"></div>
+        <table style="margin-top: 10px; width: 400px;">
+          <tr>
+            <th>FPS</th>
+            <td><span id='fps' style="color: red;"></span></td>
+          </tr>
+          <tr>
+            <th>FPS (Since Start)</th>
+            <td><span id='fpsSinceStart' style="color: green;"></span></td>
+          </tr>
+          <tr>
+            <th>Elapsed</th>
+            <td><span id='elapsed' ></span></td>
+          </tr>
+          <tr>
+            <th>Score</th>
+            <td><span id='score' style="color: brown;"></span></td>
+          </tr>
+        </table>
+      </div>
+      <div style="clear: both;">
+        <button id="stop">Stop</button>
+        <button id="play">Play</button>
       </div>
     </div>
+  </div>
   </div>
 </html>
-
-
