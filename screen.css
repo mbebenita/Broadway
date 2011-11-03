@@ -1,0 +1,162 @@
+/* LAYOUT */
+/* ----------------------------------------- */
+
+html {
+  padding: 0px;
+  margin: 0px;
+  height:100%;
+  width:100%;
+}
+
+body { 
+  padding: 0px;
+  margin: 0px;
+  height:100%;
+  width:100%;
+  overflow: hidden;
+}
+
+.right {float: right;}
+.left {float: left;}
+.center {margin: 0px auto;}
+
+
+/* FONTS */
+/* ----------------------------------------- */
+
+@font-face {
+  font-family: "museo";
+  src: url(MuseoSans_500.otf) format("opentype");
+}
+
+body {
+  /* font-family: "museo"; */
+  font-family: "museo", "Trebuchet MS", Lucida Grande, sans-serif;
+}
+
+.header {
+  letter-spacing: -2px;
+  line-height: 60px;
+  font-size: 64px;
+}
+
+.subheader {
+  letter-spacing: -1.5px;
+  line-height: 34px;
+  font-size: 38px;
+}
+
+.date {
+  letter-spacing: -0.5px;
+  line-height: 14px;
+  font-size: 18px;
+}
+
+.slide {
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  visibility: hidden;
+  opacity: 0;
+  vertical-align: middle;
+  display:table;
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+  -webkit-transition-property: opacity, visibility;
+  -webkit-transition-duration: 0.2s, 0.2s;
+  -webkit-transition-timing-function: ease-out, ease-out;
+  -moz-transition-property: opacity, visibility;
+  -moz-transition-duration: 0.2s, 0.2s;
+  -moz-transition-timing-function: ease-out, ease-out;
+}
+
+div.slide.selected {
+  visibility: visible;
+  opacity: 1;
+}
+
+/* CONTENT  */
+/* ----------------------------------------- */
+
+.content {
+  position: relative;
+  display:table-cell;
+}
+
+.title.slide {
+  background: url('img/title-top-bg.png') repeat-x top center,
+              url('img/title-bottom-bg.png') repeat-x bottom center;
+}
+
+.normal.slide {
+  background: url('img/subpage-top-bg.png') repeat-x top center,
+              url('img/title-bottom-bg.png') repeat-x bottom center;
+}
+
+.title .content {
+  /* background: transparent url('img/subpage-logo.png') no-repeat 30px 20%; */
+  vertical-align:middle;
+}
+
+.title .header, .title .subheader, .title .date {
+  margin-left: 20px;
+  margin-right: 20px;
+  margin-bottom: 24px;
+}
+
+.normal .content {
+  background: transparent url('img/subpage-logo.png') no-repeat 98% -20px;
+  vertical-align: top;
+}
+
+.normal .header, .normal .subheader {
+  margin-left: 20px;
+  margin-right: 200px;
+  margin-bottom: 14px;
+}
+
+.normal .main {
+  color: rgba(0,0,0,0.7);
+  margin: 40px;
+  margin-top: 40px;
+}
+
+.normal .main img{
+  margin: 20px;
+}
+
+.normal .header {
+  margin-top: 10px;
+  line-height: 50px;
+  font-size: 54px;
+}
+
+.normal .date {
+  position: absolute;
+  bottom: 24px;
+  left: 20px;
+  font-size: 14px;
+  color: rgba(0,0,0,0.4);
+}
+
+.slide-number {
+  position: absolute;
+  bottom: 24px;
+  left: 0px;
+  width: 100%;
+  letter-spacing: -0.5px;
+  font-size: 14px;
+  text-align: center;
+  color: rgba(0,0,0,0.4);  
+}
+
+.footer {
+  position: absolute;
+  bottom: 20px;
+  right: 20px;
+  height: 20px;
+  letter-spacing: -0.5px;
+  font-size: 14px;
+  color: rgba(0,0,0,0.4);
+}
