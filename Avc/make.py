@@ -46,7 +46,7 @@ print 'Build'
 env = os.environ.copy()
 env['CC'] = env['CXX'] = env['RANLIB'] = env['AR'] = emscripten.EMMAKEN
 env['LINUX'] = '1'
-env['EMMAKEN_CFLAGS'] = '-U__APPLE__'
+env['EMMAKEN_CFLAGS'] = '-U__APPLE__ -DJS'
 
 Popen(['make', '-j', '4'], env=env).communicate()
 
@@ -88,72 +88,8 @@ if 0: # Console debugging
   )
   # ~/Dev/mozilla-central/js/src/fast/js -m avc.js
 else:
-  src.write(
-    '''
-      Module['FS'] = FS;
-      FS['createDataFile'] = FS.createDataFile;
-
-      // Replace main loop handler
-
-      __Z11runMainLoopv = function() {
-          window.addEventListener("message", function() {
-            window.postMessage(0, "*")
-            __Z17mainLoopIterationv();
-          }, false);
-          window.postMessage(0, "*")
-      }
-
-      // SDL hook
-
-      var frameCounter = 0, totalFrameCounter = 0;
-      var frameTime = 0, totalFrameTime = 0;
-      _SDL_Flip = function(surf) {
-        frameCounter++;
-        totalFrameCounter++;
-        if (frameTime == 0) {
-          totalFrameTime = frameTime = Date.now();
-          return;
-        }
-        var now = Date.now();
-
-        /*
-        console.log('frame:' + totalFrameCounter);
-        if (totalFrameCounter == 30*30) {
-          print = function(x) {
-            document.getElementById('fps').innerHTML += x + '<br>\n';
-          }
-          CorrectionsMonitor.print();
-          clearInterval(Module.mainLoopInterval);
-          return;
-        }
-        */
-
-        var diff = now - frameTime;
-        if (diff > 500) {
-          var fps = frameCounter * 1000 / diff;
-          var fpsSinceStart = totalFrameCounter * 1000 / (now - totalFrameTime);
-          var elapsed = (now - totalFrameTime) / 1000;
-        
-          frameTime = now;
-          frameCounter = 0;
-          
-          updateStats(fps, fpsSinceStart, elapsed);
-        }
-        
-        
-        /*
-        alert('pause'); return;
-        */
-      }
-
-        _SDL_UnlockSurface = function () {
-          
-        }
-
-   '''
-  )
+  src.write(open('hooks.js').read())
   src.write(open('paint_%s.js' % EMSCRIPTEN_SETTINGS['USE_TYPED_ARRAYS'], 'r').read())
-
 src.close()
 
 print 'Eliminating unneeded variables'
