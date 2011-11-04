@@ -3,13 +3,24 @@ FS['createDataFile'] = FS.createDataFile;
 
 // Replace main loop handler
 
+var breakLoop = false;
 __Z11runMainLoopv = function() {
   window.addEventListener("message", function() {
-    window.postMessage(0, "*")
     __Z17mainLoopIterationv();
+    if (!breakLoop) {
+      window.postMessage(0, "*")
+    }
   }, false);
-  window.postMessage(0, "*")
 }
+
+Module['play'] = function() {
+  breakLoop = false;
+  window.postMessage(0, "*")
+};
+
+Module['stop'] = function() {
+  breakLoop = true;
+};
 
 // SDL hook
 

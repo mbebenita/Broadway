@@ -78,11 +78,12 @@
   #scrubber {
     margin-left: 120px;
     margin-top: 12px;
+    margin-right: 10px;
   }
   
   </style>
 
-  <link type="text/css" href="jquery/jquery-ui.css" rel="stylesheet" />
+  <link type="text/css" href="jquery/theme/jquery-ui.css" rel="stylesheet" />
   <script type="text/javascript"
     src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.4/jquery.min.js"></script>
   <script type="text/javascript"
@@ -145,21 +146,8 @@
           document.getElementById('score').innerHTML = "Calculating: " + (scoreTimeout - elapsed).toFixed(0);
         }
       }
-
-      function stop() {
-        clearInterval(Module.mainLoopInterval);
-      }
-
-      var playing = false;
-      function play() {
-        if (playing == false) {
-          $('#play').children().first().html("Pause");
-          playing = true;
-        } else {
-          $('#play').children().first().html("Play");
-          playing = false;
-          return;
-        }
+    
+      function load() {
         document.getElementById('downloadProgress').innerHTML = "Downloading, Please Wait ...";
         var clip = $("#clip").val();
         var mode = $("#mode").val();
@@ -199,6 +187,28 @@
 
         console.info("Running: " + clip);
         Module.run(['video.264']);
+      }
+      
+      var loaded = false;
+      var playing = false;
+      
+      
+      function play() {
+        if (!loaded) {
+          load();
+          loaded = true;
+        }
+        
+        if (playing == false) {
+          $('#play').children().first().html("Pause");
+          playing = true;
+          Module.play();
+        } else {
+          $('#play').children().first().html("Play");
+          playing = false;
+          Module.stop();
+          return;
+        }
       }
 
       var glCanvasInitialized = false;

@@ -112,13 +112,7 @@ int SDL_main(int argc, char **argv) {
 
 void runMainLoop() {
     mainLoopStatus status;
-    while ((status = mainLoopIteration()) != MLS_STOP) {
-        if (status == MLS_FRAMERENDERED) {
-#if RENDER
-    // SDL_Delay(1000 / 100);
-#endif
-        }
-    }
+    while ((status = mainLoopIteration()) != MLS_STOP);
 }
 
 extern "C" float getPosition() {
