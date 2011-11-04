@@ -26,6 +26,7 @@ EMSCRIPTEN_SETTINGS = {
   'OPTIMIZE': 1,
   'RELOOP': 1, # XXX 1 makes compilation slower!
   'USE_TYPED_ARRAYS': 2,
+  'USE_FHEAP': 0,
   'SAFE_HEAP': 0,
   'ASSERTIONS': 0,
   'QUANTUM_SIZE': 4,
@@ -76,15 +77,32 @@ print Popen(['python', os.path.join(EMSCRIPTEN_ROOT, 'emscripten.py')] + EMSCRIP
 print 'Appending stuff'
 
 src = open(filename, 'a')
+
+if EMSCRIPTEN_SETTINGS['QUANTUM_SIZE'] == 1:
+  src.write(
+    '''
+      _malloc = function(size) {
+        while (STATICTOP % 4 != 0) STATICTOP++;
+        var ret = STATICTOP;
+        STATICTOP += size;
+        return ret;
+      }
+    '''
+  )
+
 if 0: # Console debugging
   src.write(
     '''
+      _SDL_Init = function () {
+      }
+
       FS.createDataFile('/', 'admiral.264', %s, true, false);
       FS.root.write = true;
       print('zz go!');
       run(['admiral.264']);
       print('zz gone');
-    ''' % open('admiral.264.js').read().replace(' ', '')
+
+    ''' % str(map(ord, open('../Media/admiral.264').read()[0:1024*100]))
   )
   # ~/Dev/mozilla-central/js/src/fast/js -m avc.js
 else:
@@ -146,9 +164,8 @@ else:
         */
       }
 
-        _SDL_UnlockSurface = function () {
-          
-        }
+      _SDL_UnlockSurface = function () {
+      }
 
    '''
   )
