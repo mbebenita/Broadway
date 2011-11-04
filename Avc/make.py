@@ -9,7 +9,7 @@ sys.path.append(EMSCRIPTEN_ROOT)
 import tools.shared as emscripten
 
 EMSCRIPTEN_SETTINGS = {
-  'SKIP_STACK_IN_SMALL': 0,
+  'SKIP_STACK_IN_SMALL': 1,
   'INIT_STACK': 0,
   'AUTO_OPTIMIZE': 0,
   'CHECK_OVERFLOWS': 0,
