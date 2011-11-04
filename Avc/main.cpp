@@ -28,7 +28,6 @@ int size = 0;
 uint8* stream = NULL;
 uint8* buffer = NULL;
 uint8 *nal_unit = NULL;
-int remaining;
 int nal_size;
 
 // Main loop handling
@@ -95,15 +94,12 @@ int SDL_main(int argc, char **argv) {
 #if LINUX
     buffer = (uint8*) readFile(argc == 2 ? argv[1] : "../Media/mozilla.264", &size);
 #else
-    // buffer = (uint8*) readFile(argc == 2 ? argv[1] : "/Users/mbebenita/Workspaces/Broadway/Media/mozilla.264", &size);
     buffer = (uint8*) readFile(argc == 2 ? argv[1] : "../Media/mozilla.264", &size);
-
 #endif
     stream = buffer;
 
     nal_unit = NULL;
-    remaining = size;
-    nal_size = remaining;
+    nal_size = size;
 
 #if RENDER
     SDL_Init(SDL_INIT_VIDEO);
@@ -116,12 +112,45 @@ int SDL_main(int argc, char **argv) {
 
 void runMainLoop() {
     mainLoopStatus status;
-    while ((status = mainLoopIteration()) != MLS_STOP) {
-        if (status == MLS_FRAMERENDERED) {
-#if RENDER
-            SDL_Delay(1000/50);
-#endif
+    while ((status = mainLoopIteration()) != MLS_STOP);
+}
+
+extern "C" float getPosition() {
+    int offset = stream - buffer;
+    return (float)offset / (float)size;
+}
+
+extern "C" void setPosition(float value) {
+    if (value < 0 || value > 1) {
+        return;
+    }
+
+    PVAVCDecReset(&decoder);
+    int offset = (int)((float)size * value);
+    stream = buffer + offset;
+    nal_size = size - offset;
+    int err = 0;
+
+    int nal_type = 0;
+    int nal_ref_idc = 0;
+
+    DLOG("Err: %d, %d\n", offset, nal_size);
+
+    while (nal_size > 0) {
+        int old = nal_size;
+        if ((err = PVAVCAnnexBGetNALUnit(stream, &nal_unit, &nal_size)) != AVCDEC_SUCCESS) {
+            DLOG("Err A: %d\n", err);
+            return;
         }
+        if ((err = PVAVCDecGetNALType(nal_unit, nal_size, &nal_type, &nal_ref_idc)) == AVCDEC_SUCCESS) {
+            if (nal_type == AVC_NALTYPE_IDR) {
+                nal_size = old;
+                DLOG("Found next IDR Slice at: %X, nal_size %d\n", stream, nal_size);
+                break;
+            }
+        }
+        stream = nal_unit + nal_size;
+        nal_size = size - (stream - buffer);
     }
 }
 
@@ -155,15 +184,14 @@ extern "C" void paint(uint8 *luma, uint8 *cb, uint8 *cr, int height, int width) 
 
 mainLoopStatus mainLoopIteration() {
     int nal = 0;
-    if (PVAVCAnnexBGetNALUnit(stream, &nal_unit, &nal_size) != AVCDEC_SUCCESS) {
-        // PVAVCAnnexBGetNALUnit(b)
 
+    DLOG("Looking for next NAL at: %X, nal_size %d\n", stream, nal_size);
+
+    if (PVAVCAnnexBGetNALUnit(stream, &nal_unit, &nal_size) != AVCDEC_SUCCESS) {
 #if RENDER
         SDL_Quit();
 #endif
-
         PVAVCCleanUpDecoder(&decoder);
-
         return MLS_STOP;
     }
 
@@ -197,7 +225,6 @@ mainLoopStatus mainLoopIteration() {
         if (!screen) {
             screen = SDL_SetVideoMode(output.pitch, output.height, 32, SDL_HWSURFACE | SDL_RESIZABLE);
         }
-
         SDL_LockSurface(screen);
 #else
         if (!screen) {
@@ -210,9 +237,7 @@ mainLoopStatus mainLoopIteration() {
 #if !RENDER
         int mean = 0;
 #endif
-        if (1) {
-            paint(output.YCbCr[0], output.YCbCr[1], output.YCbCr[2], output.height, output.pitch);
-        }
+        paint(output.YCbCr[0], output.YCbCr[1], output.YCbCr[2], output.height, output.pitch);
 #if !RENDER
         printf("C mean: %d\n", mean/(output.height*output.pitch));
 #endif
@@ -230,10 +255,10 @@ mainLoopStatus mainLoopIteration() {
         // if (frame == 100) exit(0);
 #endif
         status = MLS_FRAMERENDERED;
-
         DLOG("  DECODED %d\n", indx);
 
 #if RENDER
+#if !JS
         SDL_Event event;
         while (SDL_PollEvent(&event)) {
             switch (event.type) {
@@ -242,14 +267,25 @@ mainLoopStatus mainLoopIteration() {
                 break;
 #if !LINUX
             case SDL_KEYDOWN:
-                exit(0);
+                // printf("Key: %s\n", SDL_GetKeyName( event.key.keysym.sym ));
+                // printf("Key: %d\n", event.key.keysym.scancode);
+                if (event.key.keysym.scancode == 1) {
+                    setPosition(0.5f);
+                    return status;
+                } else {
+                    exit(0);
+                }
                 break;
 #endif
             }
         }
 #endif
+#endif
+    } else if (nal_type == AVC_NALTYPE_SEI) {
+        DLOG("  SPS\n");
+        PVAVCDecSEI(&decoder, nal_unit, nal_size);
     } else {
-        printf("Missed %d\n", nal_type);
+        printf("Skipped nal_type %d\n", nal_type);
     }
 
     stream = nal_unit + nal_size;

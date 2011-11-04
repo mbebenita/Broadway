@@ -44,7 +44,6 @@ $(OBJDIR)/%.o: $(SRCDIR)/%.cpp
 
 clean:
 	rm -Rf $(OBJDIR)
-	rm *.js
 	rm *.ll
 	rm *.bc
 

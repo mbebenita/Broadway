@@ -28,6 +28,7 @@
   #doc {
     margin: 0 auto;
     width: 1000px;
+    padding: 10px;
   }
   
   #setting {
@@ -63,16 +64,30 @@
   	text-align: right;
   }
   
+  #controls {
+    background-color: black;
+    padding: 10px;
+    height: 40px;
+  }
+  
+  #play {
+    width: 100px;
+    float: left;
+  }
+  
+  #scrubber {
+    margin-left: 120px;
+    margin-top: 12px;
+    margin-right: 10px;
+  }
   
   </style>
 
-  <link type="text/css" href="jquery/jquery-ui.css" rel="stylesheet" />
+  <link type="text/css" href="jquery/theme/jquery-ui.css" rel="stylesheet" />
   <script type="text/javascript"
     src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.4/jquery.min.js"></script>
   <script type="text/javascript"
     src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/jquery-ui.min.js"></script>
-  <script language="javascript" type="text/javascript"
-    src="jquery/jquery-flot.js"></script>
 
   <script type='text/javascript'>
     var Module = {
@@ -87,89 +102,34 @@
 
   <script type="text/javascript">
     $(function() {
-        $("#tabs").tabs();
-        $("button").button();
-        $("#play").click(function() {
-            play();
-        });
-        $("#plot").click(function() {
-            plot();
-        });
+      $("#tabs").tabs();
+      $("#play").button();
+      $("#play").click(function() {
+          play();
+      });
+      
+      $( "#scrubber" ).slider({
+        range: false,
+        min: 0,
+        max: 500,
+        value: 0,
+        slide: function( event, ui ) {
+          var pos = ui.value / 500;
+          _setPosition(pos);
+        }
+    });
+      
     });
 
-    var options = {
-        series : {
-            shadowSize : 0
-        },
-        yaxis : {
-            min : 0,
-            max : 100
-        },
-        xaxis : {
-            show : false
-        },
-        lines : {
-            show : true
-        },
-        points : {
-            show : true
-        }
-    };
-
-    var fpsData = [];
-    var fpsSinceStartData = [];
-
-    function updateChart() {
-        var plot = $.plot($("#chart"), [{
-            data : fpsData,
-            lines : {
-                show : true
-            },
-            color : "rgb(255, 100, 123)"
-        }, {
-            data : fpsSinceStartData,
-            lines : {
-                show : true
-            },
-            points : {
-                show : false
-            },
-            color : "rgb(0, 255, 0)"
-        }], options);
-        plot.draw();
-    }
-
     var scoreCalculated = false;
-
-    var plotting = false;
-    var polluted = false;
-
-    function plot() {
-        plotting = !plotting;
-        if (plotting) {
-            polluted = true;
-        }
-    }
-
     var steadySampleCounter = 0;
     var steadyFpsCounter = 0;
 
     function updateStats(fps, fpsSinceStart, elapsed) {
-        if (plotting) {
-            var maxSamples = 32;
-            if (fpsData.length > maxSamples)
-                fpsData = fpsData.slice(1);
-            fpsData.push([elapsed, fps])
-            if (fpsSinceStartData.length > maxSamples)
-                fpsSinceStartData = fpsSinceStartData.slice(1);
-            fpsSinceStartData.push([elapsed, fpsSinceStart])
-            updateChart();
-        }
-
         var steadyElapsedThreshold = 5;
         if (elapsed > steadyElapsedThreshold) {
-            steadySampleCounter++;
-            steadyFpsCounter += fps;
+          steadySampleCounter++;
+          steadyFpsCounter += fps;
         }
 
         document.getElementById('fps').innerHTML = fps.toFixed(2);
@@ -179,26 +139,15 @@
 
         var scoreTimeout = 60;
         if (elapsed > scoreTimeout && scoreCalculated == false) {
-            scoreCalculated = true;
-            document.getElementById('score').innerHTML = fpsSinceStart.toFixed(2);
+          scoreCalculated = true;
+          document.getElementById('score').innerHTML = fpsSinceStart.toFixed(2);
         }
         if (scoreCalculated == false) {
-            if (polluted) {
-                document.getElementById('score').innerHTML = "Invalid";
-            } else {
-                document.getElementById('score').innerHTML = "Calculating: "
-                        + (scoreTimeout - elapsed).toFixed(0);
-            }
+          document.getElementById('score').innerHTML = "Calculating: " + (scoreTimeout - elapsed).toFixed(0);
         }
-    }
-
-    function stop() {
-        clearInterval(Module.mainLoopInterval);
-    }
-
-
-    function play() {
-        $("#play").hide();
+      }
+    
+      function load() {
         document.getElementById('downloadProgress').innerHTML = "Downloading, Please Wait ...";
         var clip = $("#clip").val();
         var mode = $("#mode").val();
@@ -208,48 +157,77 @@
         xhr.send(null);
         var arrayBuffer = xhr.response;
         if (arrayBuffer) {
-            var byteArray = new Uint8Array(arrayBuffer);
-            var array = Array.prototype.slice.apply(byteArray);
-            Module.FS.createDataFile('/', 'video.264', array, true, false);
+          var byteArray = new Uint8Array(arrayBuffer);
+          var array = Array.prototype.slice.apply(byteArray);
+          Module.FS.createDataFile('/', 'video.264', array, true, false);
         } else {
-            alert('load fail :(');
+          alert('load fail :(');
         }
         document.getElementById('downloadProgress').innerHTML = "Download Complete, Playing ...";
-        
+
         // Pass canvas and context to the generated code, and do the actual run() here
         Module.canvas = document.getElementById('canvas');
-        
+
         if (mode == "none") {
-            _paint = function () {};
-            _SDL_LockSurface = function () {}
+          _paint = function() {
+          };
+          _SDL_LockSurface = function() {
+          }
         } else if (mode == "webgl") {
-            _paint = paint;
-            _SDL_LockSurface = function () {}
+          _paint = paint;
+          _SDL_LockSurface = function() {};
+          _SDL_Quit = function() {};
         } else {
           Module.ctx2D = Module.canvas.getContext('2d');
           if (!Module.ctx2D) {
-              alert('Canvas not available :(');
-              return;
+            alert('Canvas not available :(');
+            return;
           }
         }
-            
+
         console.info("Running: " + clip);
         Module.run(['video.264']);
-    }
-    
-    var glCanvasInitialized = false;
-    
-    function paint($luma, $cb, $cr, height, width) {
-      if (glCanvasInitialized == false) {
-        initWebGLCanvas(Module.canvas, width, height);
-        glCanvasInitialized = true;
       }
-      var luma = HEAPU8.subarray($luma);
-      var cb = HEAPU8.subarray($cb);
-      var cr = HEAPU8.subarray($cr);
-      paintLuma(width, height, luma);
-    }
-  </script>
+      
+      var loaded = false;
+      var playing = false;
+      
+      
+      function play() {
+        if (!loaded) {
+          load();
+          loaded = true;
+        }
+        
+        if (playing == false) {
+          $('#play').children().first().html("Pause");
+          playing = true;
+          Module.play();
+        } else {
+          $('#play').children().first().html("Play");
+          playing = false;
+          Module.stop();
+          return;
+        }
+      }
+
+      var glCanvasInitialized = false;
+
+      function updateScrubber() {
+        $("#scrubber").slider('value', _getPosition() * 500);
+      }
+      
+      function paint($luma, $cb, $cr, height, width) {
+        if (glCanvasInitialized == false) {
+          initWebGLCanvas(Module.canvas, width, height);
+          glCanvasInitialized = true;
+        }
+        var luma = HEAPU8.subarray($luma);
+        var cb = HEAPU8.subarray($cb);
+        var cr = HEAPU8.subarray($cr);
+        paintLuma(width, height, luma);
+      }
+    </script>
 
   <script id="shader-fs" type="x-shader/x-fragment">
     varying highp vec2 vTextureCoord;
@@ -283,30 +261,31 @@
             <option value="admiral.264">Admiral</option>
           </select>
         </span>
-        <span style="margin-left: 10px; border: 0px" id="downloadProgress"></span>
       </div>
       <div id="setting">
         <span>Render Mode: 
           <select id="mode" style="margin-left: 10px;">
             <option value="canvas">Canvas</option>
             <option value="webgl">Canvas w/ WebGL</option>
-            <option value="none">None</option>
-          </select>
+            <option value="none">None</option> 
+          </select> 
         </span>
         <span style="margin-left: 10px; border: 0px" id="downloadProgress"></span>
       </div>
       <div id="setting">
-        <button id="plot" style="margin-right: 10px;">Plot</button>
-        <button id="play">Play</button>
+        <div style="margin-left: 10px; border: 0px; clear: both;" id="downloadProgress"></div>
       </div>
       <div style="width: 1000px">
-        <div style="width: 640px; height: 480px; margin-top: 10px; margin-bottom: 10px; float: left;">
-          <canvas id='canvas' width="640" height="480"></canvas>
-        </div>
+        <div id="player" style="width: 640px; background-color: black; float: left;">
+          <canvas id='canvas' width="640" height="100" style="background-color: #333333;"></canvas>
+          <div id="controls">
+            <button id="play">Play</button>
+            <div id="scrubber"></div>
+          </div>
+        </div>  
         <!-- Stats -->
         <div
-          style="height: 480px; margin-top: 10px; margin-left: 10px; margin-bottom: 10px; float: left;">
-          <div id="chart" style="width: 300px; height: 340px;"></div>
+          style="height: 480px; margin-left: 10px; margin-bottom: 10px; float: left;">
           <table style="margin-top: 10px; width: 300;">
             <tr>
               <th>FPS</th>
@@ -328,7 +307,7 @@
           </table>
         </div>
       </div>
-      
+      <div style="clear: both;"></div>
     </div>
   </body>
 </html>
