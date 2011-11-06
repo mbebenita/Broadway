@@ -41,7 +41,7 @@ _SDL_Flip = function(surf) {
   }
   var now = Date.now();
   var diff = now - frameTime;
-  if (diff > 500) {
+  if (diff > 200) {
     var fps = frameCounter * 1000 / diff;
     var fpsSinceStart = totalFrameCounter * 1000 / (now - totalFrameTime);
     var elapsed = (now - totalFrameTime) / 1000;
