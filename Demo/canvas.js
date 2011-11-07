@@ -69,13 +69,13 @@ function initBuffers(width, height) {
   /*
     
    +--------------------+ 
-   | -1,1 (2)           | 1,1 (1)
+   | -1,1 (1)           | 1,1 (0)
    |                    |
    |                    |
    |                    |
    |                    |
    |                    |
-   | -1,-1 (4)          | 1,-1 (3)
+   | -1,-1 (3)          | 1,-1 (2)
    +--------------------+
    
    */
@@ -107,66 +107,97 @@ function nextHighestPowerOfTwo(x) {
   return x + 1;
 }
 
-function initTextures(width, height) {
-  width = nextHighestPowerOfTwo(width);
-  height = nextHighestPowerOfTwo(height);
+function isChrome() {
+  return navigator.userAgent.toLowerCase().indexOf('chrome') >= 0;
+}
+
+function initTextures(videoWidth, videoHeight) {
+  var lW = nextHighestPowerOfTwo(videoWidth);
+  var lH = nextHighestPowerOfTwo(videoHeight);
+  var cW = nextHighestPowerOfTwo(videoWidth >> 1);
+  var cH = nextHighestPowerOfTwo(videoHeight >> 1);
   
-  console.log("Width: " + width + ", Height:" + height);
+  console.log("WebGL initTextures: video (%d x %d), luma (%d x %d), chroma (%d x %d)",
+              videoWidth, videoHeight, lW, lH, cW, cH);
   
   YTexture = gl.createTexture();
-  CbTexture = gl.createTexture();
-  CrTexture = gl.createTexture();
-
   gl.bindTexture(gl.TEXTURE_2D, YTexture);
-  gl.texImage2D(gl.TEXTURE_2D, 0, gl.LUMINANCE, 
-                width, height, 0, gl.LUMINANCE, gl.UNSIGNED_BYTE, null);
-  checkLastError("initTextures");
+  if (!isChrome()) {
+    gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
+  }
+  gl.texImage2D(gl.TEXTURE_2D, 0, gl.LUMINANCE, lW, lH, 0, gl.LUMINANCE, gl.UNSIGNED_BYTE, null);
   gl.generateMipmap(gl.TEXTURE_2D);
   
+  CbTexture = gl.createTexture();
+  gl.bindTexture(gl.TEXTURE_2D, CbTexture);
+  if (!isChrome()) {
+    gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
+  }
+  gl.texImage2D(gl.TEXTURE_2D, 0, gl.LUMINANCE,  cW, cH, 0, gl.LUMINANCE, gl.UNSIGNED_BYTE, null);
+  gl.generateMipmap(gl.TEXTURE_2D);
+  
+  CrTexture = gl.createTexture();
+  gl.bindTexture(gl.TEXTURE_2D, CrTexture);
+  if (!isChrome()) {
+    gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
+  }
+  gl.texImage2D(gl.TEXTURE_2D, 0, gl.LUMINANCE, cW, cH, 0, gl.LUMINANCE, gl.UNSIGNED_BYTE, null);
+  gl.generateMipmap(gl.TEXTURE_2D);
+  
+  checkLastError("initTextures");
 }
 
-var glEnums = null;
+var glNames = null;
 
-function ensureGLEnums() {
-  if (glEnums == null) {
-    glEnums = {};
-    for (var propertyName in gl) {
-      if (typeof gl[propertyName] == 'number') {
-        glEnums[gl[propertyName]] = propertyName;
-      }
+function initGLNames() {
+  if (glNames) {
+    return;
+  }
+  glNames = {};
+  for (var propertyName in gl) {
+    if (typeof gl[propertyName] == 'number') {
+      glNames[gl[propertyName]] = propertyName;
     }
   }
 }
 
-function backtrace() {
-  var stackStr;
-  try {
-      throw new Error();
-  } catch (e) {
-      stackStr = e.stack;
-  }
-  return stackStr.split('\n').slice(1).join('\n');
-}
-
-function checkLastError(op) {
-  ensureGLEnums();
+function checkLastError(operation) {
+  initGLNames();
   var err = gl.getError();
   if (err != gl.NO_ERROR) {
-    var name = glEnums[err];
+    var name = glNames[err];
     name = (name !== undefined) ? name + "(" + err + ")":
-        ("*UNKNOWN WebGL ENUM (0x" + value.toString(16) + ")");
-    if (op) {
-      console.info(op + ", error: " + name);
+        ("UNKNOWN WebGL ENUM (0x" + value.toString(16) + ")");
+    if (operation) {
+      console.log("WebGL Error: %s, %s", operation, name);
     } else {
-      console.info("Error: " + name);
+      console.log("WebGL Error: %s", name);
     }
-    // console.info("Error: " + name + ": " + backtrace());
+    console.trace();
   }
 }
 
 function paintLuma(width, height, buffer) {
   gl.bindTexture(gl.TEXTURE_2D, YTexture);
   gl.texSubImage2D(gl.TEXTURE_2D, 0, 0, 0, width, height, gl.LUMINANCE, gl.UNSIGNED_BYTE, buffer);
+  checkLastError();
+}
+
+function paintGL(luma, cb, cr, videoWidth, videoHeight) {
+  var lW = videoWidth;
+  var lH = videoHeight;
+  var cW = lW >>> 1;
+  var cH = lH >>> 1;
+  
+  gl.bindTexture(gl.TEXTURE_2D, YTexture);
+  gl.texSubImage2D(gl.TEXTURE_2D, 0, 0, 0, lW, lH, gl.LUMINANCE, gl.UNSIGNED_BYTE, luma);
+  
+  gl.bindTexture(gl.TEXTURE_2D, CbTexture);
+  gl.texSubImage2D(gl.TEXTURE_2D, 0, 0, 0, cW, cH, gl.LUMINANCE, gl.UNSIGNED_BYTE, cb);
+  
+  gl.bindTexture(gl.TEXTURE_2D, CrTexture);
+  gl.texSubImage2D(gl.TEXTURE_2D, 0, 0, 0, cW, cH, gl.LUMINANCE, gl.UNSIGNED_BYTE, cr);
+  
   checkLastError();
 }
 
@@ -210,7 +241,15 @@ function drawScene() {
   
   gl.activeTexture(gl.TEXTURE0);
   gl.bindTexture(gl.TEXTURE_2D, YTexture);
-  gl.uniform1i(gl.getUniformLocation(shaderProgram, "uSampler"), 0);
+  gl.uniform1i(gl.getUniformLocation(shaderProgram, "YTexture"), 0);
+  
+  gl.activeTexture(gl.TEXTURE1);
+  gl.bindTexture(gl.TEXTURE_2D, CbTexture);
+  gl.uniform1i(gl.getUniformLocation(shaderProgram, "CbTexture"), 1);
+  
+  gl.activeTexture(gl.TEXTURE2);
+  gl.bindTexture(gl.TEXTURE_2D, CrTexture);
+  gl.uniform1i(gl.getUniformLocation(shaderProgram, "CrTexture"), 2);
 
   // Draw the square.
   setMatrixUniforms();
