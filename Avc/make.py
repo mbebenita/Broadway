@@ -51,6 +51,15 @@ env['EMMAKEN_CFLAGS'] = '-U__APPLE__ -DJS'
 
 Popen(['make', '-j', '4'], env=env).communicate()
 
+if 0:
+  print 'LLVM optimizations'
+
+  shutil.move('avc.bc', 'avc.orig.bc')
+  output = Popen([emscripten.LLVM_OPT, 'avc.orig.bc'] +
+                 emscripten.pick_llvm_opts(3, handpicked=True) +
+                 ['-o=avc.bc'], stdout=PIPE, stderr=STDOUT).communicate()[0]
+  assert os.path.exists('avc.bc'), 'Failed to run llvm optimizations: ' + output
+
 print 'LLVM binary => LL assembly'
 
 print Popen([emscripten.LLVM_DIS] + emscripten.LLVM_DIS_OPTS + ['avc.bc', '-o=avc.ll']).communicate()
