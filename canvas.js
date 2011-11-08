@@ -31,8 +31,6 @@ function initWebGLCanvas(canvas, width, height) {
     initShaders();
     initBuffers(width, height);
     initTextures(width, height);
-    
-    setInterval(drawScene, 15);
   }
 }
 
@@ -199,10 +197,11 @@ function paintGL(luma, cb, cr, videoWidth, videoHeight) {
   gl.texSubImage2D(gl.TEXTURE_2D, 0, 0, 0, cW, cH, gl.LUMINANCE, gl.UNSIGNED_BYTE, cr);
   
   checkLastError();
+  
+  drawScene();
 }
 
 function drawScene() {
-  
   gl.clearColor(0.0, 1.0, 0.0, 1.0);
   
   // Clear the canvas before we start drawing on it.
@@ -213,7 +212,6 @@ function drawScene() {
   // ratio of 640:480, and we only want to see objects between 0.1 units
   // and 100 units away from the camera.
   
-  // perspectiveMatrix = makePerspective(45, 640.0/480.0, 0.1, 100.0);
   perspectiveMatrix = makePerspective(45, 1, 0.1, 100.0);
   
   // Set the drawing position to the "identity" point, which is
@@ -238,7 +236,7 @@ function drawScene() {
   gl.vertexAttribPointer(textureCoordAttribute, 2, gl.FLOAT, false, 0, 0);  
   
   // Specify the texture to map onto the faces.
-  
+
   gl.activeTexture(gl.TEXTURE0);
   gl.bindTexture(gl.TEXTURE_2D, YTexture);
   gl.uniform1i(gl.getUniformLocation(shaderProgram, "YTexture"), 0);
@@ -250,7 +248,7 @@ function drawScene() {
   gl.activeTexture(gl.TEXTURE2);
   gl.bindTexture(gl.TEXTURE_2D, CrTexture);
   gl.uniform1i(gl.getUniformLocation(shaderProgram, "CrTexture"), 2);
-
+  
   // Draw the square.
   setMatrixUniforms();
   gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
