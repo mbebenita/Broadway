@@ -238,31 +238,25 @@
     uniform sampler2D YTexture;
     uniform sampler2D CbTexture;
     uniform sampler2D CrTexture;
-
-    int clampInt(int v, int min, int max) {
-        if (v < min) {
-            return min;
-        } else if (v > max) {
-            return max;
-        }
-        return v;
-    }
-
+    
     void main(void) {
-        vec4 y = texture2D(YTexture, vec2(vTextureCoord.s, vTextureCoord.t));
-        vec4 cb = texture2D(CbTexture, vec2(vTextureCoord.s, vTextureCoord.t));
-        vec4 cr = texture2D(CrTexture, vec2(vTextureCoord.s, vTextureCoord.t));
-
-        int c = int(y.x * 255.0) - 16;
-        int d = int(cb.x * 255.0) - 128;
-        int e = int(cr.x * 255.0) - 128;
-
-        int red = clampInt(int((298 * c + 409 * e + 128) / 256), 0, 255);
-        int green = clampInt(int((298 * c - 100 * d - 208 * e + 128) / 256), 0, 255);
-        int blue = clampInt(int((298 * c + 516 * d + 128) / 256), 0, 255);
-        
-        gl_FragColor = vec4(float(red) / 255.0, float(green) / 255.0, float(blue) / 255.0, 1);
+        vec3 YCbCr = vec3
+        (
+            texture2D( YTexture,  vTextureCoord ).x*1.1643828125,   // premultiply Y
+            texture2D( CbTexture, vTextureCoord ).x,
+            texture2D( CrTexture, vTextureCoord ).x
+        );
+    
+        gl_FragColor = vec4
+        (
+            YCbCr.x+1.59602734375*YCbCr.z-0.87078515625,
+            YCbCr.x-0.39176171875*YCbCr.y-0.81296875   *YCbCr.z+0.52959375,
+            YCbCr.x+2.017234375  *YCbCr.y-1.081390625,
+            1
+        );
     }
+
+
   </script>
   <script id="shader-vs" type="x-shader/x-vertex">
     attribute vec3 aVertexPosition;
