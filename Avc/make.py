@@ -56,7 +56,7 @@ if 0:
 
   shutil.move('avc.bc', 'avc.orig.bc')
   output = Popen([emscripten.LLVM_OPT, 'avc.orig.bc'] +
-                 emscripten.pick_llvm_opts(3, handpicked=True) +
+                 emscripten.pick_llvm_opts(3, handpicked=False) +
                  ['-o=avc.bc'], stdout=PIPE, stderr=STDOUT).communicate()[0]
   assert os.path.exists('avc.bc'), 'Failed to run llvm optimizations: ' + output
 
@@ -102,8 +102,12 @@ if EMSCRIPTEN_SETTINGS['QUANTUM_SIZE'] == 1:
 if 0: # Console debugging
   src.write(
     '''
-      _SDL_Init = function () {
-      }
+      _paint = _SDL_Init = _SDL_LockSurface = _SDL_UnlockSurface = function() {
+      };
+
+      _SDL_SetVideoMode = function() {
+        return _malloc(1024);
+      };
 
       FS.createDataFile('/', 'admiral.264', %s, true, false);
       FS.root.write = true;
