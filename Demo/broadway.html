@@ -27,7 +27,7 @@
   
   #doc {
     margin: 0 auto;
-    width: 1000px;
+    width: 1200px;
     padding: 10px;
   }
   
@@ -231,9 +231,7 @@
     </script>
 
   <script id="shader-fs" type="x-shader/x-fragment">
-    #ifdef GL_ES
     precision highp float;
-    #endif
 
     varying highp vec2 vTextureCoord;
 
@@ -289,6 +287,8 @@
           <select id="clip" style="margin-left: 10px;">
             <option value="mozilla.264">Mozilla</option>
             <option value="admiral.264">Admiral</option>
+            <option value="matrix.264">Matrix SD</option>
+            <option value="matrix_large.264">Matrix HD</option>
           </select>
         </span>
       </div>
@@ -305,39 +305,38 @@
       <div id="setting">
         <div style="margin-left: 10px; border: 0px; clear: both;" id="downloadProgress"></div>
       </div>
-      <div style="width: 1000px">
-        <div id="player" style="width: 640px; background-color: black; float: left;">
+      <div>
+        <div id="player" style="background-color: black; float: left;">
           <canvas id='canvas' width="640" height="100" style="background-color: #333333;"></canvas>
           <div id="controls">
             <button id="play">Play</button>
             <div id="scrubber"></div>
           </div>
         </div>  
-        <!-- Stats -->
-        <div
-          style="height: 480px; margin-left: 10px; margin-bottom: 10px; float: left;">
-          <table style="margin-top: 10px; width: 300;">
-            <tr>
-              <th>FPS</th>
-              <td><span id='fps' style="color: red;"></span></td>
-            </tr>
-            <tr>
-              <th>Average FPS (All / Steady)</th>
-              <td><span id='fpsSinceStart' style="color: green;"></span> /
-                <span id='fpsSinceSteady' style="color: green;"></span></td>
-            </tr>
-            <tr>
-              <th>Elapsed</th>
-              <td><span id='elapsed'></span></td>
-            </tr>
-            <tr>
-              <th>Score</th>
-              <td><span id='score' style="color: brown;"></span></td>
-            </tr>
-          </table>
-        </div>
       </div>
-      <div style="clear: both;"></div>
+      <!-- Stats -->
+      <div
+        style="height: 480px; margin-top: 30px; margin-bottom: 10px; clear: both;">
+        <table style="margin-top: 10px; width: 300;">
+          <tr>
+            <th>FPS</th>
+            <td><span id='fps' style="color: red;"></span></td>
+          </tr>
+          <tr>
+            <th>Average FPS (All / Steady)</th>
+            <td><span id='fpsSinceStart' style="color: green;"></span> /
+              <span id='fpsSinceSteady' style="color: green;"></span></td>
+          </tr>
+          <tr>
+            <th>Elapsed</th>
+            <td><span id='elapsed'></span></td>
+          </tr>
+          <tr>
+            <th>Score</th>
+            <td><span id='score' style="color: brown;"></span></td>
+          </tr>
+        </table>
+      </div>
     </div>
   </body>
 </html>
