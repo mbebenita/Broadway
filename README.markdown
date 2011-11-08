@@ -24,6 +24,13 @@ Install SDL
 Install and configure Emscripten (https://github.com/kripken/emscripten)
 The code for the demo is in the Avc folder, to build it run the make.py python script.
 
+Encoding Video
+==============
+
+The decoder expects AnnexB raw bitstreams and does not support weighted prediction for P-frames and CABAC entropy encoding. To create such bitstreams use ffmpeg and x264 with the following command line options:
+
+ffmpeg -y -i sourceFile -r 30000/1001 -b:a 2M -bt 4M -vcodec libx264 -pass 1 -coder 0 -bf 0 -flags -loop -wpredp 0 -an tmp.h264
+ffmpeg -i tmp.h264 -vcodec copy -vbsf h264_mp4toannexb targetFile
 
 Non-Emscripten H.264
 ====================
