@@ -201,56 +201,65 @@ function paintGL(luma, cb, cr, videoWidth, videoHeight) {
   drawScene();
 }
 
-function drawScene() {
-  gl.clearColor(0.0, 1.0, 0.0, 1.0);
+var sceneInitialized = false;
+
+function initScene() {
+  // gl.clearColor(0.0, 1.0, 0.0, 1.0);
   
   // Clear the canvas before we start drawing on it.
-  gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+  // gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
   
-  // Establish the perspective with which we want to view the
-  // scene. Our field of view is 45 degrees, with a width/height
-  // ratio of 640:480, and we only want to see objects between 0.1 units
-  // and 100 units away from the camera.
-  
-  perspectiveMatrix = makePerspective(45, 1, 0.1, 100.0);
-  
-  // Set the drawing position to the "identity" point, which is
-  // the center of the scene.
-  
-  loadIdentity();
-  
-  // Now move the drawing position a bit to where we want to start
-  // drawing the square.
-  
-  mvTranslate([0.0, 0.0, -2]);
-  
-  // Draw the cube by binding the array buffer to the cube's vertices
-  // array, setting attributes, and pushing it to GL.
-  
-  gl.bindBuffer(gl.ARRAY_BUFFER, canvasVPBuffer);
-  gl.vertexAttribPointer(vertexPositionAttribute, 3, gl.FLOAT, false, 0, 0);
-  
-  // Set the texture coordinates attribute for the vertices.
-  
-  gl.bindBuffer(gl.ARRAY_BUFFER, canvasVTCBuffer);
-  gl.vertexAttribPointer(textureCoordAttribute, 2, gl.FLOAT, false, 0, 0);  
-  
-  // Specify the texture to map onto the faces.
+  if (!sceneInitialized) {
+    // Establish the perspective with which we want to view the
+    // scene. Our field of view is 45 degrees, with a width/height
+    // ratio of 640:480, and we only want to see objects between 0.1 units
+    // and 100 units away from the camera.
+    
+    perspectiveMatrix = makePerspective(45, 1, 0.1, 100.0);
+    
+    // Set the drawing position to the "identity" point, which is
+    // the center of the scene.
+    
+    loadIdentity();
+    
+    // Now move the drawing position a bit to where we want to start
+    // drawing the square.
+    mvTranslate([0.0, 0.0, -2]);
 
-  gl.activeTexture(gl.TEXTURE0);
-  gl.bindTexture(gl.TEXTURE_2D, YTexture);
-  gl.uniform1i(gl.getUniformLocation(shaderProgram, "YTexture"), 0);
-  
-  gl.activeTexture(gl.TEXTURE1);
-  gl.bindTexture(gl.TEXTURE_2D, CbTexture);
-  gl.uniform1i(gl.getUniformLocation(shaderProgram, "CbTexture"), 1);
-  
-  gl.activeTexture(gl.TEXTURE2);
-  gl.bindTexture(gl.TEXTURE_2D, CrTexture);
-  gl.uniform1i(gl.getUniformLocation(shaderProgram, "CrTexture"), 2);
-  
-  // Draw the square.
-  setMatrixUniforms();
+    // Draw the cube by binding the array buffer to the cube's vertices
+    // array, setting attributes, and pushing it to GL.
+    
+    gl.bindBuffer(gl.ARRAY_BUFFER, canvasVPBuffer);
+    gl.vertexAttribPointer(vertexPositionAttribute, 3, gl.FLOAT, false, 0, 0);
+    
+    // Set the texture coordinates attribute for the vertices.
+    
+    gl.bindBuffer(gl.ARRAY_BUFFER, canvasVTCBuffer);
+    gl.vertexAttribPointer(textureCoordAttribute, 2, gl.FLOAT, false, 0, 0);  
+    
+    // Specify the texture to map onto the faces.
+
+    gl.activeTexture(gl.TEXTURE0);
+    gl.bindTexture(gl.TEXTURE_2D, YTexture);
+    gl.uniform1i(gl.getUniformLocation(shaderProgram, "YTexture"), 0);
+    
+    gl.activeTexture(gl.TEXTURE1);
+    gl.bindTexture(gl.TEXTURE_2D, CbTexture);
+    gl.uniform1i(gl.getUniformLocation(shaderProgram, "CbTexture"), 1);
+    
+    gl.activeTexture(gl.TEXTURE2);
+    gl.bindTexture(gl.TEXTURE_2D, CrTexture);
+    gl.uniform1i(gl.getUniformLocation(shaderProgram, "CrTexture"), 2);
+    
+    // Draw the square.
+    setMatrixUniforms();
+    
+    sceneInitialized = true;
+  }
+}
+
+function drawScene() {
+  initScene();
   gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
 }
 
