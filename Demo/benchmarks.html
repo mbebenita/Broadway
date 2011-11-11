@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+<style>
+/* MetaWebPro font family licensed from fontshop.com. WOFF-FTW! */
+@font-face {
+	font-family: 'MetaBlack';
+	src: url('http://mozcom-cdn.mozilla.net/img/fonts/MetaWebPro-Black.eot');
+	src: local('☺'),
+		url('http://mozcom-cdn.mozilla.net/img/fonts/MetaWebPro-Black.woff')
+		format('woff');
+	font-weight: bold;
+}
+</style>
+</head>
+<body>
+  <meta charset="utf-8">
+
+  <style>
+
+  #site-title {
+    display: block;
+    font: normal bold 60px/.738 MetaBlack, "Arial Black", sans-serif;
+    letter-spacing: -0.02em;
+  }
+  
+  #doc {
+    margin: 0 auto;
+    width: 1200px;
+    padding: 10px;
+  }
+  
+  #setting {
+    margin-top: 10px;
+  }
+  
+  #tagline {
+    clear: both;
+    font: 1.538em/1.4 Georgia, sans-serif;
+    color: #484848;
+    padding: 0 430px 0 0px;
+  }
+  
+  body {
+    font: normal 16px/.738 MetaBlack, "Arial Black", sans-serif;
+  	color: #6D7581;
+  }
+  
+  select {
+    font: normal 16px "Arial", sans-serif;
+    padding: 1px;
+    color: #6D7581;
+  }
+  
+  th {
+  	text-align: left;
+  	padding: 4px 4px 4px 12px;
+  	background: no-repeat;
+  }
+  
+  td {
+  	padding-left: 8px;
+  	text-align: right;
+  }
+  
+  #controls {
+    background-color: black;
+    padding: 10px;
+    height: 40px;
+  }
+  
+  #play {
+    width: 100px;
+    float: left;
+  }
+  
+  #scrubber {
+    margin-left: 120px;
+    margin-top: 12px;
+    margin-right: 10px;
+  }
+  
+  </style>
+
+  <link type="text/css" href="jquery/theme/jquery-ui.css" rel="stylesheet" />
+  <script type="text/javascript"
+    src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.4/jquery.min.js"></script>
+  <script type="text/javascript"
+    src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/jquery-ui.min.js"></script>
+
+  <script type='text/javascript'>
+    var Module = {
+        noInitialRun : true
+    };
+  </script>
+
+  <script src="sylvester.js" type="text/javascript"></script>
+  <script src="glUtils.js" type="text/javascript"></script>
+  
+  <script src='util.js' type='text/javascript'></script>
+  <script src='canvas.js' type='text/javascript'></script>
+
+  <script type="text/javascript">
+    $(function() {
+      $("#play").button();
+      $("#play").click(function() {
+          run();
+      });
+    });
+
+    function time(fn, count) {
+      var start = Date.now();
+      for (var i = 0; i < count; i++) {
+        fn();  
+      }
+      var elapsed = Date.now() - start;
+      console.log("Total: " + elapsed + ", Count: " + count + ", Average: " + (elapsed / count));
+    }
+    
+    function run() {
+      var size = new Size(512, 512);
+      
+      var c1 = new WebGLCanvas(document.getElementById('canvas-1'), size, "shader-fs", "shader-vs");
+      var buffer = new Uint8Array(size.w * size.h);
+      for (var i = 0; i < buffer.length; i++) {
+        buffer[i] = i;
+      }
+      c1.drawTexture(buffer);
+      c1.drawScene();
+      
+      var c2 = new YUVWebGLCanvas(document.getElementById('canvas-2'), size, "yuv-shader-fs", "shader-vs");
+      var chroma = new Uint8Array((size.w >>> 1) * (size.h >>> 1));
+      for (var i = 0; i < chroma.length; i++) {
+        chroma[i] = i;
+      }
+      c2.drawYUVTextures(buffer, chroma, chroma);
+      c2.drawScene();
+      
+      /* for (var i = 0; i < 100; i++) {
+      } */
+      
+      // console.info(size.toString());
+      
+      // console.info(webGLCanvas.toString());
+      
+      // var yuvCanvas = new YUVCanvas(canvas, size);
+      // console.info(yuvCanvas.toString());
+      
+      /*
+      var w = 1024, h = 720;
+      var canvas = document.getElementById('canvas');
+      initWebGLCanvas(canvas, w, h);
+      
+      var data = new Uint8Array(w * h);
+      time(function () {
+        gl.bindTexture(gl.TEXTURE_2D, YTexture);
+        gl.texSubImage2D(gl.TEXTURE_2D, 0, 0, 0, w, h, gl.LUMINANCE, gl.UNSIGNED_BYTE, data);  
+      }, 1000);
+      */
+    }
+  </script>
+
+  <script id="yuv-shader-fs" type="x-shader/x-fragment">
+    precision highp float;
+
+    varying highp vec2 vTextureCoord;
+
+    uniform sampler2D YTexture;
+    uniform sampler2D CbTexture;
+    uniform sampler2D CrTexture;
+    
+    void main(void) {
+        vec3 YCbCr = vec3
+        (
+            texture2D(YTexture,  vTextureCoord).x * 1.1643828125,   // premultiply Y
+            texture2D(CbTexture, vTextureCoord).x,
+            texture2D(CrTexture, vTextureCoord).x
+        );
+    
+        gl_FragColor = vec4
+        (
+            YCbCr.x + 1.59602734375 * YCbCr.z - 0.87078515625,
+            YCbCr.x - 0.39176171875 * YCbCr.y - 0.81296875 * YCbCr.z + 0.52959375,
+            YCbCr.x + 2.017234375   * YCbCr.y - 1.081390625,
+            1
+        );
+    }
+  </script>
+  
+  <script id="shader-fs" type="x-shader/x-fragment">
+    precision highp float;
+    varying highp vec2 vTextureCoord;
+    uniform sampler2D texture;
+    
+    void main(void) {
+        gl_FragColor = texture2D(texture, vTextureCoord);
+    }
+
+  </script>
+  <script id="shader-vs" type="x-shader/x-vertex">
+    attribute vec3 aVertexPosition;
+    attribute vec2 aTextureCoord;
+    uniform mat4 uMVMatrix;
+    uniform mat4 uPMatrix;
+    varying highp vec2 vTextureCoord;
+    void main(void) {
+      gl_Position = uPMatrix * uMVMatrix * vec4(aVertexPosition, 1.0);
+      vTextureCoord = aTextureCoord;
+    }
+  </script>
+
+  <div id="doc">
+    <header>
+      <h1 id="site-title"><b>Broadway.js</b></h1>
+    </header>
+    <div>
+      <div id="setting">
+        <span>Clip: 
+          <select id="clip" style="margin-left: 10px;">
+            <option value="mozilla.264">Mozilla</option>
+            <option value="admiral.264">Admiral</option>
+            <option value="matrix.264">Matrix SD</option>
+            <option value="matrix_large.264">Matrix HD</option>
+          </select>
+        </span>
+      </div>
+      <div id="setting">
+        <div style="margin-left: 10px; border: 0px; clear: both;" id="downloadProgress"></div>
+      </div>
+      <canvas id='canvas-1'></canvas>
+      <canvas id='canvas-2'></canvas>
+      <div id="controls">
+        <button id="play">Play</button>
+      </div>
+    </div>
+  </body>
+</html>

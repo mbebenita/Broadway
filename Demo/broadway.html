@@ -98,6 +98,8 @@
   <script src='broadway.js' type='text/javascript'></script>
   <script src="sylvester.js" type="text/javascript"></script>
   <script src="glUtils.js" type="text/javascript"></script>
+  
+  <script src='util.js' type='text/javascript'></script>
   <script src='canvas.js' type='text/javascript'></script>
 
   <script type="text/javascript">
@@ -211,22 +213,21 @@
         }
       }
 
-      var glCanvasInitialized = false;
+      var webGLCanvas = null;
 
       function updateScrubber() {
         $("#scrubber").slider('value', _getPosition() * 500);
       }
       
       function paint($luma, $cb, $cr, height, width) {
-        if (glCanvasInitialized == false) {
-          initWebGLCanvas(Module.canvas, width, height);
-          glCanvasInitialized = true;
+        if (!webGLCanvas) {
+          webGLCanvas = new YUVWebGLCanvas(Module.canvas, new Size(width, height), "shader-fs", "shader-vs");
         }
         var luma = HEAPU8.subarray($luma);
         var cb = HEAPU8.subarray($cb);
         var cr = HEAPU8.subarray($cr);
-        
-        paintGL(luma, cb, cr, width, height);
+        webGLCanvas.drawYUVTextures(luma, cb, cr);
+        webGLCanvas.drawScene();
       }
     </script>
 
