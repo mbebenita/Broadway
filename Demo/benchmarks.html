@@ -121,20 +121,22 @@
     function run() {
       var size = new Size(512, 512);
       
-      var c1 = new WebGLCanvas(document.getElementById('canvas-1'), size, "shader-fs", "shader-vs");
+      var c1 = new WebGLCanvas(document.getElementById('canvas-1'), size);
       var buffer = new Uint8Array(size.w * size.h);
       for (var i = 0; i < buffer.length; i++) {
         buffer[i] = i;
       }
-      c1.drawTexture(buffer);
+      c1.texture.fill(buffer);
       c1.drawScene();
       
-      var c2 = new YUVWebGLCanvas(document.getElementById('canvas-2'), size, "yuv-shader-fs", "shader-vs");
+      var c2 = new YUVWebGLCanvas(document.getElementById('canvas-2'), size);
       var chroma = new Uint8Array((size.w >>> 1) * (size.h >>> 1));
       for (var i = 0; i < chroma.length; i++) {
         chroma[i] = i;
       }
-      c2.drawYUVTextures(buffer, chroma, chroma);
+      c2.YTexture.fill(buffer);
+      c2.UTexture.fill(chroma);
+      c2.VTexture.fill(chroma);
       c2.drawScene();
       
       /* for (var i = 0; i < 100; i++) {
@@ -158,55 +160,6 @@
         gl.texSubImage2D(gl.TEXTURE_2D, 0, 0, 0, w, h, gl.LUMINANCE, gl.UNSIGNED_BYTE, data);  
       }, 1000);
       */
-    }
-  </script>
-
-  <script id="yuv-shader-fs" type="x-shader/x-fragment">
-    precision highp float;
-
-    varying highp vec2 vTextureCoord;
-
-    uniform sampler2D YTexture;
-    uniform sampler2D CbTexture;
-    uniform sampler2D CrTexture;
-    
-    void main(void) {
-        vec3 YCbCr = vec3
-        (
-            texture2D(YTexture,  vTextureCoord).x * 1.1643828125,   // premultiply Y
-            texture2D(CbTexture, vTextureCoord).x,
-            texture2D(CrTexture, vTextureCoord).x
-        );
-    
-        gl_FragColor = vec4
-        (
-            YCbCr.x + 1.59602734375 * YCbCr.z - 0.87078515625,
-            YCbCr.x - 0.39176171875 * YCbCr.y - 0.81296875 * YCbCr.z + 0.52959375,
-            YCbCr.x + 2.017234375   * YCbCr.y - 1.081390625,
-            1
-        );
-    }
-  </script>
-  
-  <script id="shader-fs" type="x-shader/x-fragment">
-    precision highp float;
-    varying highp vec2 vTextureCoord;
-    uniform sampler2D texture;
-    
-    void main(void) {
-        gl_FragColor = texture2D(texture, vTextureCoord);
-    }
-
-  </script>
-  <script id="shader-vs" type="x-shader/x-vertex">
-    attribute vec3 aVertexPosition;
-    attribute vec2 aTextureCoord;
-    uniform mat4 uMVMatrix;
-    uniform mat4 uPMatrix;
-    varying highp vec2 vTextureCoord;
-    void main(void) {
-      gl_Position = uPMatrix * uMVMatrix * vec4(aVertexPosition, 1.0);
-      vTextureCoord = aTextureCoord;
     }
   </script>
 

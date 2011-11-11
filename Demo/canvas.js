@@ -1,45 +1,69 @@
+/*
+ * This file wraps several WebGL constructs and provides a simple, single texture based WebGLCanvas as well as a
+ * specialized YUVWebGLCanvas that can handle YUV->RGB conversion. 
+ */
+
+/**
+ * Represents a WebGL shader script.
+ */
+var Script = (function script() {
+  function constructor() {}
+  
+  constructor.createFromElementId = function(id) {
+    var script = document.getElementById(id);
+    
+    // Didn't find an element with the specified ID, abort.
+    assert(script , "Could not find shader with ID: " + id);
+    
+    // Walk through the source element's children, building the shader source string.
+    var source = "";
+    var currentChild = script .firstChild;
+    while(currentChild) {
+      if (currentChild.nodeType == 3) {
+        source += currentChild.textContent;
+      }
+      currentChild = currentChild.nextSibling;
+    }
+    
+    var res = new constructor();
+    res.type = script.type;
+    res.source = source;
+    return res;
+  };
+  
+  constructor.createFromSource = function(type, source) {
+    var res = new constructor();
+    res.type = type;
+    res.source = source;
+    return res;
+  }
+  return constructor;
+})();
 
 /**
  * Represents a WebGL shader object and provides a mechanism to load shaders from HTML
  * script tags.
  */
 var Shader = (function shader() {
-  function constructor(gl, id) {
-    var shaderScript = document.getElementById(id);
+  function constructor(gl, script) {
     
-    // Didn't find an element with the specified ID; abort.
-    if (!shaderScript) {
-      error("Could not find shader with ID: " + id);
+    // Now figure out what type of shader script we have, based on its MIME type.
+    if (script.type == "x-shader/x-fragment") {
+      this.shader = gl.createShader(gl.FRAGMENT_SHADER);
+    } else if (script.type == "x-shader/x-vertex") {
+      this.shader = gl.createShader(gl.VERTEX_SHADER);
+    } else {
+      error("Unknown shader type: " + script.type);
       return;
     }
     
-    // Walk through the source element's children, building the shader source string.
-    this.source = "";
-    var currentChild = shaderScript.firstChild;
-    while(currentChild) {
-      if (currentChild.nodeType == 3) {
-        this.source += currentChild.textContent;
-      }
-      currentChild = currentChild.nextSibling;
-    }
+    // Send the source to the shader object.
+    gl.shaderSource(this.shader, script.source);
     
-    // Now figure out what type of shader script we have, based on its MIME type.
-    if (shaderScript.type == "x-shader/x-fragment") {
-      this.shader = gl.createShader(gl.FRAGMENT_SHADER);
-    } else if (shaderScript.type == "x-shader/x-vertex") {
-      this.shader = gl.createShader(gl.VERTEX_SHADER);
-    } else {
-      error("Unknown shader type");
-      return;  // Unknown shader type
-    }
-    
-    // Send the source to the shader object
-    gl.shaderSource(this.shader, this.source);
-    
-    // Compile the shader program
+    // Compile the shader program.
     gl.compileShader(this.shader);
     
-    // See if it compiled successfully
+    // See if it compiled successfully.
     if (!gl.getShaderParameter(this.shader, gl.COMPILE_STATUS)) {
       error("An error occurred compiling the shaders: " + gl.getShaderInfoLog(this.shader));
       return;
@@ -48,69 +72,117 @@ var Shader = (function shader() {
   return constructor;
 })();
 
-var WebGLCanvas = (function () {  
-  var supportsNonPowerOfTwoTextures = true;
-
-  function constructor(canvas, size, fragmentShaderID, vertexShaderID) {
-    this.canvas = canvas;
-    this.size = this.textureSize = size;
-    if (!supportsNonPowerOfTwoTextures) {
-      this.textureSize = size.getNextHighestPowerOfTwo();
+var Program = (function () {
+  function constructor(gl) {
+    this.gl = gl;
+    this.program = this.gl.createProgram();
+  }
+  constructor.prototype = {
+    attach: function (shader) {
+      this.gl.attachShader(this.program, shader.shader);
+    }, 
+    link: function () {
+      this.gl.linkProgram(this.program);
+      // If creating the shader program failed, alert.
+      assert(this.gl.getProgramParameter(this.program, this.gl.LINK_STATUS),
+             "Unable to initialize the shader program.");
+    },
+    use: function () {
+      this.gl.useProgram(this.program);
+    },
+    getAttributeLocation: function(name) {
+      return this.gl.getAttribLocation(this.program, name);
+    },
+    setMatrixUniform: function(name, array) {
+      var uniform = this.gl.getUniformLocation(this.program, name);
+      this.gl.uniformMatrix4fv(uniform, false, array);
     }
-    
+  };
+  return constructor;
+})();
+
+/**
+ * Represents a WebGL texture object.
+ */
+var Texture = (function texture() {
+  function constructor(gl, size) {
+    this.gl = gl;
+    this.size = size;
+    this.texture = gl.createTexture();
+    gl.bindTexture(gl.TEXTURE_2D, this.texture);
+    gl.texImage2D(gl.TEXTURE_2D, 0, gl.LUMINANCE, size.w, size.h, 0, gl.LUMINANCE, gl.UNSIGNED_BYTE, null);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+  }
+  var textureIDs = null;
+  constructor.prototype = {
+    fill: function(textureData) {
+      var gl = this.gl;
+      assert(textureData.length >= this.size.w * this.size.h, 
+             "Texture size mismatch, data:" + textureData.length + ", texture: " + this.size.w * this.size.h);
+      gl.bindTexture(gl.TEXTURE_2D, this.texture);
+      gl.texSubImage2D(gl.TEXTURE_2D, 0, 0, 0, this.size.w , this.size.h, gl.LUMINANCE, gl.UNSIGNED_BYTE, textureData);
+    },
+    bind: function(n, program, name) {
+      var gl = this.gl;
+      if (!textureIDs) {
+        textureIDs = [gl.TEXTURE0, gl.TEXTURE1, gl.TEXTURE2];
+      }
+      gl.activeTexture(textureIDs[n]);
+      gl.bindTexture(gl.TEXTURE_2D, this.texture);
+      gl.uniform1i(gl.getUniformLocation(program.program, name), n);
+    }
+  };
+  return constructor; 
+})();
+
+/**
+ * Generic WebGL backed canvas that sets up: a quad to paint a texture on, appropriate vertex/fragment shaders,
+ * scene parameters and other things. Specialized versions of this class can be created by overriding several 
+ * initialization methods.
+ * 
+ * <code>
+ * var canvas = new WebGLCanvas(document.getElementById('canvas'), new Size(512, 512);
+ * canvas.texture.fill(data);
+ * canvas.drawScene();
+ * </code>
+ */
+var WebGLCanvas = (function () {
+  
+  var vertexShaderScript = Script.createFromSource("x-shader/x-vertex", text([
+    "attribute vec3 aVertexPosition;",
+    "attribute vec2 aTextureCoord;",
+    "uniform mat4 uMVMatrix;",
+    "uniform mat4 uPMatrix;",
+    "varying highp vec2 vTextureCoord;",
+    "void main(void) {",
+    "  gl_Position = uPMatrix * uMVMatrix * vec4(aVertexPosition, 1.0);",
+    "  vTextureCoord = aTextureCoord;",
+    "}"
+    ]));
+  
+  var fragmentShaderScript = Script.createFromSource("x-shader/x-fragment", text([
+    "precision highp float;",
+    "varying highp vec2 vTextureCoord;",
+    "uniform sampler2D texture;",
+    "void main(void) {",
+    "  gl_FragColor = texture2D(texture, vTextureCoord);",
+    "}"
+    ]));
+  
+  function constructor(canvas, size) {
+    this.canvas = canvas;
+    this.size = size;
     this.canvas.width = size.w;
-    this.canvas.height = size.h;    
+    this.canvas.height = size.h;
     
-    initWebGL.call(this);
-    // initGLNames.call(this);
-    initShaders.call(this, fragmentShaderID, vertexShaderID);
+    this.onInitWebGL();
+    this.onInitShaders();
     initBuffers.call(this);
     this.onInitTextures();
     initScene.call(this);
-  }
-  
-  /**
-   * Initializes the WebGL context.
-   */
-  function initWebGL () {
-    try {
-      this.gl = this.canvas.getContext("experimental-webgl");
-    } catch(e) {}
-    
-    if (!this.gl) {
-      error("Unable to initialize WebGL. Your browser may not support it.");
-    }
-    var gl = this.gl;
-    gl.enable(gl.DEPTH_TEST);
-    gl.depthFunc(gl.LEQUAL);
-  }
-  
-  /**
-   * Initializes the fragment and vertex shaders.
-   */
-  function initShaders(fragmentShaderID, vertexShaderID) {
-    var gl = this.gl;
-    
-    // Load shaders.
-    this.vertexShader = new Shader(gl, vertexShaderID);
-    this.fragmentShader = new Shader(gl, fragmentShaderID);
-    
-    // Create the shader program.
-    this.shaderProgram = gl.createProgram();
-    gl.attachShader(this.shaderProgram, this.vertexShader.shader);
-    gl.attachShader(this.shaderProgram, this.fragmentShader.shader);
-    gl.linkProgram(this.shaderProgram);
-    
-    // If creating the shader program failed, alert.
-    assert(gl.getProgramParameter(this.shaderProgram, gl.LINK_STATUS),  "Unable to initialize the shader program.");
-    
-    gl.useProgram(this.shaderProgram);
-    
-    this.vertexPositionAttribute = gl.getAttribLocation(this.shaderProgram, "aVertexPosition");
-    gl.enableVertexAttribArray(this.vertexPositionAttribute);
-    
-    this.textureCoordAttribute = gl.getAttribLocation(this.shaderProgram, "aTextureCoord");
-    gl.enableVertexAttribArray(this.textureCoordAttribute);
   }
 
   /**
@@ -145,8 +217,8 @@ var WebGLCanvas = (function () {
      +--------------------+
      */
     
-    var scaleX = this.size.w / this.textureSize.w;
-    var scaleY = this.size.h / this.textureSize.h;
+    var scaleX = 1.0;
+    var scaleY = 1.0;
     
     // Create vertex texture coordinate buffer.
     this.quadVTCBuffer = gl.createBuffer();
@@ -173,24 +245,8 @@ var WebGLCanvas = (function () {
   }
   
   function setMatrixUniforms() {
-    var gl = this.gl;
-    var pUniform = gl.getUniformLocation(this.shaderProgram, "uPMatrix");
-    gl.uniformMatrix4fv(pUniform, false, new Float32Array(this.perspectiveMatrix.flatten()));
-
-    var mvUniform = gl.getUniformLocation(this.shaderProgram, "uMVMatrix");
-    gl.uniformMatrix4fv(mvUniform, false, new Float32Array(this.mvMatrix.flatten()));
-  }
-
-  function initGLNames() {
-    if (this.glNames) {
-      return;
-    }
-    this.glNames = {};
-    for (var propertyName in this.gl) {
-      if (typeof this.gl[propertyName] == 'number') {
-        this.glNames[this.gl[propertyName]] = propertyName;
-      }
-    }
+    this.program.setMatrixUniform("uPMatrix", new Float32Array(this.perspectiveMatrix.flatten()));
+    this.program.setMatrixUniform("uMVMatrix", new Float32Array(this.mvMatrix.flatten()));
   }
 
   function initScene() {
@@ -230,17 +286,6 @@ var WebGLCanvas = (function () {
     toString: function() {
       return "WebGLCanvas Size: " + this.size;
     },
-    createTexture: function(width, height) {
-      var gl = this.gl;
-      var texture = gl.createTexture();
-      gl.bindTexture(gl.TEXTURE_2D, texture);
-      gl.texImage2D(gl.TEXTURE_2D, 0, gl.LUMINANCE, width, height, 0, gl.LUMINANCE, gl.UNSIGNED_BYTE, null);
-      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
-      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
-      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
-      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
-      return texture;
-    },
     checkLastError: function (operation) {
       var err = this.gl.getError();
       if (err != this.gl.NO_ERROR) {
@@ -255,21 +300,44 @@ var WebGLCanvas = (function () {
         console.trace();
       }
     },
-    onInitTextures: function () {
+    onInitWebGL: function () {
+      try {
+        this.gl = this.canvas.getContext("experimental-webgl");
+      } catch(e) {}
+      
+      if (!this.gl) {
+        error("Unable to initialize WebGL. Your browser may not support it.");
+      }
       var gl = this.gl;
-      this.texture = this.createTexture(this.textureSize.w, this.textureSize.h);
+      gl.enable(gl.DEPTH_TEST);
+      gl.depthFunc(gl.LEQUAL);
+      
+      if (this.glNames) {
+        return;
+      }
+      this.glNames = {};
+      for (var propertyName in this.gl) {
+        if (typeof this.gl[propertyName] == 'number') {
+          this.glNames[this.gl[propertyName]] = propertyName;
+        }
+      }
+    },
+    onInitShaders: function() {
+      this.program = new Program(this.gl);
+      this.program.attach(new Shader(this.gl, vertexShaderScript));
+      this.program.attach(new Shader(this.gl, fragmentShaderScript));
+      this.program.link();
+      this.program.use();
+      this.vertexPositionAttribute = this.program.getAttributeLocation("aVertexPosition");
+      this.gl.enableVertexAttribArray(this.vertexPositionAttribute);
+      this.textureCoordAttribute = this.program.getAttributeLocation("aTextureCoord");;
+      this.gl.enableVertexAttribArray(this.textureCoordAttribute);
+    },
+    onInitTextures: function () {
+      this.texture = new Texture(this.gl, this.size);
     },
     onInitSceneTextures: function () {
-      var gl = this.gl;
-      gl.activeTexture(gl.TEXTURE0);
-      gl.bindTexture(gl.TEXTURE_2D, this.texture);
-      gl.uniform1i(gl.getUniformLocation(this.shaderProgram, "texture"), 0);
-    },
-    drawTexture: function(textureData) {
-      var gl = this.gl;
-      assert(textureData.length == this.size.w * this.size.h);
-      gl.bindTexture(gl.TEXTURE_2D, this.texture);
-      gl.texSubImage2D(gl.TEXTURE_2D, 0, 0, 0, this.size.w , this.size.h, gl.LUMINANCE, gl.UNSIGNED_BYTE, textureData);
+      this.texture.bind(0, this.program, "texture");
     },
     drawScene: function() {
       var gl = this.gl;
@@ -282,48 +350,73 @@ var WebGLCanvas = (function () {
 })();
 
 var YUVWebGLCanvas = (function () {
-  function constructor(canvas, size, fragmentShaderID, vertexShaderID) {
-    WebGLCanvas.call(this, canvas, size, fragmentShaderID, vertexShaderID);
+  var vertexShaderScript = Script.createFromSource("x-shader/x-vertex", text([
+    "attribute vec3 aVertexPosition;",
+    "attribute vec2 aTextureCoord;",
+    "uniform mat4 uMVMatrix;",
+    "uniform mat4 uPMatrix;",
+    "varying highp vec2 vTextureCoord;",
+    "void main(void) {",
+    "  gl_Position = uPMatrix * uMVMatrix * vec4(aVertexPosition, 1.0);",
+    "  vTextureCoord = aTextureCoord;",
+    "}"
+  ]));
+  
+  var fragmentShaderScript = Script.createFromSource("x-shader/x-fragment", text([
+    "precision highp float;",
+    "varying highp vec2 vTextureCoord;",
+    "uniform sampler2D YTexture;",
+    "uniform sampler2D UTexture;",
+    "uniform sampler2D VTexture;",
+    
+    "void main(void) {",
+    "  vec3 YUV = vec3",
+    "  (",
+    "    texture2D(YTexture, vTextureCoord).x * 1.1643828125,   // premultiply Y",
+    "    texture2D(UTexture, vTextureCoord).x,",
+    "    texture2D(VTexture, vTextureCoord).x",
+    "  );",
+    "  gl_FragColor = vec4",
+    "  (",
+    "    YUV.x + 1.59602734375 * YUV.z - 0.87078515625,",
+    "    YUV.x - 0.39176171875 * YUV.y - 0.81296875 * YUV.z + 0.52959375,",
+    "    YUV.x + 2.017234375   * YUV.y - 1.081390625,",
+    "    1",
+    "  );",
+    "}"
+  ]));
+  
+  function constructor(canvas, size) {
+    WebGLCanvas.call(this, canvas, size);
   } 
   
   constructor.prototype = inherit(WebGLCanvas, {
+    onInitShaders: function() {
+      this.program = new Program(this.gl);
+      this.program.attach(new Shader(this.gl, vertexShaderScript));
+      this.program.attach(new Shader(this.gl, fragmentShaderScript));
+      this.program.link();
+      this.program.use();
+      this.vertexPositionAttribute = this.program.getAttributeLocation("aVertexPosition");
+      this.gl.enableVertexAttribArray(this.vertexPositionAttribute);
+      this.textureCoordAttribute = this.program.getAttributeLocation("aTextureCoord");;
+      this.gl.enableVertexAttribArray(this.textureCoordAttribute);
+    },
     onInitTextures: function () {
-      var gl = this.gl;
-      console.log("creatingTextures: size: " + this.size + ", textureSize: " + this.textureSize);
-      this.YTexture = this.createTexture(this.textureSize.w, this.textureSize.h);
-      this.CbTexture = this.createTexture(this.textureSize.w >>> 1, this.textureSize.h >>> 1);
-      this.CrTexture = this.createTexture(this.textureSize.w >>> 1, this.textureSize.h >>> 1);
-      
+      console.log("creatingTextures: size: " + this.size);
+      this.YTexture = new Texture(this.gl, this.size);
+      this.UTexture = new Texture(this.gl, this.size.getHalfSize());
+      this.VTexture = new Texture(this.gl, this.size.getHalfSize());
     },
     onInitSceneTextures: function () {
-      var gl = this.gl;
-      gl.activeTexture(gl.TEXTURE0);
-      gl.bindTexture(gl.TEXTURE_2D, this.YTexture);
-      gl.uniform1i(gl.getUniformLocation(this.shaderProgram, "YTexture"), 0);
-      
-      gl.activeTexture(gl.TEXTURE1);
-      gl.bindTexture(gl.TEXTURE_2D, this.CbTexture);
-      gl.uniform1i(gl.getUniformLocation(this.shaderProgram, "CbTexture"), 1);
-      
-      gl.activeTexture(gl.TEXTURE2);
-      gl.bindTexture(gl.TEXTURE_2D, this.CrTexture);
-      gl.uniform1i(gl.getUniformLocation(this.shaderProgram, "CrTexture"), 2);
+      this.YTexture.bind(0, this.program, "YTexture");
+      this.UTexture.bind(1, this.program, "UTexture");
+      this.VTexture.bind(2, this.program, "VTexture");
     },
-    drawYUVTextures: function(luma, cb, cr) {
-      var gl = this.gl;
-      var lW = this.size.w;
-      var lH = this.size.h;
-      var cW = lW >>> 1;
-      var cH = lH >>> 1;
-      
-      gl.bindTexture(gl.TEXTURE_2D, this.YTexture);
-      gl.texSubImage2D(gl.TEXTURE_2D, 0, 0, 0, lW, lH, gl.LUMINANCE, gl.UNSIGNED_BYTE, luma);
-      
-      gl.bindTexture(gl.TEXTURE_2D, this.CbTexture);
-      gl.texSubImage2D(gl.TEXTURE_2D, 0, 0, 0, cW, cH, gl.LUMINANCE, gl.UNSIGNED_BYTE, cb);
-      
-      gl.bindTexture(gl.TEXTURE_2D, this.CrTexture);
-      gl.texSubImage2D(gl.TEXTURE_2D, 0, 0, 0, cW, cH, gl.LUMINANCE, gl.UNSIGNED_BYTE, cr);
+    fillYUVTextures: function(y, u, v) {
+      this.YTexture.fill(y);
+      this.UTexture.fill(u);
+      this.VTexture.fill(v);
     },
     toString: function() {
       return "YUVCanvas Size: " + this.size;
