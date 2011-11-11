@@ -239,22 +239,19 @@
     uniform sampler2D YTexture;
     uniform sampler2D CbTexture;
     uniform sampler2D CrTexture;
+
+    const mat4 YCbCr2RGB = mat4
+    (
+      1.1643828125, 0, 1.59602734375, -.87078515625,
+      1.1643828125, -.39176171875, -.81296875, .52959375,
+      1.1643828125, 2.017234375, 0, -1.081390625,
+      0, 0, 0, 1
+    );
+
+
     
     void main(void) {
-        vec3 YCbCr = vec3
-        (
-            texture2D(YTexture,  vTextureCoord).x * 1.1643828125,   // premultiply Y
-            texture2D(CbTexture, vTextureCoord).x,
-            texture2D(CrTexture, vTextureCoord).x
-        );
-    
-        gl_FragColor = vec4
-        (
-            YCbCr.x + 1.59602734375 * YCbCr.z - 0.87078515625,
-            YCbCr.x - 0.39176171875 * YCbCr.y - 0.81296875 * YCbCr.z + 0.52959375,
-            YCbCr.x + 2.017234375   * YCbCr.y - 1.081390625,
-            1
-        );
+        gl_FragColor = vec4( texture2D(YTexture,  vTextureCoord).x, texture2D(CbTexture, vTextureCoord).x, texture2D(CrTexture, vTextureCoord).x, 1)*YCbCr2RGB;
     }
 
 
