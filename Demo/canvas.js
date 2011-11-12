@@ -308,10 +308,6 @@ var WebGLCanvas = (function () {
       if (!this.gl) {
         error("Unable to initialize WebGL. Your browser may not support it.");
       }
-      var gl = this.gl;
-      gl.enable(gl.DEPTH_TEST);
-      gl.depthFunc(gl.LEQUAL);
-      
       if (this.glNames) {
         return;
       }
@@ -340,10 +336,7 @@ var WebGLCanvas = (function () {
       this.texture.bind(0, this.program, "texture");
     },
     drawScene: function() {
-      var gl = this.gl;
-      // Clear the canvas before we start drawing on it.
-      gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
-      gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
+      this.gl.drawArrays(this.gl.TRIANGLE_STRIP, 0, 4);
     }
   };
   return constructor;
@@ -386,6 +379,18 @@ var YUVWebGLCanvas = (function () {
     "}"
   ]));
   
+  var fragmentShaderScriptSimple = Script.createFromSource("x-shader/x-fragment", text([
+   "precision highp float;",
+   "varying highp vec2 vTextureCoord;",
+   "uniform sampler2D YTexture;",
+   "uniform sampler2D UTexture;",
+   "uniform sampler2D VTexture;",
+   
+   "void main(void) {",
+   "  gl_FragColor = texture2D(YTexture, vTextureCoord);",
+   "}"
+   ]));
+
   var fragmentShaderScript = Script.createFromSource("x-shader/x-fragment", text([
     "precision highp float;",
     "varying highp vec2 vTextureCoord;",
