@@ -31,10 +31,6 @@
     padding: 10px;
   }
   
-  #setting {
-    margin-top: 10px;
-  }
-  
   #tagline {
     clear: both;
     font: 1.538em/1.4 Georgia, sans-serif;
@@ -47,53 +43,16 @@
   	color: #6D7581;
   }
   
-  select {
-    font: normal 16px "Arial", sans-serif;
-    padding: 1px;
-    color: #6D7581;
-  }
-  
-  th {
-  	text-align: left;
-  	padding: 4px 4px 4px 12px;
-  	background: no-repeat;
-  }
-  
-  td {
-  	padding-left: 8px;
-  	text-align: right;
-  }
-  
   #controls {
-    background-color: black;
     padding: 10px;
     height: 40px;
-  }
-  
-  #play {
-    width: 100px;
-    float: left;
-  }
-  
-  #scrubber {
-    margin-left: 120px;
-    margin-top: 12px;
-    margin-right: 10px;
   }
   
   </style>
 
   <link type="text/css" href="jquery/theme/jquery-ui.css" rel="stylesheet" />
-  <script type="text/javascript"
-    src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.4/jquery.min.js"></script>
-  <script type="text/javascript"
-    src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/jquery-ui.min.js"></script>
-
-  <script type='text/javascript'>
-    var Module = {
-        noInitialRun : true
-    };
-  </script>
+  <script type="text/javascript" src="jquery/jquery.min.js"></script>
+  <script type="text/javascript" src="jquery/jquery-ui.min.js"></script>
 
   <script src="sylvester.js" type="text/javascript"></script>
   <script src="glUtils.js" type="text/javascript"></script>
@@ -109,83 +68,100 @@
       });
     });
 
-    function time(fn, count) {
+    function time(name, fn, count) {
       var start = Date.now();
       for (var i = 0; i < count; i++) {
         fn();  
       }
       var elapsed = Date.now() - start;
-      console.log("Total: " + elapsed + ", Count: " + count + ", Average: " + (elapsed / count));
+      var rate = (count / elapsed) * 1000;
+      var msg = name + " - Total: " + elapsed + " ms, Count: " + count + ", Rate: " + rate.toFixed(2) + " op/s";
+      console.log(msg);
+      
+      $("#results").append("<p>" + msg + "</p>");
     }
     
     function run() {
       var size = new Size(512, 512);
+      
+      var benchmarks = [];
       
       var c1 = new WebGLCanvas(document.getElementById('canvas-1'), size);
       var buffer = new Uint8Array(size.w * size.h);
       for (var i = 0; i < buffer.length; i++) {
         buffer[i] = i;
       }
-      c1.texture.fill(buffer);
-      c1.drawScene();
+
+      benchmarks.push(function() {
+        time("Fill Texture", function () {
+          c1.texture.fill(buffer);  
+        }, 10000);
+      });
+      
+      benchmarks.push(function() {
+        time("Draw Scene", function () {
+          c1.drawScene();
+        }, 10000);
+      });
+      
+      benchmarks.push(function() {
+        time("Fill Texture + Draw Scene", function () {
+          c1.texture.fill(buffer);  
+          c1.drawScene();
+        }, 10000);
+      });
       
       var c2 = new YUVWebGLCanvas(document.getElementById('canvas-2'), size);
       var chroma = new Uint8Array((size.w >>> 1) * (size.h >>> 1));
       for (var i = 0; i < chroma.length; i++) {
         chroma[i] = i;
       }
-      c2.YTexture.fill(buffer);
-      c2.UTexture.fill(chroma);
-      c2.VTexture.fill(chroma);
-      c2.drawScene();
       
-      /* for (var i = 0; i < 100; i++) {
-      } */
+      benchmarks.push(function() {
+        time("YUV Fill Texture", function () {
+          c2.YTexture.fill(buffer);
+          c2.UTexture.fill(chroma);
+          c2.VTexture.fill(chroma);
+        }, 10000);
+      });
       
-      // console.info(size.toString());
+      benchmarks.push(function() {
+        time("YUV Draw Scene", function () {
+          c2.drawScene();
+        }, 10000);
+      });
       
-      // console.info(webGLCanvas.toString());
+      benchmarks.push(function() {
+        time("YUV Fill Texture + Draw Scene", function () {
+          c2.YTexture.fill(buffer);
+          c2.UTexture.fill(chroma);
+          c2.VTexture.fill(chroma);
+          c2.drawScene();
+        }, 10000);
+      });
       
-      // var yuvCanvas = new YUVCanvas(canvas, size);
-      // console.info(yuvCanvas.toString());
-      
-      /*
-      var w = 1024, h = 720;
-      var canvas = document.getElementById('canvas');
-      initWebGLCanvas(canvas, w, h);
-      
-      var data = new Uint8Array(w * h);
-      time(function () {
-        gl.bindTexture(gl.TEXTURE_2D, YTexture);
-        gl.texSubImage2D(gl.TEXTURE_2D, 0, 0, 0, w, h, gl.LUMINANCE, gl.UNSIGNED_BYTE, data);  
-      }, 1000);
-      */
+      var benchmarkIndex = 0;
+      window.addEventListener("message", function() {
+        benchmarks[benchmarkIndex++]();
+        if (benchmarkIndex < benchmarks.length) {
+          window.postMessage(0, "*");
+        }
+      }, false);
+      window.postMessage(0, "*")
     }
   </script>
 
   <div id="doc">
     <header>
-      <h1 id="site-title"><b>Broadway.js</b></h1>
+      <h1 id="site-title"><b>Broadway.js Benchmarks</b></h1>
     </header>
-    <div>
-      <div id="setting">
-        <span>Clip: 
-          <select id="clip" style="margin-left: 10px;">
-            <option value="mozilla.264">Mozilla</option>
-            <option value="admiral.264">Admiral</option>
-            <option value="matrix.264">Matrix SD</option>
-            <option value="matrix_large.264">Matrix HD</option>
-          </select>
-        </span>
-      </div>
-      <div id="setting">
-        <div style="margin-left: 10px; border: 0px; clear: both;" id="downloadProgress"></div>
-      </div>
+    <div id="setting">
       <canvas id='canvas-1'></canvas>
       <canvas id='canvas-2'></canvas>
       <div id="controls">
-        <button id="play">Play</button>
+          <button id="play">Run</button>
       </div>
     </div>
+    <div id="results"></div>
   </body>
 </html>
