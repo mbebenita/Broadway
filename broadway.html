@@ -82,12 +82,10 @@
   }
   
   </style>
-
+  
   <link type="text/css" href="jquery/theme/jquery-ui.css" rel="stylesheet" />
-  <script type="text/javascript"
-    src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.4/jquery.min.js"></script>
-  <script type="text/javascript"
-    src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/jquery-ui.min.js"></script>
+  <script type="text/javascript" src="jquery/jquery.min.js"></script>
+  <script type="text/javascript" src="jquery/jquery-ui.min.js"></script>
 
   <script type='text/javascript'>
     var Module = {
@@ -221,55 +219,20 @@
       
       function paint($luma, $cb, $cr, height, width) {
         if (!webGLCanvas) {
-          webGLCanvas = new YUVWebGLCanvas(Module.canvas, new Size(width, height), "shader-fs", "shader-vs");
+          webGLCanvas = new YUVWebGLCanvas(Module.canvas, new Size(width, height));
         }
         var luma = HEAPU8.subarray($luma);
         var cb = HEAPU8.subarray($cb);
         var cr = HEAPU8.subarray($cr);
-        webGLCanvas.drawYUVTextures(luma, cb, cr);
+        
+        webGLCanvas.YTexture.fill(luma);
+        webGLCanvas.UTexture.fill(cb);
+        webGLCanvas.VTexture.fill(cr);
         webGLCanvas.drawScene();
       }
     </script>
 
-  <script id="shader-fs" type="x-shader/x-fragment">
-    precision highp float;
-
-    varying highp vec2 vTextureCoord;
-
-    uniform sampler2D YTexture;
-    uniform sampler2D CbTexture;
-    uniform sampler2D CrTexture;
-    
-    void main(void) {
-        vec3 YCbCr = vec3
-        (
-            texture2D(YTexture,  vTextureCoord).x * 1.1643828125,   // premultiply Y
-            texture2D(CbTexture, vTextureCoord).x,
-            texture2D(CrTexture, vTextureCoord).x
-        );
-    
-        gl_FragColor = vec4
-        (
-            YCbCr.x + 1.59602734375 * YCbCr.z - 0.87078515625,
-            YCbCr.x - 0.39176171875 * YCbCr.y - 0.81296875 * YCbCr.z + 0.52959375,
-            YCbCr.x + 2.017234375   * YCbCr.y - 1.081390625,
-            1
-        );
-    }
-
-
-  </script>
-  <script id="shader-vs" type="x-shader/x-vertex">
-    attribute vec3 aVertexPosition;
-    attribute vec2 aTextureCoord;
-    uniform mat4 uMVMatrix;
-    uniform mat4 uPMatrix;
-    varying highp vec2 vTextureCoord;
-    void main(void) {
-      gl_Position = uPMatrix * uMVMatrix * vec4(aVertexPosition, 1.0);
-      vTextureCoord = aTextureCoord;
-    }
-  </script>
+  
 
   <div id="doc">
     <header>

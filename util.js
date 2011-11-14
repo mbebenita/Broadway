@@ -16,6 +16,14 @@ function isPowerOfTwo(x) {
 }
 
 /**
+ * Joins a list of lines using a newline separator, not the fastest
+ * thing in the world but good enough for initialization code. 
+ */
+function text(lines) {
+  return lines.join("\n");
+}
+
+/**
  * Rounds up to the next highest power of two.
  */
 function nextHighestPowerOfTwo(x) {
@@ -38,9 +46,8 @@ var Size = (function size() {
     toString: function () {
       return "(" + this.w + ", " + this.h + ")";
     },
-    getNextHighestPowerOfTwo: function() {
-      return new Size(nextHighestPowerOfTwo(this.w), 
-                      nextHighestPowerOfTwo(this.h));
+    getHalfSize: function() {
+      return new Size(this.w >>> 1, this.h >>> 1);
     }
   }
   return constructor;
