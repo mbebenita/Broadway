@@ -217,6 +217,7 @@
       var windowFrameCounter = 0;
       var videoStartTime;
       var windowStartTime;
+      var scoreFrameCount = 1200;
       
       function onFrameDecoded() {
         videoFrameCounter += 1;
@@ -244,10 +245,10 @@
         
         if (!scoreCalculated) {
           if (videoFrameCounter % 10 == 0) {
-            document.getElementById('score').innerHTML = "Calculating: " + (1000 - videoFrameCounter);
+            document.getElementById('score').innerHTML = "Calculating: " + (scoreFrameCount - videoFrameCounter);
           }
           
-          if (videoFrameCounter == 1000) {
+          if (videoFrameCounter == scoreFrameCount) {
             var fps = (videoFrameCounter / videoElapsedTime) * 1000;
             document.getElementById('score').innerHTML = fps.toFixed(2);
             scoreCalculated = true;
