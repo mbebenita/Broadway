@@ -94,22 +94,32 @@
         buffer[i] = i;
       }
 
+      var noise = new Uint8Array(1024);
+      for (var i = 0; i < noise.length; i++) {
+        noise[i] = Math.random() * 255;
+      }
+      
       var samples = 5000;
       
+      var c1 = new WebGLCanvas(document.getElementById('canvas-1'), size);
+      
       if (true) {
-        var c1 = new WebGLCanvas(document.getElementById('canvas-1'), size);  
         benchmarks.push(function() {
           time("Fill Texture", function () {
             c1.texture.fill(buffer);  
           }, samples);
         });
-        
+      }
+      
+      if (true) {
         benchmarks.push(function() {
           time("Draw Scene", function () {
             c1.drawScene();
           }, samples);
         });
-        
+      }
+      
+      if (false) {
         benchmarks.push(function() {
           time("Fill Texture + Draw Scene", function () {
             c1.texture.fill(buffer);  
@@ -118,14 +128,14 @@
         });
       }
       
-      
       var chroma = new Uint8Array((size.w >>> 1) * (size.h >>> 1));
       for (var i = 0; i < chroma.length; i++) {
         chroma[i] = i;
       }
       
-      if (true) {
-        var c2 = new YUVWebGLCanvas(document.getElementById('canvas-2'), size);
+      var c2 = new YUVWebGLCanvas(document.getElementById('canvas-2'), size);
+      
+      if (false) {
         benchmarks.push(function() {
           time("YUV Fill Texture", function () {
             c2.YTexture.fill(buffer);
@@ -133,13 +143,17 @@
             c2.VTexture.fill(chroma);
           }, samples);
         });
-        
+      }
+      
+      if (false) {
         benchmarks.push(function() {
           time("YUV Draw Scene", function () {
             c2.drawScene();
           }, samples);
         });
-        
+      }
+      
+      if (false) {
         benchmarks.push(function() {
           time("YUV Fill Texture + Draw Scene", function () {
             c2.YTexture.fill(buffer);

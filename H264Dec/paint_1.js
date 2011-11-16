@@ -1,4 +1,4 @@
-function _paint($luma, $cb, $cr, h, w) {
+function _paint($luma, $cb, $cr, w, h) {
   for (var y1,y2,u,v,ruv,guv,buv,j,w_2=w>>1,W=w*4, surface=SDL.surfaces[SDL.screen], d=surface.image.data, r=0; h-=2;) {
     for (j=w_2; j--;) {
       u = IHEAP[$cr++];

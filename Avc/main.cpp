@@ -94,7 +94,7 @@ int SDL_main(int argc, char **argv) {
 #if LINUX
     buffer = (uint8*) readFile(argc == 2 ? argv[1] : "../Media/mozilla.264", &size);
 #else
-    buffer = (uint8*) readFile(argc == 2 ? argv[1] : "../Media/mozilla.264", &size);
+    buffer = (uint8*) readFile(argc == 2 ? argv[1] : "../Media/matrix_large.h264", &size);
 #endif
     stream = buffer;
 
@@ -154,7 +154,7 @@ extern "C" void setPosition(float value) {
     }
 }
 
-extern "C" void paint(uint8 *luma, uint8 *cb, uint8 *cr, int height, int width) {
+extern "C" void paint(uint8 *luma, uint8 *cb, uint8 *cr, int width, int height) {
     int chromaWidth = width >> 1;
 #if FASTYUV2RGB
     uint8 *dst = (uint8 *)screen->pixels;
@@ -237,9 +237,13 @@ mainLoopStatus mainLoopIteration() {
 #if !RENDER
         int mean = 0;
 #endif
-        paint(output.YCbCr[0], output.YCbCr[1], output.YCbCr[2], output.height, output.pitch);
+
+#if RENDER
+        paint(output.YCbCr[0], output.YCbCr[1], output.YCbCr[2], output.pitch, output.height);
+#endif
+
 #if !RENDER
-        printf("C mean: %d\n", mean/(output.height*output.pitch));
+        // printf("C mean: %d\n", mean/(output.height*output.pitch));
 #endif
 
 #if RENDER
@@ -247,7 +251,7 @@ mainLoopStatus mainLoopIteration() {
         SDL_Flip(screen);
 #else
         static int frame = 0;
-        printf("\n=== dumping frame %d ===\n\n", frame++);
+        // printf("\n=== dumping frame %d ===\n\n", frame++);
         int min = output.height < output.pitch ? output.height : output.pitch;
         for (int y = 0; y < min; y++) {
 //            printf("%d: %d\n", y, ((char*)screen->pixels)[y*output.pitch + y*4]);

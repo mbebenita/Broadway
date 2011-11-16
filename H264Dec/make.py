@@ -16,7 +16,7 @@ EMSCRIPTEN_SETTINGS = {
   'CHECK_SIGNED_OVERFLOWS': 0,
   'CORRECT_OVERFLOWS': 0,
   'CHECK_SIGNS': 0,
-  'CORRECT_SIGNS': 2,
+  'CORRECT_SIGNS': 1,
 #  'CORRECT_SIGNS_LINES': emscripten.read_auto_optimize_data('avc.pgo')['signs_lines'],
   'CORRECT_SIGNS_LINES': "",
   'DISABLE_EXCEPTION_CATCHING': 1,
