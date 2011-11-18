@@ -33,7 +33,7 @@
 /* #define _NO_OUT */
 
 /* Debug prints */
-#define DEBUG(argv) printf argv
+#define DEBUG(argv) // printf argv
 
 /* CVS tag name for identification */
 const char tagName[256] = "$Name: FIRST_ANDROID_COPYRIGHT $";
@@ -282,7 +282,6 @@ int terminate() {
         }
         else
             DEBUG(("\n"));
-        fflush(stdout);
 
         numErrors += decPicture.nbrOfErrMBs;
 
@@ -435,7 +434,6 @@ int mainLoopIteration() {
                 }
                 else
                     DEBUG(("\n"));
-                fflush(stdout);
 
                 numErrors += decPicture.nbrOfErrMBs;
 
@@ -477,7 +475,10 @@ int mainLoopIteration() {
 
     }
 }
+
 void paint(u8 *luma, u8 *cb, u8 *cr, int width, int height) {
+    SDL_LockSurface(screen);
+
     int chromaWidth = width >> 1;
     u32 *dst = (u32 *)screen->pixels;
     int x, y = 0;
@@ -499,17 +500,31 @@ void paint(u8 *luma, u8 *cb, u8 *cr, int width, int height) {
             dst[lineOffLuma + x] = SDL_MapRGB(screen->format, red & 0xff, green & 0xff, blue & 0xff);
         }
     }
+
+    SDL_UnlockSurface(screen);
+    SDL_Flip(screen);
+}
+
+
+void broadwayOnFrameDecoded() { }
+
+void broadwaySetPosition(float position) {
+    printf("SetPosition %f\n", position);
+}
+
+float broadwayGetPosition() {
+    printf("GetPosition\n");
+    return 0;
 }
 
 void DrawOutput(u8 *data, u32 picWidth, u32 picHeight) {
     u32 size = picWidth * picHeight;
 #if RENDER
-    SDL_LockSurface(screen);
     paint(data, data + size, data + size + (size >> 2), picWidth, picHeight);
-    SDL_UnlockSurface(screen);
-    SDL_Flip(screen);
+    broadwayOnFrameDecoded();
 #endif
 
+#if !JS
     SDL_Event event;
     while (SDL_PollEvent(&event)) {
         switch (event.type) {
@@ -521,11 +536,13 @@ void DrawOutput(u8 *data, u32 picWidth, u32 picHeight) {
             break;
         }
     }
+#endif
+
 }
 
 /*------------------------------------------------------------------------------
 
-    Function name: NextPacket
+    Function name: NextDacket
 
     Purpose:
         Get the pointer to start of next packet in input stream. Uses

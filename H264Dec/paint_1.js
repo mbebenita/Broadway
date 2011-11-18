@@ -1,5 +1,18 @@
-function _paint($luma, $cb, $cr, w, h) {
-  for (var y1,y2,u,v,ruv,guv,buv,j,w_2=w>>1,W=w*4, surface=SDL.surfaces[SDL.screen], d=surface.image.data, r=0; h-=2;) {
+function getSurface() {
+  var surface = SDL.surfaces[SDL.screen];
+  if (!surface.image) {
+    surface.image = surface.ctx.getImageData(0, 0, surface.width, surface.height);
+    var data = surface.image.data;
+    var num = data.length;
+    for (var i = 0; i < num/4; i++) {
+      data[i*4+3] = 255; // opacity, as canvases blend alpha
+    }
+  }
+  return surface;
+}
+
+Module['paint'] = function ($luma, $cb, $cr, w, h) {
+  for (var y1,y2,u,v,ruv,guv,buv,j,w_2=w>>1,W=w*4, surface = getSurface(), d=surface.image.data, r=0; h-=2;) {
     for (j=w_2; j--;) {
       u = IHEAP[$cr++];
       v = IHEAP[$cb++];
@@ -33,3 +46,6 @@ function _paint($luma, $cb, $cr, w, h) {
   surface.ctx.putImageData(surface.image, 0, 0 );
 }
 
+_paint = function ($luma, $cb, $cr, w, h) {
+  Module['paint'] ($luma, $cb, $cr, w, h);
+}
