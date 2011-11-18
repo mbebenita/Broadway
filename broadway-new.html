@@ -1,101 +1,20 @@
 <!DOCTYPE html>
 <html>
-
 <head>
-<style>
-/* MetaWebPro font family licensed from fontshop.com. WOFF-FTW! */
-@font-face {
-    font-family: 'MetaBlack';
-    src: url('http://mozcom-cdn.mozilla.net/img/fonts/MetaWebPro-Black.eot');
-    src: local('☺'),
-        url('http://mozcom-cdn.mozilla.net/img/fonts/MetaWebPro-Black.woff')
-        format('woff');
-    font-weight: bold;
-}
-</style>
+  <link type="text/css" href="screen.css" rel="stylesheet" />
+  <link type="text/css" href="jquery/theme/jquery-ui.css" rel="stylesheet" />
 </head>
 <body>
-  <meta charset="utf-8">
-
-  <style>
-
-  #site-title {
-    display: block;
-    font: normal bold 60px/.738 MetaBlack, "Arial Black", sans-serif;
-    letter-spacing: -0.02em;
-  }
-  
-  #doc {
-    margin: 0 auto;
-    width: 1200px;
-    padding: 10px;
-  }
-  
-  #setting {
-    margin-top: 10px;
-  }
-  
-  #tagline {
-    clear: both;
-    font: 1.538em/1.4 Georgia, sans-serif;
-    color: #484848;
-    padding: 0 430px 0 0px;
-  }
-  
-  body {
-    font: normal 16px/.738 MetaBlack, "Arial Black", sans-serif;
-    color: #6D7581;
-  }
-  
-  select {
-    font: normal 16px "Arial", sans-serif;
-    padding: 1px;
-    color: #6D7581;
-  }
-  
-  th {
-    text-align: left;
-    padding: 4px 4px 4px 12px;
-    background: no-repeat;
-  }
-  
-  td {
-    padding-left: 8px;
-    text-align: right;
-  }
-  
-  #controls {
-    background-color: black;
-    padding: 10px;
-    height: 40px;
-  }
-  
-  #play {
-    width: 100px;
-    float: left;
-  }
-  
-  #scrubber {
-    margin-left: 120px;
-    margin-top: 12px;
-    margin-right: 10px;
-  }
-  
-  </style>
-  
-  <link type="text/css" href="jquery/theme/jquery-ui.css" rel="stylesheet" />
   <script type="text/javascript" src="jquery/jquery.min.js"></script>
   <script type="text/javascript" src="jquery/jquery-ui.min.js"></script>
-
   <script type='text/javascript'>
     var Module = {
         noInitialRun : true
     };
   </script>
-
+  
   <script src="sylvester.js" type="text/javascript"></script>
   <script src="glUtils.js" type="text/javascript"></script>
-  
   <script src='util.js' type='text/javascript'></script>
   <script src='canvas.js' type='text/javascript'></script>
   <script src='broadway-new.js' type='text/javascript'></script>
@@ -105,7 +24,7 @@
       $("#tabs").tabs();
       $("#play").button();
       $("#play").click(function() {
-          play();
+        play();
       });
       
       $( "#scrubber" ).slider({
@@ -117,163 +36,133 @@
           var pos = ui.value / 500;
           _setPosition(pos);
         }
+      });
     });
-      
-    });
 
-    var scoreCalculated = false;
-    var steadySampleCounter = 0;
-    var steadyFpsCounter = 0;
-
-    function updateStats(fps, fpsSinceStart, frames, elapsed) {
-        var steadyElapsedThreshold = 5;
-        if (elapsed > steadyElapsedThreshold) {
-          steadySampleCounter++;
-          steadyFpsCounter += fps;
-        }
-
-        document.getElementById('fps').innerHTML = fps.toFixed(2);
-        document.getElementById('fpsSinceStart').innerHTML = fpsSinceStart.toFixed(2);
-        document.getElementById('fpsSinceSteady').innerHTML = (steadyFpsCounter / steadySampleCounter).toFixed(2);
-        document.getElementById('elapsed').innerHTML = elapsed.toFixed(2);
-
-        var scoreTimeout = 60;
-        if (elapsed > scoreTimeout && scoreCalculated == false) {
-          scoreCalculated = true;
-          document.getElementById('score').innerHTML = fpsSinceStart.toFixed(2);
-        }
-        if (scoreCalculated == false) {
-          document.getElementById('score').innerHTML = "Calculating: " + (scoreTimeout - elapsed).toFixed(0);
-        }
-    }
-    
-      function load() {
-        document.getElementById('downloadProgress').innerHTML = "Downloading, Please Wait ...";
-        var clip = $("#clip").val();
-        var mode = $("#mode").val();
-        var xhr = new XMLHttpRequest();
-        xhr.open("GET", clip, false);
-        xhr.responseType = "arraybuffer";
-        xhr.send(null);
-        var arrayBuffer = xhr.response;
-        if (arrayBuffer) {
-          var byteArray = new Uint8Array(arrayBuffer);
-          var array = Array.prototype.slice.apply(byteArray);
-          Module.FS.createDataFile('/', 'video.264', array, true, false);
-        } else {
-          alert('load fail :(');
-        }
-        document.getElementById('downloadProgress').innerHTML = "Download Complete, Playing ...";
-
-        // Pass canvas and context to the generated code, and do the actual run() here
-        Module.canvas = document.getElementById('canvas');
-
-        if (mode == "none") {
-          _paint = function() {
-          };
-          _SDL_LockSurface = function() {
-          }
-        } else if (mode == "webgl") {
-          _paint = paint;
-          _SDL_LockSurface = function() {};
-          _SDL_Quit = function() {};
-        } else {
-          Module.ctx2D = Module.canvas.getContext('2d');
-          if (!Module.ctx2D) {
-            alert('Canvas not available :(');
-            return;
-          }
-        }
-
-        console.info("Running: " + clip);
-        Module.run(['video.264']);
+    function load() {
+      document.getElementById('downloadProgress').innerHTML = "Downloading, Please Wait ...";
+      var clip = $("#clip").val();
+      var mode = $("#mode").val();
+      var xhr = new XMLHttpRequest();
+      xhr.open("GET", clip, false);
+      xhr.responseType = "arraybuffer";
+      xhr.send(null);
+      var arrayBuffer = xhr.response;
+      if (arrayBuffer) {
+        var byteArray = new Uint8Array(arrayBuffer);
+        var array = Array.prototype.slice.apply(byteArray);
+        Module.FS.createDataFile('/', 'video.264', array, true, false);
+      } else {
+        alert('load fail :(');
       }
-      
-      var loaded = false;
-      var playing = false;
-      
-      
-      function play() {
-        if (!loaded) {
-          load();
-          loaded = true;
-        }
-        
-        if (playing == false) {
-          $('#play').children().first().html("Pause");
-          playing = true;
-          Module.play();
-        } else {
-          $('#play').children().first().html("Play");
-          playing = false;
-          Module.stop();
+      document.getElementById('downloadProgress').innerHTML = "Download Complete, Playing ...";
+
+      // Pass canvas and context to the generated code, and do the actual run() here
+      Module.canvas = document.getElementById('canvas');
+
+      if (mode == "none") {
+        Module.paint = function() {}; 
+      } else if (mode == "webgl") {
+        Module.paint = webGLPaint;
+      } else {
+        Module.ctx2D = Module.canvas.getContext('2d');
+        if (!Module.ctx2D) {
+          alert('Canvas not available :(');
           return;
         }
       }
-
-      var webGLCanvas = null;
-
-      var videoFrameCounter = 0;
-      var windowFrameCounter = 0;
-      var videoStartTime;
-      var windowStartTime;
-      var scoreFrameCount = 1200;
       
-      function onFrameDecoded() {
-        videoFrameCounter += 1;
-        windowFrameCounter += 1;
-        var now = Date.now();
-        if (!videoStartTime) {
-          videoStartTime = now;
-        }
-        var videoElapsedTime = now - videoStartTime;  
+      console.info("Running: " + clip);
+      Module.run(['video.264']);
+    }
+    
+    var loaded = false;
+    var playing = false;
+    
+    function play() {
+      if (!loaded) {
+        load();
+        loaded = true;
+      }
+      
+      if (playing == false) {
+        $('#play').children().first().html("Pause");
+        playing = true;
+        Module.play();
+      } else {
+        Module['CorrectionsMonitor'].print();
         
-        if (!windowStartTime) {
-          windowStartTime = now;
-        } else if ((now - windowStartTime) > 1000) {
-          var windowElapsedTime = now - windowStartTime;
-          var fps = (windowFrameCounter / windowElapsedTime) * 1000;
-          document.getElementById('fps').innerHTML = fps.toFixed(2);
-          windowStartTime = now;
-          windowFrameCounter = 0;
-        }
-        
+        $('#play').children().first().html("Play");
+        playing = false;
+        Module.stop();
+        return;
+      }
+    }
+
+    var webGLCanvas = null;
+
+    var videoFrameCounter = 0;
+    var windowFrameCounter = 0;
+    var videoStartTime;
+    var windowStartTime;
+    var scoreFrameCount = 1200;
+    var scoreCalculated = false;
+    
+    Module.onFrameDecoded = function() {
+      videoFrameCounter += 1;
+      windowFrameCounter += 1;
+      var now = Date.now();
+      if (!videoStartTime) {
+        videoStartTime = now;
+      }
+      var videoElapsedTime = now - videoStartTime;  
+      
+      if (!windowStartTime) {
+        windowStartTime = now;
+      } else if ((now - windowStartTime) > 1000) {
+        var windowElapsedTime = now - windowStartTime;
+        var fps = (windowFrameCounter / windowElapsedTime) * 1000;
+        document.getElementById('fps').innerHTML = fps.toFixed(2);
+        windowStartTime = now;
+        windowFrameCounter = 0;
+      }
+      
+      if (videoFrameCounter % 10 == 0) {
+        var fps = (videoFrameCounter / videoElapsedTime) * 1000;
+        document.getElementById('fpsSinceStart').innerHTML = fps.toFixed(2);
+      }
+      
+      if (!scoreCalculated) {
         if (videoFrameCounter % 10 == 0) {
+          document.getElementById('score').innerHTML = "Calculating: " + (scoreFrameCount - videoFrameCounter);
+        }
+        
+        if (videoFrameCounter == scoreFrameCount) {
           var fps = (videoFrameCounter / videoElapsedTime) * 1000;
-          document.getElementById('fpsSinceStart').innerHTML = fps.toFixed(2);
-        }
-        
-        if (!scoreCalculated) {
-          if (videoFrameCounter % 10 == 0) {
-            document.getElementById('score').innerHTML = "Calculating: " + (scoreFrameCount - videoFrameCounter);
-          }
-          
-          if (videoFrameCounter == scoreFrameCount) {
-            var fps = (videoFrameCounter / videoElapsedTime) * 1000;
-            document.getElementById('score').innerHTML = fps.toFixed(2);
-            scoreCalculated = true;
-          }
+          document.getElementById('score').innerHTML = fps.toFixed(2);
+          scoreCalculated = true;
         }
       }
+    }
+    
+    function updateScrubber() {
+      $("#scrubber").slider('value', _getPosition() * 500);
+    }
+    
+    function webGLPaint($luma, $cb, $cr, width, height) {
+      if (!webGLCanvas) {
+        webGLCanvas = new YUVWebGLCanvas(Module.canvas, new Size(width, height));
+      }
+      var luma = Module.HEAPU8.subarray($luma);
+      var cb = Module.HEAPU8.subarray($cb);
+      var cr = Module.HEAPU8.subarray($cr);
       
-      function updateScrubber() {
-        $("#scrubber").slider('value', _getPosition() * 500);
-      }
-      
-      function paint($luma, $cb, $cr, width, height) {
-        if (!webGLCanvas) {
-          webGLCanvas = new YUVWebGLCanvas(Module.canvas, new Size(width, height));
-        }
-        var luma = HEAPU8.subarray($luma);
-        var cb = HEAPU8.subarray($cb);
-        var cr = HEAPU8.subarray($cr);
-        
-        webGLCanvas.YTexture.fill(luma);
-        webGLCanvas.UTexture.fill(cb);
-        webGLCanvas.VTexture.fill(cr);
-        webGLCanvas.drawScene();
-      }
-    </script>
+      webGLCanvas.YTexture.fill(luma);
+      webGLCanvas.UTexture.fill(cb);
+      webGLCanvas.VTexture.fill(cr);
+      webGLCanvas.drawScene();
+    }
+  </script>
   
 
   <div id="doc">
