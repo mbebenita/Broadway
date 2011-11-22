@@ -23,7 +23,7 @@ EMSCRIPTEN_SETTINGS = {
   'TOTAL_MEMORY': 50*1024*1024,
   'FAST_MEMORY': 12*1024*1024,
   'PROFILE': 0,
-  'OPTIMIZE': 1,
+  'MICRO_OPTS': 1,
   'RELOOP': 1, # XXX 1 makes compilation slower!
   'USE_TYPED_ARRAYS': 2,
   'USE_FHEAP': 0,

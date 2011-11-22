@@ -16,14 +16,14 @@ EMSCRIPTEN_SETTINGS = {
   'CHECK_SIGNED_OVERFLOWS': 0,
   'CORRECT_OVERFLOWS': 0,
   'CHECK_SIGNS': 0,
-  'CORRECT_SIGNS': 2,
-  'CORRECT_SIGNS_LINES': emscripten.read_pgo_data('avc.pgo')['signs_lines'],
+  'CORRECT_SIGNS': 1,
+  # 'CORRECT_SIGNS_LINES': emscripten.read_pgo_data('avc.pgo')['signs_lines'],
   'DISABLE_EXCEPTION_CATCHING': 1,
   'RUNTIME_TYPE_INFO': 0,
   'TOTAL_MEMORY': 50*1024*1024,
   'FAST_MEMORY': 12*1024*1024,
   'PROFILE': 0,
-  'OPTIMIZE': 1,
+  'MICRO_OPTS': 1,
   'RELOOP': 1, # XXX 1 makes compilation slower!
   'USE_TYPED_ARRAYS': 2,
   'USE_FHEAP': 0,
@@ -41,99 +41,62 @@ JS_DIR = "js"
 if not os.path.exists(JS_DIR):
   os.makedirs(JS_DIR)
 
+build_level = 0
+if len(sys.argv) == 2:
+    build_level = int(sys.argv[1])
 
-print 'Build'
+if build_level <= 0:
+    print 'Build'
+    
+    env = os.environ.copy()
+    env['CC'] = env['CXX'] = env['RANLIB'] = env['AR'] = emscripten.EMMAKEN
+    env['LINUX'] = '1'
+    env['EMMAKEN_CFLAGS'] = '-U__APPLE__ -DJS'
+    
+    Popen(['make', '-j', '4'], env=env).communicate()
 
-env = os.environ.copy()
-env['CC'] = env['CXX'] = env['RANLIB'] = env['AR'] = emscripten.EMMAKEN
-env['LINUX'] = '1'
-env['EMMAKEN_CFLAGS'] = '-U__APPLE__ -DJS'
-
-Popen(['make', '-j', '4'], env=env).communicate()
-
-if 0:
-  print 'LLVM optimizations'
-
-  shutil.move('avc.bc', 'avc.orig.bc')
-  output = Popen([emscripten.LLVM_OPT, 'avc.orig.bc'] +
-                 emscripten.pick_llvm_opts(3, handpicked=False) +
-                 ['-o=avc.bc'], stdout=PIPE, stderr=STDOUT).communicate()[0]
-  assert os.path.exists('avc.bc'), 'Failed to run llvm optimizations: ' + output
-
-print 'LLVM binary => LL assembly'
-
-print Popen([emscripten.LLVM_DIS] + emscripten.LLVM_DIS_OPTS + ['avc.bc', '-o=avc.ll']).communicate()
-
-if 0:
-  print '[Autodebugger]'
-
-  shutil.move('avc.ll', 'avc.orig.ll')
-  output = Popen(['python', emscripten.AUTODEBUGGER, 'avc.orig.ll', 'avc.ll'], stdout=PIPE, stderr=STDOUT).communicate()[0]
-  assert 'Success.' in output, output
-
-  shutil.move('avc.bc', 'avc.orig.bc')
-  print Popen([emscripten.LLVM_AS, 'avc.ll', '-o=avc.bc']).communicate()
-
-print 'Emscripten: LL assembly => JavaScript'
-
-settings = ['-s %s=%s' % (k, json.dumps(v)) for k, v in EMSCRIPTEN_SETTINGS.items()]
+if build_level <= 1:
+    print 'LLVM binary => LL assembly'
+    print Popen([emscripten.LLVM_DIS] + emscripten.LLVM_DIS_OPTS + ['avc.bc', '-o=avc.ll']).communicate()
 
 filename = JS_DIR + '/avc.js'
 
-print Popen(['python', os.path.join(EMSCRIPTEN_ROOT, 'emscripten.py')] + EMSCRIPTEN_ARGS + ['avc.ll'] + settings,#  ).communicate()
+if build_level <= 2:
+    print 'Emscripten: LL assembly => JavaScript'
+    settings = ['-s %s=%s' % (k, json.dumps(v)) for k, v in EMSCRIPTEN_SETTINGS.items()]
+    print Popen(['python', os.path.join(EMSCRIPTEN_ROOT, 'emscripten.py')] + EMSCRIPTEN_ARGS + ['avc.ll'] + settings,#  ).communicate()
             stdout=open(filename, 'w'), stderr=STDOUT).communicate()
 
-print 'Appending stuff'
+    print 'Appending stuff'
+    src = open(filename, 'a')
+    if EMSCRIPTEN_SETTINGS['QUANTUM_SIZE'] == 1:
+      src.write(
+        '''
+          _malloc = function(size) {
+            while (STATICTOP % 4 != 0) STATICTOP++;
+            var ret = STATICTOP;
+            STATICTOP += size;
+            return ret;
+          }
+        '''
+      )
 
-src = open(filename, 'a')
+    src.write(open('hooks.js').read())
+    src.write(open('paint_%s.js' % EMSCRIPTEN_SETTINGS['USE_TYPED_ARRAYS'], 'r').read())
+    src.close()
 
-if EMSCRIPTEN_SETTINGS['QUANTUM_SIZE'] == 1:
-  src.write(
-    '''
-      _malloc = function(size) {
-        while (STATICTOP % 4 != 0) STATICTOP++;
-        var ret = STATICTOP;
-        STATICTOP += size;
-        return ret;
-      }
-    '''
-  )
+if build_level <= 3:
+    print 'Eliminating unneeded variables'
+    eliminated = Popen([emscripten.COFFEESCRIPT, emscripten.VARIABLE_ELIMINATOR], stdin=PIPE, stdout=PIPE).communicate(open(filename, 'r').read())[0]
+    filename = JS_DIR + '/avc.elim.js'
+    f = open(filename, 'w')
+    f.write(eliminated)
+    f.close()
 
-if 0: # Console debugging
-  src.write(
-    '''
-      _paint = _SDL_Init = _SDL_LockSurface = _SDL_UnlockSurface = function() {
-      };
-
-      _SDL_SetVideoMode = function() {
-        return _malloc(1024);
-      };
-
-      FS.createDataFile('/', 'admiral.264', %s, true, false);
-      FS.root.write = true;
-      print('zz go!');
-      run(['admiral.264']);
-      print('zz gone');
-
-    ''' % str(map(ord, open('../Media/admiral.264').read()[0:1024*100]))
-  )
-  # ~/Dev/mozilla-central/js/src/fast/js -m avc.js
-else:
-  src.write(open('hooks.js').read())
-  src.write(open('paint_%s.js' % EMSCRIPTEN_SETTINGS['USE_TYPED_ARRAYS'], 'r').read())
-src.close()
-
-print 'Eliminating unneeded variables'
-
-eliminated = Popen([emscripten.COFFEESCRIPT, emscripten.VARIABLE_ELIMINATOR], stdin=PIPE, stdout=PIPE).communicate(open(filename, 'r').read())[0]
-filename = JS_DIR + '/avc.elim.js'
-f = open(filename, 'w')
-f.write(eliminated)
-f.close()
-
-print 'Closure compiler'
-
-Popen(['java', '-jar', emscripten.CLOSURE_COMPILER,
-               '--compilation_level', 'SIMPLE_OPTIMIZATIONS', # XXX TODO: use advanced opts for code size (they cause slow startup though)
+if build_level <= 4:
+    print 'Closure compiler'
+    Popen(['java', '-jar', emscripten.CLOSURE_COMPILER,
+               '--compilation_level', 'ADVANCED_OPTIMIZATIONS', # XXX TODO: use advanced opts for code size (they cause slow startup though)
+               '--externs', 'jquery.extern.js', 
                '--js', filename, '--js_output_file', JS_DIR + '/avc.elim.cc.js'], stdout=PIPE, stderr=STDOUT).communicate()
 

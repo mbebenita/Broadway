@@ -837,7 +837,7 @@ void FilterHorLuma(
 
     i32 delta, tc, tmp;
     u32 i;
-    u8 p0, q0, p1, q1, p2, q2;
+    u32 p0, q0, p1, q1, p2, q2;
     u32 tmpFlag;
     const u8 *clp = h264bsdClip + 512;
 
