@@ -64,100 +64,147 @@
     $(function() {
       $("#play").button();
       $("#play").click(function() {
-          run();
+          test();
       });
     });
 
-    function time(name, fn, count) {
+    function log(msg) {
+      console.log(msg);
+      $("#results").append("<p>" + msg + "</p>");
+    }
+    function sync(name, fn, count, cont) {
       var start = Date.now();
       for (var i = 0; i < count; i++) {
         fn();  
       }
-      var elapsed = Date.now() - start;
-      var rateSecond = (count / elapsed) * 1000;
-      var rate2 = (elapsed / count);
-      var msg = name + " - Total: " + elapsed + " ms, Count: " + count + 
-                ", Rate: " + rateSecond.toFixed(2) + " op/s, " + rate2.toFixed(3) + " ms/op";
-      console.log(msg);
-      
-      $("#results").append("<p>" + msg + "</p>");
+      cont(name, Date.now() - start, count);
     }
     
-    function run() {
-      var size = new Size(512, 512);
-      
-      var benchmarks = [];
-      
-      
+    var loopID = 1;
+    function async(name, fn, count, cont) {
+      var start = Date.now();
+      var id = loopID ++;
+      var i = 0;
+      window.addEventListener("message", function(event) {
+        if (event.data == id) {
+          fn();
+          if (i++ < count) {
+            window.postMessage(id, "*");
+          } else {
+            cont(name, Date.now() - start, count);
+          }
+        }
+      });
+      window.postMessage(id, "*");
+    }
+    
+    function test() {
+      var size = new Size(1280, 720);
       var buffer = new Uint8Array(size.w * size.h);
       for (var i = 0; i < buffer.length; i++) {
         buffer[i] = i;
       }
+      
+      var samples = 500;
 
-      var samples = 5000;
+      var benchTimeLoop = function() {
+        sync("Empty Time Loop", function () {
+          // Nop.
+        }, samples);
+      };
       
-      if (true) {
-        var c1 = new WebGLCanvas(document.getElementById('canvas-1'), size);  
-        benchmarks.push(function() {
-          time("Fill Texture", function () {
-            c1.texture.fill(buffer);  
-          }, samples);
-        });
-        
-        benchmarks.push(function() {
-          time("Draw Scene", function () {
-            c1.drawScene();
-          }, samples);
-        });
-        
-        benchmarks.push(function() {
-          time("Fill Texture + Draw Scene", function () {
-            c1.texture.fill(buffer);  
-            c1.drawScene();
-          }, samples);
-        });
-      }
+      var benchEventLoop = function() {
+        async("Empty Event Loop", function () {
+          // Nop.          
+        }, samples);
+      };
+
+      var c1 = new WebGLCanvas(document.getElementById('canvas-1'), size);
       
+      var benchFillTexture = function(run) {
+        run("Fill Texture", function () {
+          c1.texture.fill(buffer);  
+        }, samples);
+      };
+      
+      var benchDrawScene = function(run) {
+        run("Draw Scene", function () {
+          c1.drawScene();
+        }, samples);
+      };
+      
+      var benchFillTextureAndDrawScene = function(run) {
+        run("Fill Texture + Draw Scene", function () {
+          c1.texture.fill(buffer);  
+          c1.drawScene();
+        }, samples);
+      };
       
       var chroma = new Uint8Array((size.w >>> 1) * (size.h >>> 1));
       for (var i = 0; i < chroma.length; i++) {
         chroma[i] = i;
       }
       
-      if (true) {
-        var c2 = new YUVWebGLCanvas(document.getElementById('canvas-2'), size);
-        benchmarks.push(function() {
-          time("YUV Fill Texture", function () {
-            c2.YTexture.fill(buffer);
-            c2.UTexture.fill(chroma);
-            c2.VTexture.fill(chroma);
-          }, samples);
-        });
-        
-        benchmarks.push(function() {
-          time("YUV Draw Scene", function () {
-            c2.drawScene();
-          }, samples);
-        });
-        
-        benchmarks.push(function() {
-          time("YUV Fill Texture + Draw Scene", function () {
-            c2.YTexture.fill(buffer);
-            c2.UTexture.fill(chroma);
-            c2.VTexture.fill(chroma);
-            c2.drawScene();
-          }, samples);
-        });
-      }
+      var c2 = new YUVWebGLCanvas(document.getElementById('canvas-2'), size);
       
-      var benchmarkIndex = 0;
-      window.addEventListener("message", function() {
-        benchmarks[benchmarkIndex++]();
-        if (benchmarkIndex < benchmarks.length) {
-          window.postMessage(0, "*");
+      var benchYUVFillTexture = function(run) {
+        run("YUV Fill Texture", function () {
+          c2.YTexture.fill(buffer);
+          c2.UTexture.fill(chroma);
+          c2.VTexture.fill(chroma);
+        }, samples);
+      };
+      
+      var benchYUVDrawScene = function(run) {
+        run("YUV Draw Scene", function () {
+          c2.drawScene();
+        }, samples);
+      };
+      
+      var benchYUVFillTextureAndDrawScene = function(run) {
+        run("YUV Fill Texture + Draw Scene", function () {
+          c2.YTexture.fill(buffer);
+          c2.UTexture.fill(chroma);
+          c2.VTexture.fill(chroma);
+          c2.drawScene();
+        }, samples);
+      };
+      
+      var benchmarks = [];
+      // benchmarks.push(benchTimeLoop);
+      // benchmarks.push(benchEventLoop);
+      
+      benchmarks.push(benchFillTexture);
+      benchmarks.push(benchDrawScene);
+      benchmarks.push(benchFillTextureAndDrawScene);
+      
+      benchmarks.push(benchYUVFillTexture);
+      benchmarks.push(benchYUVDrawScene);
+      benchmarks.push(benchYUVFillTextureAndDrawScene);
+      
+      var nextBenchmarkMessage = "nextBenchmarkMessage";
+      window.addEventListener("message", function(event) {
+        if (event.data == nextBenchmarkMessage) {
+          var benchmark = benchmarks.pop();
+          console.log("Executing Benchmark: " + benchmark);
+          benchmark(function(name, fn, count) {
+            async(name, fn, count, function (name, elapsed, count) {
+              var opsPerSecond = (count / elapsed) * 1000;
+              var msPerOp = (elapsed / count);
+              var msg = name + " - Elapsed: " + elapsed + 
+                        " ms, Count: " + count + 
+                        ", Rate: " + opsPerSecond.toFixed(2) + " op/s, " + 
+                        msPerOp.toFixed(3) + " ms/op";
+              log(msg);
+              if (benchmarks.length > 0) {
+                window.postMessage(nextBenchmarkMessage, "*");
+              }
+            })
+          });
         }
       }, false);
-      window.postMessage(0, "*")
+      
+      window.postMessage(nextBenchmarkMessage, "*")
     }
   </script>
 
