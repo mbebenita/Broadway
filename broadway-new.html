@@ -43,6 +43,7 @@
       document.getElementById('downloadProgress').innerHTML = "Downloading, Please Wait ...";
       var clip = $("#clip").val();
       var mode = $("#mode").val();
+      var deblocking = $("#deblocking").val();
       var xhr = new XMLHttpRequest();
       xhr.open("GET", clip, false);
       xhr.responseType = "arraybuffer";
@@ -61,7 +62,7 @@
       Module.canvas = document.getElementById('canvas');
 
       if (mode == "none") {
-        Module.paint = function() {}; 
+        Module.paint = function() {};
       } else if (mode == "webgl") {
         Module.paint = webGLPaint;
       } else {
@@ -71,6 +72,14 @@
           return;
         }
       }
+      
+      if (deblocking == "none") {
+        Module.filter = function() {};
+      } else if (deblocking == "optimized") {
+        Module.filter = Module.defaultFilter;
+      } else if (deblocking == "default") {
+        Module.filter = Module.defaultFilter;
+      } 
       
       console.info("Running: " + clip);
       Module.run(['video.264']);
@@ -167,14 +176,15 @@
 
   <div id="doc">
     <header>
-      <h1 id="site-title"><b>Broadway.js (NEW)</b></h1>
-      <p id="tagline">An H.264 Decoder in Pure JavaScript <a href="broadway.html">(Try Old Codec)</a></p>
+      <h1 id="site-title"><b>Broadway.js</b></h1>
+      <p id="tagline">An H.264 Decoder in Pure JavaScript</p>
     </header>
     <div>
       <div id="setting">
         <span>Clip: 
           <select id="clip" style="margin-left: 10px;">
             <option value="mozilla.264">Mozilla</option>
+            <option value="mozilla_story.264">Mozilla Story</option>
             <option value="admiral.264">Admiral</option>
             <option value="matrix.264">Matrix SD</option>
             <option value="matrix_large.264">Matrix HD</option>
@@ -186,6 +196,15 @@
           <select id="mode" style="margin-left: 10px;">
             <option value="canvas">Canvas</option>
             <option value="webgl">Canvas w/ WebGL</option>
+            <option value="none">None</option>
+          </select> 
+        </span>
+        <span style="margin-left: 10px; border: 0px" id="downloadProgress"></span>
+      </div>
+      <div id="setting">
+        <span>Deblocking Filter: 
+          <select id="deblocking" style="margin-left: 10px;">
+            <option value="default">Default</option>
             <option value="none">None</option> 
           </select> 
         </span>
@@ -213,12 +232,7 @@
           </tr>
           <tr>
             <th>Average FPS (All / Steady)</th>
-            <td><span id='fpsSinceStart' style="color: green;"></span> /
-              <span id='fpsSinceSteady' style="color: green;"></span></td>
-          </tr>
-          <tr>
-            <th>Elapsed</th>
-            <td><span id='elapsed'></span></td>
+            <td><span id='fpsSinceStart' style="color: green;"></span></td>
           </tr>
           <tr>
             <th>Score</th>
