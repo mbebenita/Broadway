@@ -33,3 +33,10 @@ _broadwayOnFrameDecoded = function() {
 
 Module['setPosition'] = _broadwaySetPosition; 
 Module['getPosition'] = _broadwayGetPosition;
+
+Module['filter'] = Module['defaultFilter'] = _h264bsdFilterPicture;
+
+_h264bsdFilterPicture = function (a, b) {
+  Module['filter'](a, b);
+}
+

@@ -96,7 +96,7 @@ if build_level <= 3:
 if build_level <= 4:
     print 'Closure compiler'
     Popen(['java', '-jar', emscripten.CLOSURE_COMPILER,
-               '--compilation_level', 'ADVANCED_OPTIMIZATIONS', # XXX TODO: use advanced opts for code size (they cause slow startup though)
+               '--compilation_level', 'SIMPLE_OPTIMIZATIONS', # XXX TODO: use advanced opts for code size (they cause slow startup though)
                '--externs', 'jquery.extern.js', 
                '--js', filename, '--js_output_file', JS_DIR + '/avc.elim.cc.js'], stdout=PIPE, stderr=STDOUT).communicate()
 
