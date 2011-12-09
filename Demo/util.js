@@ -48,6 +48,9 @@ var Size = (function size() {
     },
     getHalfSize: function() {
       return new Size(this.w >>> 1, this.h >>> 1);
+    },
+    length: function() {
+      return this.w * this.h;
     }
   }
   return constructor;

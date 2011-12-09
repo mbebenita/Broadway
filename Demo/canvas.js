@@ -105,12 +105,13 @@ var Program = (function () {
  * Represents a WebGL texture object.
  */
 var Texture = (function texture() {
-  function constructor(gl, size) {
+  function constructor(gl, size, format) {
     this.gl = gl;
     this.size = size;
     this.texture = gl.createTexture();
     gl.bindTexture(gl.TEXTURE_2D, this.texture);
-    gl.texImage2D(gl.TEXTURE_2D, 0, gl.LUMINANCE, size.w, size.h, 0, gl.LUMINANCE, gl.UNSIGNED_BYTE, null);
+    this.format = format ? format : gl.LUMINANCE; 
+    gl.texImage2D(gl.TEXTURE_2D, 0, this.format, size.w, size.h, 0, this.format, gl.UNSIGNED_BYTE, null);
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
@@ -123,7 +124,8 @@ var Texture = (function texture() {
       assert(textureData.length >= this.size.w * this.size.h, 
              "Texture size mismatch, data:" + textureData.length + ", texture: " + this.size.w * this.size.h);
       gl.bindTexture(gl.TEXTURE_2D, this.texture);
-      gl.texSubImage2D(gl.TEXTURE_2D, 0, 0, 0, this.size.w , this.size.h, gl.LUMINANCE, gl.UNSIGNED_BYTE, textureData);
+      // gl.texSubImage2D(gl.TEXTURE_2D, 0, 0, 0, this.size.w , this.size.h, this.format, gl.UNSIGNED_BYTE, textureData);
+      gl.texImage2D(gl.TEXTURE_2D, 0, this.format, this.size.w, this.size.h, 0, this.format, gl.UNSIGNED_BYTE, textureData);
     },
     bind: function(n, program, name) {
       var gl = this.gl;
@@ -172,7 +174,7 @@ var WebGLCanvas = (function () {
     "}"
     ]));
   
-  function constructor(canvas, size) {
+  function constructor(canvas, size, useFrameBuffer) {
     this.canvas = canvas;
     this.size = size;
     this.canvas.width = size.w;
@@ -181,10 +183,34 @@ var WebGLCanvas = (function () {
     this.onInitWebGL();
     this.onInitShaders();
     initBuffers.call(this);
+    if (useFrameBuffer) {
+      initFramebuffer.call(this);
+    }
     this.onInitTextures();
     initScene.call(this);
   }
 
+  /**
+   * Initialize a frame buffer so that we can render offscreen.
+   */
+  function initFramebuffer() {
+    var gl = this.gl;
+    
+    // Create framebuffer object and texture.
+    this.framebuffer = gl.createFramebuffer(); 
+    gl.bindFramebuffer(gl.FRAMEBUFFER, this.framebuffer);
+    this.framebufferTexture = new Texture(this.gl, this.size, gl.RGBA);
+
+    // Create and allocate renderbuffer for depth data.
+    var renderbuffer = gl.createRenderbuffer();
+    gl.bindRenderbuffer(gl.RENDERBUFFER, renderbuffer);
+    gl.renderbufferStorage(gl.RENDERBUFFER, gl.DEPTH_COMPONENT16, this.size.w, this.size.h);
+
+    // Attach texture and renderbuffer to the framebuffer.
+    gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, this.framebufferTexture.texture, 0);
+    gl.framebufferRenderbuffer(gl.FRAMEBUFFER, gl.DEPTH_ATTACHMENT, gl.RENDERBUFFER, renderbuffer);
+  }
+  
   /**
    * Initialize vertex and texture coordinate buffers for a plane.
    */
@@ -280,6 +306,11 @@ var WebGLCanvas = (function () {
     this.onInitSceneTextures();
     
     setMatrixUniforms.call(this);
+    
+    if (this.framebuffer) {
+      console.log("Bound Frame Buffer");
+      gl.bindFramebuffer(gl.FRAMEBUFFER, this.framebuffer);
+    }
   }
   
   constructor.prototype = {
@@ -330,13 +361,18 @@ var WebGLCanvas = (function () {
       this.gl.enableVertexAttribArray(this.textureCoordAttribute);
     },
     onInitTextures: function () {
-      this.texture = new Texture(this.gl, this.size);
+      var gl = this.gl;
+      this.texture = new Texture(gl, this.size, gl.RGBA);
     },
     onInitSceneTextures: function () {
       this.texture.bind(0, this.program, "texture");
     },
     drawScene: function() {
       this.gl.drawArrays(this.gl.TRIANGLE_STRIP, 0, 4);
+    },
+    readPixels: function(buffer) {
+      var gl = this.gl;
+      gl.readPixels(0, 0, this.size.w, this.size.h, gl.RGBA, gl.UNSIGNED_BYTE, buffer);
     }
   };
   return constructor;
@@ -445,6 +481,67 @@ var YUVWebGLCanvas = (function () {
     },
     toString: function() {
       return "YUVCanvas Size: " + this.size;
+    }
+  });
+  
+  return constructor;
+})(); 
+
+
+var FilterWebGLCanvas = (function () {
+  var vertexShaderScript = Script.createFromSource("x-shader/x-vertex", text([
+    "attribute vec3 aVertexPosition;",
+    "attribute vec2 aTextureCoord;",
+    "uniform mat4 uMVMatrix;",
+    "uniform mat4 uPMatrix;",
+    "varying highp vec2 vTextureCoord;",
+    "void main(void) {",
+    "  gl_Position = uPMatrix * uMVMatrix * vec4(aVertexPosition, 1.0);",
+    "  vTextureCoord = aTextureCoord;",
+    "}"
+  ]));
+
+  var fragmentShaderScript = Script.createFromSource("x-shader/x-fragment", text([
+    "precision highp float;",
+    "varying highp vec2 vTextureCoord;",
+    "uniform sampler2D FTexture;",
+    
+    "void main(void) {",
+    " gl_FragColor = texture2D(FTexture,  vTextureCoord);",
+    "}"
+  ]));
+  
+  
+  function constructor(canvas, size) {
+    WebGLCanvas.call(this, canvas, size, false);
+  } 
+  
+  constructor.prototype = inherit(WebGLCanvas, {
+    onInitShaders: function() {
+      this.program = new Program(this.gl);
+      this.program.attach(new Shader(this.gl, vertexShaderScript));
+      this.program.attach(new Shader(this.gl, fragmentShaderScript));
+      this.program.link();
+      this.program.use();
+      this.vertexPositionAttribute = this.program.getAttributeLocation("aVertexPosition");
+      this.gl.enableVertexAttribArray(this.vertexPositionAttribute);
+      this.textureCoordAttribute = this.program.getAttributeLocation("aTextureCoord");;
+      this.gl.enableVertexAttribArray(this.textureCoordAttribute);
+    },
+    onInitTextures: function () {
+      console.log("creatingTextures: size: " + this.size);
+      this.FTexture = new Texture(this.gl, this.size, this.gl.RGBA);
+    },
+    onInitSceneTextures: function () {
+      this.FTexture.bind(0, this.program, "FTexture");
+    },
+    process: function(buffer, output) {
+      this.FTexture.fill(buffer);
+      this.drawScene();
+      this.readPixels(output);
+    },
+    toString: function() {
+      return "FilterWebGLCanvas Size: " + this.size;
     }
   });
   

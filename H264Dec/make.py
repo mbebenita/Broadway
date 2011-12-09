@@ -29,7 +29,7 @@ EMSCRIPTEN_SETTINGS = {
   'USE_FHEAP': 0,
   'SAFE_HEAP': 0,
   'ASSERTIONS': 0,
-  'QUANTUM_SIZE': 4,
+  # 'QUANTUM_SIZE': 4,
   'INVOKE_RUN': 0, # we do it ourselves
   'EXPORTED_FUNCTIONS': ['_main', '__Z11runMainLoopv'],
   'IGNORED_FUNCTIONS': ['_paint'],
@@ -69,17 +69,19 @@ if build_level <= 2:
 
     print 'Appending stuff'
     src = open(filename, 'a')
-    if EMSCRIPTEN_SETTINGS['QUANTUM_SIZE'] == 1:
-      src.write(
-        '''
-          _malloc = function(size) {
-            while (STATICTOP % 4 != 0) STATICTOP++;
-            var ret = STATICTOP;
-            STATICTOP += size;
-            return ret;
-          }
-        '''
-      )
+    
+    
+#    if EMSCRIPTEN_SETTINGS['QUANTUM_SIZE'] == 1:
+#      src.write(
+#        '''
+#          _malloc = function(size) {
+#            while (STATICTOP % 4 != 0) STATICTOP++;
+#            var ret = STATICTOP;
+#            STATICTOP += size;
+#            return ret;
+#          }
+#        '''
+#      )
 
     src.write(open('hooks.js').read())
     src.write(open('paint_%s.js' % EMSCRIPTEN_SETTINGS['USE_TYPED_ARRAYS'], 'r').read())

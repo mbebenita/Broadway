@@ -283,4 +283,10 @@ void h264bsdSetCurrImageMbPointers(image_t *image, u32 mbNum)
     image->cr = (u8*)(image->cb + picSize * 64);
 }
 
+i32 abs(i32 a) {
+    return a < 0 ? -a : a;
+}
 
+i32 clip(i32 x, i32 y, i32 z) {
+    return z < x ? x : z > y ? y : z;
+}

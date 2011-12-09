@@ -37,13 +37,20 @@
           _setPosition(pos);
         }
       });
+      
+      $("#benchmark").button();
+      $("#benchmark").click(function() {
+        $("#clip").val("mozilla_story.264");
+        $("#mode").val("none");
+        play();
+      });
     });
 
-    function load() {
+    function load(clip, mode, deblocking) {
+      QUANTUM_SIZE = 4;
+      
       document.getElementById('downloadProgress').innerHTML = "Downloading, Please Wait ...";
-      var clip = $("#clip").val();
-      var mode = $("#mode").val();
-      var deblocking = $("#deblocking").val();
+      
       var xhr = new XMLHttpRequest();
       xhr.open("GET", clip, false);
       xhr.responseType = "arraybuffer";
@@ -52,6 +59,7 @@
       if (arrayBuffer) {
         var byteArray = new Uint8Array(arrayBuffer);
         var array = Array.prototype.slice.apply(byteArray);
+        Module.FS.ignorePermissions = true;
         Module.FS.createDataFile('/', 'video.264', array, true, false);
       } else {
         alert('load fail :(');
@@ -79,7 +87,22 @@
         Module.filter = Module.defaultFilter;
       } else if (deblocking == "default") {
         Module.filter = Module.defaultFilter;
-      } 
+      }
+      
+      var filterHorLuma = $("#filterHorLuma").val();
+      
+      if (filterHorLuma == "none") {
+        _FilterHorLuma = function (a, b, e, c) { };
+      } else if (filterHorLuma == "optimized") {
+        _FilterHorLuma = OptimizedFilterHorLuma;
+      }
+      
+      var filterVerLumaEdge = $("#filterVerLumaEdge").val();
+      if (filterVerLumaEdge == "none") {
+        _FilterVerLumaEdge = function (a, b, e, c) { };
+      } else if (filterHorLuma == "optimized") {
+        _FilterVerLumaEdge = OptimizedFilterVerLumaEdge;
+      }
       
       console.info("Running: " + clip);
       Module.run(['video.264']);
@@ -90,7 +113,10 @@
     
     function play() {
       if (!loaded) {
-        load();
+        var clip = $("#clip").val();
+        var mode = $("#mode").val();
+        var deblocking = $("#deblocking").val();
+        load(clip, mode, deblocking);
         loaded = true;
       }
       
@@ -116,6 +142,10 @@
     var windowStartTime;
     var scoreFrameCount = 1200;
     var scoreCalculated = false;
+
+    var warmupTime = 1000;
+    var fpsMin = 1000;
+    var fpsMax = -1000;
     
     Module.onFrameDecoded = function() {
       videoFrameCounter += 1;
@@ -125,6 +155,10 @@
         videoStartTime = now;
       }
       var videoElapsedTime = now - videoStartTime;  
+
+      if (videoElapsedTime < warmupTime) {
+        return;
+      }
       
       if (!windowStartTime) {
         windowStartTime = now;
@@ -134,11 +168,16 @@
         document.getElementById('fps').innerHTML = fps.toFixed(2);
         windowStartTime = now;
         windowFrameCounter = 0;
+        
+        if (fps < fpsMin) fpsMin = fps;
+        if (fps > fpsMax) fpsMax = fps;
+        document.getElementById('fpsMinMax').innerHTML = fpsMin.toFixed(2) + " / " + fpsMax.toFixed(2);
       }
       
       if (videoFrameCounter % 10 == 0) {
         var fps = (videoFrameCounter / videoElapsedTime) * 1000;
         document.getElementById('fpsSinceStart').innerHTML = fps.toFixed(2);
+        document.getElementById('elapsed').innerHTML = (videoElapsedTime / 1000).toFixed(2) + "s";        
       }
       
       if (!scoreCalculated) {
@@ -150,6 +189,15 @@
           var fps = (videoFrameCounter / videoElapsedTime) * 1000;
           document.getElementById('score').innerHTML = fps.toFixed(2);
           scoreCalculated = true;
+
+          var details = "Clip: " + $("#clip").val() + ", Mode: " + $("#mode").val();
+          details += ", Deblocking: " + $("#deblocking").val();
+          details += ", FilterHorLuma: " + $("#filterHorLuma").val();
+          details += ", FilterVerLumaEdge: " + $("#filterVerLumaEdge").val();
+          details += ", Elapsed: " + (videoElapsedTime / 1000).toFixed(2) + "s";
+          details += ", Score: " + fps.toFixed(2);
+          
+          document.getElementById('score-details').innerHTML = details;
         }
       }
     }
@@ -171,75 +219,251 @@
       webGLCanvas.VTexture.fill(cr);
       webGLCanvas.drawScene();
     }
+    
+    function read32(p) {
+      return HEAP32[p >> 2];
+    }
+    
+    var defaultFilterHorLuma = _FilterHorLuma;
+    var defaultFilterVerLumaEdge = _FilterVerLumaEdge;
+    
+    function clip(x, y, z) {
+      return z < x ? x : (z > y ? y : z);
+    }
+    
+    // _abs = Math.abs;
+    
+    function OptimizedFilterVerLumaEdge ($data, bS, $thresholds, imageWidth) {
+      var delta, tc, tmp;
+      var p0, q0, p1, q1, p2, q2;
+      var tmpFlag;
+      var $clp = _h264bsdClip + 512;
+      var alpha = HEAP32[$thresholds + 4 >> 2];
+      var beta = HEAP32[$thresholds + 8 >> 2];
+      var val;
+      
+      if (bS < 4) {
+        tmp = tc = HEAPU8[HEAP32[$thresholds >> 2] + (bS - 1)] & 255;
+        for (var i = 4; i > 0; i--) {
+          p1 = HEAPU8[$data + -2] & 255;
+          p0 = HEAPU8[$data + -1] & 255;
+          q0 = HEAPU8[$data] & 255;
+          q1 = HEAPU8[$data + 1] & 255;
+          if ((Math.abs(p0 - q0) < alpha) && (Math.abs(p1 - p0) < beta) && (Math.abs(q1 - q0) < beta)) {
+            p2 = HEAPU8[$data - 3] & 255;
+            if (Math.abs(p2 - p0) < beta) {
+              val = (p2 + ((p0 + q0 + 1) >> 1) - (p1 << 1)) >> 1;
+              HEAP8[$data - 2] = p1 + clip(-tc, tc, val);
+              tmp++;
+            }
+            
+            q2 = HEAPU8[$data + 2] & 255;
+            if (Math.abs(q2 - q0) < beta) {
+              val = (q2 + ((p0 + q0 + 1) >> 1) - (q1 << 1)) >> 1;
+              HEAP8[$data + 1] = (q1 + clip(-tc, tc, val));
+              tmp++;
+            }
+            
+            val = ((((q0 - p0) << 2) + (p1 - q1) + 4) >> 3);
+            delta = clip(-tmp, tmp, val);
+            
+            p0 = HEAPU8[$clp + (p0 + delta)] & 255;
+            q0 = HEAPU8[$clp + (q0 - delta)] & 255;
+            tmp = tc;
+            HEAP8[$data - 1] = p0;
+            HEAP8[$data] = q0;
+            
+            $data += imageWidth;
+          }
+        }
+      } else {
+        defaultFilterVerLumaEdge($data, bS, $thresholds, imageWidth);
+      }
+    }
+    
+    /**
+     * Filter all four successive horizontal 4-pixel luma edges. This can
+     * be done when bS is equal to all four edges.
+     */
+    function OptimizedFilterHorLuma ($data, bS, $thresholds, imageWidth) {
+      var delta, tc, tmp;
+      var p0, q0, p1, q1, p2, q2;
+      var tmpFlag;
+      var $clp = _h264bsdClip + 512;
+      var alpha = HEAP32[$thresholds + 4 >> 2];
+      var beta = HEAP32[$thresholds + 8 >> 2];
+      var val;
+      
+      if (bS < 4) {
+        tmp = tc = HEAPU8[HEAP32[$thresholds >> 2] + (bS - 1)] & 255;
+        for (var i = 16; i > 0; i--) {
+          p1 = HEAPU8[$data + (-imageWidth << 1)] & 255;
+          p0 = HEAPU8[$data + -imageWidth] & 255;
+          q0 = HEAPU8[$data] & 255;
+          q1 = HEAPU8[$data + imageWidth] & 255;
+          
+          if ((Math.abs(p0 - q0) < alpha) && (Math.abs(p1 - p0) < beta) && (Math.abs(q1 - q0) < beta)) {
+            p2 = HEAPU8[$data + (-imageWidth * 3)] & 255;
+            if (Math.abs(p2 - p0) < beta) {
+              val = (p2 + ((p0 + q0 + 1) >> 1) - (p1 << 1)) >> 1;
+              HEAP8[$data + (-imageWidth << 1)] = p1 + clip(-tc, tc, val);
+              tmp++;
+            }
+            
+            q2 = HEAPU8[$data + (imageWidth << 2)] & 255;
+            if (Math.abs(q2 - q0) < beta) {
+                val = (q2 + ((p0 + q0 + 1) >> 1) - (q1 << 1)) >> 1;
+                HEAP8[$data + imageWidth] = (q1 + clip(-tc, tc, val));
+                tmp++;
+            }
+            
+            val = ((((q0 - p0) << 2) + (p1 - q1) + 4) >> 3);
+            delta = clip(-tmp, tmp, val);
+            
+            p0 = HEAPU8[$clp + (p0 + delta)] & 255;
+            q0 = HEAPU8[$clp + (q0 - delta)] & 255;
+            tmp = tc;
+            HEAP8[$data - imageWidth] = p0;
+            HEAP8[$data] = q0;
+            
+            $data ++;
+          }
+        }
+      } else {
+        defaultFilterHorLuma($data, bS, $thresholds, imageWidth);
+      }
+    }
   </script>
   
-
-  <div id="doc">
-    <header>
-      <h1 id="site-title"><b>Broadway.js</b></h1>
-      <p id="tagline">An H.264 Decoder in Pure JavaScript</p>
-    </header>
-    <div>
+  <style>
+    body {
+        margin: 0px;
+    }
+    #panel {
+        background-color: #333333;
+        padding: 10px;
+        width: 240px;
+        height: 900px;
+        color: #FFFFFF;
+        float: left;
+    }
+    #panel .title {
+        font: normal 36px/.738 MetaBlack, "Arial Black", sans-serif;
+        color: #16C0F0;
+    }
+    #panel .sub-title {
+        font: 1.5em Georgia, sans-serif;
+    }
+    #document {
+        float: left;
+        background-color: #AAAAAA;
+        height: 900px;
+        padding: 10px;
+    }
+    .header {
+        font: normal 16px "Arial Black", sans-serif;
+        color: #16C0F0;
+        margin-bottom: 4px;
+    }
+  </style>
+  
+  <div id="panel">
+      <p class="title"><b>Broadway.js</b></p>
+      <p class="sub-title">An H.264 Decoder in JavaScript</p>
+      
+      <p class="header">Settings</p>
       <div id="setting">
-        <span>Clip: 
-          <select id="clip" style="margin-left: 10px;">
-            <option value="mozilla.264">Mozilla</option>
-            <option value="mozilla_story.264">Mozilla Story</option>
-            <option value="admiral.264">Admiral</option>
-            <option value="matrix.264">Matrix SD</option>
-            <option value="matrix_large.264">Matrix HD</option>
-          </select>
-        </span>
+        <span>Clip:</span> 
+        <select id="clip" style="margin-left: 10px;">
+          <option value="mozilla.264">Mozilla</option>
+          <option value="mozilla_story.264">Mozilla Story</option>
+          <option value="admiral.264">Admiral</option>
+          <option value="matrix.264">Matrix SD</option>
+          <option value="matrix_large.264">Matrix HD</option>
+        </select>
       </div>
       <div id="setting">
-        <span>Render Mode: 
-          <select id="mode" style="margin-left: 10px;">
-            <option value="canvas">Canvas</option>
-            <option value="webgl">Canvas w/ WebGL</option>
-            <option value="none">None</option>
-          </select> 
-        </span>
-        <span style="margin-left: 10px; border: 0px" id="downloadProgress"></span>
+        <span>Render Mode:</span>
+        <select id="mode" style="margin-left: 10px;">
+          <option value="canvas">Canvas</option>
+          <option value="webgl">Canvas w/ WebGL</option>
+          <option value="none">None</option>
+        </select> 
       </div>
       <div id="setting">
-        <span>Deblocking Filter: 
-          <select id="deblocking" style="margin-left: 10px;">
-            <option value="default">Default</option>
-            <option value="none">None</option> 
-          </select> 
-        </span>
-        <span style="margin-left: 10px; border: 0px" id="downloadProgress"></span>
+        <span>Deblocking Filter:</span> 
+        <select id="deblocking" style="margin-left: 10px;">
+          <option value="default">Default</option>
+          <option value="none">None</option> 
+        </select> 
       </div>
+      
       <div id="setting">
-        <div style="margin-left: 10px; border: 0px; clear: both;" id="downloadProgress"></div>
+        <span style="margin-left: 10px;">Hor Luma:</span>
+        <select id="filterHorLuma" style="margin-left: 10px;">
+          <option value="default">Default</option>
+          <option value="optimized" selected>Optimized</option>
+          <option value="none">None</option> 
+        </select>
       </div>
-      <div>
-        <div id="player" style="background-color: black; float: left;">
-          <canvas id='canvas' width="640" height="100" style="background-color: #333333;"></canvas>
-          <div id="controls">
-            <button id="play">Play</button>
-            <div id="scrubber"></div>
-          </div>
-        </div>  
+      
+      <div id="setting">
+        <span style="margin-left: 10px;">Ver Luma Edge: </span>
+        <select id="filterVerLumaEdge" style="margin-left: 10px;">
+          <option value="default">Default</option>
+          <option value="optimized" selected>Optimized</option>
+          <option value="none">None</option> 
+        </select>
       </div>
+      
+      <div id="setting">
+        <button id="play" style="margin-right: 8px">Play</button>
+        <button id="benchmark">Benchmark</button>
+      </div>
+      
+      
+      <div id="setting">
+        <div id="downloadProgress"></div>
+      </div>
+      
       <!-- Stats -->
-      <div
-        style="height: 480px; margin-top: 30px; margin-bottom: 10px; clear: both;">
-        <table style="margin-top: 10px; width: 300;">
-          <tr>
-            <th>FPS</th>
-            <td><span id='fps' style="color: red;"></span></td>
-          </tr>
-          <tr>
-            <th>Average FPS (All / Steady)</th>
-            <td><span id='fpsSinceStart' style="color: green;"></span></td>
-          </tr>
-          <tr>
-            <th>Score</th>
-            <td><span id='score' style="color: brown;"></span></td>
-          </tr>
-        </table>
+      <div style="margin-top: 30px">
+      <p class="header">Statistics</p>
+      <table style="width: 100%; clear: both;">
+        <tr>
+          <th>FPS</th>
+          <td><span id='fps'></span></td>
+        </tr>
+        <tr>
+          <th>Average FPS</th>
+          <td><span id='fpsSinceStart'></span></td>
+        </tr>
+        <tr>
+          <th>Min / Max</th>
+          <td><span id='fpsMinMax'></span></td>
+        </tr>
+        <tr>
+          <th>Elapsed</th>
+          <td><span id='elapsed'></span></td>
+        </tr>
+        <tr>
+          <th>Score</th>
+          <td><span id='score'></span></td>
+        </tr>
+        <tr>
+          <td colspan="2" style="font-weight: normal; padding-left: 0px; text-align: left;"><span id='score-details'></span></td>
+        </tr>
+      </table>
       </div>
-    </div>
+      
+  </div>
+
+  <div id="document">
+    <div id="player" style="background-color: black; float: left;">
+      <canvas id='canvas' width="640" height="100" style="background-color: #333333;"></canvas>
+      <div id="controls">
+        <div id="scrubber"></div>
+      </div>
+    </div>  
   </body>
 </html>

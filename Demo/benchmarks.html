@@ -99,7 +99,53 @@
     }
     
     function test() {
-      var size = new Size(1280, 720);
+      
+      // var size = new Size(16, 8);
+      
+      var size = new Size(128, 128);
+      var c0 = new FilterWebGLCanvas(document.getElementById('canvas-0'), size);
+      var buffer = new Uint8Array(size.w * size.h * 4);
+      
+      for (var i = 0; i < buffer.length; i += 4) {
+        buffer[i] = 0;
+        buffer[i + 1] = Math.random() * 255;
+        buffer[i + 2] = 0;
+        buffer[i + 3] = 255;
+      }
+      
+      var pixels = new Uint8Array(size.length() * 4);
+      
+      var samples = 1000; // 3600 * 2;
+      sync("Upload Data", function () {
+        // c0.texture.fill(buffer);
+        // c0.drawScene();
+        // c0.readPixels(pixels);
+        
+        c0.process(buffer, pixels);
+      }, samples, function (name, elapsed, count) {
+        var opsPerSecond = (count / elapsed) * 1000;
+        var msPerOp = (elapsed / count);
+        var msg = name + " - Elapsed: " + elapsed + 
+                  " ms, Count: " + count + 
+                  ", Rate: " + opsPerSecond.toFixed(2) + " op/s, " + 
+                  msPerOp.toFixed(3) + " ms/op";
+        log(msg);
+      });
+      
+      // console.log(out);
+      
+      var canvas = document.getElementById('canvas-0-out');
+      canvas.width = size.w;
+      canvas.height = size.h;
+      var canvasContext = canvas.getContext("2d");
+      var imageData = canvasContext.createImageData(size.w, size.h);
+      imageData.data.set(pixels);
+      canvasContext.putImageData(imageData, 0, 0);
+      
+      return;
+      
+      // var size = new Size(1280, 720);
+      size = new Size(16, 16);
       var buffer = new Uint8Array(size.w * size.h);
       for (var i = 0; i < buffer.length; i++) {
         buffer[i] = i;
@@ -123,7 +169,7 @@
       
       var benchFillTexture = function(run) {
         run("Fill Texture", function () {
-          c1.texture.fill(buffer);  
+          c1.texture.fill(buffer);
         }, samples);
       };
       
@@ -189,10 +235,12 @@
           console.log("Executing Benchmark: " + benchmark);
           benchmark(function(name, fn, count) {
             async(name, fn, count, function (name, elapsed, count) {
-              var rateSecond = (count / elapsed) * 1000;
-              var rate2 = (elapsed / count);
-              var msg = name + " - Total: " + elapsed + " ms, Count: " + count + 
-                        ", Rate: " + rateSecond.toFixed(2) + " op/s, " + rate2.toFixed(3) + " ms/op";
+              var opsPerSecond = (count / elapsed) * 1000;
+              var msPerOp = (elapsed / count);
+              var msg = name + " - Elapsed: " + elapsed + 
+                        " ms, Count: " + count + 
+                        ", Rate: " + opsPerSecond.toFixed(2) + " op/s, " + 
+                        msPerOp.toFixed(3) + " ms/op";
               log(msg);
               if (benchmarks.length > 0) {
                 window.postMessage(nextBenchmarkMessage, "*");
@@ -211,8 +259,10 @@
       <h1 id="site-title"><b>Broadway.js Benchmarks</b></h1>
     </header>
     <div id="setting">
-      <canvas id='canvas-1'></canvas>
-      <canvas id='canvas-2'></canvas>
+      <canvas id='canvas-0' style="background-color: red;" width="10" height="10"></canvas>
+      <canvas id='canvas-0-out' style="background-color: blue;" width="10" height="10"></canvas>
+      <canvas id='canvas-1' style="background-color: green;" width="10" height="10"></canvas>
+      <canvas id='canvas-2' style="background-color: yellow;" width="10" height="10"></canvas>
       <div id="controls">
           <button id="play">Run</button>
       </div>

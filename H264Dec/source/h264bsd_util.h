@@ -129,10 +129,12 @@
 #define MAX(a, b) (((a) > (b)) ? (a) : (b))
 
 /* macro to get absolute value */
-#define ABS(a) (((a) < 0) ? -(a) : (a))
+// #define ABS(a) (((a) < 0) ? -(a) : (a))
+#define ABS(a) (abs(a))
 
 /* macro to clip a value z, so that x <= z =< y */
-#define CLIP3(x,y,z) (((z) < (x)) ? (x) : (((z) > (y)) ? (y) : (z)))
+// #define CLIP3(x,y,z) (((z) < (x)) ? (x) : (((z) > (y)) ? (y) : (z)))
+#define CLIP3(x,y,z) (clip(x,y,z))
 
 /* macro to clip a value z, so that 0 <= z =< 255 */
 #define CLIP1(z) (((z) < 0) ? 0 : (((z) > 255) ? 255 : (z)))
@@ -173,6 +175,9 @@ u32 h264bsdMoreRbspData(strmData_t *strmData);
 u32 h264bsdNextMbAddress(u32 *pSliceGroupMap, u32 picSizeInMbs, u32 currMbAddr);
 
 void h264bsdSetCurrImageMbPointers(image_t *image, u32 mbNum);
+
+i32 abs(i32 a);
+i32 clip(i32 x, i32 y, i32 z);
 
 #endif /* #ifdef H264SWDEC_UTIL_H */
 

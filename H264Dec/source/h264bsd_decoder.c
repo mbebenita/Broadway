@@ -475,7 +475,7 @@ u32 h264bsdDecode(storage_t *pStorage, u8 *byteStrm, u32 len, u32 picId,
 
         h264bsdResetStorage(pStorage);
 
-        picOrderCnt = h264bsdDecodePicOrderCnt(pStorage->poc,
+         picOrderCnt = h264bsdDecodePicOrderCnt(pStorage->poc,
             pStorage->activeSps, pStorage->sliceHeader, pStorage->prevNalUnit);
 
         if (pStorage->validSliceInAccessUnit)
