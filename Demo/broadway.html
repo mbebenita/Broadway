@@ -21,13 +21,7 @@
 
   <script type="text/javascript">
     $(function() {
-      $("#tabs").tabs();
-      $("#play").button();
-      $("#play").click(function() {
-        play();
-      });
-      
-      $( "#scrubber" ).slider({
+      $("#scrubber").slider({
         range: false,
         min: 0,
         max: 500,
@@ -38,99 +32,132 @@
         }
       });
       
+      $("#tabs").tabs();
+      $("#play").button();
+      $("#play").click(function() {
+        play(getConfig());
+      });
+      
+      
       $("#benchmark").button();
       $("#benchmark").click(function() {
         $("#clip").val("mozilla_story.264");
         $("#mode").val("none");
-        play();
+        play(getConfig());
       });
     });
 
-    function load(clip, mode, deblocking) {
+    function downloadFile(file, callback) {
+      var xhr = new XMLHttpRequest();
+      var async = callback ? true : false;
+      xhr.open("GET", file, async);
+      xhr.responseType = "arraybuffer";
+      xhr.onreadystatechange = function (event) {
+        if (xhr.readyState === 4) {
+          callback(xhr.response);
+        }
+      }
+      xhr.send(null);
+      if (!async) {
+        return xhr.response;
+      }
+    }
+    
+    function load(config) {
       QUANTUM_SIZE = 4;
       
       document.getElementById('downloadProgress').innerHTML = "Downloading, Please Wait ...";
       
-      var xhr = new XMLHttpRequest();
-      xhr.open("GET", clip, false);
-      xhr.responseType = "arraybuffer";
-      xhr.send(null);
-      var arrayBuffer = xhr.response;
-      if (arrayBuffer) {
-        var byteArray = new Uint8Array(arrayBuffer);
-        var array = Array.prototype.slice.apply(byteArray);
-        Module.FS.ignorePermissions = true;
-        Module.FS.createDataFile('/', 'video.264', array, true, false);
-      } else {
-        alert('load fail :(');
-      }
-      document.getElementById('downloadProgress').innerHTML = "Download Complete, Playing ...";
-
-      // Pass canvas and context to the generated code, and do the actual run() here
-      Module.canvas = document.getElementById('canvas');
-
-      if (mode == "none") {
-        Module.paint = function() {};
-      } else if (mode == "webgl") {
-        Module.paint = webGLPaint;
-      } else {
-        Module.ctx2D = Module.canvas.getContext('2d');
-        if (!Module.ctx2D) {
-          alert('Canvas not available :(');
+      downloadFile(config.clip, function (buffer) {
+        if (buffer) {
+          var byteArray = new Uint8Array(buffer);
+          var array = Array.prototype.slice.apply(byteArray);
+          Module.FS.ignorePermissions = true;
+          Module.FS.createDataFile('/', 'video.264', array, true, false);
+        } else {
+          alert('Cannot load file: ' + config.clip);  
           return;
         }
-      }
-      
-      if (deblocking == "none") {
-        Module.filter = function() {};
-      } else if (deblocking == "optimized") {
-        Module.filter = Module.defaultFilter;
-      } else if (deblocking == "default") {
-        Module.filter = Module.defaultFilter;
-      }
-      
-      var filterHorLuma = $("#filterHorLuma").val();
-      
-      if (filterHorLuma == "none") {
-        _FilterHorLuma = function (a, b, e, c) { };
-      } else if (filterHorLuma == "optimized") {
-        _FilterHorLuma = OptimizedFilterHorLuma;
-      }
-      
-      var filterVerLumaEdge = $("#filterVerLumaEdge").val();
-      if (filterVerLumaEdge == "none") {
-        _FilterVerLumaEdge = function (a, b, e, c) { };
-      } else if (filterHorLuma == "optimized") {
-        _FilterVerLumaEdge = OptimizedFilterVerLumaEdge;
-      }
-      
-      console.info("Running: " + clip);
-      Module.run(['video.264']);
+        
+        document.getElementById('downloadProgress').innerHTML = "Download Complete, Playing ...";
+        
+        // Pass canvas and context to the generated code, and do the actual run() here
+        Module.canvas = document.getElementById('canvas');
+
+        if (config.mode == "none") {
+          Module.paint = function() {};
+        } else if (config.mode == "webgl") {
+          Module.paint = webGLPaint;
+        } else {
+          Module.ctx2D = Module.canvas.getContext('2d');
+          if (!Module.ctx2D) {
+            alert('Canvas not available :(');
+            return;
+          }
+        }
+        
+        if (config.deblocking == "none") {
+          Module.filter = function() {};
+        } else if (config.deblocking == "optimized") {
+          Module.filter = Module.defaultFilter;
+        } else if (config.deblocking == "default") {
+          Module.filter = Module.defaultFilter;
+        }
+        
+        if (config.filterHorLuma == "none") {
+          _FilterHorLuma = function (a, b, e, c) { };
+        } else if (config.filterHorLuma == "optimized") {
+          _FilterHorLuma = OptimizedFilterHorLuma;
+        }
+        
+        if (config.filterVerLumaEdge == "none") {
+          _FilterVerLumaEdge = function (a, b, e, c) { };
+        } else if (config.filterHorLuma == "optimized") {
+          _FilterVerLumaEdge = OptimizedFilterVerLumaEdge;
+        }
+        
+        if (config.getBoundaryStrengths == "none") {
+          _GetBoundaryStrengthsA = function (a, b) { };
+        } else if (config.getBoundaryStrengths == "optimized") {
+          _GetBoundaryStrengthsA = OptimizedGetBoundaryStrengthsA;
+        }
+        
+        console.info("Running: " + config.clip);
+        Module.run(['video.264']);
+        loaded = true;
+        playing = true;
+        Module.play();
+      });
     }
     
     var loaded = false;
     var playing = false;
     
-    function play() {
+    function getConfig() {
+      return  {clip: $("#clip").val(),
+               mode: $("#mode").val(),
+               deblocking: $("#deblocking").val(),
+               filterHorLuma: $("#filterHorLuma").val(),
+               filterVerLumaEdge: $("#filterVerLumaEdge").val(),
+               getBoundaryStrengths: $("#getBoundaryStrengths").val()
+              };
+    }
+    
+    function play(config) {
       if (!loaded) {
-        var clip = $("#clip").val();
-        var mode = $("#mode").val();
-        var deblocking = $("#deblocking").val();
-        load(clip, mode, deblocking);
-        loaded = true;
-      }
-      
-      if (playing == false) {
-        $('#play').children().first().html("Pause");
-        playing = true;
-        Module.play();
+        load(config);
       } else {
-        Module['CorrectionsMonitor'].print();
-        
-        $('#play').children().first().html("Play");
-        playing = false;
-        Module.stop();
-        return;
+        if (playing == false) {
+          $('#play').children().first().html("Pause");
+          playing = true;
+          Module.play();
+        } else {
+          Module['CorrectionsMonitor'].print();
+          $('#play').children().first().html("Play");
+          playing = false;
+          Module.stop();
+          return;
+        }
       }
     }
 
@@ -177,7 +204,9 @@
       if (videoFrameCounter % 10 == 0) {
         var fps = (videoFrameCounter / videoElapsedTime) * 1000;
         document.getElementById('fpsSinceStart').innerHTML = fps.toFixed(2);
-        document.getElementById('elapsed').innerHTML = (videoElapsedTime / 1000).toFixed(2) + "s";        
+        document.getElementById('upload').innerHTML = (uploadTime / videoFrameCounter).toFixed(2) + "ms";
+        document.getElementById('elapsed').innerHTML = (videoElapsedTime / 1000).toFixed(2) + "s";
+        
       }
       
       if (!scoreCalculated) {
@@ -197,15 +226,20 @@
           details += ", Elapsed: " + (videoElapsedTime / 1000).toFixed(2) + "s";
           details += ", Score: " + fps.toFixed(2);
           
-          document.getElementById('score-details').innerHTML = details;
+          onScoreCalculated ({elapsed: videoElapsedTime, score: fps, min: fpsMin, max: fpsMax});
         }
       }
+    }
+    
+    function onScoreCalculated(result) {
+      console.info(result);
     }
     
     function updateScrubber() {
       $("#scrubber").slider('value', _getPosition() * 500);
     }
     
+    var uploadTime = 0;
     function webGLPaint($luma, $cb, $cr, width, height) {
       if (!webGLCanvas) {
         webGLCanvas = new YUVWebGLCanvas(Module.canvas, new Size(width, height));
@@ -213,25 +247,71 @@
       var luma = Module.HEAPU8.subarray($luma);
       var cb = Module.HEAPU8.subarray($cb);
       var cr = Module.HEAPU8.subarray($cr);
-      
+    
+      var start = Date.now();
       webGLCanvas.YTexture.fill(luma);
       webGLCanvas.UTexture.fill(cb);
       webGLCanvas.VTexture.fill(cr);
       webGLCanvas.drawScene();
-    }
-    
-    function read32(p) {
-      return HEAP32[p >> 2];
+      uploadTime += Date.now() - start;
     }
     
     var defaultFilterHorLuma = _FilterHorLuma;
     var defaultFilterVerLumaEdge = _FilterVerLumaEdge;
+    var defaultGetBoundaryStrengthsA = _GetBoundaryStrengthsA;
+    
+    _abs = Math.abs;
     
     function clip(x, y, z) {
       return z < x ? x : (z > y ? y : z);
     }
     
-    // _abs = Math.abs;
+    function OptimizedGetBoundaryStrengthsA($mb, $bS) {
+      var $totalCoeff = $mb + 28;
+      
+      var tc0 = HEAP16[$totalCoeff + 0 >> 1];
+      var tc1 = HEAP16[$totalCoeff + 2 >> 1];
+      var tc2 = HEAP16[$totalCoeff + 4 >> 1];
+      var tc3 = HEAP16[$totalCoeff + 6 >> 1];
+      var tc4 = HEAP16[$totalCoeff + 8 >> 1];
+      var tc5 = HEAP16[$totalCoeff + 10 >> 1];
+      var tc6 = HEAP16[$totalCoeff + 12 >> 1];
+      var tc7 = HEAP16[$totalCoeff + 14 >> 1];
+      var tc8 = HEAP16[$totalCoeff + 16 >> 1];
+      var tc9 = HEAP16[$totalCoeff + 18 >> 1];
+      var tc10 = HEAP16[$totalCoeff + 20 >> 1];
+      var tc11 = HEAP16[$totalCoeff + 22 >> 1];
+      var tc12 = HEAP16[$totalCoeff + 24 >> 1];
+      var tc13 = HEAP16[$totalCoeff + 26 >> 1];
+      var tc14 = HEAP16[$totalCoeff + 28 >> 1];
+      var tc15 = HEAP16[$totalCoeff + 30 >> 1];
+      
+      HEAP32[$bS + 32 >> 2] = tc2 || tc0 ? 2 : 0;
+      HEAP32[$bS + 40 >> 2] = tc3 || tc1 ? 2 : 0;
+      HEAP32[$bS + 48 >> 2] = tc6 || tc4 ? 2 : 0;
+      HEAP32[$bS + 56 >> 2] = tc7 || tc5 ? 2 : 0;
+      HEAP32[$bS + 64 >> 2] = tc8 || tc2 ? 2 : 0;
+      HEAP32[$bS + 72 >> 2] = tc9 || tc3 ? 2 : 0;
+      HEAP32[$bS + 80 >> 2] = tc12 || tc6 ? 2 : 0;
+      HEAP32[$bS + 88 >> 2] = tc13 || tc7 ? 2 : 0;
+      HEAP32[$bS + 96 >> 2] = tc10 || tc8 ? 2 : 0;
+      HEAP32[$bS + 104 >> 2] = tc11 || tc9 ? 2 : 0;
+      HEAP32[$bS + 112 >> 2] = tc14 || tc12 ? 2 : 0;
+      HEAP32[$bS + 120 >> 2] = tc15 || tc13 ? 2 : 0;
+
+      HEAP32[$bS + 12 >> 2] = tc1 || tc0 ? 2 : 0;
+      HEAP32[$bS + 20 >> 2] = tc4 || tc1 ? 2 : 0;
+      HEAP32[$bS + 28 >> 2] = tc5 || tc4 ? 2 : 0;
+      HEAP32[$bS + 44 >> 2] = tc3 || tc2 ? 2 : 0;
+      HEAP32[$bS + 52 >> 2] = tc6 || tc3 ? 2 : 0;
+      HEAP32[$bS + 60 >> 2] = tc7 || tc6 ? 2 : 0;
+      HEAP32[$bS + 76 >> 2] = tc9 || tc8 ? 2 : 0;
+      HEAP32[$bS + 84 >> 2] = tc12 || tc9 ? 2 : 0;
+      HEAP32[$bS + 92 >> 2] = tc13 || tc12 ? 2 : 0;
+      HEAP32[$bS + 108 >> 2] = tc11 || tc10 ? 2 : 0;
+      HEAP32[$bS + 116 >> 2] = tc14 || tc11 ? 2 : 0;
+      HEAP32[$bS + 124 >> 2] = tc15 || tc14 ? 2 : 0;
+    }
     
     function OptimizedFilterVerLumaEdge ($data, bS, $thresholds, imageWidth) {
       var delta, tc, tmp;
@@ -342,7 +422,7 @@
     #panel {
         background-color: #333333;
         padding: 10px;
-        width: 240px;
+        width: 260px;
         height: 900px;
         color: #FFFFFF;
         float: left;
@@ -417,6 +497,15 @@
       </div>
       
       <div id="setting">
+        <span style="margin-left: 10px;">Boundary Strengths: </span>
+        <select id="getBoundaryStrengths" style="margin-left: 10px;">
+          <option value="default">Default</option>
+          <option value="optimized" selected>Optimized</option>
+          <option value="none">None</option> 
+        </select>
+      </div>
+      
+      <div id="setting">
         <button id="play" style="margin-right: 8px">Play</button>
         <button id="benchmark">Benchmark</button>
       </div>
@@ -441,6 +530,10 @@
         <tr>
           <th>Min / Max</th>
           <td><span id='fpsMinMax'></span></td>
+        </tr>
+        <tr>
+          <th>Upload Speed</th>
+          <td><span id='upload'></span></td>
         </tr>
         <tr>
           <th>Elapsed</th>

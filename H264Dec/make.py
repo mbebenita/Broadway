@@ -17,7 +17,6 @@ EMSCRIPTEN_SETTINGS = {
   'CORRECT_OVERFLOWS': 0,
   'CHECK_SIGNS': 0,
   'CORRECT_SIGNS': 1,
-  # 'CORRECT_SIGNS_LINES': emscripten.read_pgo_data('avc.pgo')['signs_lines'],
   'DISABLE_EXCEPTION_CATCHING': 1,
   'RUNTIME_TYPE_INFO': 0,
   'TOTAL_MEMORY': 50*1024*1024,
@@ -29,11 +28,29 @@ EMSCRIPTEN_SETTINGS = {
   'USE_FHEAP': 0,
   'SAFE_HEAP': 0,
   'ASSERTIONS': 0,
-  # 'QUANTUM_SIZE': 4,
   'INVOKE_RUN': 0, # we do it ourselves
   'EXPORTED_FUNCTIONS': ['_main', '__Z11runMainLoopv'],
   'IGNORED_FUNCTIONS': ['_paint'],
 }
+
+use_pgo = False
+profile = False
+
+if profile:
+    EMSCRIPTEN_SETTINGS['CHECK_SIGNS'] = 1
+    EMSCRIPTEN_SETTINGS['CHECK_OVERFLOWS'] = 1
+    EMSCRIPTEN_SETTINGS['PGO'] = 1
+
+use_profile = use_pgo and not profile
+if use_profile:
+    pgo_data = emscripten.read_pgo_data('avc.pgo')
+    EMSCRIPTEN_SETTINGS['CORRECT_SIGNS'] = 2
+    EMSCRIPTEN_SETTINGS['CORRECT_SIGNS_LINES'] = pgo_data['signs_lines']
+    EMSCRIPTEN_SETTINGS['CORRECT_OVERFLOWS'] = 2
+    EMSCRIPTEN_SETTINGS['CORRECT_OVERFLOWS_LINES'] = pgo_data['overflows_lines']
+
+print EMSCRIPTEN_SETTINGS 
+
 EMSCRIPTEN_ARGS = []#['--dlmalloc'] # Optimize does not appear to help
 
 JS_DIR = "js"
@@ -69,20 +86,6 @@ if build_level <= 2:
 
     print 'Appending stuff'
     src = open(filename, 'a')
-    
-    
-#    if EMSCRIPTEN_SETTINGS['QUANTUM_SIZE'] == 1:
-#      src.write(
-#        '''
-#          _malloc = function(size) {
-#            while (STATICTOP % 4 != 0) STATICTOP++;
-#            var ret = STATICTOP;
-#            STATICTOP += size;
-#            return ret;
-#          }
-#        '''
-#      )
-
     src.write(open('hooks.js').read())
     src.write(open('paint_%s.js' % EMSCRIPTEN_SETTINGS['USE_TYPED_ARRAYS'], 'r').read())
     src.close()
