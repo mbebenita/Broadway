@@ -34,9 +34,47 @@ _broadwayOnFrameDecoded = function() {
 Module['setPosition'] = _broadwaySetPosition; 
 Module['getPosition'] = _broadwayGetPosition;
 
-Module['filter'] = Module['defaultFilter'] = _h264bsdFilterPicture;
+var patches = Module['patches'] = {};
 
-_h264bsdFilterPicture = function (a, b) {
-  Module['filter'](a, b);
+function getGlobalScope() {
+  return function () { return this; }.call(null);
 }
 
+assert = function (condition, message) {
+  if (!condition) {
+    throw "Assertion: " + message;
+  }
+}
+
+/**
+ * Patches a function and remembers its old value.
+ */
+Module['patch'] = function (scope, name, value) {
+  assert (typeof(value) == "function");
+  if (!scope) {
+    scope = getGlobalScope();
+  }
+  if (Module["CC_VARIABLE_MAP"]) {
+    name = Module["CC_VARIABLE_MAP"][name]; 
+  }
+  assert (name in scope && typeof(scope[name]) == "function", "Can only patch functions.");
+  patches[name] = scope[name];
+  scope[name] = value;
+  return patches[name];
+};
+
+/**
+ * Restore a previously patched function. 
+ */
+Module['unpatch'] = function (scope, name) {
+  if (!scope) {
+    scope = getGlobalScope();
+  }
+  if (Module["CC_VARIABLE_MAP"]) {
+    name = Module["CC_VARIABLE_MAP"][name]; 
+  }
+  assert (name in scope && typeof(scope[name]) == "function");
+  if (name in patches) {
+    scope[name] = patches[name];
+  }
+};

@@ -505,14 +505,15 @@ void paint(u8 *luma, u8 *cb, u8 *cr, int width, int height) {
     SDL_Flip(screen);
 }
 
+extern void broadwayOnFrameDecoded() {
+    printf("OnFrameDecoded\n");
+}
 
-void broadwayOnFrameDecoded() { }
-
-void broadwaySetPosition(float position) {
+extern void broadwaySetPosition(float position) {
     printf("SetPosition %f\n", position);
 }
 
-float broadwayGetPosition() {
+extern float broadwayGetPosition() {
     printf("GetPosition\n");
     return 0;
 }
