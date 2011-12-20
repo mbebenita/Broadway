@@ -512,8 +512,8 @@ var FilterWebGLCanvas = (function () {
   ]));
   
   
-  function constructor(canvas, size) {
-    WebGLCanvas.call(this, canvas, size, false);
+  function constructor(canvas, size, useFrameBuffer) {
+    WebGLCanvas.call(this, canvas, size, useFrameBuffer);
   } 
   
   constructor.prototype = inherit(WebGLCanvas, {
@@ -525,7 +525,7 @@ var FilterWebGLCanvas = (function () {
       this.program.use();
       this.vertexPositionAttribute = this.program.getAttributeLocation("aVertexPosition");
       this.gl.enableVertexAttribArray(this.vertexPositionAttribute);
-      this.textureCoordAttribute = this.program.getAttributeLocation("aTextureCoord");;
+      this.textureCoordAttribute = this.program.getAttributeLocation("aTextureCoord");
       this.gl.enableVertexAttribArray(this.textureCoordAttribute);
     },
     onInitTextures: function () {
