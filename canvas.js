@@ -119,13 +119,17 @@ var Texture = (function texture() {
   }
   var textureIDs = null;
   constructor.prototype = {
-    fill: function(textureData) {
+    fill: function(textureData, useTexSubImage2D) {
       var gl = this.gl;
       assert(textureData.length >= this.size.w * this.size.h, 
              "Texture size mismatch, data:" + textureData.length + ", texture: " + this.size.w * this.size.h);
       gl.bindTexture(gl.TEXTURE_2D, this.texture);
-      // gl.texSubImage2D(gl.TEXTURE_2D, 0, 0, 0, this.size.w , this.size.h, this.format, gl.UNSIGNED_BYTE, textureData);
-      gl.texImage2D(gl.TEXTURE_2D, 0, this.format, this.size.w, this.size.h, 0, this.format, gl.UNSIGNED_BYTE, textureData);
+      if (useTexSubImage2D) {
+        gl.texSubImage2D(gl.TEXTURE_2D, 0, 0, 0, this.size.w , this.size.h, this.format, gl.UNSIGNED_BYTE, textureData);
+      } else {
+        // texImage2D seems to be faster, thus keeping it as the default
+        gl.texImage2D(gl.TEXTURE_2D, 0, this.format, this.size.w, this.size.h, 0, this.format, gl.UNSIGNED_BYTE, textureData);
+      }
     },
     bind: function(n, program, name) {
       var gl = this.gl;
@@ -191,7 +195,7 @@ var WebGLCanvas = (function () {
   }
 
   /**
-   * Initialize a frame buffer so that we can render offscreen.
+   * Initialize a frame buffer so that we can render off-screen.
    */
   function initFramebuffer() {
     var gl = this.gl;
@@ -512,8 +516,8 @@ var FilterWebGLCanvas = (function () {
   ]));
   
   
-  function constructor(canvas, size) {
-    WebGLCanvas.call(this, canvas, size, false);
+  function constructor(canvas, size, useFrameBuffer) {
+    WebGLCanvas.call(this, canvas, size, useFrameBuffer);
   } 
   
   constructor.prototype = inherit(WebGLCanvas, {
@@ -525,7 +529,7 @@ var FilterWebGLCanvas = (function () {
       this.program.use();
       this.vertexPositionAttribute = this.program.getAttributeLocation("aVertexPosition");
       this.gl.enableVertexAttribArray(this.vertexPositionAttribute);
-      this.textureCoordAttribute = this.program.getAttributeLocation("aTextureCoord");;
+      this.textureCoordAttribute = this.program.getAttributeLocation("aTextureCoord");
       this.gl.enableVertexAttribArray(this.textureCoordAttribute);
     },
     onInitTextures: function () {
