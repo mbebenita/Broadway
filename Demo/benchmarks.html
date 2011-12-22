@@ -5,12 +5,12 @@
 <style>
 /* MetaWebPro font family licensed from fontshop.com. WOFF-FTW! */
 @font-face {
-	font-family: 'MetaBlack';
-	src: url('http://mozcom-cdn.mozilla.net/img/fonts/MetaWebPro-Black.eot');
-	src: local('☺'),
-		url('http://mozcom-cdn.mozilla.net/img/fonts/MetaWebPro-Black.woff')
-		format('woff');
-	font-weight: bold;
+    font-family: 'MetaBlack';
+    src: url('http://mozcom-cdn.mozilla.net/img/fonts/MetaWebPro-Black.eot');
+    src: local('☺'),
+        url('http://mozcom-cdn.mozilla.net/img/fonts/MetaWebPro-Black.woff')
+        format('woff');
+    font-weight: bold;
 }
 </style>
 </head>
@@ -40,7 +40,7 @@
   
   body {
     font: normal 14px/.738 MetaBlack, "Arial Black", sans-serif;
-  	color: #6D7581;
+    color: #6D7581;
   }
   
   #controls {
@@ -129,6 +129,21 @@
       window.setZeroTimeout(fn);
     }
     
+    function runManyAsynchronously(fn, count, callback) {
+      var stats = {fn: fn, count: count};
+      var start = Date.now();
+      for (var i = 0; i < count; i++) {
+        runAsynchronously(fn);
+      }
+      runAsynchronously(function () {
+        stats.elapsed = Date.now() - start;
+        stats.operations = count;
+        stats.operationsPerSecond = (count / stats.elapsed) * 1000;
+        stats.millisecondsPerOperation = (stats.elapsed / count);
+        callback(stats);
+      });
+    }
+    
     function runManySynchronously(fn, count, callback) {
       var stats = {fn: fn, count: count};
       var start = Date.now();
@@ -156,6 +171,57 @@
       <h1 id="site-title"><b>Broadway.js Benchmarks</b></h1>
     </header>
     
+    <script>
+    
+      var settings = {
+        "texUploadMode": {
+          display: "Texture Upload Mode",
+          options: {
+            texImage2D: {value: "texImage2D", display: "texImage2D"},
+            texSubImage2D: {value: "texSubImage2D", display: "texSubImage2D"},
+          }
+        },
+        "scale": {
+          display: "Scale",
+          options: {
+            x1: {value: 1, display: "x 1"},
+            x2: {value: 2, display: "x 2"},
+            x4: {value: 4, display: "x 4"},
+            x8: {value: 8, display: "x 8"},
+            x16: {value: 16, display: "x 16"},
+            x32: {value: 32, display: "x 32"},
+            x64: {value: 64, display: "x 64"},
+            x128: {value: 128, display: "x 128"}
+          }
+        }
+      };
+      
+      for (name in settings) {
+        var setting = settings[name];
+        var str = '<div id="setting">';
+        str += '<span>' + setting.display + '</span>';
+        str += '<select id="' + name + '" style="margin-left: 10px;" onchange="onSelect(this)">';
+        for (option in setting.options) {
+          var value = setting.options[option].value;
+          if (!value) value = option;
+          str += '<option value="' + value + '">' + setting.options[option].display + '</option>';
+        }
+        str += '</select></div>';
+        document.write(str);
+      }
+      
+      $("#texUploadMode").val("texImage2D");
+      
+      function scale(x) {
+        return x * $("#scale").val();
+      }
+      
+      function fill(texture, buffer) {
+        texture.fill(buffer, $("#texUploadMode").val() == "texSubImage2D");
+      }
+      
+    </script>
+    
     <div class="bench">
       <script>
         $(function() {
@@ -163,7 +229,7 @@
           $("#bench-2").click(function() {
             console.info("Running ...");
             runManyAsynchronously(function () {
-            }, 10000, function(stats) {
+            }, scale(10000), function(stats) {
               printResults("bench-2-results", stats);
             });
             return;
@@ -185,13 +251,50 @@
             var canvas = new WebGLCanvas(document.getElementById('bench-0-canvas'), size);
             var buffer = randomBufferRGBA(size);
             runManyAsynchronously(function () {
-              canvas.texture.fill(buffer);  
-            }, 10000, function(stats) {
+              fill(canvas.texture, buffer);  
+            }, scale(50000), function(stats) {
               console.info(stats);
               printResults("bench-0-results", stats);
             });
             return;
           });
+          
+          $("#bench-0-N-L").button();
+          $("#bench-0-N-L").click(function() {
+            console.info("Running ...");
+            var size = new Size(1024, 1024);
+            var canvas = new WebGLCanvas(document.getElementById('bench-0-canvas'), size);
+            var buffer = randomBufferRGBA(size);
+            runManyAsynchronously(function () {
+              fill(canvas.texture, buffer);  
+            }, scale(1000), function(stats) {
+              console.info(stats);
+              printResults("bench-0-results", stats);
+            });
+            return;
+          });
+          
+          
+          $("#bench-0-N-V").button();
+          $("#bench-0-N-V").click(function() {
+            var i = 10;
+            runManyAsynchronously(function () {
+              i ++;
+              var size = new Size(2 << i, 2 << i);
+              console.info("Running ... " + size);
+              var canvas = new WebGLCanvas(document.getElementById('bench-0-canvas'), size);
+              var buffer = randomBufferRGBA(size);
+              runManyAsynchronously(function () {
+                fill(canvas.texture, buffer);
+              }, scale(100), function(stats) {
+                console.info(stats);
+                printResults("bench-0-results", stats);
+              });
+            }, 1, function(stats) {
+              
+            });
+          });
+          
           
           $("#bench-0-N-S").button();
           $("#bench-0-N-S").click(function() {
@@ -201,7 +304,7 @@
             var buffer = randomBufferRGBA(size);
             runManySynchronously(function () {
               canvas.texture.fill(buffer);  
-            }, 10000, function(stats) {
+            }, scale(50000), function(stats) {
               console.info(stats);
               printResults("bench-0-results", stats);
             });
@@ -217,7 +320,7 @@
             runManyAsynchronously(function () {
               canvas.texture.fill(buffer);  
               canvas.drawScene();
-            }, 10000, function(stats) {
+            }, scale(10000), function(stats) {
               console.info(stats);
               printResults("bench-0-results", stats);
             });
@@ -233,7 +336,7 @@
             runManySynchronously(function () {
               canvas.texture.fill(buffer);  
               canvas.drawScene();
-            }, 10000, function(stats) {
+            }, scale(10000), function(stats) {
               console.info(stats);
               printResults("bench-0-results", stats);
             });
@@ -249,7 +352,23 @@
             runManyAsynchronously(function () {
               canvas.texture.fill(buffer);
               canvas.drawScene();
-            }, 10000, function(stats) {
+            }, scale(1000), function(stats) {
+              console.info(stats);
+              printResults("bench-0-results", stats);
+            });
+            return;
+          });
+          
+          $("#bench-0-N-FB-S").button();
+          $("#bench-0-N-FB-S").click(function() {
+            console.info("Running ...");
+            var size = new Size(128, 128);
+            var canvas = new WebGLCanvas(document.getElementById('bench-0-canvas'), size, true);
+            var buffer = randomBufferRGBA(size);
+            runManySynchronously(function () {
+              canvas.texture.fill(buffer);
+              canvas.drawScene();
+            }, scale(10000), function(stats) {
               console.info(stats);
               printResults("bench-0-results", stats);
             });
@@ -259,9 +378,13 @@
         });
       </script>
       <div class="name">Measure texture uploading without a draw scene call.</div>
-      <button id="bench-0-N">Texture Upload 10,000 x (128x128)</button><br>
-      <button id="bench-0-N-S">Texture Upload 10,000 x (128x128) (Sync)</button><br>
-      <button id="bench-0-N-FB">Texture Upload + Frame Buffer 10,000 x (128x128)</button><br>
+      <button id="bench-0-N">Texture Upload 50,000 x (128x128)</button><br>
+      <button id="bench-0-N-L">Texture Upload 1,000 x (1024x1024) (64 x Larger)</button><br>
+      <button id="bench-0-N-V">Texture Upload 1,000 x (Variable Size)</button><br>
+      <button id="bench-0-N-S">Texture Upload 50,000 x (128x128) (Sync)</button><br>
+      <button id="bench-0-N-FB">Texture Upload + Frame Buffer 1,000 x (128x128)</button><br>
+      <button id="bench-0-N-FB-S">Texture Upload + Frame Buffer 10,000 x (128x128) (Sync)</button><br>
+      
       <div class="name">Measure texture uploading followed by a draw scene call to force drawing.</div>
       <button id="bench-0">Texture Upload + Draw Scene 10,000 x (128x128)</button><br>
       <button id="bench-0-S">Texture Upload + Draw Scene 10,000 x (128x128) (Sync)</button><br>
@@ -281,7 +404,7 @@
             runManyAsynchronously(function () {
               canvas.texture.fill(buffer);  
               canvas.drawScene();
-            }, 1000, function(stats) {
+            }, scale(1000), function(stats) {
               console.info(stats);
               printResults("bench-1-results", stats);
             });
@@ -306,7 +429,7 @@
             var outBuffer = randomBufferRGBA(size);
             runManyAsynchronously(function () {
               canvas.process(inBuffer, outBuffer);
-            }, 1000, function(stats) {
+            }, scale(1000), function(stats) {
               console.info(stats);
               printResults("bench-3-results", stats);
             });
@@ -322,7 +445,7 @@
             var outBuffer = randomBufferRGBA(size);
             runManyAsynchronously(function () {
               canvas.process(inBuffer, outBuffer);
-            }, 1000, function(stats) {
+            }, scale(1000), function(stats) {
               console.info(stats);
               printResults("bench-3-results", stats);
             });
@@ -338,7 +461,7 @@
             var outBuffer = randomBufferRGBA(size);
             runManySynchronously(function () {
               canvas.process(inBuffer, outBuffer);
-            }, 1000, function(stats) {
+            }, scale(1000), function(stats) {
               console.info(stats);
               printResults("bench-3-results", stats);
             });
@@ -354,7 +477,7 @@
             var outBuffer = randomBufferRGBA(size);
             runManySynchronously(function () {
               canvas.process(inBuffer, outBuffer);
-            }, 10000, function(stats) {
+            }, scale(10000), function(stats) {
               console.info(stats);
               printResults("bench-3-results", stats);
             });
@@ -372,7 +495,7 @@
             var samples = (1280 / 16) * (720 / 16);
             runManySynchronously(function () {
               canvas.process(inBuffer, outBuffer);
-            }, samples, function(stats) {
+            }, scale(samples), function(stats) {
               console.info(stats);
               printResults("bench-3-results", stats);
             });
@@ -410,7 +533,7 @@
               canvas.UTexture.fill(chroma);
               canvas.VTexture.fill(chroma);
               canvas.drawScene();
-            }, 1000, function(stats) {
+            }, scale(1000), function(stats) {
               console.info(stats);
               printResults("bench-4-results", stats);
             });
@@ -452,44 +575,24 @@
               console.info("Worker Says: " + message.payload);
             });
             
+            var samples = 100;
             runManyAsynchronouslyInWorker(worker, function () {
               worker.sendMessage("echo", buffer, function(message) {
                 data += message.payload.length;
               });
-            }, 100, function(stats) {
+            }, scale(samples), function(stats) {
               printResults("bench-5-results", stats);
               var transferRateInBytes = ((((data * 2) / (1024 * 1024)) / (stats.elapsed / 1000)));
               var transferRateInFrames = ((((data * 2) / (buffer.length)) / (stats.elapsed / 1000)));
               $("#bench-5-results").append("Rate: " + transferRateInBytes.toFixed() + " MB/s" +
                                            ", " + transferRateInFrames.toFixed() + " F/s");
             });
-            
-            return;
-            console.info("Running ...");
-            var size = new Size(1280, 720);
-            var buffer = randomBufferRGBA(size);
-            var worker = new Worker("benchmarks-worker-0.js");
-            var start = Date.now();
-            var data = 0;
-            worker.addEventListener('message', function(event) {
-              if (event.data) {
-                data += event.data.length;
-              } else {
-                var elapsed = Date.now() - start;
-                console.info("elapsed: " + elapsed + ", data rate: " + ((data / (1024 * 1024)) / (elapsed / 1000)).toFixed(2) + " MB/s");
-              }
-            }, false);
-            
-            for (var i = 0; i < 100; i++) {
-              worker.postMessage(0);
-            }
-            worker.postMessage(1);
           });
         });
       </script>
       <div class="name">Echoing a large buffer to a web worker and reading it back.</div>
       <button id="bench-5">Web Worker I/O</button><br>
-      <canvas class="canvas" id='bench-5-canvas' style="background-color: red; width="0" height="0""></canvas>
+      <canvas class="canvas" id='bench-5-canvas' style="background-color: red; width="0" height="0"></canvas>
       <div class="results" id='bench-5-results'></div>
     </div>
     

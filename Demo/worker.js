@@ -51,13 +51,6 @@ var WorkerSocket = (function workerSocket() {
       if (!this.client) {
         this.sendMessage("internal-notify", null, callback);
       }
-    },
-    wait: function () {
-      var done = false;
-      this.notify(function () {
-        done = true;
-      })
-      while (!done);
     }
   };
   return constructor;
