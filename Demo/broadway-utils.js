@@ -205,7 +205,9 @@ var Broadway = (function broadway() {
       this.stream = new Stream(url);
       this.stream.readAll(null, function (buffer) {
         if (buffer) {
-          Module.FS.createDataFile('/', 'video.264', buffer, true, false);
+          var byteArray = new Uint8Array(buffer);
+          var array = Array.prototype.slice.apply(byteArray);
+          Module.FS.createDataFile('/', 'video.264', array, true, false);
           info("Broadway Loaded: " + url);
           Module.run(['video.264']);
           this.onLoad();
