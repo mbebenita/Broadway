@@ -55,14 +55,35 @@ var Bytestream = (function BytestreamClosure() {
       this.pos += length;
       return res;
     },
-    readU32Array: function (length) {
-      if (this.pos > this.end - length * 4)
+    readU32Array: function (rows, cols, names) {
+      cols = cols || 1;
+      if (this.pos > this.end - (rows * cols) * 4)
         return null;
-      var array = new Uint32Array(length);
-      for (var i = 0; i < length; i++) {
-        array[i] = this.readU32();
+      if (cols == 1) {
+        var array = new Uint32Array(rows);
+        for (var i = 0; i < rows; i++) {
+          array[i] = this.readU32();
+        }
+        return array;
+      } else {
+        var array = new Array(rows);
+        for (var i = 0; i < rows; i++) {
+          var row = null;
+          if (names) {
+            row = {};
+            for (var j = 0; j < cols; j++) {
+              row[names[j]] = this.readU32(); 
+            }
+          } else {
+            row = new Uint32Array(cols);
+            for (var j = 0; j < cols; j++) {
+              row[j] = this.readU32();
+            }
+          }
+          array[i] = row;
+        }
+        return array;
       }
-      return array;      
     },
     read8: function () {
       return this.readU8() << 24 >> 24;
@@ -122,10 +143,10 @@ var Bytestream = (function BytestreamClosure() {
       this.pos += 4;
       return res;
     },
-    readFF16: function () {
+    readFP16: function () {
       return this.read32() / 65536;
     },
-    readFF8: function () {
+    readFP8: function () {
       return this.read16() / 256;
     },
     readISO639: function () {
@@ -172,6 +193,31 @@ var Bytestream = (function BytestreamClosure() {
   return constructor;
 })();
 
+/**
+ * Parses an mp4 file and constructs a object graph that corresponds to the box/atom
+ * structure of the file. Mp4 files are based on the ISO Base Media format, which in 
+ * turn is based on the Apple Quicktime format. The Quicktime spec is available at:
+ * http://developer.apple.com/library/mac/#documentation/QuickTime/QTFF. An mp4 spec 
+ * also exists, but I cannot find it freely available. 
+ * 
+ * Mp4 files contain a tree of boxes (or atoms in Quicktime). The general structure
+ * is as follows (in a pseudo regex syntax):
+ * 
+ * Box / Atom Structure:
+ * 
+ * [size type [version flags] field* box*]
+ *  <32> <4C>  <--8--> <24->  <-?->  <?>
+ *  <------------- box size ------------>
+ *  
+ *  The box size indicates the entire size of the box and its children, we can use it
+ *  to skip over boxes that are of no interest. Each box has a type indicated by a 
+ *  four character code (4C), this describes how the box should be parsed and is also
+ *  used as an object key name in the resulting box tree. For example, the expression:  
+ *  "moov.trak[0].mdia.minf" can be used to access individual boxes in the tree based
+ *  on their 4C name. If two or more boxes with the same 4C name exist in a box, then
+ *  an array is built with that name.  
+ * 
+ */
 var MP4Parser = (function parser() {
   var BOX_HEADER_SIZE = 8;
   var FULL_BOX_HEADER_SIZE = BOX_HEADER_SIZE + 4;
@@ -223,23 +269,6 @@ var MP4Parser = (function parser() {
       stream.skip(subStream.length);   
     } 
     
-    function readVideoSampleDescription(sd) {
-      assert (stream.readU16() == 0); // Version
-      assert (stream.readU16() == 0); // Revision Level
-      stream.readU32(); // Vendor
-      stream.readU32(); // Temporal Quality
-      stream.readU32(); // Spatial Quality
-      sd.width = stream.readU16();
-      sd.height = stream.readU16();
-      sd.horizontalResolution = stream.readFF16();
-      sd.verticalResolution = stream.readFF16();
-      assert (stream.readU32() == 0); // Reserved
-      sd.frameCount = stream.readU16();
-      sd.compressorName = stream.readPString(32);
-      sd.depth = stream.readU16();
-      assert (stream.readU16() == 0xFFFF); // Color Table Id
-    }
-    
     readHeader();
     
     switch (box.type) {
@@ -264,8 +293,8 @@ var MP4Parser = (function parser() {
         box.modificationTime = stream.readU32();
         box.timescale = stream.readU32();
         box.duration = stream.readU32();
-        box.rate = stream.readFF16();
-        box.volume = stream.readFF8();
+        box.rate = stream.readFP16();
+        box.volume = stream.readFP8();
         stream.skip(10);
         box.matrix = stream.readU32Array(9);
         stream.skip(6 * 4);
@@ -287,11 +316,11 @@ var MP4Parser = (function parser() {
         stream.skip(8);
         box.layer = stream.readU16();
         box.alternateGroup = stream.readU16();
-        box.volume = stream.readFF8();
+        box.volume = stream.readFP8();
         stream.skip(2);
         box.matrix = stream.readU32Array(9);
-        box.width = stream.readFF16();
-        box.height = stream.readFF16();
+        box.width = stream.readFP16();
+        box.height = stream.readFP16();
         break;
       case 'mdia':
         box.name = "Media Box";
@@ -332,36 +361,51 @@ var MP4Parser = (function parser() {
         readFullHeader();
         box.sd = [];
         var entries = stream.readU32();
-        for (var i = 0; i < entries; i++) {
-          var sd = {
-            offset: stream.position,
-            size: stream.readU32(), 
-            format: stream.read4CC()
-          };
-          stream.reserved(6, 0);
-          sd.dataReferenceIndex = stream.readU16();
-  
-          switch (sd.format) {
-            case 'avc1':
-              readVideoSampleDescription(sd);
-              readRemainingBoxes();
-              break;
-            case 'mp4a':
-              break;
-            default:
-              break;
-          }
-          
-          box.sd.push(sd);
-          // stream.skip(sd.size - 16);
-          
-        }
-        // stream.skip(size - FULL_BOX_HEADER_SIZE);
-        console.info(box);
+        readRemainingBoxes();
+        break;
+      case 'avc1':
+        stream.reserved(6, 0);
+        box.dataReferenceIndex = stream.readU16();
+        assert (stream.readU16() == 0); // Version
+        assert (stream.readU16() == 0); // Revision Level
+        stream.readU32(); // Vendor
+        stream.readU32(); // Temporal Quality
+        stream.readU32(); // Spatial Quality
+        box.width = stream.readU16();
+        box.height = stream.readU16();
+        box.horizontalResolution = stream.readFP16();
+        box.verticalResolution = stream.readFP16();
+        assert (stream.readU32() == 0); // Reserved
+        box.frameCount = stream.readU16();
+        box.compressorName = stream.readPString(32);
+        box.depth = stream.readU16();
+        assert (stream.readU16() == 0xFFFF); // Color Table Id
+        readRemainingBoxes();
+        break;
+      case 'mp4a':
+        stream.reserved(6, 0);
+        box.dataReferenceIndex = stream.readU16();
+        box.version = stream.readU16();
+        stream.skip(2);
+        stream.skip(4);
+        box.channelCount = stream.readU16();
+        box.sampleSize = stream.readU16();
+        box.compressionId = stream.readU16();
+        box.packetSize = stream.readU16();
+        box.sampleRate = stream.readU32() >>> 16;
+        
+        // TODO: Parse other version levels.
+        assert (box.version == 0);
+        readRemainingBoxes();
+        break;
+      case 'esds':
+        box.name = "Elementary Stream Descriptor";
+        readFullHeader();
+        // TODO: Do we really need to parse this?
+        skipRemainingBytes();
         break;
       case 'avcC':
         box.name = "AVC Configuration Box";
-        
         box.configurationVersion = stream.readU8();
         box.avcProfileIndicaation = stream.readU8();
         box.profileCompatibility = stream.readU8();
@@ -381,18 +425,74 @@ var MP4Parser = (function parser() {
         break;
       case 'btrt':
         box.name = "Bit Rate Box";
-        skipRemainingBytes();
+        box.bufferSizeDb = stream.readU32();
+        box.maxBitrate = stream.readU32();
+        box.avgBitrate = stream.readU32();
         break;
       case 'stts':
         box.name = "Decoding Time to Sample Box";
+        readFullHeader();
+        box.table = stream.readU32Array(stream.readU32(), 2, ["count", "delta"]);
+        
+        // Each {count, delta} entry gives the number of consecutive samples with the same
+        // time delta and the delta of those samples. By adding the deltas, a time-to-sample
+        // map can be built.
+        
+        var sampleToDelta = function (sample) {
+          for (var i = 0; i < box.table.length; i++) {
+            sample -= box.table[i].count;
+            if (sample < 0) {
+              return box.table[i].count;
+            }
+          }
+          assert (false);
+        };
+        
+        box.timeToSample = function (time) {
+          var sample = 0;
+          for (var i = 0; i < box.table.length; i++) {
+            var delta = box.table[i].count * box.table[i].delta;
+            if (time >= delta) {
+              time -= delta;
+              sample += box.table[i].count;
+              continue;
+            } else {
+              return Math.floor(time / box.table[i].delta);
+            }
+          }
+        };
+        break;
       case 'stss':
         box.name = "Sync Sample Box";
+        readFullHeader();
+        box.samples = stream.readU32Array(stream.readU32());
+        break;
       case 'stts':
         box.name = "Sample to Chunk Box";
+        readFullHeader();
+        box.table = stream.readU32Array(stream.readU32(), 3, 
+          ["firstChunk", "samplesPerChunk", "sampleDescriptionId"]);
+        break;
       case 'stsz':
         box.name = "Sample Size Box";
+        readFullHeader();
+        box.sampleSize = stream.readU32();
+        var count = stream.readU32();
+        if (box.sampleSize == 0) {
+          box.table = stream.readU32Array(count);
+        }
+        break;
       case 'stco':
         box.name = "Chunk Offset Box";
+        readFullHeader();
+        box.table = stream.readU32Array(stream.readU32());
+        break;
+      case 'smhd':
+        box.name = "Sound Media Header Box";
+        readFullHeader();
+        box.balance = stream.readFP8();
+        stream.reserved(2, 0);
+        break;
       default:
         skipRemainingBytes();
         break;

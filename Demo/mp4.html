@@ -5,7 +5,7 @@
   <link type="text/css" href="jquery/theme/jquery-ui.css" rel="stylesheet" />
   <link type="text/css" href="jquery/theme/jquery.treeTable.css" rel="stylesheet" />
 </head>
-<body>
+<body onload="load()">
   <script type="text/javascript" src="jquery/jquery.min.js"></script>
   <script type="text/javascript" src="jquery/jquery-ui.min.js"></script>
   <script type="text/javascript" src="jquery/jquery.treeTable.min.js"></script>
@@ -34,7 +34,11 @@
       function createTree(nodeId, node) {
         for (var item in node) {
           var val = node[item];
-          if (typeof(val) != "object") {
+          if (typeof(val) == "function") {
+            str += create(nodeId, nodeId + "-" + item, item, val.name + "(...)");
+          } else if (val instanceof Array && val.length > 8) {
+            str += create(nodeId, nodeId + "-" + item, item, "[" + val.length + "]");
+          } else if (typeof(val) != "object" ) {
             str += create(nodeId, nodeId + "-" + item, item, val);
           } else if (val instanceof Uint32Array) {
             str += create(nodeId, nodeId + "-" + item, item, val + " (" + val.length + ")");
@@ -48,7 +52,6 @@
       }
       
       createTree("root", path);
-      console.info(str);
       document.getElementById("tree").innerHTML = str;
       
       $("#tree").treeTable({
@@ -64,10 +67,6 @@
       
       stream.readAll(null, function (buffer) {
         var root = new MP4Parser(new Bytestream(buffer)).parse();
-        
-        // var root = {};
-        // parser.parseBoxes(root, parser.stream);
-        
         display (eval($("#filter").val()));
       });
       
@@ -88,6 +87,9 @@
       }
     }
     
+    function load() {
+      parse($("#clip").val());
+    }
   </script>
   
   <div id="panel">
@@ -132,7 +134,7 @@
     </script>
     
     <div id="setting">
-      Filter<br> <input onkeypress="handleKeyPress(event)" id="filter" style="margin-right: 8px; width:98%;" value="root.moov.trak[0].mdia.minf.stbl.stsd"></input>
+      Filter<br> <input onkeypress="handleKeyPress(event)" id="filter" style="margin-right: 8px; width:98%;" value="root.moov.trak[1]"></input>
     </div>
     <div id="setting">
       <button id="parse" style="margin-right: 8px">Parse</button>
