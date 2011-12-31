@@ -45,7 +45,7 @@
           } else if (val instanceof Uint8Array) {
             str += create(nodeId, nodeId + "-" + item, item, val + " (" + val.length + ")");
           } else {
-            str += create(nodeId, nodeId + "-" + item, item, "");
+            str += create(nodeId, nodeId + "-" + item, item, (nodeId + "-" + item).replace(/-/g, "."));
             createTree(nodeId + "-" + item, val);
           }
         }
@@ -66,8 +66,13 @@
       var stream = new Stream(file);
       
       stream.readAll(null, function (buffer) {
-        var root = new MP4Parser(new Bytestream(buffer)).parse();
+        var reader = new MP4Reader(new Bytestream(buffer))
+        this.r  = reader;
+        reader.read();
+        this.root = reader.file;
         display (eval($("#filter").val()));
+        
+        reader.tracks[1].foo();
       });
       
     }
@@ -104,6 +109,7 @@
           display: "Clip",
           options: {
             mozilla_story: {value: "mozilla_story.mp4", display: "Mozilla Story"},
+            gizmo: {value: "gizmo.mp4", display: "Gizmo"}
           }
         }
       };
