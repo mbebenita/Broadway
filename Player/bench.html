@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <script type="text/javascript" src="jquery/jquery.min.js"></script>
+  <script type="text/javascript" src="jquery/jquery-ui.min.js"></script>
+</head>
+  <body>
+  <iframe id="frame" width="300px" height="700px" style="float: left;"></iframe>
+  <script type="text/javascript">
+  
+    $(function() {
+      $("#benchmark").button();
+      $("#benchmark").click(function() {
+        run();
+      });
+    });
+  
+    var frame = document.getElementById('frame');
+    
+    function expand(pre, obj) {
+      var keys = [];
+      for (var key in obj) {
+        keys.push(key);
+      }      
+      var result = [];
+      var tmp = {};
+      function foo(k) {
+        var key = keys[k];
+        obj[key].split(",").forEach(function (val) {
+          tmp[key] = val;
+          if (k < keys.length - 1) {
+            foo(k + 1);
+          } else {
+            result.push(jQuery.extend({}, pre, tmp));
+          }
+        });
+      }
+      foo(0);
+      return result;
+    }
+    
+    var configs = [];
+    
+    /*
+    configs = configs.concat(expand({}, {
+      clip: "mozilla.264,mozilla_story.264,admiral.264,matrix.264,matrix_large.264",
+      mode: "none",
+      deblocking: "none",
+      filterHorLuma: "none",
+      filterVerLumaEdge: "none",
+      getBoundaryStrengths: "none"
+    }));
+    
+    */
+    
+    configs = configs.concat(expand({}, {
+      clip: "mozilla_story.264",
+      mode: "none",
+      deblocking: "none",
+      filterHorLuma: "none",
+      filterVerLumaEdge: "none",
+      getBoundaryStrengths: "none",
+      sample: "0,1,2"
+    }));
+    
+    configs = configs.concat(expand({}, {
+      clip: "mozilla_story.264",
+      mode: "none",
+      deblocking: "default",
+      filterHorLuma: "default",
+      filterVerLumaEdge: "default",
+      getBoundaryStrengths: "default",
+      sample: "0,1,2"
+    }));
+
+    configs = configs.concat(expand({}, {
+      clip: "mozilla_story.264",
+      mode: "none",
+      deblocking: "default",
+      filterHorLuma: "optimized",
+      filterVerLumaEdge: "optimized",
+      getBoundaryStrengths: "optimized",
+      sample: "0,1,2"
+    }));
+    
+    var i = 0;
+    var config;
+    var keys = [];
+    
+    function run() {
+      $("#frame").attr("src", "broadway.html");
+      var row = "<tr>";
+      for (var key in configs[0]) {
+        keys.push(key);
+        row += "<td class=\"header\">" + key + "</td>";
+      }
+      row += "<td class=\"score\">Min</td>";
+      row += "<td class=\"score\">Max</td>";
+      row += "<td class=\"score\">Score</td>";
+      row += "</tr>";
+      $("#results").append(row);
+    
+      $("#frame").load(function () {
+        if (i < configs.length) {
+          config = configs[i++];
+          document.getElementById('progress').innerHTML = i + " of " + configs.length;
+          frame.contentWindow.play(config);
+          frame.contentWindow.onScoreCalculated = function (result) {
+            config.result = result;
+            var row = "<tr>";
+            keys.forEach(function (key) {
+              row += "<td>" + config[key] + "</td>";
+            });
+            var color = config.result.min < 30 ? "red" : "green"; 
+            row += "<td class=\"score\" style=\"color: " + color + "\">" + config.result.min.toFixed(2) + "</td>";
+            row += "<td class=\"score\">" + config.result.max.toFixed(2) + "</td>";
+            row += "<td class=\"score\">" + config.result.score.toFixed(2) + "</td>";
+            row += "</tr>";
+            $("#results").append(row);
+            $("#frame").attr("src", "broadway.html");
+          }
+        }
+      });
+    }
+    
+    
+  </script>
+  <button style="margin-left: 10px;" id="benchmark">Run Benchmarks</button>
+  <span id="progress" style="padding-left: 10px;"></span>
+  <style>
+    body {
+      font: bold 10px/.738 "Verdana", sans-serif;
+      color: #6D7581;
+    }
+  
+    #results {
+        
+    }
+    
+    #results td {
+        padding: 5px;
+    }
+    
+    .clip {
+        text-align: left;
+    }
+    
+    .score {
+        text-align: right;
+    }
+  </style>
+  <table id="results"></table>
+  </body>
+</html>

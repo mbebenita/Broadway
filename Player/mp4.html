@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <link type="text/css" href="screen.css" rel="stylesheet" />
+  <link type="text/css" href="jquery/theme/jquery-ui.css" rel="stylesheet" />
+  <link type="text/css" href="jquery/theme/jquery.treeTable.css" rel="stylesheet" />
+</head>
+<body onload="load()">
+  <script type="text/javascript" src="jquery/jquery.min.js"></script>
+  <script type="text/javascript" src="jquery/jquery-ui.min.js"></script>
+  <script type="text/javascript" src="jquery/jquery.treeTable.min.js"></script>
+
+  <script src='util.js' type='text/javascript'></script>
+  <script src='stream.js' type='text/javascript'></script>
+  <script src='mp4.js' type='text/javascript'></script>
+
+  <script type="text/javascript">
+      
+    function display(path) {
+      function create(parentId, id, name, value) {
+        var str = "";
+        if (parentId) {
+         str += '<tr id=\"' + id + '\" class=\"child-of-' + parentId + '\">';
+        } else {
+          str += '<tr id=\"' + id + '\">';
+        }
+        str += '<td>' + name + '</td>';
+        str += '<td>' + value + '</td>';
+        str += '</tr>';
+        return str;
+      }
+      
+      var str = create(null, "root", "File", "");
+      
+      function createTree(nodeId, node) {
+        for (var item in node) {
+          var val = node[item];
+          if (typeof(val) == "function") {
+            str += create(nodeId, nodeId + "-" + item, item, val.name + "(...)");
+          } else if (val instanceof Array && val.length > 8) {
+            str += create(nodeId, nodeId + "-" + item, item, "[" + val.length + "]");
+          } else if (typeof(val) != "object" ) {
+            str += create(nodeId, nodeId + "-" + item, item, val);
+          } else if (val instanceof Uint32Array) {
+            str += create(nodeId, nodeId + "-" + item, item, val + " (" + val.length + ")");
+          } else if (val instanceof Uint8Array) {
+            str += create(nodeId, nodeId + "-" + item, item, val + " (" + val.length + ")");
+          } else {
+            str += create(nodeId, nodeId + "-" + item, item, (nodeId + "-" + item).replace(/-/g, "."));
+            createTree(nodeId + "-" + item, val);
+          }
+        }
+      }
+      
+      createTree("root", path);
+      document.getElementById("tree").innerHTML = str;
+      
+      $("#tree").treeTable({
+        expandable: true,
+        indent: 16,
+        clickableNodeNames: true,
+        initialState: "expanded"
+      });
+    }
+    
+    function parse(file, show) {
+      var stream = new Stream(file);
+      
+      stream.readAll(null, function (buffer) {
+        var reader = new MP4Reader(new Bytestream(buffer))
+        this.r  = reader;
+        reader.read();
+        this.root = reader.file;
+        if (show) {
+          display (eval($("#filter").val()));
+        }
+        reader.tracks[1].foo();
+      });
+      
+    }
+
+    $(function() {
+      $("#parse").button();
+      $("#parse").click(function() {
+        parse($("#clip").val(), true);
+      });
+      
+      $("#test").button();
+      $("#test").click(function() {
+        var clips = options.clip.options;
+        for (var clip in clips) {
+          parse(clips[clip].value, false);
+        }
+      });
+    });
+    
+    
+    function handleKeyPress(event) {
+      var key = event.keyCode || event.which;
+      if (key == 13) {
+        parse($("#clip").val());
+      }
+    }
+    
+    function load() {
+      // parse($("#clip").val());
+    }
+  </script>
+  
+  <div id="panel">
+    <p class="title"><b>Mp4.js</b></p>
+    <p class="sub-title">An MP4 File Parser in JavaScript</p>
+    
+    <p class="header">Settings</p>
+    
+    <script type="text/javascript">
+      var options = {
+        "clip": {
+          display: "Clip",
+          options: {
+            mozilla_story: {value: "mozilla_story.mp4", display: "Mozilla Story"},
+            gizmo: {value: "gizmo.mp4", display: "Gizmo"}
+          }
+        }
+      };
+    
+      function extend() {
+        var t = {};
+        for (var a in arguments) {
+          for (var k in arguments[a]) {
+            t[k] = arguments[a][k];
+          }
+        }
+        return t;
+      }
+      var settings = extend(options);
+      for (name in settings) {
+        var setting = settings[name];
+        var str = '<div id="setting">';
+        str += '<span>' + setting.display + '</span>';
+        str += '<select id="' + name + '" style="margin-left: 10px;" onchange="onSelect(this)">';
+        for (option in setting.options) {
+          var value = setting.options[option].value;
+          if (!value) value = option;
+          str += '<option value="' + value + '">' + setting.options[option].display + '</option>';
+        }
+        str += '</select></div>';
+        document.write(str);
+      }
+    </script>
+    
+    <div id="setting">
+      Filter<br> <input onkeypress="handleKeyPress(event)" id="filter" style="margin-right: 8px; width:98%;" value="root.moov.trak[1]"></input>
+    </div>
+    <div id="setting">
+      <button id="parse" style="margin-right: 8px">Parse</button>
+      <button id="test" style="margin-right: 8px">Test</button>
+    </div>
+    <div id="setting">
+      <div id="downloadProgress"></div>
+    </div>
+  </div>
+  <style>
+  td {
+    padding-left: 8px;
+    text-align: left;
+    font-size: 10px;
+  }
+  </style>
+  <div style="margin-left: 10px; float: left;">
+      <table id="tree">
+        
+      </table>
+  </div>
+  </body>
+</html>

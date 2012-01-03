@@ -1,0 +1,23 @@
+<html>
+<head>
+  <link type="text/css" href="jquery/theme/jquery-ui.css" rel="stylesheet" />
+</head>
+<body>
+  <script type="text/javascript" src="jquery/jquery.min.js"></script>
+  <script type="text/javascript" src="stream.js"></script>
+  
+  <script type="text/javascript">
+    var s = new Stream("admiral.264");
+    s.readAll(
+      function (buffer, loaded, total) {
+        console.info(loaded);
+        console.info(buffer);
+      },
+      function (buffer) {
+        console.info(buffer);
+      }
+    );
+    console.info(s);
+  </script>
+</body>
+</html>
