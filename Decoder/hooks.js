@@ -1,4 +1,6 @@
-Module['FS'] = FS;
+if (FS) {
+  Module['FS'] = FS;
+}
 Module['HEAPU8'] = HEAPU8;
 Module['CorrectionsMonitor'] = CorrectionsMonitor; 
 
@@ -31,8 +33,11 @@ _broadwayOnFrameDecoded = function() {
   Module['onFrameDecoded']();
 }
 
-Module['setPosition'] = _broadwaySetPosition; 
-Module['getPosition'] = _broadwayGetPosition;
+// Module['setPosition'] = _broadwaySetPosition; 
+// Module['getPosition'] = _broadwayGetPosition;
+
+Module['createStreamBuffer'] = _broadwayCreateStreamBuffer;
+
 
 var patches = Module['patches'] = {};
 

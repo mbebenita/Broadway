@@ -15824,16 +15824,10 @@ function _fillStreamWithFile(a, c) {
   1 == b ? _printf(__str1, allocate(1, "i32", ALLOC_STACK)) : 2 == b && (_fseek(d, 0, 2), e = _ftell(d), _rewind(d), _streamInit(a, e), e = _fread(HEAP32[a + 4 >> 2], 1, HEAP32[a >> 2], d), _fclose(d), b = (e | 0) != (HEAP32[a >> 2] | 0) ? 3 : 4, 3 == b && _printf(__str2, allocate(1, "i32", ALLOC_STACK)), _printf(__str3, allocate([e, 0, 0, 0], ["i32", 0, 0, 0], ALLOC_STACK)))
 }
 function _playStream(a) {
-  var c, b;
   HEAP32[_decInput >> 2] = HEAP32[a + 4 >> 2];
   HEAP32[_decInput + 4 >> 2] = HEAP32[a >> 2];
-  a = 0;
   a:for(;;) {
-    c = HEAP32[_decInput >> 2];
-    b = _broadwayDecode();
-    var d = a, a = d + 1;
-    _printf(__str4, allocate([d, 0, 0, 0, HEAP32[_decInput >> 2] - c, 0, 0, 0, b, 0, 0, 0], ["i32", 0, 0, 0, "i32", 0, 0, 0, "i32", 0, 0, 0], ALLOC_STACK));
-    if(!(0 < HEAPU32[_decInput + 4 >> 2] >>> 0)) {
+    if(_broadwayDecode(), !(0 < HEAPU32[_decInput + 4 >> 2] >>> 0)) {
       break a
     }
   }
@@ -15850,7 +15844,7 @@ function _playFile(a) {
 function _broadwayInit() {
   var a, c;
   a = 0 != (_H264SwDecInit(_decInst, 0) | 0) ? 1 : 2;
-  1 == a ? (_printf(__str5, allocate(1, "i32", ALLOC_STACK)), _broadwayExit(), c = -1) : 2 == a && (HEAP32[_picDisplayNumber >> 2] = 1, HEAP32[_picDecodeNumber >> 2] = 1);
+  1 == a ? (_printf(__str4, allocate(1, "i32", ALLOC_STACK)), _broadwayExit(), c = -1) : 2 == a && (HEAP32[_picDisplayNumber >> 2] = 1, HEAP32[_picDecodeNumber >> 2] = 1);
   return c
 }
 Module._broadwayInit = _broadwayInit;
@@ -15904,7 +15898,6 @@ function _broadwayDecode() {
         if(2 != (_H264SwDecNextPicture(HEAP32[_decInst >> 2], _decPicture, 0) | 0)) {
           break b
         }
-        _printf(__str6, allocate([HEAP32[_picDecodeNumber >> 2], 0, 0, 0, HEAP32[_picDisplayNumber >> 2], 0, 0, 0, 0 != (HEAP32[_decPicture + 8 >> 2] | 0) ? __str7 : __str8, 0, 0, 0], ["i32", 0, 0, 0, "i32", 0, 0, 0, "i8*", 0, 0, 0], ALLOC_STACK));
         HEAP32[_picDisplayNumber >> 2] += 1;
         _broadwayOnPictureDecoded(HEAP32[_decPicture >> 2], HEAP32[_decInfo + 4 >> 2], HEAP32[_decInfo + 8 >> 2])
       }
@@ -15918,11 +15911,11 @@ function _broadwayDecode() {
 _broadwayDecode.X = 1;
 function _broadwayCreateStreamBuffer(a) {
   a = _malloc(a);
-  1 == (0 == (a | 0) ? 1 : 2) && _printf(__str9, allocate(1, "i32", ALLOC_STACK));
+  1 == (0 == (a | 0) ? 1 : 2) && _printf(__str5, allocate(1, "i32", ALLOC_STACK));
   return a
 }
 function _H264SwDecTrace(a) {
-  _printf(__str10, allocate([a, 0, 0, 0], ["i8*", 0, 0, 0], ALLOC_STACK))
+  _printf(__str6, allocate([a, 0, 0, 0], ["i8*", 0, 0, 0], ALLOC_STACK))
 }
 function _H264SwDecMalloc(a) {
   return _malloc(a)
@@ -16703,8 +16696,8 @@ Module.callMain = function(a) {
   return _main(b, d, 0)
 };
 var _qpDiv6, _qpMod6, _levelScale, _h264bsdQpC, _stuffingTable, _CeilLog2NumSliceGroups, _dcCoeffIndex, _codedBlockPatternIntra4x4, _codedBlockPatternInter, _runBefore_1, _runBefore_2, _runBefore_3, _runBefore_4, _runBefore_5, _runBefore_6, _totalZeros_1_0, _totalZeros_1_1, _totalZeros_2, _totalZeros_3, _totalZeros_4, _totalZeros_5, _totalZeros_6, _totalZeros_7, _totalZeros_8, _totalZeros_9, _totalZeros_10, _totalZeros_11, _totalZeros_12, _totalZeros_13, _totalZeros_14, _coeffToken0_0, _coeffToken0_1, 
-_coeffToken0_2, _coeffToken0_3, _coeffToken2_0, _coeffToken2_1, _coeffToken2_2, _coeffToken4_0, _coeffToken4_1, _coeffToken8, _coeffTokenMinus1_0, _coeffTokenMinus1_1, _N_D_4x4B, _N_C_4x4B, _N_B_4x4B, _N_A_4x4B, _h264bsdBlockX, _h264bsdBlockY, _h264bsdClip, _N_D_SUB_PART, _N_C_SUB_PART, _N_B_SUB_PART, _N_A_SUB_PART, _lumaFracPos, _sample, _hashA, _hashB, _hashC, _hashD, _alphas, _betas, _tc0, _mb4x4Index, _STREAM_BUFFER_SIZE, _streamBuffer, __str, __str1, __str2, __str3, _decInput, __str4, _broadwayStream, 
-_decInst, __str5, _picDisplayNumber, _picDecodeNumber, _decOutput, _decInfo, _picSize, _decPicture, __str6, __str7, __str8, __str9, __str10;
+_coeffToken0_2, _coeffToken0_3, _coeffToken2_0, _coeffToken2_1, _coeffToken2_2, _coeffToken4_0, _coeffToken4_1, _coeffToken8, _coeffTokenMinus1_0, _coeffTokenMinus1_1, _N_D_4x4B, _N_C_4x4B, _N_B_4x4B, _N_A_4x4B, _h264bsdBlockX, _h264bsdBlockY, _h264bsdClip, _N_D_SUB_PART, _N_C_SUB_PART, _N_B_SUB_PART, _N_A_SUB_PART, _lumaFracPos, _sample, _hashA, _hashB, _hashC, _hashD, _alphas, _betas, _tc0, _mb4x4Index, _STREAM_BUFFER_SIZE, _streamBuffer, __str, __str1, __str2, __str3, _decInput, _broadwayStream, 
+_decInst, __str4, _picDisplayNumber, _picDecodeNumber, _decOutput, _decInfo, _picSize, _decPicture, __str5, __str6;
 _qpDiv6 = allocate([0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 3, 3, 3, 3, 3, 3, 4, 4, 4, 4, 4, 4, 5, 5, 5, 5, 5, 5, 6, 6, 6, 6, 6, 6, 7, 7, 7, 7, 7, 7, 8, 8, 8, 8], "i8", ALLOC_STATIC);
 _qpMod6 = allocate([0, 1, 2, 3, 4, 5, 0, 1, 2, 3, 4, 5, 0, 1, 2, 3, 4, 5, 0, 1, 2, 3, 4, 5, 0, 1, 2, 3, 4, 5, 0, 1, 2, 3, 4, 5, 0, 1, 2, 3, 4, 5, 0, 1, 2, 3, 4, 5, 0, 1, 2, 3], "i8", ALLOC_STATIC);
 _levelScale = allocate([10, 0, 0, 0, 13, 0, 0, 0, 16, 0, 0, 0, 11, 0, 0, 0, 14, 0, 0, 0, 18, 0, 0, 0, 13, 0, 0, 0, 16, 0, 0, 0, 20, 0, 0, 0, 14, 0, 0, 0, 18, 0, 0, 0, 23, 0, 0, 0, 16, 0, 0, 0, 20, 0, 0, 0, 25, 0, 0, 0, 18, 0, 0, 0, 23, 0, 0, 0, 29, 0, 0, 0], ["i32", 0, 0, 0, "i32", 0, 0, 0, "i32", 0, 0, 0, "i32", 0, 0, 0, "i32", 0, 0, 0, "i32", 0, 0, 0, "i32", 0, 0, 0, "i32", 0, 0, 0, "i32", 0, 0, 0, "i32", 0, 0, 0, "i32", 0, 0, 0, "i32", 0, 0, 0, "i32", 0, 0, 0, "i32", 0, 0, 0, "i32", 0, 0, 0, "i32", 
@@ -16856,21 +16849,17 @@ __str1 = allocate([85, 78, 65, 66, 76, 69, 32, 84, 79, 32, 79, 80, 69, 78, 32, 7
 __str2 = allocate([67, 65, 78, 78, 79, 84, 32, 82, 69, 65, 68, 32, 70, 73, 76, 69, 10, 0], "i8", ALLOC_STATIC);
 __str3 = allocate([82, 69, 65, 68, 32, 70, 73, 76, 69, 32, 37, 100, 32, 66, 89, 84, 69, 83, 10, 0], "i8", ALLOC_STATIC);
 _decInput = allocate(16, ["i8*", 0, 0, 0, "i32", 0, 0, 0, "i32", 0, 0, 0, "i32", 0, 0, 0], ALLOC_STATIC);
-__str4 = allocate([68, 101, 99, 111, 100, 101, 100, 32, 85, 110, 105, 116, 32, 35, 37, 100, 44, 32, 83, 105, 122, 101, 58, 32, 37, 100, 44, 32, 82, 101, 115, 117, 108, 116, 58, 32, 37, 100, 10, 0], "i8", ALLOC_STATIC);
 _broadwayStream = allocate(16, ["i32", 0, 0, 0, "i8*", 0, 0, 0, "i8*", 0, 0, 0, "i8*", 0, 0, 0], ALLOC_STATIC);
 _decInst = allocate(1, "i8*", ALLOC_STATIC);
-__str5 = allocate([68, 69, 67, 79, 68, 69, 82, 32, 73, 78, 73, 84, 73, 65, 76, 73, 90, 65, 84, 73, 79, 78, 32, 70, 65, 73, 76, 69, 68, 10, 0], "i8", ALLOC_STATIC);
+__str4 = allocate([68, 69, 67, 79, 68, 69, 82, 32, 73, 78, 73, 84, 73, 65, 76, 73, 90, 65, 84, 73, 79, 78, 32, 70, 65, 73, 76, 69, 68, 10, 0], "i8", ALLOC_STATIC);
 _picDisplayNumber = allocate(1, "i32", ALLOC_STATIC);
 _picDecodeNumber = allocate(1, "i32", ALLOC_STATIC);
 _decOutput = allocate(4, "i8*", ALLOC_STATIC);
 _decInfo = allocate(48, "i32", ALLOC_STATIC);
 _picSize = allocate(1, "i32", ALLOC_STATIC);
 _decPicture = allocate(16, ["i32*", 0, 0, 0, "i32", 0, 0, 0, "i32", 0, 0, 0, "i32", 0, 0, 0], ALLOC_STATIC);
-__str6 = allocate([32, 68, 101, 99, 111, 100, 101, 100, 32, 80, 105, 99, 116, 117, 114, 101, 32, 68, 101, 99, 111, 100, 101, 58, 32, 37, 100, 44, 32, 68, 105, 115, 112, 108, 97, 121, 58, 32, 37, 100, 44, 32, 84, 121, 112, 101, 58, 32, 37, 115, 10, 0], "i8", ALLOC_STATIC);
-__str7 = allocate([73, 68, 82, 0], "i8", ALLOC_STATIC);
-__str8 = allocate([78, 79, 78, 45, 73, 68, 82, 0], "i8", ALLOC_STATIC);
-__str9 = allocate([85, 78, 65, 66, 76, 69, 32, 84, 79, 32, 65, 76, 76, 79, 67, 65, 84, 69, 32, 77, 69, 77, 79, 82, 89, 10, 0], "i8", ALLOC_STATIC);
-__str10 = allocate([37, 115, 10, 0], "i8", ALLOC_STATIC);
+__str5 = allocate([85, 78, 65, 66, 76, 69, 32, 84, 79, 32, 65, 76, 76, 79, 67, 65, 84, 69, 32, 77, 69, 77, 79, 82, 89, 10, 0], "i8", ALLOC_STATIC);
+__str6 = allocate([37, 115, 10, 0], "i8", ALLOC_STATIC);
 FUNCTION_TABLE = [0, 0, _FillRow1, 0, _h264bsdFillRow7, 0];
 Module.FUNCTION_TABLE = FUNCTION_TABLE;
 function run(a) {

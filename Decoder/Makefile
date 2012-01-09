@@ -1,4 +1,4 @@
-OPTS = -m32 -g # -DH264DEC_TRACE -D_ERROR_PRINT -D_DEBUG_PRINT -D_ASSERT_USED	
+OPTS = -m32 -g # -DH264DEC_TRACE # -D_ERROR_PRINT -D_DEBUG_PRINT -D_ASSERT_USED	
 ifeq ($(LINUX),1)
 OPTS += -DLINUX
 endif
@@ -49,8 +49,8 @@ SRCS := \
     source/h264bsd_pic_order_cnt.c \
     source/h264bsd_decoder.c \
     source/H264SwDecApi.c \
-    source/BroadwayEx.c
-    
+    source/Decoder.c
+
 OBJS    = $(patsubst $(SRCDIR)/%.c,$(OBJDIR)/%.o,$(SRCS))
 
 # Targets

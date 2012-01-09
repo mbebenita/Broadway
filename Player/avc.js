@@ -1,4 +1,8 @@
-QUANTUM_SIZE = 4;
+/** 
+ * Requires: avc-codec.js
+ **/
+
+assert (Module);
 
 var advancedCCOptimizations = Module.CC_VARIABLE_MAP ? true : false;
 
@@ -10,26 +14,70 @@ if (advancedCCOptimizations) {
   _h264bsdClip = Module.CC_VARIABLE_MAP["_h264bsdClip"];
 }
 
-var options = {
-  "clip": {
-    display: "Clip",
-    options: {
-      mozilla: {value: "mozilla.264", display: "Mozilla"},
-      mozilla_story: {value: "mozilla_story.264", display: "Mozilla Story"},
-      admiral: {value: "admiral.264", display: "Admiral"},
-      matrix: {value: "matrix.264", display: "Matrix"},
-      matrix_large: {value: "matrix_large.264", display: "Matrix HD"},
+var Avc = (function avc() {
+  const MAX_STREAM_BUFFER_LENGTH = 1024 * 1024;
+  
+  function constructor() {
+    Module._broadwayInit();
+    this.streamBuffer = toU8Array(Module._broadwayCreateStream(MAX_STREAM_BUFFER_LENGTH), MAX_STREAM_BUFFER_LENGTH);
+    this.pictureBuffers = {};
+    
+    this.onPictureDecoded = function (buffer, width, height) {
+      // console.info(buffer.length);
     }
-  },
-  "mode": {
-    display: "Mode",
-    options: {
-      none: {display: "None"},
-      canvas: {display: "Canvas"},
-      webgl: {display: "Canvas w/ WebGL"}
+    
+    _broadwayOnPictureDecoded = function ($buffer, width, height) {
+      var buffer = this.pictureBuffers[$buffer];
+      if (!buffer) {
+        buffer = this.pictureBuffers[$buffer] = toU8Array($buffer, (width * height * 3) / 2);
+      }
+      this.onPictureDecoded(buffer, width, height);
+    }.bind(this);
+  }
+
+  /**
+   * Creates a typed array from a HEAP8 pointer. 
+   */
+  function toU8Array(ptr, length) {
+    return HEAPU8.subarray(ptr, ptr + length);
+  }
+  
+  constructor.prototype = {
+    /**
+     * Decodes a stream buffer. This may be one single (unframed) NAL unit without the
+     * start code, or a sequence of NAL units with framing start code prefixes. This
+     * function overwrites stream buffer allocated by the codec with the supplied buffer.
+     */
+    decode: function decode(buffer) {
+      // console.info("Decoding: " + buffer.length);
+      this.streamBuffer.set(buffer);
+      Module._broadwaySetStreamLength(buffer.length);
+      Module._broadwayPlayStream();
+    },
+    configure: function (config) {
+      patchOptimizations(config, patches);
+      console.info("Broadway Configured: " + JSON.stringify(config));
+    }
+  };
+  
+  return constructor;
+})();
+
+function patchOptimizations(config, patches) { 
+  var scope = getGlobalScope();
+  for (var name in patches) {
+    var patch = patches[name];
+    var option = config[name];
+    if (!option) option = "original";
+    console.info(name + ": " + option);
+    assert (option in patch.options);
+    var fn = patch.options[option].fn;
+    if (fn) {
+      scope[patch.original] = Module.patch(null, patch.name, fn);
+      console.info("Patching: " + patch.name + ", with: " + option);
     }
   }
-};
+}
 
 var patches = {
   "filter": {
@@ -73,169 +121,18 @@ var patches = {
   }
 };
 
-var Broadway = (function broadway() {
-  function constructor(canvas) {
-    this.stream = null;
-    this.onLoad = function () {};
-    this.onFrameDecoded = function () {};
-    this.canvas = canvas;
-    this.isConfigured = false;
-    
-    this.webGLCanvas;
-    
-    this.statistics = {
-      videoStartTime: 0,
-      videoFrameCounter: 0,
-      windowStartTime: 0,
-      windowFrameCounter: 0,
-      fpsMin: 1000,
-      fpsMax: -1000,
-      webGLTextureUploadTime: 0
-    }
-  }
-  
-  function info(msg) {
-    console.info(msg);
-  }
-  
-  function webGLPaint($luma, $cb, $cr, width, height) {
-    if (!this.webGLCanvas) {
-      this.webGLCanvas = new YUVWebGLCanvas(Module.canvas, new Size(width, height));
-    }
-    var luma = Module.HEAPU8.subarray($luma);
-    var cb = Module.HEAPU8.subarray($cb);
-    var cr = Module.HEAPU8.subarray($cr);
-    var start = Date.now();
-    this.webGLCanvas.YTexture.fill(luma);
-    this.webGLCanvas.UTexture.fill(cb);
-    this.webGLCanvas.VTexture.fill(cr);
-    this.webGLCanvas.drawScene();
-    this.statistics.webGLTextureUploadTime += Date.now() - start;
-  }
-  
-  function getGlobalScope() {
-    return function () { return this; }.call(null);
-  }
-  
-  function patchOptimizations(config, patches) { 
-    var scope = getGlobalScope();
-    for (var name in patches) {
-      var patch = patches[name];
-      var option = config[name];
-      if (!option) option = "original";
-      console.info(name + ": " + option);
-      assert (option in patch.options);
-      var fn = patch.options[option].fn;
-      if (fn) {
-        scope[patch.original] = Module.patch(null, patch.name, fn);
-        console.log("Patching: " + patch.name + ", with: " + option);
-      }
-    }
-  }
-  
-  function updateFrameStatistics() {
-    var s = this.statistics;
-    s.videoFrameCounter += 1;
-    s.windowFrameCounter += 1;
-    var now = Date.now();
-    if (!s.videoStartTime) {
-      s.videoStartTime = now;
-    }
-    var videoElapsedTime = now - s.videoStartTime;
-    s.elapsed = videoElapsedTime / 1000;
-    if (videoElapsedTime < 1000) {
-      return;
-    }
-    
-    if (!s.windowStartTime) {
-      s.windowStartTime = now;
-      return;
-    } else if ((now - s.windowStartTime) > 1000) {
-      var windowElapsedTime = now - s.windowStartTime;
-      var fps = (s.windowFrameCounter / windowElapsedTime) * 1000;
-      s.windowStartTime = now;
-      s.windowFrameCounter = 0;
-      
-      if (fps < s.fpsMin) s.fpsMin = fps;
-      if (fps > s.fpsMax) s.fpsMax = fps;
-      s.fps = fps;
-    }
-    
-    var fps = (s.videoFrameCounter / videoElapsedTime) * 1000;
-    s.fpsSinceStart = fps;
-    return ;
-  }
-  
-  constructor.prototype = {
-    configure: function(config) {
-      assert(!this.isConfigured);
-      Module.FS.ignorePermissions = true;
-      
-      /* Configure Paint Mode */
-      Module.canvas = this.canvas;
-      if (config.mode == "none") {
-        Module.paint = function() {};
-      } else if (config.mode == "webgl") {
-        assert (this.canvas);
-        Module.paint = function () { 
-          webGLPaint.apply(this, arguments);
-        }.bind(this); 
-      } else if (config.mode == "canvas") {
-        assert (this.canvas);
-        Module.ctx2D = this.canvas.getContext('2d');
-        if (!Module.ctx2D) {
-          alert('Canvas not available :(');
-          return;
-        }
-      }
-      
-      Module.onFrameDecoded = function () {
-        updateFrameStatistics.call(this);
-        this.onFrameDecoded(this.statistics);
-      }.bind(this);
-      
-      /* Configure Optimization Patches */
-      patchOptimizations(config, patches);
-      
-      info("Broadway Configured: " + JSON.stringify(config));
-      this.isConfigured = true;
-    },
-    load: function(url) {
-      info("Broadway Loading: " + url);
-      this.stream = new Stream(url);
-      this.stream.readAll(null, function (buffer) {
-        if (buffer) {
-          var byteArray = new Uint8Array(buffer);
-          
-          var array = Array.prototype.slice.apply(byteArray);
-          Module.FS.createDataFile('/', 'video.264', array, true, false);
-          
-          info("Broadway Loaded: " + url);
-          Module.run(['video.264']);
-          this.onLoad();
-        } else {
-          alert('Cannot load file: ');  
-          return;
-        }
-      }.bind(this));
-    },
-    play: function() {
-      Module.play();
-    },
-    stop: function() {
-      Module.stop();
-    }
-  };
-  return constructor;
-})();
-
-
+function getGlobalScope() {
+  return function () { return this; }.call(null);
+}
 
 /* Optimizations */
 
 function clip(x, y, z) {
   return z < x ? x : (z > y ? y : z);
 }
+
+_abs = Math.abs;
+_clip = clip;
 
 function OptimizedGetBoundaryStrengthsA($mb, $bS) {
   var $totalCoeff = $mb + 28;

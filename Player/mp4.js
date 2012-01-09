@@ -384,6 +384,7 @@ var MP4Reader = (function reader() {
           box.profileCompatibility = stream.readU8();
           box.avcLevelIndication = stream.readU8();
           box.lengthSizeMinusOne = stream.readU8() & 3;
+          assert (box.lengthSizeMinusOne == 3, "TODO");
           var count = stream.readU8() & 31;
           box.sps = [];
           for (var i = 0; i < count; i++) {
@@ -454,6 +455,32 @@ var MP4Reader = (function reader() {
       this.file = {};
       this.readBoxes(this.stream, this.file);
       console.info("Parsed stream in " + ((new Date).getTime() - start) + " ms");
+    },
+    traceSamples: function () {
+      var video = this.tracks[1];
+      var audio = this.tracks[2];
+      
+      console.info("Video Samples: " + video.getSampleCount());
+      console.info("Audio Samples: " + audio.getSampleCount());
+      
+      var vi = 0;
+      var ai = 0;
+      
+      for (var i = 0; i < 100; i++) {
+        var vo = video.sampleToOffset(vi);
+        var ao = audio.sampleToOffset(ai);
+        
+        var vs = video.sampleToSize(vi, 1);
+        var as = audio.sampleToSize(ai, 1);
+        
+        if (vo < ao) {
+          console.info("V Sample " + vi + " Offset : " + vo + ", Size : " + vs);
+          vi ++;
+        } else {
+          console.info("A Sample " + ai + " Offset : " + ao + ", Size : " + as);
+          ai ++;
+        }
+      }
     }
   };
   return constructor;
@@ -637,6 +664,176 @@ var Track = (function track () {
         console.info("Time: " + i.toFixed(2) + " " + this.timeToSample(this.secondsToTime(i)));
       }
       */
+    },
+    /**
+     * Video samples in AVC file format are framed with a start prefix that
+     * indicates the length of the sample. This function only returns the contained 
+     * NAL unit without the length prefix.
+     */
+    getSampleBytes: function (sample, withoutLengthPrefix) {
+      var bytes = this.file.stream.bytes;
+      var offset = this.sampleToOffset(sample);
+      if (withoutLengthPrefix) {
+        var size = this.sampleToSize(sample, 1);
+        if (PARANOID) {
+          var prefix = (new Bytestream(bytes.buffer, offset)).readU32();
+          assert (size >= prefix + 4);
+//          return bytes.subarray(offset + 4, offset + prefix + 4);
+        }
+        return bytes.subarray(offset + 4, offset + size);
+      }
+      return bytes.subarray(offset, offset + this.sampleToSize(sample, 1));
+    }
+  };
+  return constructor;
+})();
+
+
+// Only add setZeroTimeout to the window object, and hide everything
+// else in a closure. (http://dbaron.org/log/20100309-faster-timeouts)
+(function() {
+    var timeouts = [];
+    var messageName = "zero-timeout-message";
+
+    // Like setTimeout, but only takes a function argument.  There's
+    // no time argument (always zero) and no arguments (you have to
+    // use a closure).
+    function setZeroTimeout(fn) {
+        timeouts.push(fn);
+        window.postMessage(messageName, "*");
+    }
+
+    function handleMessage(event) {
+        if (event.source == window && event.data == messageName) {
+            event.stopPropagation();
+            if (timeouts.length > 0) {
+                var fn = timeouts.shift();
+                fn();
+            }
+        }
+    }
+
+    window.addEventListener("message", handleMessage, true);
+
+    // Add the one thing we want added to the window object.
+    window.setZeroTimeout = setZeroTimeout;
+})();
+
+var MP4Player = (function reader() {
+  function constructor(stream, canvas) {
+    this.canvas = canvas;
+    this.webGLCanvas = null;
+    this.stream = stream;
+    this.avc = new WorkerSocket("avc-worker.js"); 
+    this.avc.onReceiveMessage("console.info", function (message) {
+      console.info("AVC Worker Says: " + message.payload);
+    });
+    
+    this.avc.sendMessage("configure", {
+      filter: "original",
+      filterHorLuma: "optimized",
+      filterVerLumaEdge: "optimized",
+      getBoundaryStrengthsA: "optimized"
+    });
+    
+    var start = Date.now();
+    var count = 0;
+    this.avc.onReceiveMessage("on-picture-decoded", function (message) {
+
+      count++;
+      
+      var elapsed = Date.now() - start;
+      
+      if (count % 30 == 0) {
+        console.info("AVC Worker Gave Us Picture: " + (count / (elapsed / 1000)).toFixed(2) + " fps");
+      }
+      
+      var picture = message.payload.picture;
+      
+      if (picture && true) {
+        var lumaSize = message.payload.width * message.payload.height;
+        var chromaSize = lumaSize >> 2; 
+        
+        var luma = picture.subarray(0, lumaSize);
+        var cb = picture.subarray(lumaSize, lumaSize + chromaSize);
+        var cr = picture.subarray(lumaSize + chromaSize, lumaSize + 2 * chromaSize);
+        
+        this.webGLCanvas.YTexture.fill(luma);
+        this.webGLCanvas.UTexture.fill(cb);
+        this.webGLCanvas.VTexture.fill(cr);
+        this.webGLCanvas.drawScene();
+      }
+    }.bind(this));
+  }
+  
+  constructor.prototype = {
+    readAll: function(callback) {
+      console.info("MP4Player::readAll()");
+      this.stream.readAll(null, function (buffer) {
+        this.reader = new MP4Reader(new Bytestream(buffer));
+        this.reader.read();
+        var video = this.reader.tracks[1];
+        this.size = new Size(video.trak.tkhd.width, video.trak.tkhd.height);
+        console.info("MP4Player::readAll(), length: " +  this.reader.stream.length);
+        if (callback) callback();
+      }.bind(this));
+    },
+    play: function() {
+      var reader = this.reader;
+      
+      if (!reader) {
+        this.readAll(this.play.bind(this));
+        return;
+      } else {
+        this.canvas.width = this.size.w;
+        this.canvas.height = this.size.h;
+        this.webGLCanvas = new YUVWebGLCanvas(this.canvas, this.size);  
+      }
+      
+      var video = reader.tracks[1];
+      var audio = reader.tracks[2];
+      
+      var avc = reader.tracks[1].trak.mdia.minf.stbl.stsd.avc1.avcC;
+      var sps = avc.sps[0];
+      var pps = avc.pps[0];
+      
+      /* Decode Sequence & Picture Parameter Sets */
+      this.avc.sendMessage("decode-sample", sps);
+      this.avc.sendMessage("decode-sample", pps);
+      
+      var pic = 0;
+      
+      setTimeout(function foo() {
+        this.avc.sendMessage("decode-sample", video.getSampleBytes(pic, true));
+        pic ++;
+        if (pic < 1200) {
+          setTimeout(foo.bind(this), 1);
+        } 
+      }.bind(this), 1);
+      
+    }
+  }
+  
+  return constructor;
+})();
+
+var Broadway = (function broadway() {
+  function constructor(div) {
+    this.canvas = document.createElement('canvas');
+    var src = div.attributes.src ? div.attributes.src.value : undefined;
+    var width = div.attributes.width ? div.attributes.width.value : 640;
+    var height = div.attributes.height ? div.attributes.height.value : 480;
+    this.canvas.width = width;
+    this.canvas.height = height;
+    this.canvas.style.backgroundColor = "#333333";
+    // div.appendChild(this.canvas);
+    div.insertBefore(this.canvas,div.childNodes[0]);
+    
+    this.player = new MP4Player(new Stream(src), this.canvas);
+  }
+  constructor.prototype = {
+    play: function () {
+      this.player.play();
     }
   };
   return constructor;

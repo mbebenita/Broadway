@@ -30,11 +30,21 @@ EMSCRIPTEN_SETTINGS = {
   'SAFE_HEAP': 0,
   'ASSERTIONS': 0,
   'INVOKE_RUN': 0, # we do it ourselves
-  'EXPORTED_FUNCTIONS': ['_main', '__Z11runMainLoopv'],
-  'IGNORED_FUNCTIONS': ['_paint'],
+  'EXPORTED_FUNCTIONS': [
+     '_main', 
+     '_broadwayGetMajorVersion',
+     '_broadwayGetMinorVersion',
+     '_broadwayInit',
+     '_broadwayExit',
+     '_broadwayCreateStream',
+     '_broadwaySetStreamLength',
+     '_broadwayPlayStream',
+     '_broadwayOnHeadersDecoded',
+     '_broadwayOnPictureDecoded'
+   ]
 }
 
-use_pgo = True
+use_pgo = False
 profile = False
 
 if profile:
@@ -123,4 +133,8 @@ if build_level <= 4:
     if use_advanced_optimizations:
         src = open(JS_DIR + '/avc.elim.cc.js', 'a')
         src.write("Module.CC_VARIABLE_MAP = " + readCCVariableMap(JS_DIR + '/cc.map.txt'))
-        src.close()        
+        src.close()
+
+
+Popen(['cp', JS_DIR + '/avc.elim.cc.js', '../Player/avc-codec.js']).communicate()
+
