@@ -11,9 +11,13 @@ var console = {info: function (message) {
 
 var avc = new Avc();
 
+var config = null;
+
 avc.onPictureDecoded = function (buffer, width, height) {
+  if (config && config.sendBufferOnPictureDecoded !== undefined) {
+    buffer = config.sendBufferOnPictureDecoded ? buffer : null;
+  }
   socket.sendMessage("on-picture-decoded", {picture: buffer, width: width, height: height});
-  // socket.sendMessage("on-picture-decoded", {picture: null, width: width, height: height});
 }
 
 socket.onReceiveMessage("decode-sample", function (message) {
@@ -21,5 +25,6 @@ socket.onReceiveMessage("decode-sample", function (message) {
 });
 
 socket.onReceiveMessage("configure", function (message) {
-  avc.configure(message.payload);
+  config = message.payload;
+  avc.configure(config);
 });

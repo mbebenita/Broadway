@@ -720,50 +720,94 @@ var Track = (function track () {
 })();
 
 var MP4Player = (function reader() {
-  function constructor(stream, canvas) {
+  var defaultConfig = {
+    filter: "original",
+    filterHorLuma: "optimized",
+    filterVerLumaEdge: "optimized",
+    getBoundaryStrengthsA: "optimized"
+  };
+  
+  function constructor(stream, canvas, useWorkers) {
     this.canvas = canvas;
     this.webGLCanvas = null;
     this.stream = stream;
-    this.avc = new WorkerSocket("avc-worker.js"); 
-    this.avc.onReceiveMessage("console.info", function (message) {
-      console.info("AVC Worker Says: " + message.payload);
-    });
-    
-    this.avc.sendMessage("configure", {
-      filter: "original",
-      filterHorLuma: "optimized",
-      filterVerLumaEdge: "optimized",
-      getBoundaryStrengthsA: "optimized"
-    });
-    
-    var start = Date.now();
-    var count = 0;
-    this.avc.onReceiveMessage("on-picture-decoded", function (message) {
+    this.useWorkers = useWorkers;
 
-      count++;
+    this.statistics = {
+      videoStartTime: 0,
+      videoPictureCounter: 0,
+      windowStartTime: 0,
+      windowPictureCounter: 0,
+      fps: 0,
+      fpsMin: 1000,
+      fpsMax: -1000,
+      webGLTextureUploadTime: 0
+    };
+    
+    this.onStatisticsUpdated = function () {};
+    
+    if (this.useWorkers) {
+      this.avcWorker = new WorkerSocket("avc-worker.js"); 
+      this.avcWorker.onReceiveMessage("console.info", function (message) {
+        console.info("AVC Worker Says: " + message.payload);
+      });
+      this.avcWorker.onReceiveMessage("on-picture-decoded", function (message) {
+        onPictureDecoded.call(this, message.payload.picture, message.payload.width, message.payload.height);
+      }.bind(this));
+    } else {
+      this.avc = new Avc();
+      this.avc.configure(defaultConfig);
+      this.avc.onPictureDecoded = onPictureDecoded.bind(this);
+    }
+  }
+
+  function updateStatistics() {
+    var s = this.statistics;
+    s.videoPictureCounter += 1;
+    s.windowPictureCounter += 1;
+    var now = Date.now();
+    if (!s.videoStartTime) {
+      s.videoStartTime = now;
+    }
+    var videoElapsedTime = now - s.videoStartTime;
+    s.elapsed = videoElapsedTime / 1000;
+    if (videoElapsedTime < 1000) {
+      return;
+    }
+    
+    if (!s.windowStartTime) {
+      s.windowStartTime = now;
+      return;
+    } else if ((now - s.windowStartTime) > 1000) {
+      var windowElapsedTime = now - s.windowStartTime;
+      var fps = (s.windowPictureCounter / windowElapsedTime) * 1000;
+      s.windowStartTime = now;
+      s.windowPictureCounter = 0;
       
-      var elapsed = Date.now() - start;
-      
-      if (count % 30 == 0) {
-        console.info("AVC Worker Gave Us Picture: " + (count / (elapsed / 1000)).toFixed(2) + " fps");
-      }
-      
-      var picture = message.payload.picture;
-      
-      if (picture && true) {
-        var lumaSize = message.payload.width * message.payload.height;
-        var chromaSize = lumaSize >> 2; 
-        
-        var luma = picture.subarray(0, lumaSize);
-        var cb = picture.subarray(lumaSize, lumaSize + chromaSize);
-        var cr = picture.subarray(lumaSize + chromaSize, lumaSize + 2 * chromaSize);
-        
-        this.webGLCanvas.YTexture.fill(luma);
-        this.webGLCanvas.UTexture.fill(cb);
-        this.webGLCanvas.VTexture.fill(cr);
-        this.webGLCanvas.drawScene();
-      }
-    }.bind(this));
+      if (fps < s.fpsMin) s.fpsMin = fps;
+      if (fps > s.fpsMax) s.fpsMax = fps;
+      s.fps = fps;
+    }
+    
+    var fps = (s.videoPictureCounter / videoElapsedTime) * 1000;
+    s.fpsSinceStart = fps;
+    this.onStatisticsUpdated(this.statistics);
+    return ;
+  }
+  
+  function onPictureDecoded(buffer, width, height) {
+    updateStatistics.call(this);
+    
+    if (!buffer) {
+      return;
+    }
+    var lumaSize = width * height;
+    var chromaSize = lumaSize >> 2;
+    
+    this.webGLCanvas.YTexture.fill(buffer.subarray(0, lumaSize));
+    this.webGLCanvas.UTexture.fill(buffer.subarray(lumaSize, lumaSize + chromaSize));
+    this.webGLCanvas.VTexture.fill(buffer.subarray(lumaSize + chromaSize, lumaSize + 2 * chromaSize));
+    this.webGLCanvas.drawScene();
   }
   
   constructor.prototype = {
@@ -798,19 +842,27 @@ var MP4Player = (function reader() {
       var pps = avc.pps[0];
       
       /* Decode Sequence & Picture Parameter Sets */
-      this.avc.sendMessage("decode-sample", sps);
-      this.avc.sendMessage("decode-sample", pps);
-      
+      if (this.useWorkers) {
+        this.avcWorker.sendMessage("decode-sample", sps);
+        this.avcWorker.sendMessage("decode-sample", pps);
+      } else {
+        this.avc.decode(sps);
+        this.avc.decode(pps);
+      }
+
+      /* Decode Pictures */
       var pic = 0;
-      
       setTimeout(function foo() {
-        this.avc.sendMessage("decode-sample", video.getSampleBytes(pic, true));
+        if (this.useWorkers) {
+          this.avcWorker.sendMessage("decode-sample", video.getSampleBytes(pic, true));
+        } else {
+          this.avc.decode(video.getSampleBytes(pic, true));
+        }
         pic ++;
-        if (pic < 1200) {
+        if (pic < 3000) {
           setTimeout(foo.bind(this), 1);
         } 
       }.bind(this), 1);
-      
     }
   }
   
@@ -826,10 +878,44 @@ var Broadway = (function broadway() {
     this.canvas.width = width;
     this.canvas.height = height;
     this.canvas.style.backgroundColor = "#333333";
-    // div.appendChild(this.canvas);
-    div.insertBefore(this.canvas,div.childNodes[0]);
+    this.canvas.onclick = function () {
+      this.play();
+    }.bind(this);
     
-    this.player = new MP4Player(new Stream(src), this.canvas);
+    div.appendChild(this.canvas);
+    var controls = document.createElement('div');
+    controls.setAttribute('style', "z-index: 100; position: absolute; bottom: 0px; background-color: rgba(0,0,0,0.8); height: 30px; width: 100%; text-align: left;");
+    this.info = document.createElement('div');
+    this.info.setAttribute('style', "font-size: 12px; font-weight: bold; padding: 6px;");
+    controls.appendChild(this.info);
+    div.appendChild(controls);
+    
+    var useWorkers = div.attributes.workers ? div.attributes.workers.value == "true" : true;
+    
+    this.player = new MP4Player(new Stream(src), this.canvas, useWorkers);
+    
+    this.score = null;
+    this.player.onStatisticsUpdated = function (statistics) {
+      if (statistics.videoPictureCounter % 10 != 0) {
+        return;
+      }
+      var info = "";
+      if (statistics.fps) {
+        info += " fps: " + statistics.fps.toFixed(2);
+      }
+      if (statistics.fpsSinceStart) {
+        info += " avg: " + statistics.fpsSinceStart.toFixed(2);
+      }
+      var scoreCutoff = 1200;
+      if (statistics.videoPictureCounter < scoreCutoff) {
+        this.score = scoreCutoff - statistics.videoPictureCounter; 
+      } else if (statistics.videoPictureCounter == scoreCutoff) {
+        this.score = statistics.fpsSinceStart.toFixed(2);
+      }
+      info += " score: " + this.score;
+      
+      this.info.innerHTML = info;
+    }.bind(this);
   }
   constructor.prototype = {
     play: function () {
