@@ -32,13 +32,24 @@
     <tr><td>Main Thread Decoding</td><td>Worker Thread 1 Decoding</td><td>Worker Thread 2 Decoding</td></tr>
     <tr>
       <td>
-        <div class="broadway" src="mozilla_story.mp4" width="360" height="280" style="float: left; position: relative;" workers="false"></div>
+        <div class="broadway" src="mozilla_story.mp4" width="360" height="280" style="float: left; position: relative;" workers="false" render="true"></div>
       </td>
       <td>  
         <div class="broadway" src="mozilla_story.mp4" width="360" height="280" style="float: left; position: relative;" workers="true"></div>
       </td>
       <td>  
         <div class="broadway" src="mozilla_story.mp4" width="360" height="280" style="float: left; position: relative;" workers="true"></div>
+      </td>
+    </tr>
+    <tr><td></td><td>Worker Thread 1 Decoding without Rendering</td><td>Worker Thread 2 Decoding without Rendering</td></tr>
+    <tr>
+      <td>
+      </td>
+      <td>  
+        <div class="broadway" src="mozilla_story.mp4" width="360" height="280" style="float: left; position: relative;" workers="true" render="false"></div>
+      </td>
+      <td>  
+        <div class="broadway" src="mozilla_story.mp4" width="360" height="280" style="float: left; position: relative;" workers="true" render="false"></div>
       </td>
     </tr>
   </table>  

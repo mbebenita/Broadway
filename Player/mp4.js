@@ -727,11 +727,12 @@ var MP4Player = (function reader() {
     getBoundaryStrengthsA: "optimized"
   };
   
-  function constructor(stream, canvas, useWorkers) {
+  function constructor(stream, canvas, useWorkers, render) {
     this.canvas = canvas;
     this.webGLCanvas = null;
     this.stream = stream;
     this.useWorkers = useWorkers;
+    this.render = render;
 
     this.statistics = {
       videoStartTime: 0,
@@ -751,7 +752,14 @@ var MP4Player = (function reader() {
       this.avcWorker.onReceiveMessage("console.info", function (message) {
         console.info("AVC Worker Says: " + message.payload);
       });
+      if (!this.render) {
+        defaultConfig.sendBufferOnPictureDecoded = false;
+      }
+      this.avcWorker.sendMessage("configure", defaultConfig);
       this.avcWorker.onReceiveMessage("on-picture-decoded", function (message) {
+        if (!this.render) {
+          assert (message.payload.picture == null);
+        }
         onPictureDecoded.call(this, message.payload.picture, message.payload.width, message.payload.height);
       }.bind(this));
     } else {
@@ -798,7 +806,7 @@ var MP4Player = (function reader() {
   function onPictureDecoded(buffer, width, height) {
     updateStatistics.call(this);
     
-    if (!buffer) {
+    if (!buffer || !this.render) {
       return;
     }
     var lumaSize = width * height;
@@ -891,8 +899,9 @@ var Broadway = (function broadway() {
     div.appendChild(controls);
     
     var useWorkers = div.attributes.workers ? div.attributes.workers.value == "true" : true;
+    var render = div.attributes.render ? div.attributes.render.value == "true" : true;
     
-    this.player = new MP4Player(new Stream(src), this.canvas, useWorkers);
+    this.player = new MP4Player(new Stream(src), this.canvas, useWorkers, render);
     
     this.score = null;
     this.player.onStatisticsUpdated = function (statistics) {
