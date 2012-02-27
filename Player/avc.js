@@ -4,15 +4,11 @@
 
 assert (Module);
 
-var advancedCCOptimizations = Module.CC_VARIABLE_MAP ? true : false;
-
-if (advancedCCOptimizations) {
-  console.info("Advanced CC Optimizations");
-  HEAPU8 = Module.CC_VARIABLE_MAP["HEAP8"];
-  HEAP16 = Module.CC_VARIABLE_MAP["HEAP16"];
-  HEAP32 = Module.CC_VARIABLE_MAP["HEAP32"];
-  _h264bsdClip = Module.CC_VARIABLE_MAP["_h264bsdClip"];
-}
+HEAP8 = Module.HEAP8;
+HEAPU8 = Module.HEAPU8;
+HEAP16 = Module.HEAP16;
+HEAP32 = Module.HEAP32;
+_h264bsdClip = Module._get_h264bsdClip();
 
 var Avc = (function avc() {
   const MAX_STREAM_BUFFER_LENGTH = 1024 * 1024;
@@ -26,13 +22,19 @@ var Avc = (function avc() {
       // console.info(buffer.length);
     }
     
-    _broadwayOnPictureDecoded = function ($buffer, width, height) {
+    Module.patch(null, "_broadwayOnHeadersDecoded", function () {
+      
+    });
+    
+    
+    Module.patch(null, "_broadwayOnPictureDecoded", function ($buffer, width, height) {
       var buffer = this.pictureBuffers[$buffer];
       if (!buffer) {
         buffer = this.pictureBuffers[$buffer] = toU8Array($buffer, (width * height * 3) / 2);
       }
       this.onPictureDecoded(buffer, width, height);
-    }.bind(this);
+    }.bind(this));
+    
   }
 
   /**
@@ -67,14 +69,16 @@ function patchOptimizations(config, patches) {
   var scope = getGlobalScope();
   for (var name in patches) {
     var patch = patches[name];
-    var option = config[name];
-    if (!option) option = "original";
-    console.info(name + ": " + option);
-    assert (option in patch.options);
-    var fn = patch.options[option].fn;
-    if (fn) {
-      scope[patch.original] = Module.patch(null, patch.name, fn);
-      console.info("Patching: " + patch.name + ", with: " + option);
+    if (patch) {
+      var option = config[name];
+      if (!option) option = "original";
+      console.info(name + ": " + option);
+      assert (option in patch.options);
+      var fn = patch.options[option].fn;
+      if (fn) {
+        scope[patch.original] = Module.patch(null, patch.name, fn);
+        console.info("Patching: " + patch.name + ", with: " + option);
+      }
     }
   }
 }
@@ -130,9 +134,6 @@ function getGlobalScope() {
 function clip(x, y, z) {
   return z < x ? x : (z > y ? y : z);
 }
-
-_abs = Math.abs;
-_clip = clip;
 
 function OptimizedGetBoundaryStrengthsA($mb, $bS) {
   var $totalCoeff = $mb + 28;

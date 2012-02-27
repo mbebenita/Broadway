@@ -540,11 +540,16 @@ var Track = (function track () {
        * TODO: Determine if we should memoize this function.
        */
       
-      var table = [{firstChunk: 1, samplesPerChunk: 3, sampleDescriptorId: 23},
-                   {firstChunk: 3, samplesPerChunk: 1, sampleDescriptorId: 23},
-                   {firstChunk: 5, samplesPerChunk: 1, sampleDescriptorId: 24}];
-      
       var table = this.trak.mdia.minf.stbl.stsc.table;
+      
+      if (table.length === 1) {
+        var row = table[0];
+        assert (row.firstChunk === 1);
+        return {
+          index: sample / row.samplesPerChunk,
+          offset: sample % row.samplesPerChunk
+        }
+      }
       
       var totalChunkCount = 0;
       for (var i = 0; i < table.length; i++) {
@@ -894,7 +899,7 @@ var Broadway = (function broadway() {
     var controls = document.createElement('div');
     controls.setAttribute('style', "z-index: 100; position: absolute; bottom: 0px; background-color: rgba(0,0,0,0.8); height: 30px; width: 100%; text-align: left;");
     this.info = document.createElement('div');
-    this.info.setAttribute('style', "font-size: 12px; font-weight: bold; padding: 6px;");
+    this.info.setAttribute('style', "font-size: 14px; font-weight: bold; padding: 6px; color: lime;");
     controls.appendChild(this.info);
     div.appendChild(controls);
     
@@ -921,7 +926,7 @@ var Broadway = (function broadway() {
       } else if (statistics.videoPictureCounter == scoreCutoff) {
         this.score = statistics.fpsSinceStart.toFixed(2);
       }
-      info += " score: " + this.score;
+      // info += " score: " + this.score;
       
       this.info.innerHTML = info;
     }.bind(this);

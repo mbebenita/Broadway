@@ -2,139 +2,79 @@
 
 import os, sys, re, json, shutil
 from subprocess import Popen, PIPE, STDOUT
-from numpy.core.defchararray import startswith
 
 exec(open(os.path.expanduser('~/.emscripten'), 'r').read())
 
 sys.path.append(EMSCRIPTEN_ROOT)
 import tools.shared as emscripten
 
-EMSCRIPTEN_SETTINGS = {
-  'SKIP_STACK_IN_SMALL': 1,
-  'INIT_STACK': 0,
-  'AUTO_OPTIMIZE': 0,
-  'CHECK_OVERFLOWS': 0,
-  'CHECK_SIGNED_OVERFLOWS': 0,
-  'CORRECT_OVERFLOWS': 0,
-  'CHECK_SIGNS': 0,
-  'CORRECT_SIGNS': 1,
-  'DISABLE_EXCEPTION_CATCHING': 1,
-  'RUNTIME_TYPE_INFO': 0,
-  'TOTAL_MEMORY': 50*1024*1024,
-  'FAST_MEMORY': 12*1024*1024,
-  'PROFILE': 0,
-  'MICRO_OPTS': 1,
-  'RELOOP': 1, # XXX 1 makes compilation slower!
-  'USE_TYPED_ARRAYS': 2,
-  'USE_FHEAP': 0,
-  'SAFE_HEAP': 0,
-  'ASSERTIONS': 0,
-  'INVOKE_RUN': 0, # we do it ourselves
-  'EXPORTED_FUNCTIONS': [
-     '_main', 
-     '_broadwayGetMajorVersion',
-     '_broadwayGetMinorVersion',
-     '_broadwayInit',
-     '_broadwayExit',
-     '_broadwayCreateStream',
-     '_broadwaySetStreamLength',
-     '_broadwayPlayStream',
-     '_broadwayOnHeadersDecoded',
-     '_broadwayOnPictureDecoded'
-   ]
-}
-
-use_pgo = False
-profile = False
-
-if profile:
-    EMSCRIPTEN_SETTINGS['CHECK_SIGNS'] = 1
-    EMSCRIPTEN_SETTINGS['CHECK_OVERFLOWS'] = 1
-    EMSCRIPTEN_SETTINGS['PGO'] = 1
-
-use_profile = use_pgo and not profile
-if use_profile:
-    pgo_data = emscripten.read_pgo_data('avc.pgo')
-    EMSCRIPTEN_SETTINGS['CORRECT_SIGNS'] = 2
-    EMSCRIPTEN_SETTINGS['CORRECT_SIGNS_LINES'] = pgo_data['signs_lines']
-    EMSCRIPTEN_SETTINGS['CORRECT_OVERFLOWS'] = 2
-    EMSCRIPTEN_SETTINGS['CORRECT_OVERFLOWS_LINES'] = pgo_data['overflows_lines']
-
-# print EMSCRIPTEN_SETTINGS 
-
-EMSCRIPTEN_ARGS = [] # ['--optimize'] #['--dlmalloc'] # Optimize does not appear to help
-
+emcc_args = [
+  '-m32',
+  '-O2',
+  '--llvm-opts', '2',
+  '-s', 'CORRECT_SIGNS=1',
+  '-s', 'CORRECT_OVERFLOWS=1',
+  '-s', 'TOTAL_MEMORY=' + str(50*1024*1024),
+  '-s', 'FAST_MEMORY=' + str(12*1024*1024),
+  '-s', 'INVOKE_RUN=0',
+  '-s', 'RELOOP=1',
+  '-s', '''EXPORTED_FUNCTIONS=["HEAP8", "HEAP16", "HEAP32", "_get_h264bsdClip", "_main", "_broadwayGetMajorVersion", "_broadwayGetMinorVersion", "_broadwayInit", "_broadwayExit", "_broadwayCreateStream", "_broadwaySetStreamLength", "_broadwayPlayStream", "_broadwayOnHeadersDecoded", "_broadwayOnPictureDecoded"]''',
+  # '--closure', '0',
+  '--js-transform', 'python appender.py'
+]
+  
 JS_DIR = "js"
 
 if not os.path.exists(JS_DIR):
   os.makedirs(JS_DIR)
+  
+OBJ_DIR = "obj"
+if not os.path.exists(OBJ_DIR):
+  os.makedirs(OBJ_DIR)
 
-build_level = 0
-if len(sys.argv) == 2:
-    build_level = int(sys.argv[1])
+print 'build'
 
-if build_level <= 0:
-    print 'Build'
-    env = os.environ.copy()
-    env['CC'] = env['CXX'] = env['RANLIB'] = env['AR'] = emscripten.EMMAKEN
-    env['LINUX'] = '1'
-    env['EMMAKEN_CFLAGS'] = '-U__APPLE__ -DJS'
-    Popen(['make', '-j', '4'], env=env).communicate()
+source_files = [
+  'h264bsd_transform.c',
+  'h264bsd_util.c',
+  'h264bsd_byte_stream.c',
+  'h264bsd_seq_param_set.c',
+  'h264bsd_pic_param_set.c',
+  'h264bsd_slice_header.c',
+  'h264bsd_slice_data.c',
+  'h264bsd_macroblock_layer.c',
+  'h264bsd_stream.c',
+  'h264bsd_vlc.c',
+  'h264bsd_cavlc.c',
+  'h264bsd_nal_unit.c',
+  'h264bsd_neighbour.c',
+  'h264bsd_storage.c',
+  'h264bsd_slice_group_map.c',
+  'h264bsd_intra_prediction.c',
+  'h264bsd_inter_prediction.c',
+  'h264bsd_reconstruct.c',
+  'h264bsd_dpb.c',
+  'h264bsd_image.c',
+  'h264bsd_deblocking.c',
+  'h264bsd_conceal.c',
+  'h264bsd_vui.c',
+  'h264bsd_pic_order_cnt.c',
+  'h264bsd_decoder.c',
+  'H264SwDecApi.c',
+  'Decoder.c']
 
-if build_level <= 1:
-    print 'LLVM binary => LL assembly' 
-    print Popen([emscripten.LLVM_DIS] + emscripten.LLVM_DIS_OPTS + ['avc.bc', '-o=avc.ll']).communicate()
+for file in source_files:
+  target = file.replace('.c', '.o')
+  print 'emcc %s -> %s' % (file, target)
+  emscripten.Building.emcc(os.path.join('src', file), emcc_args + ['-Isrc', '-Iinc'], os.path.join('obj', target))
+  
+object_files = [os.path.join('obj', x.replace('.c', '.o')) for x in source_files];
 
-if build_level <= 2:
-    print 'Emscripten: %s => %s' % ('avc.ll', JS_DIR + '/avc.js')
-    settings = ['-s %s=%s' % (k, json.dumps(v)) for k, v in EMSCRIPTEN_SETTINGS.items()]
-    print Popen(['python', os.path.join(EMSCRIPTEN_ROOT, 'emscripten.py')] + EMSCRIPTEN_ARGS + ['avc.ll'] + settings,
-            stdout=open(JS_DIR + '/avc.js', 'w'), stderr=STDOUT).communicate()
+print 'link -> %s' % 'avc.bc'
+emscripten.Building.link(object_files, 'avc.bc')
 
-    print 'Appending stuff'
-    src = open(JS_DIR + '/avc.js', 'a')
-    src.write(open('hooks.js').read())
-    src.write(open('paint_%s.js' % EMSCRIPTEN_SETTINGS['USE_TYPED_ARRAYS'], 'r').read())
-    src.close()
+print 'emcc %s -> %s' % ('avc.bc', os.path.join(JS_DIR, 'avc.js'))
+emscripten.Building.emcc('avc.bc', emcc_args, os.path.join(JS_DIR, 'avc.js'))
 
-if build_level <= 3:
-    print 'Eliminating unneeded variables'
-    eliminated = Popen([emscripten.COFFEESCRIPT, emscripten.VARIABLE_ELIMINATOR], stdin=PIPE, stdout=PIPE).communicate(open(JS_DIR + '/avc.js', 'r').read())[0]
-    f = open(JS_DIR + '/avc.elim.js', 'w')
-    f.write(eliminated)
-    f.close()
-
-def readCCVariableMap(file):
-    """
-    Creates a JavaScript object map literal from a variable mapping file produced by the Closure compiler.
-    """
-    map = []
-    for x in open(file).read().split("\n"):
-        if not x.startswith("L ") and len(x.split(":")) == 2:
-            map += ["\"%s\":\"%s\"" % (x.split(":")[0], x.split(":")[1])]
-    return "{" + ",".join(map) + "};"
-
-if build_level <= 4:
-    use_advanced_optimizations = False
-    
-    compilation_level = 'SIMPLE_OPTIMIZATIONS'
-    if use_advanced_optimizations: # XXX TODO: use advanced opts for code size (they cause slow startup though)
-        compilation_level = 'ADVANCED_OPTIMIZATIONS'
-    
-    print 'Closure Compiler: %s %s => %s' % (compilation_level, JS_DIR + '/avc.elim.js', JS_DIR + '/avc.elim.cc.js') 
-    Popen(['java', '-jar', emscripten.CLOSURE_COMPILER,
-           '--compilation_level', compilation_level,
-           '--externs', 'jquery.extern.js',
-           '--variable_map_output_file', JS_DIR + '/cc.map.txt',
-           '--formatting', 'PRETTY_PRINT',
-           '--js', JS_DIR + '/avc.elim.js', '--js_output_file', JS_DIR + '/avc.elim.cc.js'], stdout=PIPE, stderr=STDOUT).communicate()
-               
-    # Append Closure Variable Map
-    if use_advanced_optimizations:
-        src = open(JS_DIR + '/avc.elim.cc.js', 'a')
-        src.write("Module.CC_VARIABLE_MAP = " + readCCVariableMap(JS_DIR + '/cc.map.txt'))
-        src.close()
-
-
-Popen(['cp', JS_DIR + '/avc.elim.cc.js', '../Player/avc-codec.js']).communicate()
-
+print 'copying %s -> %s' % (os.path.join(JS_DIR, 'avc.js'), os.path.join('..','Player','avc-codec.js'))
+Popen(['cp', os.path.join(JS_DIR, 'avc.js'), os.path.join('..','Player','avc-codec.js')]).communicate()

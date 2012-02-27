@@ -38,7 +38,6 @@ _broadwayOnFrameDecoded = function() {
 
 Module['createStreamBuffer'] = _broadwayCreateStreamBuffer;
 
-
 var patches = Module['patches'] = {};
 
 function getGlobalScope() {
@@ -62,7 +61,7 @@ Module['patch'] = function (scope, name, value) {
   if (Module["CC_VARIABLE_MAP"]) {
     name = Module["CC_VARIABLE_MAP"][name]; 
   }
-  assert (name in scope && typeof(scope[name]) == "function", "Can only patch functions.");
+  assert (name in scope && (typeof(scope[name]) === "function" || typeof(scope[name]) === "undefined"), "Can only patch functions.");
   patches[name] = scope[name];
   scope[name] = value;
   return patches[name];
@@ -82,4 +81,12 @@ Module['unpatch'] = function (scope, name) {
   if (name in patches) {
     scope[name] = patches[name];
   }
+};
+
+
+/* Optimizations */
+
+_abs = Math.abs;
+_clip = function clip(x, y, z) {
+  return z < x ? x : (z > y ? y : z);
 };

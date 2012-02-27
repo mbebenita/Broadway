@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <link type="text/css" href="screen.css" rel="stylesheet" />
+  <link type="text/css" href="jquery/theme/jquery-ui.css" rel="stylesheet" />
+</head>
+<body onload="load()">
+  <script type="text/javascript" src="jquery/jquery.min.js"></script>
+  <script type="text/javascript" src="jquery/jquery-ui.min.js"></script>
+  <script type='text/javascript'>
+    var Module = {
+        noInitialRun : true
+    };
+  </script>
+  
+  <script src='util.js' type='text/javascript'></script>
+
+  <script type="text/javascript">
+    $(function() {
+      $("#play").button();
+      $("#play").click(function() {
+        play();
+      });
+    });
+    
+    function load() {
+      play();
+    }
+    
+    function play() {
+      var worker = new WorkerSocket("decoder-worker.js");
+      
+      worker.onReceiveMessage("console.info", function (message) {
+        console.info("Worker Says: " + message.payload);
+      });
+    }
+    
+  </script>
+  
+  <div id="panel">
+    <p class="title"><b>Broadway.js</b></p>
+    <p class="sub-title">An H.264 Decoder in JavaScript</p>
+    
+    <p class="header">Settings</p>
+    
+    <div id="setting">
+      <button id="play" style="margin-right: 8px">Play</button>
+    </div>
+    <br>
+    <!-- Stats -->
+    <div style="margin-top: 30px;">
+    <p class="header">Statistics</p>
+    <table style="width: 100%; clear: both;">
+      <tr>
+        <th>FPS</th>
+        <td><span id='fps'></span></td>
+      </tr>
+      <tr>
+        <th>Average FPS</th>
+        <td><span id='fpsSinceStart'></span></td>
+      </tr>
+      <tr>
+        <th>Min / Max</th>
+        <td><span id='fpsMinMax'></span></td>
+      </tr>
+      <tr>
+        <th>Upload Speed</th>
+        <td><span id='upload'></span></td>
+      </tr>
+      <tr>
+        <th>Elapsed</th>
+        <td><span id='elapsed'></span></td>
+      </tr>
+      <tr>
+        <th>Score</th>
+        <td><span id='score'></span></td>
+      </tr>
+      <tr>
+        <td colspan="2" style="font-weight: normal; padding-left: 0px; text-align: left;"><span id='score-details'></span></td>
+      </tr>
+    </table>
+    </div>
+  </div>
+  <div id="document">
+    <div id="player" style="background-color: black; float: left;">
+      <canvas id='canvas' width="640" height="100" style="background-color: #333333;"></canvas>
+      <div id="controls">
+        <div id="scrubber"></div>
+      </div>
+    </div>
+  </div>  
+  </body>
+</html>
