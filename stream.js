@@ -1,3 +1,5 @@
+'use strict';
+
 var Stream = (function stream() {
   function constructor(url) {
     this.url = url;
@@ -16,9 +18,10 @@ var Stream = (function stream() {
       }
       xhr.onreadystatechange = function (event) {
         if (xhr.readyState === 4) {
-          var byteArray = new Uint8Array(xhr.response);
-          var array = Array.prototype.slice.apply(byteArray);
-          complete(array);
+          complete(xhr.response);
+          // var byteArray = new Uint8Array(xhr.response);
+          // var array = Array.prototype.slice.apply(byteArray);
+          // complete(array);
         }
       }
       xhr.send(null);
@@ -26,3 +29,5 @@ var Stream = (function stream() {
   };
   return constructor;
 })();
+
+
