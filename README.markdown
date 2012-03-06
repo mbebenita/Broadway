@@ -4,6 +4,8 @@ A JavaScript H.264 decoder.
 
 View a Live Demo at: http://mbebenita.github.com/Broadway/storyDemo.html or http://mbebenita.github.com/Broadway/treeDemo.html
 
+The video player first needs to download the entire video before it can start playing, thus appearing to be a bit slow at first, so have patience. You can start the video by clicking on each player. The top left player runs on the main thread, the remaining players run in background worker threads.
+
 The demo is Android's H.264 decoder compiled with Emscripten to JavaScript, then further optimized with
 Google's JavaScript closure compiler and further optimized by hand to use WebGL.
 
