@@ -19,7 +19,7 @@ emcc_args = [
   '-s', 'INVOKE_RUN=0',
   '-s', 'RELOOP=1',
   '-s', '''EXPORTED_FUNCTIONS=["HEAP8", "HEAP16", "HEAP32", "_get_h264bsdClip", "_main", "_broadwayGetMajorVersion", "_broadwayGetMinorVersion", "_broadwayInit", "_broadwayExit", "_broadwayCreateStream", "_broadwaySetStreamLength", "_broadwayPlayStream", "_broadwayOnHeadersDecoded", "_broadwayOnPictureDecoded"]''',
-  # '--closure', '0',
+  '--closure', '1',
   '--js-transform', 'python appender.py'
 ]
   
