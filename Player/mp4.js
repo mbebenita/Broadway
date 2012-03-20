@@ -3,7 +3,7 @@
 var Bytestream = (function BytestreamClosure() {
   function constructor(arrayBuffer, start, length) {
     this.bytes = new Uint8Array(arrayBuffer);
-    this.start = start || 0; 
+    this.start = start || 0;
     this.pos = this.start;
     this.end = (start + length) || this.bytes.length;
   }
@@ -41,7 +41,7 @@ var Bytestream = (function BytestreamClosure() {
           if (names) {
             row = {};
             for (var j = 0; j < cols; j++) {
-              row[names[j]] = this.readU32(); 
+              row[names[j]] = this.readU32();
             }
           } else {
             row = new Uint32Array(cols);
@@ -105,7 +105,7 @@ var Bytestream = (function BytestreamClosure() {
       var pos = this.pos;
       if (pos > this.end - 4)
         return null;
-      var res = ""; 
+      var res = "";
       for (var i = 0; i < 4; i++) {
         res += String.fromCharCode(this.bytes[pos + i]);
       }
@@ -167,33 +167,33 @@ var PARANOID = true; // Heavy-weight assertions.
 
 /**
  * Reads an mp4 file and constructs a object graph that corresponds to the box/atom
- * structure of the file. Mp4 files are based on the ISO Base Media format, which in 
+ * structure of the file. Mp4 files are based on the ISO Base Media format, which in
  * turn is based on the Apple Quicktime format. The Quicktime spec is available at:
- * http://developer.apple.com/library/mac/#documentation/QuickTime/QTFF. An mp4 spec 
- * also exists, but I cannot find it freely available. 
- * 
+ * http://developer.apple.com/library/mac/#documentation/QuickTime/QTFF. An mp4 spec
+ * also exists, but I cannot find it freely available.
+ *
  * Mp4 files contain a tree of boxes (or atoms in Quicktime). The general structure
  * is as follows (in a pseudo regex syntax):
- * 
+ *
  * Box / Atom Structure:
- * 
+ *
  * [size type [version flags] field* box*]
  *  <32> <4C>  <--8--> <24->  <-?->  <?>
  *  <------------- box size ------------>
- *  
+ *
  *  The box size indicates the entire size of the box and its children, we can use it
- *  to skip over boxes that are of no interest. Each box has a type indicated by a 
+ *  to skip over boxes that are of no interest. Each box has a type indicated by a
  *  four character code (4C), this describes how the box should be parsed and is also
- *  used as an object key name in the resulting box tree. For example, the expression:  
+ *  used as an object key name in the resulting box tree. For example, the expression:
  *  "moov.trak[0].mdia.minf" can be used to access individual boxes in the tree based
  *  on their 4C name. If two or more boxes with the same 4C name exist in a box, then
- *  an array is built with that name.  
- * 
+ *  an array is built with that name.
+ *
  */
 var MP4Reader = (function reader() {
   var BOX_HEADER_SIZE = 8;
   var FULL_BOX_HEADER_SIZE = BOX_HEADER_SIZE + 4;
-  
+
   function constructor(stream) {
     this.stream = stream;
     this.tracks = {};
@@ -216,33 +216,33 @@ var MP4Reader = (function reader() {
     },
     readBox: function readBox(stream) {
       var box = { offset: stream.position };
-    
+
       function readHeader() {
         box.size = stream.readU32();
         box.type = stream.read4CC();
       }
-      
+
       function readFullHeader() {
         box.version = stream.readU8();
         box.flags = stream.readU24();
       }
-      
+
       function remainingBytes() {
         return box.size - (stream.position - box.offset);
       }
-      
+
       function skipRemainingBytes () {
         stream.skip(remainingBytes());
       }
-      
+
       var readRemainingBoxes = function () {
         var subStream = stream.subStream(stream.position, remainingBytes());
         this.readBoxes(subStream, box);
-        stream.skip(subStream.length);   
+        stream.skip(subStream.length);
       }.bind(this);
-      
+
       readHeader();
-      
+
       switch (box.type) {
         case 'ftyp':
           box.name = "File Type Box";
@@ -366,7 +366,7 @@ var MP4Reader = (function reader() {
           box.compressionId = stream.readU16();
           box.packetSize = stream.readU16();
           box.sampleRate = stream.readU32() >>> 16;
-          
+
           // TODO: Parse other version levels.
           assert (box.version == 0);
           readRemainingBoxes();
@@ -416,7 +416,7 @@ var MP4Reader = (function reader() {
         case 'stsc':
           box.name = "Sample to Chunk Box";
           readFullHeader();
-          box.table = stream.readU32Array(stream.readU32(), 3, 
+          box.table = stream.readU32Array(stream.readU32(), 3,
             ["firstChunk", "samplesPerChunk", "sampleDescriptionId"]);
           break;
         case 'stsz':
@@ -459,20 +459,20 @@ var MP4Reader = (function reader() {
     traceSamples: function () {
       var video = this.tracks[1];
       var audio = this.tracks[2];
-      
+
       console.info("Video Samples: " + video.getSampleCount());
       console.info("Audio Samples: " + audio.getSampleCount());
-      
+
       var vi = 0;
       var ai = 0;
-      
+
       for (var i = 0; i < 100; i++) {
         var vo = video.sampleToOffset(vi);
         var ao = audio.sampleToOffset(ai);
-        
+
         var vs = video.sampleToSize(vi, 1);
         var as = audio.sampleToSize(ai, 1);
-        
+
         if (vo < ao) {
           console.info("V Sample " + vi + " Offset : " + vo + ", Size : " + vs);
           vi ++;
@@ -491,7 +491,7 @@ var Track = (function track () {
     this.file = file;
     this.trak = trak;
   }
-  
+
   constructor.prototype = {
     getSampleSizeTable: function () {
       return this.trak.mdia.minf.stbl.stsz.table;
@@ -512,15 +512,15 @@ var Track = (function track () {
     },
     /**
      * Computes the chunk that contains the specified sample, as well as the offset of
-     * the sample in the computed chunk. 
+     * the sample in the computed chunk.
      */
     sampleToChunk: function (sample) {
-      
+
       /* Samples are grouped in chunks which may contain a variable number of samples.
        * The sample-to-chunk table in the stsc box describes how samples are arranged
-       * in chunks. Each table row corresponds to a set of consecutive chunks with the 
+       * in chunks. Each table row corresponds to a set of consecutive chunks with the
        * same number of samples and description ids. For example, the following table:
-       * 
+       *
        * +-------------+-------------------+----------------------+
        * | firstChunk  |  samplesPerChunk  |  sampleDescriptionId |
        * +-------------+-------------------+----------------------+
@@ -528,29 +528,29 @@ var Track = (function track () {
        * | 3           |  1                |  23                  |
        * | 5           |  1                |  24                  |
        * +-------------+-------------------+----------------------+
-       * 
+       *
        * describes 5 chunks with a total of (2 * 3) + (2 * 1) + (1 * 1) = 9 samples,
-       * each chunk containing samples 3, 3, 1, 1, 1 in chunk order, or 
+       * each chunk containing samples 3, 3, 1, 1, 1 in chunk order, or
        * chunks 1, 1, 1, 2, 2, 2, 3, 4, 5 in sample order.
-       * 
+       *
        * This function determines the chunk that contains a specified sample by iterating
        * over every entry in the table. It also returns the position of the sample in the
        * chunk which can be used to compute the sample's exact position in the file.
-       * 
+       *
        * TODO: Determine if we should memoize this function.
        */
-      
+
       var table = this.trak.mdia.minf.stbl.stsc.table;
-      
+
       if (table.length === 1) {
         var row = table[0];
         assert (row.firstChunk === 1);
         return {
           index: sample / row.samplesPerChunk,
           offset: sample % row.samplesPerChunk
-        }
+        };
       }
-      
+
       var totalChunkCount = 0;
       for (var i = 0; i < table.length; i++) {
         var row = table[i];
@@ -572,7 +572,7 @@ var Track = (function track () {
               offset: sample % previousRow.samplesPerChunk
             };
           }
-          totalChunkCount += previousChunkCount; 
+          totalChunkCount += previousChunkCount;
         }
       }
       assert(false);
@@ -590,10 +590,10 @@ var Track = (function track () {
      * Computes the sample at the specified time.
      */
     timeToSample: function (time) {
-      /* In the time-to-sample table samples are grouped by their duration. The count field 
+      /* In the time-to-sample table samples are grouped by their duration. The count field
        * indicates the number of consecutive samples that have the same duration. For example,
        * the following table:
-       * 
+       *
        * +-------+-------+
        * | count | delta |
        * +-------+-------+
@@ -601,12 +601,12 @@ var Track = (function track () {
        * |   2   |   1   |
        * |   3   |   2   |
        * +-------+-------+
-       * 
+       *
        * describes 9 samples with a total time of (4 * 3) + (2 * 1) + (3 * 2) = 20.
-       * 
+       *
        * This function determines the sample at the specified time by iterating over every
        * entry in the table.
-       * 
+       *
        * TODO: Determine if we should memoize this function.
        */
       var table = this.trak.mdia.minf.stbl.stts.table;
@@ -642,7 +642,7 @@ var Track = (function track () {
       return this.trak.mdia.mdhd.timeScale;
     },
     /**
-     * Converts time units to real time (seconds). 
+     * Converts time units to real time (seconds).
      */
     timeToSeconds: function (time) {
       return time / this.getTimeScale();
@@ -657,37 +657,34 @@ var Track = (function track () {
       /*
       for (var i = 0; i < this.getSampleCount(); i++) {
         var res = this.sampleToChunk(i);
-        console.info("Sample " + i + " -> " + res.index + " % " + res.offset + 
-                     " @ " + this.chunkToOffset(res.index) + 
+        console.info("Sample " + i + " -> " + res.index + " % " + res.offset +
+                     " @ " + this.chunkToOffset(res.index) +
                      " @@ " + this.sampleToOffset(i));
       }
       console.info("Total Time: " + this.timeToSeconds(this.getTotalTime()));
       var total = this.getTotalTimeInSeconds();
       for (var i = 50; i < total; i += 0.1) {
-        // console.info("Time: " + i.toFixed(2) + " " + this.secondsToTime(i)); 
-        
+        // console.info("Time: " + i.toFixed(2) + " " + this.secondsToTime(i));
+
         console.info("Time: " + i.toFixed(2) + " " + this.timeToSample(this.secondsToTime(i)));
       }
       */
     },
     /**
-     * Video samples in AVC file format are framed with a start prefix that
-     * indicates the length of the sample. This function only returns the contained 
-     * NAL unit without the length prefix.
+     * AVC samples contain one or more NAL units each of which have a length prefix.
+     * This function returns an array of NAL units without their length prefixes.
      */
-    getSampleBytes: function (sample, withoutLengthPrefix) {
+    getSampleNALUnits: function (sample) {
       var bytes = this.file.stream.bytes;
       var offset = this.sampleToOffset(sample);
-      if (withoutLengthPrefix) {
-        var size = this.sampleToSize(sample, 1);
-        if (PARANOID) {
-          var prefix = (new Bytestream(bytes.buffer, offset)).readU32();
-          assert (size >= prefix + 4);
-//          return bytes.subarray(offset + 4, offset + prefix + 4);
-        }
-        return bytes.subarray(offset + 4, offset + size);
+      var end = offset + this.sampleToSize(sample, 1);
+      var nalUnits = [];
+      while(end - offset > 0) {
+        var length = (new Bytestream(bytes.buffer, offset)).readU32();
+        nalUnits.push(bytes.subarray(offset + 4, offset + length + 4));
+        offset = offset + length + 4;
       }
-      return bytes.subarray(offset, offset + this.sampleToSize(sample, 1));
+      return nalUnits;
     }
   };
   return constructor;
@@ -731,7 +728,7 @@ var MP4Player = (function reader() {
     filterVerLumaEdge: "optimized",
     getBoundaryStrengthsA: "optimized"
   };
-  
+
   function constructor(stream, canvas, useWorkers, render) {
     this.canvas = canvas;
     this.webGLCanvas = null;
@@ -749,11 +746,11 @@ var MP4Player = (function reader() {
       fpsMax: -1000,
       webGLTextureUploadTime: 0
     };
-    
+
     this.onStatisticsUpdated = function () {};
-    
+
     if (this.useWorkers) {
-      this.avcWorker = new WorkerSocket("avc-worker.js"); 
+      this.avcWorker = new WorkerSocket("avc-worker.js");
       this.avcWorker.onReceiveMessage("console.info", function (message) {
         console.info("AVC Worker Says: " + message.payload);
       });
@@ -787,7 +784,7 @@ var MP4Player = (function reader() {
     if (videoElapsedTime < 1000) {
       return;
     }
-    
+
     if (!s.windowStartTime) {
       s.windowStartTime = now;
       return;
@@ -796,33 +793,33 @@ var MP4Player = (function reader() {
       var fps = (s.windowPictureCounter / windowElapsedTime) * 1000;
       s.windowStartTime = now;
       s.windowPictureCounter = 0;
-      
+
       if (fps < s.fpsMin) s.fpsMin = fps;
       if (fps > s.fpsMax) s.fpsMax = fps;
       s.fps = fps;
     }
-    
+
     var fps = (s.videoPictureCounter / videoElapsedTime) * 1000;
     s.fpsSinceStart = fps;
     this.onStatisticsUpdated(this.statistics);
     return ;
   }
-  
+
   function onPictureDecoded(buffer, width, height) {
     updateStatistics.call(this);
-    
+
     if (!buffer || !this.render) {
       return;
     }
     var lumaSize = width * height;
     var chromaSize = lumaSize >> 2;
-    
+
     this.webGLCanvas.YTexture.fill(buffer.subarray(0, lumaSize));
     this.webGLCanvas.UTexture.fill(buffer.subarray(lumaSize, lumaSize + chromaSize));
     this.webGLCanvas.VTexture.fill(buffer.subarray(lumaSize + chromaSize, lumaSize + 2 * chromaSize));
     this.webGLCanvas.drawScene();
   }
-  
+
   constructor.prototype = {
     readAll: function(callback) {
       console.info("MP4Player::readAll()");
@@ -837,23 +834,23 @@ var MP4Player = (function reader() {
     },
     play: function() {
       var reader = this.reader;
-      
+
       if (!reader) {
         this.readAll(this.play.bind(this));
         return;
       } else {
         this.canvas.width = this.size.w;
         this.canvas.height = this.size.h;
-        this.webGLCanvas = new YUVWebGLCanvas(this.canvas, this.size);  
+        this.webGLCanvas = new YUVWebGLCanvas(this.canvas, this.size);
       }
-      
+
       var video = reader.tracks[1];
       var audio = reader.tracks[2];
-      
+
       var avc = reader.tracks[1].trak.mdia.minf.stbl.stsd.avc1.avcC;
       var sps = avc.sps[0];
       var pps = avc.pps[0];
-      
+
       /* Decode Sequence & Picture Parameter Sets */
       if (this.useWorkers) {
         this.avcWorker.sendMessage("decode-sample", sps);
@@ -867,18 +864,24 @@ var MP4Player = (function reader() {
       var pic = 0;
       setTimeout(function foo() {
         if (this.useWorkers) {
-          this.avcWorker.sendMessage("decode-sample", video.getSampleBytes(pic, true));
+          var avcWorker = this.avcWorker;
+          video.getSampleNALUnits(pic).forEach(function (nal) {
+            avcWorker.sendMessage("decode-sample", nal);
+          });
         } else {
-          this.avc.decode(video.getSampleBytes(pic, true));
+          var avc = this.avc;
+          video.getSampleNALUnits(pic).forEach(function (nal) {
+            avc.decode(nal);
+          });
         }
         pic ++;
         if (pic < 3000) {
           setTimeout(foo.bind(this), 1);
-        } 
+        }
       }.bind(this), 1);
     }
-  }
-  
+  };
+
   return constructor;
 })();
 
@@ -894,7 +897,7 @@ var Broadway = (function broadway() {
     this.canvas.onclick = function () {
       this.play();
     }.bind(this);
-    
+
     div.appendChild(this.canvas);
     var controls = document.createElement('div');
     controls.setAttribute('style', "z-index: 100; position: absolute; bottom: 0px; background-color: rgba(0,0,0,0.8); height: 30px; width: 100%; text-align: left;");
@@ -902,12 +905,12 @@ var Broadway = (function broadway() {
     this.info.setAttribute('style', "font-size: 14px; font-weight: bold; padding: 6px; color: lime;");
     controls.appendChild(this.info);
     div.appendChild(controls);
-    
+
     var useWorkers = div.attributes.workers ? div.attributes.workers.value == "true" : true;
     var render = div.attributes.render ? div.attributes.render.value == "true" : true;
-    
+
     this.player = new MP4Player(new Stream(src), this.canvas, useWorkers, render);
-    
+
     this.score = null;
     this.player.onStatisticsUpdated = function (statistics) {
       if (statistics.videoPictureCounter % 10 != 0) {
@@ -922,12 +925,12 @@ var Broadway = (function broadway() {
       }
       var scoreCutoff = 1200;
       if (statistics.videoPictureCounter < scoreCutoff) {
-        this.score = scoreCutoff - statistics.videoPictureCounter; 
+        this.score = scoreCutoff - statistics.videoPictureCounter;
       } else if (statistics.videoPictureCounter == scoreCutoff) {
         this.score = statistics.fpsSinceStart.toFixed(2);
       }
       // info += " score: " + this.score;
-      
+
       this.info.innerHTML = info;
     }.bind(this);
   }
