@@ -906,8 +906,8 @@ var Broadway = (function broadway() {
     controls.appendChild(this.info);
     div.appendChild(controls);
 
-    var useWorkers = div.attributes.workers ? div.attributes.workers.value == "true" : true;
-    var render = div.attributes.render ? div.attributes.render.value == "true" : true;
+    var useWorkers = div.attributes.workers ? div.attributes.workers.value == "true" : false;
+    var render = div.attributes.render ? div.attributes.render.value == "true" : false;
 
     this.player = new MP4Player(new Stream(src), this.canvas, useWorkers, render);
 
