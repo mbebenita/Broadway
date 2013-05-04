@@ -2,7 +2,10 @@ Broadway.js
 ===========
 A JavaScript H.264 decoder.
 
-View a Live Demo at: http://mbebenita.github.com/Broadway/storyDemo.html or http://mbebenita.github.com/Broadway/treeDemo.html
+
+View a Live Demo at: http://bkw.github.com/Broadway/storyDemo.html or http://bkw.github.com/Broadway/treeDemo.html
+
+Thanks https://github.com/bkw for hosting the demos.
 
 The video player first needs to download the entire video before it can start playing, thus appearing to be a bit slow at first, so have patience. You can start the video by clicking on each player. The top left player runs on the main thread, the remaining players run in background worker threads.
 
