@@ -866,7 +866,9 @@ var MP4Player = (function reader() {
         if (this.useWorkers) {
           var avcWorker = this.avcWorker;
           video.getSampleNALUnits(pic).forEach(function (nal) {
-            avcWorker.sendMessage("decode-sample", nal);
+            // Copy the sample so that we only do a structured clone of the
+            // region of interest
+            avcWorker.sendMessage("decode-sample", Uint8Array(nal));
           });
         } else {
           var avc = this.avc;
