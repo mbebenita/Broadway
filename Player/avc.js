@@ -228,7 +228,6 @@ var Avc = (function avc() {
                 if (fn) {
                     origFn[patch.original] = Module.patch(null, patch.name, fn);
                     console.info("Patching: " + patch.name + ", with: " + option);
-                    console.log(patch.name, origFn[patch.original]);
                 }
             }
         }
