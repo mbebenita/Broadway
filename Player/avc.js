@@ -10,6 +10,9 @@ HEAP16 = Module.HEAP16;
 HEAP32 = Module.HEAP32;
 _h264bsdClip = Module._get_h264bsdClip();
 
+var _broadwayOnHeadersDecoded;
+var _broadwayOnPictureDecoded;
+
 var Avc = (function avc() {
   const MAX_STREAM_BUFFER_LENGTH = 1024 * 1024;
   
@@ -21,20 +24,19 @@ var Avc = (function avc() {
     this.onPictureDecoded = function (buffer, width, height) {
       // console.info(buffer.length);
     }
-    
-    Module.patch(null, "_broadwayOnHeadersDecoded", function () {
-      
-    });
-    
-    
-    Module.patch(null, "_broadwayOnPictureDecoded", function ($buffer, width, height) {
+
+    _broadwayOnHeadersDecoded = function () {
+
+    };
+
+    _broadwayOnPictureDecoded = function ($buffer, width, height) {
       var buffer = this.pictureBuffers[$buffer];
       if (!buffer) {
         buffer = this.pictureBuffers[$buffer] = toU8Array($buffer, (width * height * 3) / 2);
       }
       this.onPictureDecoded(buffer, width, height);
-    }.bind(this));
-    
+    }.bind(this);
+
   }
 
   /**
@@ -57,7 +59,7 @@ var Avc = (function avc() {
       Module._broadwayPlayStream();
     },
     configure: function (config) {
-      patchOptimizations(config, patches);
+      // patchOptimizations(config, patches);
       console.info("Broadway Configured: " + JSON.stringify(config));
     }
   };

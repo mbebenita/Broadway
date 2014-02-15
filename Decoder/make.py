@@ -20,7 +20,8 @@ emcc_args = [
   '-s', 'RELOOP=1',
   '-s', '''EXPORTED_FUNCTIONS=["HEAP8", "HEAP16", "HEAP32", "_get_h264bsdClip", "_main", "_broadwayGetMajorVersion", "_broadwayGetMinorVersion", "_broadwayInit", "_broadwayExit", "_broadwayCreateStream", "_broadwaySetStreamLength", "_broadwayPlayStream", "_broadwayOnHeadersDecoded", "_broadwayOnPictureDecoded"]''',
   '--closure', '1',
-  '--js-transform', 'python appender.py'
+  '--js-library', 'library.js'
+  # '--js-transform', 'python appender.py'
 ]
   
 JS_DIR = "js"
