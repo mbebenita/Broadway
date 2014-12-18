@@ -79,3 +79,6 @@ emscripten.Building.emcc('avc.bc', emcc_args, os.path.join(JS_DIR, 'avc.js'))
 
 print 'copying %s -> %s' % (os.path.join(JS_DIR, 'avc.js'), os.path.join('..','Player','avc-codec.js'))
 Popen(['cp', os.path.join(JS_DIR, 'avc.js'), os.path.join('..','Player','avc-codec.js')]).communicate()
+
+print 'copying %s -> %s' % (os.path.join(JS_DIR, 'avc.js.mem'), os.path.join('..','Player','avc.js.mem'))
+Popen(['cp', os.path.join(JS_DIR, 'avc.js.mem'), os.path.join('..','Player','avc.js.mem')]).communicate()
