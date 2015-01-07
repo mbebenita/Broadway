@@ -749,7 +749,8 @@ var MP4Player = (function reader() {
 
     this.onStatisticsUpdated = function () {};
 
-    if (this.useWorkers) {
+    if (this.useSlowWorkers) {
+      // left it in for comparison
       this.avcWorker = new WorkerSocket("avc-worker.js");
       this.avcWorker.onReceiveMessage("console.info", function (message) {
         console.info("AVC Worker Says: " + message.payload);
@@ -764,6 +765,29 @@ var MP4Player = (function reader() {
         }
         onPictureDecoded.call(this, message.payload.picture, message.payload.width, message.payload.height);
       }.bind(this));
+      
+    }else if(this.useWorkers) {
+      this.avcWorker = new Worker("fast-worker.js");
+      var worker = this.avcWorker;
+      var avcContext = this;
+      this.avcWorker.addEventListener('message', function(e) {
+        var data = e.data;
+        if (data.consoleLog){
+          console.log(data.consoleLog);
+          return;
+        };
+        if (data.width){
+          worker.lastDim = data;
+          return;
+        };
+        onPictureDecoded.call(avcContext, new Uint8Array(data), worker.lastDim.width, worker.lastDim.height);
+      }, false);
+      
+      if (!this.render) {
+        defaultConfig.sendBufferOnPictureDecoded = false;
+      };
+      this.avcWorker.postMessage({avcConfiguration: defaultConfig});
+      
     } else {
       this.avc = new Avc();
       this.avc.configure(defaultConfig);
@@ -852,9 +876,18 @@ var MP4Player = (function reader() {
       var pps = avc.pps[0];
 
       /* Decode Sequence & Picture Parameter Sets */
-      if (this.useWorkers) {
+      if (this.useSlowWorkers) {
         this.avcWorker.sendMessage("decode-sample", sps);
         this.avcWorker.sendMessage("decode-sample", pps);
+      }else if (this.useWorkers) {
+        var copyU8 = new Uint8Array(sps.length);
+        copyU8.set( sps, 0, sps.length );
+        this.avcWorker.postMessage(copyU8.buffer, [copyU8.buffer]); // Send data to our worker.
+        
+        copyU8 = new Uint8Array(pps.length);
+        copyU8.set( pps, 0, pps.length );
+        this.avcWorker.postMessage(copyU8.buffer, [copyU8.buffer]); // Send data to our worker.
+        
       } else {
         this.avc.decode(sps);
         this.avc.decode(pps);
@@ -863,12 +896,21 @@ var MP4Player = (function reader() {
       /* Decode Pictures */
       var pic = 0;
       setTimeout(function foo() {
-        if (this.useWorkers) {
+        if (this.useSlowWorkers) {
           var avcWorker = this.avcWorker;
           video.getSampleNALUnits(pic).forEach(function (nal) {
             // Copy the sample so that we only do a structured clone of the
             // region of interest
             avcWorker.sendMessage("decode-sample", Uint8Array(nal));
+          });
+        }else if (this.useWorkers) {
+          var avcWorker = this.avcWorker;
+          video.getSampleNALUnits(pic).forEach(function (nal) {
+            // Copy the sample so that we only do a structured clone of the
+            // region of interest
+            var copyU8 = new Uint8Array(nal.length);
+            copyU8.set( nal, 0, nal.length );
+            avcWorker.postMessage(copyU8.buffer, [copyU8.buffer]); // Send data to our worker.
           });
         } else {
           var avc = this.avc;
