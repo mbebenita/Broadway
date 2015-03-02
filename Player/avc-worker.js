@@ -20,7 +20,7 @@ avc.onPictureDecoded = function (buffer, width, height) {
   // 'buffer' is a view of a large ArrayBuffer. Only clone the portion in the
   // view.
   if (buffer) {
-    buffer = Uint8Array(buffer);
+    buffer = new Uint8Array(buffer);
   }
   socket.sendMessage("on-picture-decoded", {picture: buffer, width: width, height: height});
 }
