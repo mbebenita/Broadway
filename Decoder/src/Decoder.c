@@ -112,6 +112,7 @@ u32 broadwayInit() {
     }
 
     picDecodeNumber = picDisplayNumber = 1;
+    return 0;
 }
 
 extern void broadwayOnHeadersDecoded();
