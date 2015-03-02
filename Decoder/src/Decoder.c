@@ -115,7 +115,7 @@ u32 broadwayInit() {
     return 0;
 }
 
-extern void broadwayOnHeadersDecoded();
+extern void broadwayOnHeadersDecoded(void);
 
 extern void broadwayOnPictureDecoded(u8 *buffer, u32 width, u32 height);
 
