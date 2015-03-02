@@ -1,9 +1,9 @@
 var LibraryBroadway = {
   broadwayOnHeadersDecoded: function () {
-    window["_broadwayOnHeadersDecoded"]();
+    _broadwayOnHeadersDecoded();
   },
   broadwayOnPictureDecoded: function ($buffer, width, height) {
-    window["_broadwayOnPictureDecoded"]($buffer, width, height);
+    _broadwayOnPictureDecoded($buffer, width, height);
   }
 };
 

@@ -155,7 +155,7 @@ const u8 h264bsdClip[1280] =
     255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255
 };
 
-u8 *get_h264bsdClip() {
+const u8 *get_h264bsdClip() {
     return h264bsdClip;
 }
 

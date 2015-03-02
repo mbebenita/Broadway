@@ -10,7 +10,7 @@ import tools.shared as emscripten
 
 emcc_args = [
   '-m32',
-  '-O2',
+  '-O1',
   '--llvm-opts', '2',
   '-s', 'CORRECT_SIGNS=1',
   '-s', 'CORRECT_OVERFLOWS=1',
@@ -18,7 +18,7 @@ emcc_args = [
   '-s', 'FAST_MEMORY=' + str(12*1024*1024),
   '-s', 'INVOKE_RUN=0',
   '-s', 'RELOOP=1',
-  '-s', '''EXPORTED_FUNCTIONS=["HEAP8", "HEAP16", "HEAP32", "_get_h264bsdClip", "_main", "_broadwayGetMajorVersion", "_broadwayGetMinorVersion", "_broadwayInit", "_broadwayExit", "_broadwayCreateStream", "_broadwaySetStreamLength", "_broadwayPlayStream", "_broadwayOnHeadersDecoded", "_broadwayOnPictureDecoded"]''',
+  '-s', '''EXPORTED_FUNCTIONS=["_get_h264bsdClip", "_broadwayGetMajorVersion", "_broadwayGetMinorVersion", "_broadwayInit", "_broadwayExit", "_broadwayCreateStream", "_broadwaySetStreamLength", "_broadwayPlayStream", "_broadwayOnHeadersDecoded", "_broadwayOnPictureDecoded"]''',
   '--closure', '1',
   '--js-library', 'library.js'
   # '--js-transform', 'python appender.py'
