@@ -923,9 +923,17 @@ var Broadway = (function broadway() {
     this.info.setAttribute('style', "font-size: 14px; font-weight: bold; padding: 6px; color: lime;");
     controls.appendChild(this.info);
     div.appendChild(controls);
-
+    
     var useWorkers = div.attributes.workers ? div.attributes.workers.value == "true" : false;
     var render = div.attributes.render ? div.attributes.render.value == "true" : false;
+    
+    var infoStr = "";
+    if (useWorkers){
+      infoStr = "worker thread ";
+    }else{
+      infoStr = "main thread ";
+    };
+    this.info.innerHTML = infoStr;
 
     this.player = new MP4Player(new Stream(src), this.canvas, useWorkers, render);
 
@@ -949,7 +957,7 @@ var Broadway = (function broadway() {
       }
       // info += " score: " + this.score;
 
-      this.info.innerHTML = info;
+      this.info.innerHTML = infoStr + info;
     }.bind(this);
   }
   constructor.prototype = {
