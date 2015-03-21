@@ -927,11 +927,11 @@ var Broadway = (function broadway() {
     var useWorkers = div.attributes.workers ? div.attributes.workers.value == "true" : false;
     var render = div.attributes.render ? div.attributes.render.value == "true" : false;
     
-    var infoStr = "";
+    var infoStr = "Click canvas to load and play - ";
     if (useWorkers){
-      infoStr = "worker thread ";
+      infoStr += "worker thread ";
     }else{
-      infoStr = "main thread ";
+      infoStr += "main thread ";
     };
     this.info.innerHTML = infoStr;
 
