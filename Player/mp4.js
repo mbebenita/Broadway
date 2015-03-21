@@ -729,11 +729,12 @@ var MP4Player = (function reader() {
     getBoundaryStrengthsA: "optimized"
   };
 
-  function constructor(stream, canvas, useWorkers, render) {
+  function constructor(stream, canvas, useWorkers, render, pureAsm) {
     this.canvas = canvas;
     this.webGLCanvas = null;
     this.stream = stream;
     this.useWorkers = useWorkers;
+    this.pureAsm = pureAsm;
     this.render = render;
 
     this.statistics = {
@@ -748,6 +749,12 @@ var MP4Player = (function reader() {
     };
 
     this.onStatisticsUpdated = function () {};
+    
+    defaultConfig.pureAsm = pureAsm;
+    var opdFun = onPictureDecoded;
+    if (pureAsm){
+      opdFun = onPictureDecodedAsm;
+    };
 
     if (this.useWorkers) {
       this.avcWorker = new WorkerSocket("avc-worker.js");
@@ -762,12 +769,12 @@ var MP4Player = (function reader() {
         if (!this.render) {
           assert (message.payload.picture == null);
         }
-        onPictureDecoded.call(this, message.payload.picture, message.payload.width, message.payload.height);
+        opdFun.call(this, message.payload.picture, message.payload.width, message.payload.height);
       }.bind(this));
     } else {
       this.avc = new Avc();
       this.avc.configure(defaultConfig);
-      this.avc.onPictureDecoded = onPictureDecoded.bind(this);
+      this.avc.onPictureDecoded = opdFun.bind(this);
     }
   }
 
@@ -819,6 +826,31 @@ var MP4Player = (function reader() {
     this.webGLCanvas.VTexture.fill(buffer.subarray(lumaSize + chromaSize, lumaSize + 2 * chromaSize));
     this.webGLCanvas.drawScene();
   }
+  
+  function onPictureDecodedAsm(buffer, width, height) {
+    updateStatistics.call(this);
+
+    if (!buffer || !this.render) {
+      return;
+    };
+    
+    
+    var createImgData = false;
+    var canvas = this.canvas;
+    var ctx = this.ctx;
+    var imgData = this.imgData;
+
+    if (!ctx){
+      this.ctx = canvas.getContext('2d');
+      ctx = this.ctx;
+      
+      this.imgData = ctx.createImageData(width, height);
+      imgData = this.imgData;
+    };
+
+    imgData.data.set(buffer);
+    ctx.putImageData(imgData, 0, 0);
+  }
 
   constructor.prototype = {
     readAll: function(callback) {
@@ -841,7 +873,9 @@ var MP4Player = (function reader() {
       } else {
         this.canvas.width = this.size.w;
         this.canvas.height = this.size.h;
-        this.webGLCanvas = new YUVWebGLCanvas(this.canvas, this.size);
+        if (!this.pureAsm){
+          this.webGLCanvas = new YUVWebGLCanvas(this.canvas, this.size);
+        };
       }
 
       var video = reader.tracks[1];
@@ -868,7 +902,7 @@ var MP4Player = (function reader() {
           video.getSampleNALUnits(pic).forEach(function (nal) {
             // Copy the sample so that we only do a structured clone of the
             // region of interest
-            avcWorker.sendMessage("decode-sample", Uint8Array(nal));
+            avcWorker.sendMessage("decode-sample", new Uint8Array(nal));
           });
         } else {
           var avc = this.avc;
@@ -909,9 +943,10 @@ var Broadway = (function broadway() {
     div.appendChild(controls);
 
     var useWorkers = div.attributes.workers ? div.attributes.workers.value == "true" : false;
+    var pureAsm = div.attributes.pureasm ? div.attributes.pureasm.value == "true" : false;
     var render = div.attributes.render ? div.attributes.render.value == "true" : false;
 
-    this.player = new MP4Player(new Stream(src), this.canvas, useWorkers, render);
+    this.player = new MP4Player(new Stream(src), this.canvas, useWorkers, render, pureAsm);
 
     this.score = null;
     this.player.onStatisticsUpdated = function (statistics) {
