@@ -87,6 +87,11 @@ body {
     height: 900px;
     padding: 10px;
 }
+
+.broadway {
+  margin: 10px;
+}
+
 .header {
     font: normal 16px "Arial Black", sans-serif;
     color: #16C0F0;

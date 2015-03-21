@@ -750,20 +750,27 @@ var MP4Player = (function reader() {
     this.onStatisticsUpdated = function () {};
 
     if (this.useWorkers) {
-      this.avcWorker = new WorkerSocket("avc-worker.js");
-      this.avcWorker.onReceiveMessage("console.info", function (message) {
-        console.info("AVC Worker Says: " + message.payload);
-      });
+      this.avcWorker = new Worker("avc-worker.js");
+      var worker = this.avcWorker;
+      var avcContext = this;
+      this.avcWorker.addEventListener('message', function(e) {
+        var data = e.data;
+        if (data.consoleLog){
+          console.log(data.consoleLog);
+          return;
+        };
+        if (data.width){
+          worker.lastDim = data;
+          return;
+        };
+        onPictureDecoded.call(avcContext, new Uint8Array(data), worker.lastDim.width, worker.lastDim.height);
+      }, false);
+      
       if (!this.render) {
         defaultConfig.sendBufferOnPictureDecoded = false;
-      }
-      this.avcWorker.sendMessage("configure", defaultConfig);
-      this.avcWorker.onReceiveMessage("on-picture-decoded", function (message) {
-        if (!this.render) {
-          assert (message.payload.picture == null);
-        }
-        onPictureDecoded.call(this, message.payload.picture, message.payload.width, message.payload.height);
-      }.bind(this));
+      };
+      this.avcWorker.postMessage({avcConfiguration: defaultConfig});
+      
     } else {
       this.avc = new Avc();
       this.avc.configure(defaultConfig);
@@ -853,12 +860,18 @@ var MP4Player = (function reader() {
 
       /* Decode Sequence & Picture Parameter Sets */
       if (this.useWorkers) {
-        this.avcWorker.sendMessage("decode-sample", sps);
-        this.avcWorker.sendMessage("decode-sample", pps);
+        var copyU8 = new Uint8Array(sps.length);
+        copyU8.set( sps, 0, sps.length );
+        this.avcWorker.postMessage(copyU8.buffer, [copyU8.buffer]); // Send data to our worker.
+        
+        copyU8 = new Uint8Array(pps.length);
+        copyU8.set( pps, 0, pps.length );
+        this.avcWorker.postMessage(copyU8.buffer, [copyU8.buffer]); // Send data to our worker.
+        
       } else {
         this.avc.decode(sps);
         this.avc.decode(pps);
-      }
+      };
 
       /* Decode Pictures */
       var pic = 0;
@@ -868,14 +881,17 @@ var MP4Player = (function reader() {
           video.getSampleNALUnits(pic).forEach(function (nal) {
             // Copy the sample so that we only do a structured clone of the
             // region of interest
-            avcWorker.sendMessage("decode-sample", Uint8Array(nal));
+            var copyU8 = new Uint8Array(nal.length);
+            copyU8.set( nal, 0, nal.length );
+            avcWorker.postMessage(copyU8.buffer, [copyU8.buffer]); // Send data to our worker.
           });
-        } else {
+          
+        }else{
           var avc = this.avc;
           video.getSampleNALUnits(pic).forEach(function (nal) {
             avc.decode(nal);
           });
-        }
+        };
         pic ++;
         if (pic < 3000) {
           setTimeout(foo.bind(this), 1);
