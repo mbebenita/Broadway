@@ -2,7 +2,6 @@
 window = this;
 
 importScripts('util.js');
-importScripts('worker.js');
 importScripts('avc-codec.js');
 importScripts('avc.js');
 

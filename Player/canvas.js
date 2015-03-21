@@ -36,7 +36,7 @@ var Script = (function script() {
     res.type = type;
     res.source = source;
     return res;
-  }
+  };
   return constructor;
 })();
 

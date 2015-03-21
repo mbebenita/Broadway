@@ -23,7 +23,7 @@ var Avc = (function avc() {
     
     this.onPictureDecoded = function (buffer, width, height) {
       // console.info(buffer.length);
-    }
+    };
 
     _broadwayOnHeadersDecoded = function () {
 
