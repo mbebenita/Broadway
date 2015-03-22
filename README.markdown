@@ -17,7 +17,7 @@ Building the demo:
 Install and configure Emscripten (https://github.com/kripken/emscripten)  
 The current version of Broadway was built with emscripten 1.29.0  
 
-The code for the demo is in the Decoder folder, to build it run the make.py python script.
+The code for the demo is in the Decoder folder, to build it run the make.py python script. (Requires at least python 2.7)
 
 Encoding Video
 ==============
