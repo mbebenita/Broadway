@@ -1,3 +1,24 @@
+/*
+
+
+usage:
+
+p = new Player({
+  useWorker: <bool>,
+  workerFile: <defaults to "Decoder.js"> // give path to Decoder.js
+});
+
+// canvas property represents the canvas node
+// put it somewhere in the dom
+p.canvas;
+
+p.decode(<binary>);
+
+
+*/
+
+
+
 // universal module definition
 (function (root, factory) {
     if (typeof define === 'function' && define.amd) {
