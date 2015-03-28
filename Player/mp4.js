@@ -1,5 +1,41 @@
 'use strict';
 
+//var Avc = Player;
+
+
+function assert(condition, message) {
+  if (!condition) {
+    error(message);
+  }
+};
+
+
+/**
+ * Represents a 2-dimensional size value. 
+ */
+var Size = (function size() {
+  function constructor(w, h) {
+    this.w = w;
+    this.h = h;
+  }
+  constructor.prototype = {
+    toString: function () {
+      return "(" + this.w + ", " + this.h + ")";
+    },
+    getHalfSize: function() {
+      return new Size(this.w >>> 1, this.h >>> 1);
+    },
+    length: function() {
+      return this.w * this.h;
+    }
+  };
+  return constructor;
+})();
+
+
+
+
+
 var Bytestream = (function BytestreamClosure() {
   function constructor(arrayBuffer, start, length) {
     this.bytes = new Uint8Array(arrayBuffer);
@@ -729,9 +765,7 @@ var MP4Player = (function reader() {
     getBoundaryStrengthsA: "optimized"
   };
 
-  function constructor(stream, canvas, useWorkers, render) {
-    this.canvas = canvas;
-    this.webGLCanvas = null;
+  function constructor(stream, useWorkers, render) {
     this.stream = stream;
     this.useWorkers = useWorkers;
     this.render = render;
@@ -749,33 +783,16 @@ var MP4Player = (function reader() {
 
     this.onStatisticsUpdated = function () {};
 
-    if (this.useWorkers) {
-      this.avcWorker = new Worker("avc-worker.js");
-      var worker = this.avcWorker;
-      var avcContext = this;
-      this.avcWorker.addEventListener('message', function(e) {
-        var data = e.data;
-        if (data.consoleLog){
-          console.log(data.consoleLog);
-          return;
-        };
-        if (data.width){
-          worker.lastDim = data;
-          return;
-        };
-        onPictureDecoded.call(avcContext, new Uint8Array(data), worker.lastDim.width, worker.lastDim.height);
-      }, false);
-      
-      if (!this.render) {
-        defaultConfig.sendBufferOnPictureDecoded = false;
-      };
-      this.avcWorker.postMessage({avcConfiguration: defaultConfig});
-      
-    } else {
-      this.avc = new Avc();
-      this.avc.configure(defaultConfig);
-      this.avc.onPictureDecoded = onPictureDecoded.bind(this);
-    }
+    this.avc = new Player({
+      useWorker: useWorkers,
+    });
+    
+    var self = this;
+    this.avc.onPictureDecoded = function(){
+      updateStatistics.call(self);
+    };
+    
+    this.canvas = this.avc.canvas;
   }
 
   function updateStatistics() {
@@ -812,21 +829,6 @@ var MP4Player = (function reader() {
     return ;
   }
 
-  function onPictureDecoded(buffer, width, height) {
-    updateStatistics.call(this);
-
-    if (!buffer || !this.render) {
-      return;
-    }
-    var lumaSize = width * height;
-    var chromaSize = lumaSize >> 2;
-
-    this.webGLCanvas.YTexture.fill(buffer.subarray(0, lumaSize));
-    this.webGLCanvas.UTexture.fill(buffer.subarray(lumaSize, lumaSize + chromaSize));
-    this.webGLCanvas.VTexture.fill(buffer.subarray(lumaSize + chromaSize, lumaSize + 2 * chromaSize));
-    this.webGLCanvas.drawScene();
-  }
-
   constructor.prototype = {
     readAll: function(callback) {
       console.info("MP4Player::readAll()");
@@ -845,11 +847,7 @@ var MP4Player = (function reader() {
       if (!reader) {
         this.readAll(this.play.bind(this));
         return;
-      } else {
-        this.canvas.width = this.size.w;
-        this.canvas.height = this.size.h;
-        this.webGLCanvas = new YUVWebGLCanvas(this.canvas, this.size);
-      }
+      };
 
       var video = reader.tracks[1];
       var audio = reader.tracks[2];
@@ -859,43 +857,20 @@ var MP4Player = (function reader() {
       var pps = avc.pps[0];
 
       /* Decode Sequence & Picture Parameter Sets */
-      if (this.useWorkers) {
-        var copyU8 = new Uint8Array(sps.length);
-        copyU8.set( sps, 0, sps.length );
-        this.avcWorker.postMessage(copyU8.buffer, [copyU8.buffer]); // Send data to our worker.
-        
-        copyU8 = new Uint8Array(pps.length);
-        copyU8.set( pps, 0, pps.length );
-        this.avcWorker.postMessage(copyU8.buffer, [copyU8.buffer]); // Send data to our worker.
-        
-      } else {
-        this.avc.decode(sps);
-        this.avc.decode(pps);
-      };
+      this.avc.decode(sps);
+      this.avc.decode(pps);
 
       /* Decode Pictures */
       var pic = 0;
       setTimeout(function foo() {
-        if (this.useWorkers) {
-          var avcWorker = this.avcWorker;
-          video.getSampleNALUnits(pic).forEach(function (nal) {
-            // Copy the sample so that we only do a structured clone of the
-            // region of interest
-            var copyU8 = new Uint8Array(nal.length);
-            copyU8.set( nal, 0, nal.length );
-            avcWorker.postMessage(copyU8.buffer, [copyU8.buffer]); // Send data to our worker.
-          });
-          
-        }else{
-          var avc = this.avc;
-          video.getSampleNALUnits(pic).forEach(function (nal) {
-            avc.decode(nal);
-          });
-        };
+        var avc = this.avc;
+        video.getSampleNALUnits(pic).forEach(function (nal) {
+          avc.decode(nal);
+        });
         pic ++;
         if (pic < 3000) {
           setTimeout(foo.bind(this), 1);
-        }
+        };
       }.bind(this), 1);
     }
   };
@@ -905,18 +880,10 @@ var MP4Player = (function reader() {
 
 var Broadway = (function broadway() {
   function constructor(div) {
-    this.canvas = document.createElement('canvas');
     var src = div.attributes.src ? div.attributes.src.value : undefined;
     var width = div.attributes.width ? div.attributes.width.value : 640;
     var height = div.attributes.height ? div.attributes.height.value : 480;
-    this.canvas.width = width;
-    this.canvas.height = height;
-    this.canvas.style.backgroundColor = "#333333";
-    this.canvas.onclick = function () {
-      this.play();
-    }.bind(this);
 
-    div.appendChild(this.canvas);
     var controls = document.createElement('div');
     controls.setAttribute('style', "z-index: 100; position: absolute; bottom: 0px; background-color: rgba(0,0,0,0.8); height: 30px; width: 100%; text-align: left;");
     this.info = document.createElement('div');
@@ -935,7 +902,12 @@ var Broadway = (function broadway() {
     };
     this.info.innerHTML = infoStr;
 
-    this.player = new MP4Player(new Stream(src), this.canvas, useWorkers, render);
+    this.player = new MP4Player(new Stream(src), useWorkers, render);
+    this.canvas = this.player.canvas;
+    this.canvas.onclick = function () {
+      this.play();
+    }.bind(this);
+    div.appendChild(this.canvas);
 
     this.score = null;
     this.player.onStatisticsUpdated = function (statistics) {
