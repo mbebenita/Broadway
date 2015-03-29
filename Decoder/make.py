@@ -79,7 +79,20 @@ print 'emcc %s -> %s' % ('avc.bc', os.path.join(JS_DIR, 'avc.js'))
 emscripten.Building.emcc('avc.bc', emcc_args, os.path.join(JS_DIR, 'avc.js'))
 
 print 'copying %s -> %s' % (os.path.join(JS_DIR, 'avc.js'), os.path.join('..','Player','avc-codec.js'))
-Popen(['cp', os.path.join(JS_DIR, 'avc.js'), os.path.join('..','Player','avc-codec.js')]).communicate()
+
+
+f = open(os.path.join('..','Player','Decoder.js'), "w")
+f1 = open(os.path.join("..", "templates", 'DecoderPre.js'));
+f.write(f1.read());
+f2 = open(os.path.join(JS_DIR, 'avc.js'));
+f.write(f2.read());
+f3 = open(os.path.join("..", "templates", 'DecoderPost.js'));
+f.write(f3.read());
+
+#Popen(['cat', os.path.join("..", "templates", 'DecoderPre.js'), ">", os.path.join('..','Player','Decoder.js')]).communicate()
+#Popen(['cat', os.path.join(JS_DIR, 'avc.js'), ">>", os.path.join('..','Player','Decoder.js')]).communicate()
+#Popen(['cat', os.path.join("..", "templates", 'DecoderPost.js'), ">>", os.path.join('..','Player','Decoder.js')]).communicate()
+#Popen(['cp', os.path.join(JS_DIR, 'avc.js'), os.path.join('..','Player','avc-codec.js')]).communicate()
 
 # print 'copying %s -> %s' % (os.path.join(JS_DIR, 'avc.js.mem'), os.path.join('..','Player','avc.js.mem'))
 # Popen(['cp', os.path.join(JS_DIR, 'avc.js.mem'), os.path.join('..','Player','avc.js.mem')]).communicate()
