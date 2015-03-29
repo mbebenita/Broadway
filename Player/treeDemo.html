@@ -3,15 +3,13 @@
   <link type="text/css" href="screen.css" rel="stylesheet" />
 </head>
 <body onload="load()">
-  <script src="sylvester.js" type="text/javascript"></script>
-  <script src="glUtils.js" type="text/javascript"></script>
+  <script type="text/javascript" src="Decoder.js"></script>
+  <script type="text/javascript" src="YUVWebGLCanvas.js"></script>
+  <script type="text/javascript" src="Player.js"></script>
   
-  <script type="text/javascript" src="util.js"></script>
   <script type="text/javascript" src="stream.js"></script>
-  <script type="text/javascript" src="avc-codec.js"></script>
-  <script type="text/javascript" src="avc.js"></script>
+  
   <script type="text/javascript" src="mp4.js"></script>
-  <script src='canvas.js' type='text/javascript'></script>
   
   <script type="text/javascript">
     function load() {
@@ -29,6 +27,6 @@
   <a style="font-size: 24px; padding: 20px">Broadway.js - H.264 Decoding in JavaScript w/ asm.js</a>
   <br>
   <a style="font-size: 14px; padding: 20px">Click to Download and Play (The entire file is downloaded before playback begins. Once the file is cached, playback begins much faster.)</a><br><br>
-  <div class="broadway" src="tree.mp4" width="560" height="304" style="float: left; position: relative;" workers="false" render="true"></div>
+  <div class="broadway" src="tree.mp4" width="560" height="304" style="float: left; position: relative;" workers="false" render="true" webgl="auto"></div>
 </body>
 </html>
