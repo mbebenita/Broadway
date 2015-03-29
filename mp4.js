@@ -901,6 +901,7 @@ var Broadway = (function broadway() {
     this.info = document.createElement('div');
     this.info.setAttribute('style', "font-size: 14px; font-weight: bold; padding: 6px; color: lime;");
     controls.appendChild(this.info);
+    this.info.innerHTML = 'Click canvas to load and play';
     div.appendChild(controls);
     
     var useWorkers = div.attributes.workers ? div.attributes.workers.value == "true" : true;
