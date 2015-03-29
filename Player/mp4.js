@@ -910,7 +910,8 @@ var Broadway = (function broadway() {
       };
     };
     
-    var infoStr = "Click canvas to load and play - ";
+    var infoStrPre = "Click canvas to load and play - ";
+    var infoStr = "";
     if (useWorkers){
       infoStr += "worker thread ";
     }else{
@@ -926,7 +927,7 @@ var Broadway = (function broadway() {
     
     
     infoStr += " - webgl: " + this.player.webgl;
-    this.info.innerHTML = infoStr;
+    this.info.innerHTML = infoStrPre + infoStr;
     
 
     this.score = null;
