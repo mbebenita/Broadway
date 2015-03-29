@@ -1,7 +1,5 @@
 'use strict';
 
-//var Avc = Player;
-
 
 function assert(condition, message) {
   if (!condition) {
@@ -785,6 +783,10 @@ var MP4Player = (function reader() {
 
     this.avc = new Player({
       useWorker: useWorkers,
+      size: {
+        width: 640,
+        height: 368
+      }
     });
     
     var self = this;
