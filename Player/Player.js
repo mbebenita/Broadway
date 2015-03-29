@@ -6,11 +6,14 @@ usage:
 p = new Player({
   useWorker: <bool>,
   workerFile: <defaults to "Decoder.js"> // give path to Decoder.js
+  webgl: true | false | "auto" // defaults to "auto"
 });
 
 // canvas property represents the canvas node
 // put it somewhere in the dom
 p.canvas;
+
+p.webgl; // contains the used rendering mode. if you pass auto to webgl you can see what auto detection resulted in
 
 p.decode(<binary>);
 
@@ -69,6 +72,34 @@ p.decode(<binary>);
     
     this._config.workerFile = this._config.workerFile || "Decoder.js";
     
+    var webgl = "auto";
+    if (this._config.webgl === true){
+      webgl = true;
+    }else if (this._config.webgl === false){
+      webgl = false;
+    };
+    
+    if (webgl == "auto"){
+      webgl = true;
+      try{
+        if (!window.WebGLRenderingContext) {
+          // the browser doesn't even know what WebGL is
+          webgl = false;
+        } else {
+          var canvas = document.createElement('canvas');
+          var ctx = canvas.getContext("webgl");
+          if (!ctx) {
+            // browser supports WebGL but initialization failed.
+            webgl = false;
+          };
+        };
+      }catch(e){
+        webgl = false;
+      };
+    };
+    
+    this.webgl = webgl;
+    
     
     var lastWidth;
     var lastHeight;
@@ -97,6 +128,36 @@ p.decode(<binary>);
       self.webGLCanvas.drawScene();
     };
     
+    if (!webgl){
+      
+      onPictureDecoded = function(buffer, width, height){
+        self.onPictureDecoded(buffer, width, height);
+        
+        if (!buffer || !self.render) {
+          return;
+        };
+
+
+        var createImgData = false;
+        var canvas = self.canvas;
+        var ctx = self.ctx;
+        var imgData = self.imgData;
+
+        if (!ctx){
+          self.ctx = canvas.getContext('2d');
+          ctx = self.ctx;
+
+          self.imgData = ctx.createImageData(width, height);
+          imgData = self.imgData;
+        };
+
+        imgData.data.set(buffer);
+        ctx.putImageData(imgData, 0, 0);
+
+      };
+      
+    };
+    
     if (this._config.useWorker){
       var worker = new Worker(this._config.workerFile);
       this.worker = worker;
@@ -113,7 +174,9 @@ p.decode(<binary>);
         onPictureDecoded.call(self, new Uint8Array(data), worker.lastDim.width, worker.lastDim.height);
       }, false);
       
-      worker.postMessage("Broadway.js - Worker init");
+      worker.postMessage({type: "Broadway.js - Worker init", options: {
+        rgb: !webgl
+      }});
       
       
       this.decode = function(parData){
@@ -126,7 +189,9 @@ p.decode(<binary>);
       
     }else{
       
-      this.decoder = new Decoder();
+      this.decoder = new Decoder({
+        rgb: !webgl
+      });
       this.decoder.onPictureDecoded = onPictureDecoded;
 
       this.decode = function(parData){

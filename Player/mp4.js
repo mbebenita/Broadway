@@ -763,9 +763,10 @@ var MP4Player = (function reader() {
     getBoundaryStrengthsA: "optimized"
   };
 
-  function constructor(stream, useWorkers, render) {
+  function constructor(stream, useWorkers, webgl, render) {
     this.stream = stream;
     this.useWorkers = useWorkers;
+    this.webgl = webgl;
     this.render = render;
 
     this.statistics = {
@@ -783,11 +784,14 @@ var MP4Player = (function reader() {
 
     this.avc = new Player({
       useWorker: useWorkers,
+      webgl: webgl,
       size: {
         width: 640,
         height: 368
       }
     });
+    
+    this.webgl = this.avc.webgl;
     
     var self = this;
     this.avc.onPictureDecoded = function(){
@@ -828,7 +832,7 @@ var MP4Player = (function reader() {
     var fps = (s.videoPictureCounter / videoElapsedTime) * 1000;
     s.fpsSinceStart = fps;
     this.onStatisticsUpdated(this.statistics);
-    return ;
+    return;
   }
 
   constructor.prototype = {
@@ -896,20 +900,34 @@ var Broadway = (function broadway() {
     var useWorkers = div.attributes.workers ? div.attributes.workers.value == "true" : false;
     var render = div.attributes.render ? div.attributes.render.value == "true" : false;
     
+    var webgl = "auto";
+    if (div.attributes.webgl){
+      if (div.attributes.webgl.value == "true"){
+        webgl = true;
+      };
+      if (div.attributes.webgl.value == "false"){
+        webgl = false;
+      };
+    };
+    
     var infoStr = "Click canvas to load and play - ";
     if (useWorkers){
       infoStr += "worker thread ";
     }else{
       infoStr += "main thread ";
     };
-    this.info.innerHTML = infoStr;
 
-    this.player = new MP4Player(new Stream(src), useWorkers, render);
+    this.player = new MP4Player(new Stream(src), useWorkers, webgl, render);
     this.canvas = this.player.canvas;
     this.canvas.onclick = function () {
       this.play();
     }.bind(this);
     div.appendChild(this.canvas);
+    
+    
+    infoStr += " - webgl: " + this.player.webgl;
+    this.info.innerHTML = infoStr;
+    
 
     this.score = null;
     this.player.onStatisticsUpdated = function (statistics) {
