@@ -13,11 +13,19 @@
         root.Decoder = factory();
     }
 }(this, function () {
+  "use strict";
   
   var global;
   
   function initglobal(){
     global = this;
+    if (!global){
+      if (typeof window != "undefined"){
+        global = window;
+      }else if (self != "undefined"){
+        global = self;
+      };
+    };
   };
   initglobal();
   

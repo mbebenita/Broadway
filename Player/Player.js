@@ -37,7 +37,7 @@ p.decode(<binary>);
         root.Player = factory(root.Decoder, root.YUVWebGLCanvas);
     }
 }(this, function (Decoder, YUVWebGLCanvas) {
-  
+  "use strict";
   
   
   /**
