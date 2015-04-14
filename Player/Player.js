@@ -128,8 +128,7 @@ p.decode(<binary>);
       self.webGLCanvas.drawScene();
     };
     
-    if (!webgl){
-      
+    if (!webgl){      
       onPictureDecoded = function(buffer, width, height){
         self.onPictureDecoded(buffer, width, height);
         
@@ -157,31 +156,34 @@ p.decode(<binary>);
       };
       
     };
-	 this.bufferAr = [];	
-		var concatUint8 = function(parAr) {
-		if (!parAr || !parAr.length){
-		  return new Uint8Array(0);
-		};
-		var completeLength = 0;
-		var i = 0;
-		var l = parAr.length;
-		for (i; i < l; ++i){
-		  completeLength += parAr[i].byteLength;
-		};
-		
-		var res = new Uint8Array(completeLength);
-		var filledLength = 0;
-		
-		for (i = 0; i < l; ++i){
-		  res.set(new Uint8Array(parAr[i]), filledLength);
-		  filledLength += parAr[i].byteLength;
-		};
-		
-		return res;
-		
+	
+	
+	this.bufferAr = [];		
+	
+	var concatUint8 = function(parAr) {
+	  if (!parAr || !parAr.length){
+	    return new Uint8Array(0);
+	  };
+	  var completeLength = 0;
+	  var i = 0;
+	  var l = parAr.length;
+	  for (i; i < l; ++i){
+	    completeLength += parAr[i].byteLength;
 	  };
 	
-	 this.decodeRaw = function(parData){	  
+	  var res = new Uint8Array(completeLength);
+	  var filledLength = 0;
+	
+	  for (i = 0; i < l; ++i){
+	    res.set(new Uint8Array(parAr[i]), filledLength);
+	    filledLength += parAr[i].byteLength;
+	  };
+	
+	  return res;
+
+	};
+	
+	this.decodeRaw = function(parData){	  
       if (!(parData && parData.length)){
         return;
       };
@@ -238,8 +240,7 @@ p.decode(<binary>);
         rgb: !webgl
       }});
       
-	 
-      
+	
       this.decode = function(parData){
         // Copy the sample so that we only do a structured clone of the
         // region of interest				
@@ -291,4 +292,3 @@ p.decode(<binary>);
   return Player;
   
 }));
-
