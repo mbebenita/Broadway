@@ -104,8 +104,8 @@ p.decode(<binary>);
     var lastWidth;
     var lastHeight;
     var onPictureDecoded = function(buffer, width, height) {
-      self.onPictureDecoded(buffer, width, height);
-      
+      //setTimeout(function(){ self.onPictureDecoded(buffer, width, height); }, 33.333);
+      self.onPictureDecoded(buffer, width, height); 
       if (!buffer || !self.render) {
         return;
       };
@@ -157,8 +157,68 @@ p.decode(<binary>);
       };
       
     };
-    
+	 this.bufferAr = [];	
+		var concatUint8 = function(parAr) {
+		if (!parAr || !parAr.length){
+		  return new Uint8Array(0);
+		};
+		var completeLength = 0;
+		var i = 0;
+		var l = parAr.length;
+		for (i; i < l; ++i){
+		  completeLength += parAr[i].byteLength;
+		};
+		
+		var res = new Uint8Array(completeLength);
+		var filledLength = 0;
+		
+		for (i = 0; i < l; ++i){
+		  res.set(new Uint8Array(parAr[i]), filledLength);
+		  filledLength += parAr[i].byteLength;
+		};
+		
+		return res;
+		
+	  };
+	
+	 this.decodeRaw = function(parData){	  
+      if (!(parData && parData.length)){
+        return;
+      };
+	  
+      var self = this;
+      var foundHit = false;	  
+      var hit = function(offset){				
+        foundHit = true;					
+        self.bufferAr.push(parData.subarray(0, offset));				
+        self.decode( concatUint8(self.bufferAr) );		
+        self.bufferAr = [];
+        self.bufferAr.push(parData.subarray(offset));		
+      };
+      
+      var b = 0;
+      var l = parData.length;
+      var zeroCnt = 0;
+      for (b; b < l; ++b){
+        if (parData[b] === 0){
+          zeroCnt++;
+        }else{
+          if (parData[b] == 1){
+            if (zeroCnt >= 3){
+              hit(b - 3);
+              break;
+            };
+          };
+          zeroCnt = 0;
+        };
+      };
+      if (!foundHit){
+        this.bufferAr.push(parData);
+      };      
+    };	  
+	    
     if (this._config.useWorker){
+	
       var worker = new Worker(this._config.workerFile);
       this.worker = worker;
       worker.addEventListener('message', function(e) {
@@ -178,10 +238,11 @@ p.decode(<binary>);
         rgb: !webgl
       }});
       
+	 
       
       this.decode = function(parData){
         // Copy the sample so that we only do a structured clone of the
-        // region of interest
+        // region of interest				
         var copyU8 = new Uint8Array(parData.length);
         copyU8.set( parData, 0, parData.length );
         worker.postMessage(copyU8.buffer, [copyU8.buffer]); // Send data to our worker.
@@ -200,6 +261,7 @@ p.decode(<binary>);
       
     };
     
+	
     
     if (!this._config.size){
       this._config.size = {};
