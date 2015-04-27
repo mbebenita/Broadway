@@ -1,10 +1,3 @@
-
-    
-    
-    
-    
-    
-    
     var resultModule = window.Module || this.Module;
     return resultModule;
   };
@@ -31,12 +24,12 @@
 
         var copyU8 = new Uint8Array(asmInstance.outSize);
         copyU8.set( asmInstance.out );
-        this.onPictureDecoded(copyU8, width, height);
+        this.onPictureDecoded(copyU8, width, height, this._getEndTime(), this._startedTime);
         return;
         
       };
       
-      this.onPictureDecoded(buffer, width, height);
+      this.onPictureDecoded(buffer, width, height, this._getEndTime(), this._startedTime);
     }.bind(this));
 
     var HEAP8 = Module.HEAP8;
@@ -60,17 +53,36 @@
     this.streamBuffer = toU8Array(Module._broadwayCreateStream(MAX_STREAM_BUFFER_LENGTH), MAX_STREAM_BUFFER_LENGTH);
     this.pictureBuffers = {};
     
-    this.onPictureDecoded = function (buffer, width, height) {
+    this.onPictureDecoded = function (buffer, width, height, time, cnt) {
       
     };
+    
+    this._takeStartTime = function(time){
+      if (this._started){
+        return;
+      };
+      this._started = true;
+      this._startedTime = time || (new Date()).getTime();
+    };
+    
+    this._getTime = function(){
+      return ((new Date()).getTime()) - this._startedTime;
+    };
+    
+    this._getEndTime = function(){
+      this._started = false;
+      return this._getTime();
+    };
+    
     
     /**
      * Decodes a stream buffer. This may be one single (unframed) NAL unit without the
      * start code, or a sequence of NAL units with framing start code prefixes. This
      * function overwrites stream buffer allocated by the codec with the supplied buffer.
      */
-    this.decode = function decode(buffer) {
+    this.decode = function decode(buffer, time) {
       // console.info("Decoding: " + buffer.length);
+      this._takeStartTime(time);
       this.streamBuffer.set(buffer);
       Module._broadwaySetStreamLength(buffer.length);
       Module._broadwayPlayStream();
@@ -580,19 +592,19 @@
     self.addEventListener('message', function(e) {
       
       if (isWorker){
-        decoder.decode(new Uint8Array(e.data));
+        decoder.decode(new Uint8Array(e.data.buf), e.data.time);
         
       }else{
         if (e.data && e.data.type === "Broadway.js - Worker init"){
           isWorker = true;
           decoder = new Broadway(e.data.options);
-          decoder.onPictureDecoded = function (buffer, width, height) {
+          decoder.onPictureDecoded = function (buffer, width, height, time, timeStarted) {
             if (buffer) {
               buffer = new Uint8Array(buffer);
             };
 
             // post dimensions seperately
-            postMessage({width: width, height: height});
+            postMessage({width: width, height: height, time: time, timeStarted: timeStarted});
 
             // buffer needs to be copied because we give up ownership
             var copyU8 = new Uint8Array(buffer.length);

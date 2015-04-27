@@ -103,8 +103,10 @@ p.decode(<binary>);
     
     var lastWidth;
     var lastHeight;
-    var onPictureDecoded = function(buffer, width, height) {
-      self.onPictureDecoded(buffer, width, height);
+    var onPictureDecoded = function(buffer, width, height, time, timeStart) {
+      self.onPictureDecoded(buffer, width, height, time, timeStart);
+      
+      var startTime = (new Date()).getTime();
       
       if (!buffer || !self.render) {
         return;
@@ -126,12 +128,21 @@ p.decode(<binary>);
       self.webGLCanvas.UTexture.fill(buffer.subarray(lumaSize, lumaSize + chromaSize));
       self.webGLCanvas.VTexture.fill(buffer.subarray(lumaSize + chromaSize, lumaSize + 2 * chromaSize));
       self.webGLCanvas.drawScene();
+      
+      if (self.onTime){
+        self.onTime({
+          complete: (new Date()).getTime() - timeStart,
+          decoder: time,
+          cpu: 0
+        });
+      };
+      
     };
     
     if (!webgl){
       
-      onPictureDecoded = function(buffer, width, height){
-        self.onPictureDecoded(buffer, width, height);
+      onPictureDecoded = function(buffer, width, height, time, timeStart){
+        self.onPictureDecoded(buffer, width, height, time, timeStart);
         
         if (!buffer || !self.render) {
           return;
@@ -153,6 +164,14 @@ p.decode(<binary>);
 
         imgData.data.set(buffer);
         ctx.putImageData(imgData, 0, 0);
+        
+        if (self.onTime){
+          self.onTime({
+            complete: (new Date()).getTime() - timeStart,
+            decoder: time,
+            cpu: 0
+          });
+        };
 
       };
       
@@ -171,20 +190,21 @@ p.decode(<binary>);
           worker.lastDim = data;
           return;
         };
-        onPictureDecoded.call(self, new Uint8Array(data), worker.lastDim.width, worker.lastDim.height);
+        
+        onPictureDecoded.call(self, new Uint8Array(data), worker.lastDim.width, worker.lastDim.height, (new Date()).getTime() - worker.lastDim.timeStarted, worker.lastDim.timeStarted);
+        
       }, false);
       
       worker.postMessage({type: "Broadway.js - Worker init", options: {
         rgb: !webgl
       }});
       
-      
       this.decode = function(parData){
         // Copy the sample so that we only do a structured clone of the
         // region of interest
         var copyU8 = new Uint8Array(parData.length);
         copyU8.set( parData, 0, parData.length );
-        worker.postMessage(copyU8.buffer, [copyU8.buffer]); // Send data to our worker.
+        worker.postMessage({buf: copyU8.buffer, time: (new Date()).getTime()}, [copyU8.buffer]); // Send data to our worker.
       };
       
     }else{
