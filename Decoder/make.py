@@ -10,7 +10,7 @@ import tools.shared as emscripten
 
 emcc_args = [
   '-m32',
-  '-O2',
+  '-O3',
   '--memory-init-file', '0',
   '--llvm-opts', '2',
   '-s', 'CORRECT_SIGNS=1',
