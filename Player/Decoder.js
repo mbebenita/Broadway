@@ -256,8 +256,24 @@ function A(a){a&&(p.print(a),p.fa(a));H=i;d("abort() at "+Fa()+"\nIf this abort(
     return resultModule;
   };
   
+  
+  var nowValue = function(){
+    return (new Date()).getTime();
+  };
+  
+  if (typeof performance != "undefined"){
+    if (performance.now){
+      nowValue = function(){
+        return performance.now();
+      };
+    };
+  };
+  
+  
   var Broadway = function(parOptions){
     this.options = parOptions || {};
+    
+    this.now = nowValue;
     
     var asmInstance;
     
@@ -316,11 +332,11 @@ function A(a){a&&(p.print(a),p.fa(a));H=i;d("abort() at "+Fa()+"\nIf this abort(
         return;
       };
       this._started = true;
-      this._startedTime = time || (new Date()).getTime();
+      this._startedTime = time || nowValue();
     };
     
     this._getTime = function(){
-      return ((new Date()).getTime()) - this._startedTime;
+      return nowValue() - this._startedTime;
     };
     
     this._getEndTime = function(){
@@ -857,16 +873,16 @@ function A(a){a&&(p.print(a),p.fa(a));H=i;d("abort() at "+Fa()+"\nIf this abort(
               buffer = new Uint8Array(buffer);
             };
 
-            // post dimensions seperately
-            postMessage({width: width, height: height, time: time, timeStarted: timeStarted});
 
             // buffer needs to be copied because we give up ownership
             var copyU8 = new Uint8Array(buffer.length);
             copyU8.set( buffer, 0, buffer.length );
             
+            postMessage({buf: copyU8.buffer, width: width, height: height, time: time, timeStarted: timeStarted}, [copyU8.buffer]);
+            
             // only post the buffer (slightly faster)
             // add 2nd parameter to indicate transfer of owner ship (this it was makes this worker implementation faster)
-            postMessage(copyU8.buffer, [copyU8.buffer]);
+            //postMessage(copyU8.buffer, [copyU8.buffer]);
 
           };
           postMessage({consoleLog: "initialized" });
@@ -877,6 +893,7 @@ function A(a){a&&(p.print(a),p.fa(a));H=i;d("abort() at "+Fa()+"\nIf this abort(
     }, false);
   };
   
+  Broadway.nowValue = nowValue;
   
   return Broadway;
   

@@ -40,6 +40,8 @@ p.decode(<binary>);
   "use strict";
   
   
+  var nowValue = Decoder.nowValue;
+  
   /**
  * Represents a 2-dimensional size value. 
  */
@@ -106,7 +108,7 @@ p.decode(<binary>);
     var onPictureDecoded = function(buffer, width, height, time, timeStart) {
       self.onPictureDecoded(buffer, width, height, time, timeStart);
       
-      var startTime = (new Date()).getTime();
+      var startTime = nowValue();
       
       if (!buffer || !self.render) {
         return;
@@ -131,7 +133,7 @@ p.decode(<binary>);
       
       if (self.onTime){
         self.onTime({
-          complete: (new Date()).getTime() - timeStart,
+          complete: nowValue() - timeStart,
           decoder: time,
           cpu: 0
         });
@@ -167,7 +169,7 @@ p.decode(<binary>);
         
         if (self.onTime){
           self.onTime({
-            complete: (new Date()).getTime() - timeStart,
+            complete: nowValue() - timeStart,
             decoder: time,
             cpu: 0
           });
@@ -186,12 +188,13 @@ p.decode(<binary>);
           console.log(data.consoleLog);
           return;
         };
-        if (data.width){
+        /*if (data.width){
           worker.lastDim = data;
           return;
-        };
+        };*/
         
-        onPictureDecoded.call(self, new Uint8Array(data), worker.lastDim.width, worker.lastDim.height, (new Date()).getTime() - worker.lastDim.timeStarted, worker.lastDim.timeStarted);
+        //onPictureDecoded.call(self, new Uint8Array(data), worker.lastDim.width, worker.lastDim.height, nowValue() - worker.lastDim.timeStarted, worker.lastDim.timeStarted);
+        onPictureDecoded.call(self, new Uint8Array(data.buf), data.width, data.height, (new Date()).getTime() - data.timeStarted, data.timeStarted);
         
       }, false);
       
