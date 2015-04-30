@@ -37,8 +37,10 @@ p.decode(<binary>);
         root.Player = factory(root.Decoder, root.YUVWebGLCanvas);
     }
 }(this, function (Decoder, YUVWebGLCanvas) {
+  "use strict";
   
   
+  var nowValue = Decoder.nowValue;
   
   /**
  * Represents a 2-dimensional size value. 
@@ -103,8 +105,10 @@ p.decode(<binary>);
     
     var lastWidth;
     var lastHeight;
-    var onPictureDecoded = function(buffer, width, height) {
-      self.onPictureDecoded(buffer, width, height);
+    var onPictureDecoded = function(buffer, width, height, time, timeStart) {
+      self.onPictureDecoded(buffer, width, height, time, timeStart);
+      
+      var startTime = nowValue();
       
       if (!buffer || !self.render) {
         return;
@@ -126,12 +130,21 @@ p.decode(<binary>);
       self.webGLCanvas.UTexture.fill(buffer.subarray(lumaSize, lumaSize + chromaSize));
       self.webGLCanvas.VTexture.fill(buffer.subarray(lumaSize + chromaSize, lumaSize + 2 * chromaSize));
       self.webGLCanvas.drawScene();
+      
+      if (self.onTime){
+        self.onTime({
+          complete: nowValue() - timeStart,
+          decoder: time,
+          cpu: 0
+        });
+      };
+      
     };
     
     if (!webgl){
       
-      onPictureDecoded = function(buffer, width, height){
-        self.onPictureDecoded(buffer, width, height);
+      onPictureDecoded = function(buffer, width, height, time, timeStart){
+        self.onPictureDecoded(buffer, width, height, time, timeStart);
         
         if (!buffer || !self.render) {
           return;
@@ -153,6 +166,14 @@ p.decode(<binary>);
 
         imgData.data.set(buffer);
         ctx.putImageData(imgData, 0, 0);
+        
+        if (self.onTime){
+          self.onTime({
+            complete: nowValue() - timeStart,
+            decoder: time,
+            cpu: 0
+          });
+        };
 
       };
       
@@ -167,24 +188,26 @@ p.decode(<binary>);
           console.log(data.consoleLog);
           return;
         };
-        if (data.width){
+        /*if (data.width){
           worker.lastDim = data;
           return;
-        };
-        onPictureDecoded.call(self, new Uint8Array(data), worker.lastDim.width, worker.lastDim.height);
+        };*/
+        
+        //onPictureDecoded.call(self, new Uint8Array(data), worker.lastDim.width, worker.lastDim.height, nowValue() - worker.lastDim.timeStarted, worker.lastDim.timeStarted);
+        onPictureDecoded.call(self, new Uint8Array(data.buf), data.width, data.height, (new Date()).getTime() - data.timeStarted, data.timeStarted);
+        
       }, false);
       
       worker.postMessage({type: "Broadway.js - Worker init", options: {
         rgb: !webgl
       }});
       
-      
       this.decode = function(parData){
         // Copy the sample so that we only do a structured clone of the
         // region of interest
         var copyU8 = new Uint8Array(parData.length);
         copyU8.set( parData, 0, parData.length );
-        worker.postMessage(copyU8.buffer, [copyU8.buffer]); // Send data to our worker.
+        worker.postMessage({buf: copyU8.buffer, time: (new Date()).getTime()}, [copyU8.buffer]); // Send data to our worker.
       };
       
     }else{
