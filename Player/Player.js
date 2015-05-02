@@ -194,7 +194,7 @@ p.decode(<binary>);
         };*/
         
         //onPictureDecoded.call(self, new Uint8Array(data), worker.lastDim.width, worker.lastDim.height, nowValue() - worker.lastDim.timeStarted, worker.lastDim.timeStarted);
-        onPictureDecoded.call(self, new Uint8Array(data.buf), data.width, data.height, (new Date()).getTime() - data.timeStarted, data.timeStarted);
+        onPictureDecoded.call(self, new Uint8Array(data.buf), data.width, data.height, nowValue() - data.timeStarted, data.timeStarted);
         
       }, false);
       
@@ -207,7 +207,7 @@ p.decode(<binary>);
         // region of interest
         var copyU8 = new Uint8Array(parData.length);
         copyU8.set( parData, 0, parData.length );
-        worker.postMessage({buf: copyU8.buffer, time: (new Date()).getTime()}, [copyU8.buffer]); // Send data to our worker.
+        worker.postMessage({buf: copyU8.buffer, time: nowValue()}, [copyU8.buffer]); // Send data to our worker.
       };
       
     }else{
