@@ -26,17 +26,17 @@ p.decode(<binary>);
 (function (root, factory) {
     if (typeof define === 'function' && define.amd) {
         // AMD. Register as an anonymous module.
-        define(["./Decoder", "./YUVWebGLCanvas"], factory);
+        define(["./Decoder", "./WebGLCanvas"], factory);
     } else if (typeof exports === 'object') {
         // Node. Does not work with strict CommonJS, but
         // only CommonJS-like environments that support module.exports,
         // like Node.
-        module.exports = factory(require("./Decoder"), require("./YUVWebGLCanvas"));
+        module.exports = factory(require("./Decoder"), require("./WebGLCanvas"));
     } else {
         // Browser globals (root is window)
-        root.Player = factory(root.Decoder, root.YUVWebGLCanvas);
+        root.Player = factory(root.Decoder, root.WebGLCanvas);
     }
-}(this, function (Decoder, YUVWebGLCanvas) {
+}(this, function (Decoder, WebGLCanvas) {
   "use strict";
   
   
@@ -120,16 +120,22 @@ p.decode(<binary>);
         lastWidth = width;
         lastHeight = height;
         self._size = new Size(width, height);
-        self.webGLCanvas = new YUVWebGLCanvas(self.canvas, self._size);
+        self.webGLCanvas = new WebGLCanvas(self.canvas);
       };
       
-      var lumaSize = width * height;
+      self.webGLCanvas.drawNextOutputPicture(
+                    width, 
+                    height, 
+                    null, 
+                    new Uint8Array(buffer));
+      
+      /*var lumaSize = width * height;
       var chromaSize = lumaSize >> 2;
       
       self.webGLCanvas.YTexture.fill(buffer.subarray(0, lumaSize));
       self.webGLCanvas.UTexture.fill(buffer.subarray(lumaSize, lumaSize + chromaSize));
       self.webGLCanvas.VTexture.fill(buffer.subarray(lumaSize + chromaSize, lumaSize + 2 * chromaSize));
-      self.webGLCanvas.drawScene();
+      self.webGLCanvas.drawScene();*/
       
       if (self.onTime){
         self.onTime({
@@ -150,6 +156,12 @@ p.decode(<binary>);
           return;
         };
 
+        if (lastWidth !== width || lastHeight !== height){
+          self.canvas.width = width;
+          self.canvas.height = height;
+          lastWidth = width;
+          lastHeight = height;
+        };
 
         var createImgData = false;
         var canvas = self.canvas;
