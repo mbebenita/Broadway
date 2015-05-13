@@ -55,6 +55,10 @@ p.decode(<binary>);
     this.nowValue = nowValue;
     
     this._config.workerFile = this._config.workerFile || "Decoder.js";
+    if (this._config.preserveDrawingBuffer){
+      this._config.contextOptions = this._config.contextOptions || {};
+      this._config.contextOptions.preserveDrawingBuffer = true;
+    };
     
     var webgl = "auto";
     if (this._config.webgl === true){
@@ -170,7 +174,9 @@ p.decode(<binary>);
     this._config.size.height = this._config.size.height || 200;
     
     if (this.render){
-      this.canvasObj = this.createCanvasObj();
+      this.canvasObj = this.createCanvasObj({
+        contextOptions: this._config.contextOptions
+      });
       this.canvas = this.canvasObj.canvas;
     };
 
@@ -194,6 +200,7 @@ p.decode(<binary>);
     // returns a object that has a property canvas which is a html5 canvas
     createCanvasWebGL: function(options){
       var canvasObj = this._createBasicCanvasObj(options);
+      canvasObj.contextOptions = options.contextOptions;
       return canvasObj;
     },
     
@@ -238,7 +245,7 @@ p.decode(<binary>);
       if (canvasObj.canvas.width !== width || canvasObj.canvas.height !== height || !canvasObj.webGLCanvas){
         canvasObj.canvas.width = width;
         canvasObj.canvas.height = height;
-        canvasObj.webGLCanvas = new WebGLCanvas(canvasObj.canvas);
+        canvasObj.webGLCanvas = new WebGLCanvas(canvasObj.canvas, undefined, canvasObj.contextOptions);
       };
       
       canvasObj.webGLCanvas.drawNextOutputPicture(

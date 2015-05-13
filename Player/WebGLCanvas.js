@@ -44,17 +44,18 @@
  * This class can be used to render output pictures from an H264bsdDecoder to a canvas element.
  * If available the content is rendered using WebGL.
  */
-function H264bsdCanvas(canvas, forceNoGL) {
+  function H264bsdCanvas(canvas, forceNoGL, contextOptions) {
     this.canvasElement = canvas;
+    this.contextOptions = contextOptions;
 
     if(!forceNoGL) this.initContextGL();
 
     if(this.contextGL) {
-        this.initProgram();
-        this.initBuffers();
-        this.initTextures();
-    }
-}
+      this.initProgram();
+      this.initBuffers();
+      this.initTextures();
+    };
+  };
 
 /**
  * Returns true if the canvas supports WebGL
@@ -66,7 +67,7 @@ H264bsdCanvas.prototype.isWebGL = function() {
 /**
  * Create the GL context from the canvas element
  */
-H264bsdCanvas.prototype.initContextGL = function() {
+  H264bsdCanvas.prototype.initContextGL = function() {
     var canvas = this.canvasElement;
     var gl = null;
 
@@ -74,23 +75,27 @@ H264bsdCanvas.prototype.initContextGL = function() {
     var nameIndex = 0;
 
     while(!gl && nameIndex < validContextNames.length) {
-        var contextName = validContextNames[nameIndex];
-        
-        try {
-            gl = canvas.getContext(contextName);
-        } catch (e) {
-            gl = null;
-        }
+      var contextName = validContextNames[nameIndex];
 
-        if(!gl || typeof gl.getParameter !== "function") {
-            gl = null;
-        }    
+      try {
+        if (this.contextOptions){
+          gl = canvas.getContext(contextName, this.contextOptions);
+        }else{
+          gl = canvas.getContext(contextName);
+        };
+      } catch (e) {
+        gl = null;
+      }
 
-        ++nameIndex;
-    }
- 
+      if(!gl || typeof gl.getParameter !== "function") {
+        gl = null;
+      }    
+
+      ++nameIndex;
+    };
+
     this.contextGL = gl;
-};
+  };
 
 /**
  * Initialize GL shader program
