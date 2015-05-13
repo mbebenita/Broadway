@@ -42,35 +42,17 @@ p.decode(<binary>);
   
   var nowValue = Decoder.nowValue;
   
-  /**
- * Represents a 2-dimensional size value. 
- */
-  var Size = (function size() {
-    function constructor(w, h) {
-      this.w = w;
-      this.h = h;
-    }
-    constructor.prototype = {
-      toString: function () {
-        return "(" + this.w + ", " + this.h + ")";
-      },
-      getHalfSize: function() {
-        return new Size(this.w >>> 1, this.h >>> 1);
-      },
-      length: function() {
-        return this.w * this.h;
-      }
-    };
-    return constructor;
-  })();
-
-  
   
   var Player = function(parOptions){
     var self = this;
     this._config = parOptions || {};
     
     this.render = true;
+    if (this._config.render === false){
+      this.render = false;
+    };
+    
+    this.nowValue = nowValue;
     
     this._config.workerFile = this._config.workerFile || "Decoder.js";
     
@@ -102,6 +84,15 @@ p.decode(<binary>);
     
     this.webgl = webgl;
     
+    // choose functions
+    if (this.webgl){
+      this.createCanvasObj = this.createCanvasWebGL;
+      this.renderFrame = this.renderFrameWebGL;
+    }else{
+      this.createCanvasObj = this.createCanvasRGB;
+      this.renderFrame = this.renderFrameRGB;
+    };
+    
     
     var lastWidth;
     var lastHeight;
@@ -114,28 +105,12 @@ p.decode(<binary>);
         return;
       };
       
-      if (lastWidth !== width || lastHeight !== height || !self.webGLCanvas){
-        self.canvas.width = width;
-        self.canvas.height = height;
-        lastWidth = width;
-        lastHeight = height;
-        self._size = new Size(width, height);
-        self.webGLCanvas = new WebGLCanvas(self.canvas);
-      };
-      
-      self.webGLCanvas.drawNextOutputPicture(
-                    width, 
-                    height, 
-                    null, 
-                    new Uint8Array(buffer));
-      
-      /*var lumaSize = width * height;
-      var chromaSize = lumaSize >> 2;
-      
-      self.webGLCanvas.YTexture.fill(buffer.subarray(0, lumaSize));
-      self.webGLCanvas.UTexture.fill(buffer.subarray(lumaSize, lumaSize + chromaSize));
-      self.webGLCanvas.VTexture.fill(buffer.subarray(lumaSize + chromaSize, lumaSize + 2 * chromaSize));
-      self.webGLCanvas.drawScene();*/
+      self.renderFrame({
+        canvasObj: self.canvasObj,
+        data: buffer,
+        width: width,
+        height: height
+      });
       
       if (self.onTime){
         self.onTime({
@@ -147,49 +122,6 @@ p.decode(<binary>);
       
     };
     
-    if (!webgl){
-      
-      onPictureDecoded = function(buffer, width, height, time, timeStart){
-        self.onPictureDecoded(buffer, width, height, time, timeStart);
-        
-        if (!buffer || !self.render) {
-          return;
-        };
-
-        if (lastWidth !== width || lastHeight !== height){
-          self.canvas.width = width;
-          self.canvas.height = height;
-          lastWidth = width;
-          lastHeight = height;
-        };
-
-        var createImgData = false;
-        var canvas = self.canvas;
-        var ctx = self.ctx;
-        var imgData = self.imgData;
-
-        if (!ctx){
-          self.ctx = canvas.getContext('2d');
-          ctx = self.ctx;
-
-          self.imgData = ctx.createImageData(width, height);
-          imgData = self.imgData;
-        };
-
-        imgData.data.set(buffer);
-        ctx.putImageData(imgData, 0, 0);
-        
-        if (self.onTime){
-          self.onTime({
-            complete: nowValue() - timeStart,
-            decoder: time,
-            cpu: 0
-          });
-        };
-
-      };
-      
-    };
     
     if (this._config.useWorker){
       var worker = new Worker(this._config.workerFile);
@@ -200,12 +132,7 @@ p.decode(<binary>);
           console.log(data.consoleLog);
           return;
         };
-        /*if (data.width){
-          worker.lastDim = data;
-          return;
-        };*/
         
-        //onPictureDecoded.call(self, new Uint8Array(data), worker.lastDim.width, worker.lastDim.height, nowValue() - worker.lastDim.timeStarted, worker.lastDim.timeStarted);
         onPictureDecoded.call(self, new Uint8Array(data.buf), data.width, data.height, nowValue() - data.timeStarted, data.timeStarted);
         
       }, false);
@@ -242,14 +169,13 @@ p.decode(<binary>);
     this._config.size.width = this._config.size.width || 200;
     this._config.size.height = this._config.size.height || 200;
     
-    this.canvas = document.createElement('canvas');
-    this.canvas.width = this._config.size.width;
-    this.canvas.height = this._config.size.height;
-    this.canvas.style.backgroundColor = "#333333";
+    if (this.render){
+      this.canvasObj = this.createCanvasObj();
+      this.canvas = this.canvasObj.canvas;
+    };
 
     this.domNode = this.canvas;
     
-    this._size = new Size(this._config.size.width, this._config.size.height);
     lastWidth = this._config.size.width;
     lastHeight = this._config.size.height;
     
@@ -257,7 +183,97 @@ p.decode(<binary>);
   
   Player.prototype = {
     
-    onPictureDecoded: function(buffer, width, height){}
+    onPictureDecoded: function(buffer, width, height){},
+    
+    // for both functions options is:
+    //
+    //  width
+    //  height
+    //  enableScreenshot
+    //
+    // returns a object that has a property canvas which is a html5 canvas
+    createCanvasWebGL: function(options){
+      var canvasObj = this._createBasicCanvasObj(options);
+      return canvasObj;
+    },
+    
+    createCanvasRGB: function(options){
+      var canvasObj = this._createBasicCanvasObj(options);
+      return canvasObj;
+    },
+    
+    // part that is the same for webGL and RGB
+    _createBasicCanvasObj: function(options){
+      options = options || {};
+      
+      var obj = {};
+      var width = options.width;
+      if (!width){
+        width = this._config.size.width;
+      };
+      var height = options.height;
+      if (!height){
+        height = this._config.size.height;
+      };
+      obj.canvas = document.createElement('canvas');
+      obj.canvas.width = width;
+      obj.canvas.height = height;
+      obj.canvas.style.backgroundColor = "#333333";
+      
+      
+      return obj;
+    },
+    
+    // options:
+    //
+    // canvas
+    // data
+    renderFrameWebGL: function(options){
+      
+      var canvasObj = options.canvasObj;
+      
+      var width = options.width || canvasObj.canvas.width;
+      var height = options.height || canvasObj.canvas.height;
+      
+      if (canvasObj.canvas.width !== width || canvasObj.canvas.height !== height || !canvasObj.webGLCanvas){
+        canvasObj.canvas.width = width;
+        canvasObj.canvas.height = height;
+        canvasObj.webGLCanvas = new WebGLCanvas(canvasObj.canvas);
+      };
+      
+      canvasObj.webGLCanvas.drawNextOutputPicture(
+                    width, 
+                    height, 
+                    null, 
+                    new Uint8Array(options.data));
+      
+    },
+    renderFrameRGB: function(options){
+      var canvasObj = options.canvasObj;
+
+      var width = options.width || canvasObj.canvas.width;
+      var height = options.height || canvasObj.canvas.height;
+      
+      if (canvasObj.canvas.width !== width || canvasObj.canvas.height !== height){
+        canvasObj.canvas.width = width;
+        canvasObj.canvas.height = height;
+      };
+      
+      var ctx = canvasObj.ctx;
+      var imgData = canvasObj.imgData;
+
+      if (!ctx){
+        canvasObj.ctx = canvasObj.canvas.getContext('2d');
+        ctx = canvasObj.ctx;
+
+        canvasObj.imgData = ctx.createImageData(width, height);
+        imgData = canvasObj.imgData;
+      };
+
+      imgData.data.set(options.data);
+      ctx.putImageData(imgData, 0, 0);
+      
+    }
     
   };
   
