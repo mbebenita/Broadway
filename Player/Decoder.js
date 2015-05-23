@@ -22,7 +22,7 @@
     if (!global){
       if (typeof window != "undefined"){
         global = window;
-      }else if (self != "undefined"){
+      }else if (typeof self != "undefined"){
         global = self;
       };
     };
@@ -285,6 +285,12 @@ function A(a){a&&(p.print(a),p.fa(a));H=i;d("abort() at "+Fa()+"\nIf this abort(
         buffer = this.pictureBuffers[$buffer] = toU8Array($buffer, (width * height * 3) / 2);
       };
       
+      var infos;
+      if (this.infoAr.length){
+        infos = this.infoAr;
+      };
+      this.infoAr = [];
+      
       if (this.options.rgb){
         if (!asmInstance){
           asmInstance = getAsm(width, height);
@@ -294,12 +300,12 @@ function A(a){a&&(p.print(a),p.fa(a));H=i;d("abort() at "+Fa()+"\nIf this abort(
 
         var copyU8 = new Uint8Array(asmInstance.outSize);
         copyU8.set( asmInstance.out );
-        this.onPictureDecoded(copyU8, width, height, this._getEndTime(), this._startedTime);
+        this.onPictureDecoded(copyU8, width, height, infos);
         return;
         
       };
       
-      this.onPictureDecoded(buffer, width, height, this._getEndTime(), this._startedTime);
+      this.onPictureDecoded(buffer, width, height, infos);
     }.bind(this));
 
     var HEAP8 = Module.HEAP8;
@@ -322,37 +328,25 @@ function A(a){a&&(p.print(a),p.fa(a));H=i;d("abort() at "+Fa()+"\nIf this abort(
     };
     this.streamBuffer = toU8Array(Module._broadwayCreateStream(MAX_STREAM_BUFFER_LENGTH), MAX_STREAM_BUFFER_LENGTH);
     this.pictureBuffers = {};
+    // collect extra infos that are provided with the nal units
+    this.infoAr = [];
     
-    this.onPictureDecoded = function (buffer, width, height, time, cnt) {
+    this.onPictureDecoded = function (buffer, width, height, infos) {
       
     };
-    
-    this._takeStartTime = function(time){
-      if (this._started){
-        return;
-      };
-      this._started = true;
-      this._startedTime = time || nowValue();
-    };
-    
-    this._getTime = function(){
-      return nowValue() - this._startedTime;
-    };
-    
-    this._getEndTime = function(){
-      this._started = false;
-      return this._getTime();
-    };
-    
     
     /**
      * Decodes a stream buffer. This may be one single (unframed) NAL unit without the
      * start code, or a sequence of NAL units with framing start code prefixes. This
      * function overwrites stream buffer allocated by the codec with the supplied buffer.
      */
-    this.decode = function decode(buffer, time) {
+    this.decode = function decode(buffer, parInfo) {
       // console.info("Decoding: " + buffer.length);
-      this._takeStartTime(time);
+      // collect infos
+      if (parInfo){
+        this.infoAr.push(parInfo);
+      };
+      
       this.streamBuffer.set(buffer);
       Module._broadwaySetStreamLength(buffer.length);
       Module._broadwayPlayStream();
@@ -862,30 +856,30 @@ function A(a){a&&(p.print(a),p.fa(a));H=i;d("abort() at "+Fa()+"\nIf this abort(
     self.addEventListener('message', function(e) {
       
       if (isWorker){
-        decoder.decode(new Uint8Array(e.data.buf), e.data.time);
+        decoder.decode(new Uint8Array(e.data.buf), e.data.info);
         
       }else{
         if (e.data && e.data.type === "Broadway.js - Worker init"){
           isWorker = true;
           decoder = new Broadway(e.data.options);
-          decoder.onPictureDecoded = function (buffer, width, height, time, timeStarted) {
+          decoder.onPictureDecoded = function (buffer, width, height, infos) {
             if (buffer) {
               buffer = new Uint8Array(buffer);
             };
-
 
             // buffer needs to be copied because we give up ownership
             var copyU8 = new Uint8Array(buffer.length);
             copyU8.set( buffer, 0, buffer.length );
             
-            postMessage({buf: copyU8.buffer, width: width, height: height, time: time, timeStarted: timeStarted}, [copyU8.buffer]);
-            
-            // only post the buffer (slightly faster)
-            // add 2nd parameter to indicate transfer of owner ship (this it was makes this worker implementation faster)
-            //postMessage(copyU8.buffer, [copyU8.buffer]);
+            postMessage({
+              buf: copyU8.buffer, 
+              width: width, 
+              height: height, 
+              infos: infos
+            }, [copyU8.buffer]); // 2nd parameter is used to indicate transfer of ownership
 
           };
-          postMessage({consoleLog: "initialized" });
+          postMessage({ consoleLog: "broadway worker initialized" });
         };
       };
 

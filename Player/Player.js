@@ -100,8 +100,8 @@ p.decode(<binary>);
     
     var lastWidth;
     var lastHeight;
-    var onPictureDecoded = function(buffer, width, height, time, timeStart) {
-      self.onPictureDecoded(buffer, width, height, time, timeStart);
+    var onPictureDecoded = function(buffer, width, height, infos) {
+      self.onPictureDecoded(buffer, width, height, infos);
       
       var startTime = nowValue();
       
@@ -116,11 +116,13 @@ p.decode(<binary>);
         height: height
       });
       
-      if (self.onTime){
-        self.onTime({
-          complete: nowValue() - timeStart,
-          decoder: time,
-          cpu: 0
+      if (self.onRenderFrameComplete){
+        self.onRenderFrameComplete({
+          data: buffer,
+          width: width,
+          height: height,
+          infos: infos,
+          canvasObj: self.canvasObj
         });
       };
       
@@ -137,7 +139,7 @@ p.decode(<binary>);
           return;
         };
         
-        onPictureDecoded.call(self, new Uint8Array(data.buf), data.width, data.height, nowValue() - data.timeStarted, data.timeStarted);
+        onPictureDecoded.call(self, new Uint8Array(data.buf), data.width, data.height, data.infos);
         
       }, false);
       
@@ -145,12 +147,12 @@ p.decode(<binary>);
         rgb: !webgl
       }});
       
-      this.decode = function(parData){
+      this.decode = function(parData, parInfo){
         // Copy the sample so that we only do a structured clone of the
         // region of interest
         var copyU8 = new Uint8Array(parData.length);
         copyU8.set( parData, 0, parData.length );
-        worker.postMessage({buf: copyU8.buffer, time: nowValue()}, [copyU8.buffer]); // Send data to our worker.
+        worker.postMessage({buf: copyU8.buffer, info: parInfo}, [copyU8.buffer]); // Send data to our worker.
       };
       
     }else{
@@ -160,8 +162,8 @@ p.decode(<binary>);
       });
       this.decoder.onPictureDecoded = onPictureDecoded;
 
-      this.decode = function(parData){
-        self.decoder.decode(parData);
+      this.decode = function(parData, parInfo){
+        self.decoder.decode(parData, parInfo);
       };
       
     };
@@ -189,7 +191,7 @@ p.decode(<binary>);
   
   Player.prototype = {
     
-    onPictureDecoded: function(buffer, width, height){},
+    onPictureDecoded: function(buffer, width, height, infos){},
     
     // for both functions options is:
     //
