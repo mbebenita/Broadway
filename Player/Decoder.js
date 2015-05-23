@@ -22,7 +22,7 @@
     if (!global){
       if (typeof window != "undefined"){
         global = window;
-      }else if (self != "undefined"){
+      }else if (typeof self != "undefined"){
         global = self;
       };
     };
