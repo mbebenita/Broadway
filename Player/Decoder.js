@@ -13,7 +13,6 @@
         root.Decoder = factory();
     }
 }(this, function () {
-  "use strict";
   
   var global;
   
@@ -30,7 +29,6 @@
   initglobal();
   
   
-
   function error(message) {
     console.error(message);
     console.trace();
@@ -42,18 +40,27 @@
       error(message);
     };
   };
+  
+  
+  return (function(){
+    "use strict";
+
+
 
   
   var getModule = function(_broadwayOnHeadersDecoded, _broadwayOnPictureDecoded){
     
-    var windowBak;
-    if (typeof window != 'undefined'){
-      windowBak = window;
+    var window = this;
+    //console.log(typeof window);
+    
+    window._broadwayOnHeadersDecoded = _broadwayOnHeadersDecoded;
+    window._broadwayOnPictureDecoded = _broadwayOnPictureDecoded;
+    
+    var Module = {
+      'print': function(text) { console.log('stdout: ' + text); },
+      'printErr': function(text) { console.log('stderr: ' + text); }
     };
-    var window = {
-      _broadwayOnHeadersDecoded: _broadwayOnHeadersDecoded,
-      _broadwayOnPictureDecoded: _broadwayOnPictureDecoded
-    };
+    
     
     /*
     
@@ -252,7 +259,9 @@ function mc(a){function b(){if(!p.calledRun&&(p.calledRun=i,!H)){Sa||(Sa=i,Na(R)
 Na(Oa);!(0<S)&&!p.calledRun&&(p.setStatus?(p.setStatus("Running..."),setTimeout(function(){setTimeout(function(){p.setStatus("")},1);b()},1)):b())}}p.run=p.Ng=mc;function nc(a){p.noExitRuntime||(H=i,y=ic,Na(Qa),t?(process.stdout.once("drain",function(){process.exit(a)}),console.log(" "),setTimeout(function(){process.exit(a)},500)):da&&"function"===typeof quit&&quit(a),d(new ia(a)))}p.exit=p.hg=nc;
 function A(a){a&&(p.print(a),p.fa(a));H=i;d("abort() at "+Fa()+"\nIf this abort() is unexpected, build with -s ASSERTIONS=1 which can give more information.")}p.abort=p.abort=A;if(p.preInit)for("function"==typeof p.preInit&&(p.preInit=[p.preInit]);0<p.preInit.length;)p.preInit.pop()();var lc=m;p.noInitialRun&&(lc=m);mc();
 
-    var resultModule = window.Module || this.Module;
+
+    var resultModule = window.Module || global.Module || Module;
+    
     return resultModule;
   };
   
@@ -277,7 +286,10 @@ function A(a){a&&(p.print(a),p.fa(a));H=i;d("abort() at "+Fa()+"\nIf this abort(
     
     var asmInstance;
     
-    var Module = getModule(function () {
+    var fakeWindow = {
+    };
+    
+    var Module = getModule.apply(fakeWindow, [function () {
 
     }, function ($buffer, width, height) {
       var buffer = this.pictureBuffers[$buffer];
@@ -306,7 +318,7 @@ function A(a){a&&(p.print(a),p.fa(a));H=i;d("abort() at "+Fa()+"\nIf this abort(
       };
       
       this.onPictureDecoded(buffer, width, height, infos);
-    }.bind(this));
+    }.bind(this)]);
 
     var HEAP8 = Module.HEAP8;
     var HEAPU8 = Module.HEAPU8;
@@ -890,6 +902,9 @@ function A(a){a&&(p.print(a),p.fa(a));H=i;d("abort() at "+Fa()+"\nIf this abort(
   Broadway.nowValue = nowValue;
   
   return Broadway;
+  
+  })();
+  
   
 }));
 
