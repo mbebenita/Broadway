@@ -298,7 +298,9 @@ function A(a){a&&(p.print(a),p.fa(a));H=i;d("abort() at "+Fa()+"\nIf this abort(
       };
       
       var infos;
+      var doInfo = false;
       if (this.infoAr.length){
+        doInfo = true;
         infos = this.infoAr;
       };
       this.infoAr = [];
@@ -312,11 +314,19 @@ function A(a){a&&(p.print(a),p.fa(a));H=i;d("abort() at "+Fa()+"\nIf this abort(
 
         var copyU8 = new Uint8Array(asmInstance.outSize);
         copyU8.set( asmInstance.out );
+        
+        if (doInfo){
+          infos[0].finishDecoding = nowValue();
+        };
+        
         this.onPictureDecoded(copyU8, width, height, infos);
         return;
         
       };
       
+      if (doInfo){
+        infos[0].finishDecoding = nowValue();
+      };
       this.onPictureDecoded(buffer, width, height, infos);
     }.bind(this)]);
 
@@ -357,6 +367,7 @@ function A(a){a&&(p.print(a),p.fa(a));H=i;d("abort() at "+Fa()+"\nIf this abort(
       // collect infos
       if (parInfo){
         this.infoAr.push(parInfo);
+        parInfo.startDecoding = nowValue();
       };
       
       this.streamBuffer.set(buffer);
