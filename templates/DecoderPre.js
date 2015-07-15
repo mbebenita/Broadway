@@ -13,7 +13,6 @@
         root.Decoder = factory();
     }
 }(this, function () {
-  "use strict";
   
   var global;
   
@@ -22,7 +21,7 @@
     if (!global){
       if (typeof window != "undefined"){
         global = window;
-      }else if (self != "undefined"){
+      }else if (typeof self != "undefined"){
         global = self;
       };
     };
@@ -30,7 +29,6 @@
   initglobal();
   
   
-
   function error(message) {
     console.error(message);
     console.trace();
@@ -42,18 +40,27 @@
       error(message);
     };
   };
+  
+  
+  return (function(){
+    "use strict";
+
+
 
   
   var getModule = function(_broadwayOnHeadersDecoded, _broadwayOnPictureDecoded){
     
-    var windowBak;
-    if (typeof window != 'undefined'){
-      windowBak = window;
+    var window = this;
+    //console.log(typeof window);
+    
+    window._broadwayOnHeadersDecoded = _broadwayOnHeadersDecoded;
+    window._broadwayOnPictureDecoded = _broadwayOnPictureDecoded;
+    
+    var Module = {
+      'print': function(text) { console.log('stdout: ' + text); },
+      'printErr': function(text) { console.log('stderr: ' + text); }
     };
-    var window = {
-      _broadwayOnHeadersDecoded: _broadwayOnHeadersDecoded,
-      _broadwayOnPictureDecoded: _broadwayOnPictureDecoded
-    };
+    
     
     /*
     
@@ -61,5 +68,4 @@
       you can integrate the file into your build system and provide the original file to be loaded into a worker.
     
     */
-    
     
