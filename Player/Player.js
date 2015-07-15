@@ -257,7 +257,7 @@ p.decode(<binary>);
       obj.canvas = document.createElement('canvas');
       obj.canvas.width = width;
       obj.canvas.height = height;
-      obj.canvas.style.backgroundColor = "#333333";
+      obj.canvas.style.backgroundColor = "#0D0E1B";
       
       
       return obj;
