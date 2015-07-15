@@ -85,7 +85,10 @@ f = open(os.path.join('..','Player','Decoder.js'), "w")
 f1 = open(os.path.join("..", "templates", 'DecoderPre.js'));
 f.write(f1.read());
 f2 = open(os.path.join(JS_DIR, 'avc.js'));
-f.write(f2.read());
+jscont = f2.read();
+jscont = jscont.replace('require(', '(null)(');
+jscont = jscont.replace('typeof require', 'typeof null');
+f.write(jscont);
 f3 = open(os.path.join("..", "templates", 'DecoderPost.js'));
 f.write(f3.read());
 
