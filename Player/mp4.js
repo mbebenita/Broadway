@@ -784,6 +784,7 @@ var MP4Player = (function reader() {
 
     this.avc = new Player({
       useWorker: useWorkers,
+      reuseMemory: true,
       webgl: webgl,
       size: {
         width: 640,

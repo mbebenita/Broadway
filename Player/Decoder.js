@@ -876,31 +876,78 @@ function A(a){a&&(p.print(a),p.fa(a));H=i;d("abort() at "+Fa()+"\nIf this abort(
   if (typeof self != "undefined"){
     var isWorker = false;
     var decoder;
+    var reuseMemory = false;
+    
+    var memAr = [];
+    var getMem = function(length){
+      if (memAr.length){
+        var u = memAr.shift();
+        while (u && u.byteLength !== length){
+          u = memAr.shift();
+        };
+        if (u){
+          return u;
+        };
+      };
+      return new ArrayBuffer(length);
+    }; 
+    
     self.addEventListener('message', function(e) {
       
       if (isWorker){
-        decoder.decode(new Uint8Array(e.data.buf), e.data.info);
+        if (reuseMemory){
+          if (e.data.reuse){
+            memAr.push(e.data.reuse);
+          };
+        };
+        if (e.data.buf){
+          decoder.decode(new Uint8Array(e.data.buf, e.data.offset || 0, e.data.length), e.data.info);
+        };
         
       }else{
         if (e.data && e.data.type === "Broadway.js - Worker init"){
           isWorker = true;
           decoder = new Broadway(e.data.options);
-          decoder.onPictureDecoded = function (buffer, width, height, infos) {
-            if (buffer) {
-              buffer = new Uint8Array(buffer);
+          
+          if (e.data.options.reuseMemory){
+            reuseMemory = true;
+            decoder.onPictureDecoded = function (buffer, width, height, infos) {
+              
+              //var buf = getMem();
+
+              // buffer needs to be copied because we give up ownership
+              var copyU8 = new Uint8Array(getMem(buffer.length));
+              copyU8.set( buffer, 0, buffer.length );
+
+              postMessage({
+                buf: copyU8.buffer, 
+                length: buffer.length,
+                width: width, 
+                height: height, 
+                infos: infos
+              }, [copyU8.buffer]); // 2nd parameter is used to indicate transfer of ownership
+
             };
-
-            // buffer needs to be copied because we give up ownership
-            var copyU8 = new Uint8Array(buffer.length);
-            copyU8.set( buffer, 0, buffer.length );
             
-            postMessage({
-              buf: copyU8.buffer, 
-              width: width, 
-              height: height, 
-              infos: infos
-            }, [copyU8.buffer]); // 2nd parameter is used to indicate transfer of ownership
+          }else{
+            decoder.onPictureDecoded = function (buffer, width, height, infos) {
+              if (buffer) {
+                buffer = new Uint8Array(buffer);
+              };
 
+              // buffer needs to be copied because we give up ownership
+              var copyU8 = new Uint8Array(buffer.length);
+              copyU8.set( buffer, 0, buffer.length );
+
+              postMessage({
+                buf: copyU8.buffer, 
+                length: buffer.length,
+                width: width, 
+                height: height, 
+                infos: infos
+              }, [copyU8.buffer]); // 2nd parameter is used to indicate transfer of ownership
+
+            };
           };
           postMessage({ consoleLog: "broadway worker initialized" });
         };

@@ -128,6 +128,13 @@ p.decode(<binary>);
       
     };
     
+    // provide size
+    
+    if (!this._config.size){
+      this._config.size = {};
+    };
+    this._config.size.width = this._config.size.width || 200;
+    this._config.size.height = this._config.size.height || 200;
     
     if (this._config.useWorker){
       var worker = new Worker(this._config.workerFile);
@@ -139,21 +146,43 @@ p.decode(<binary>);
           return;
         };
         
-        onPictureDecoded.call(self, new Uint8Array(data.buf), data.width, data.height, data.infos);
+        onPictureDecoded.call(self, new Uint8Array(data.buf, 0, data.length), data.width, data.height, data.infos);
         
       }, false);
       
       worker.postMessage({type: "Broadway.js - Worker init", options: {
-        rgb: !webgl
+        rgb: !webgl,
+        memsize: this.memsize,
+        reuseMemory: this._config.reuseMemory ? true : false
       }});
       
-      this.decode = function(parData, parInfo){
-        // Copy the sample so that we only do a structured clone of the
-        // region of interest
-        var copyU8 = new Uint8Array(parData.length);
-        copyU8.set( parData, 0, parData.length );
-        worker.postMessage({buf: copyU8.buffer, info: parInfo}, [copyU8.buffer]); // Send data to our worker.
+      if (this._config.transferMemory){
+        this.decode = function(parData, parInfo){
+          // no copy
+          // instead we are transfering the ownership of the buffer
+          // dangerous!!!
+          
+          worker.postMessage({buf: parData.buffer, offset: parData.byteOffset, length: parData.length, info: parInfo}, [parData.buffer]); // Send data to our worker.
+        };
+        
+      }else{
+        this.decode = function(parData, parInfo){
+          // Copy the sample so that we only do a structured clone of the
+          // region of interest
+          var copyU8 = new Uint8Array(parData.length);
+          copyU8.set( parData, 0, parData.length );
+          worker.postMessage({buf: copyU8.buffer, offset: 0, length: parData.length, info: parInfo}, [copyU8.buffer]); // Send data to our worker.
+        };
+        
       };
+      
+      if (this._config.reuseMemory){
+        this.recycleMemory = function(parArray){
+          //this.beforeRecycle();
+          worker.postMessage({reuse: parArray.buffer}, [parArray.buffer]); // Send data to our worker.
+          //this.afterRecycle();
+        };
+      }
       
     }else{
       
@@ -169,11 +198,6 @@ p.decode(<binary>);
     };
     
     
-    if (!this._config.size){
-      this._config.size = {};
-    };
-    this._config.size.width = this._config.size.width || 200;
-    this._config.size.height = this._config.size.height || 200;
     
     if (this.render){
       this.canvasObj = this.createCanvasObj({
@@ -192,6 +216,12 @@ p.decode(<binary>);
   Player.prototype = {
     
     onPictureDecoded: function(buffer, width, height, infos){},
+    
+    // call when memory of decoded frames is not used anymore
+    recycleMemory: function(buf){
+    },
+    /*beforeRecycle: function(){},
+    afterRecycle: function(){},*/
     
     // for both functions options is:
     //
@@ -254,7 +284,10 @@ p.decode(<binary>);
                     width, 
                     height, 
                     null, 
-                    new Uint8Array(options.data));
+                    options.data);
+      var self = this;
+      self.recycleMemory(options.data);
+      
       
     },
     renderFrameRGB: function(options){
@@ -281,6 +314,8 @@ p.decode(<binary>);
 
       imgData.data.set(options.data);
       ctx.putImageData(imgData, 0, 0);
+      var self = this;
+      self.recycleMemory(options.data);
       
     }
     
