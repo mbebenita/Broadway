@@ -31,7 +31,7 @@ Encoding Video
 
 The decoder expects an .mp4 file and does not support weighted prediction for P-frames and CABAC entropy encoding. To create such bitstreams use ffmpeg and x264 with the following command line options:
 
-ffmpeg -y -i sourceFile -r 30000/1001 -b:a 2M -bt 4M -vcodec libx264 -pass 1 -coder 0 -bf 0 -flags -loop -wpredp 0 -an targetFile.mp4
+```ffmpeg -y -i sourceFile -r 30000/1001 -b:a 2M -bt 4M -vcodec libx264 -pass 1 -coder 0 -bf 0 -flags -loop -wpredp 0 -an targetFile.mp4```
 
 API
 ===
@@ -39,74 +39,47 @@ API
 Player.js, Decoder.js and YUVWebGLCanvas.js all have a unified module definition.  
 You can use them as plain js files or with common.js / AMD  
 
-#Player.js:  
+##Player.js:  
 
-```
+```javascript
 var p = new Player({
-  <options>
+  // Decode in a worker thread, or the main thread?
+  useWorker: <boolean>,
+  
+  // Path to Decoder.js. Only necessary when useWorker is true. This defaults to "Decoder.js".
+  workerFile: <string>,
+  
+  // Use WebGL? This defaults to "auto".
+  webgl: <true/"auto"/false>,
+  
+  // Initial size of the canvas. It will resize after the video starts streaming.
+  size: {
+    width: <number>,
+    height: <number>
+  }
 });
 
-p.canvas; // the canvas - put it where you want it
+/* A canvas DOM element will have been created by the Player constructor, to be used as the rendering
+ * surface for the video; put it where you want it. It goes by both "canvas" and "domNode". */
+document.getElementById('canvas-wrapper').appendChild(p.canvas);
 
-p.decode(<h264 data>);
+p.decode(<binary h264 data>); // Feed the decoder with H.264 stream data.
 ```
 
-##options:  
+##Decoder.js:  
 
-useWorker true / false  
-decode in a worker thread  
-
-workerFile <string>  
-path to Decoder.js. Only neccessary when using worker. defaults to "Decoder.js"  
-
-webgl true / "auto" / false  
-use webgl. defaults to "auto"  
-
-size { width: <num>, height: <num> }  
-initial size of the canvas. canvas will resize after video starts streaming.  
-
-##properties:  
-
-canvas  
-domNode  
-
-refers to the canvas element.  
-
-##methods:  
-
-decode (<bin>)
-
-feed the decoder with h264 stream data.  
-
-
-#Decoder.js:  
-
-```
+```javascript
 var p = new Decoder({
-  <options>
+  // If true, the decoder will convert the image to RGB. This is slightly slower.
+  rgb: <boolean>
 });
 
-p.onPictureDecoded; // override with a callback function
+// override with a callback function
+p.onPictureDecoded = function(bin, width, height) {
+  // This will be called for each frame
+};
 
-p.decode(<h264 data>);
+p.decode(<binary h264 data>); // Feed the decoder with H.264 stream data.
 ```
-
-##options:  
-
-rgb true / false  
-if true will convert the image to rgb. sligtly slower.  
-
-##properties:  
-
-onPictureDecoded  callback function(<bin>, width, height)
-
-will be called for each frame.
-
-##methods:  
-
-decode (<bin>)
-
-feed the decoder with h264 stream data.  
-
 
 #[Real World Uses of Broadway.js](https://github.com/mbebenita/Broadway/wiki/Real-World-Uses)
