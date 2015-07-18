@@ -59,9 +59,14 @@ var p = new Player({
   }
 });
 
-/* A canvas DOM element will have been created by the Player constructor, to be used as the rendering
- * surface for the video; put it where you want it. It goes by both "canvas" and "domNode". */
+/* A canvas DOM element will have been created by the Player constructor, to be used as
+ * the rendering surface for the video; put it where you want it. It goes by both
+ * "canvas" and "domNode". */
 document.getElementById('canvas-wrapper').appendChild(p.canvas);
+
+/* p.webgl can be used to see the used rendering mode. If you passed "auto" in Player's
+ * constructor, you can see what the autodetection resulted in. */
+console.log("Rendering mode: "+(p.webgl ? "WebGL" : "non-WebGL"));
 
 p.decode(<binary h264 data>); // Feed the decoder with H.264 stream data.
 ```
