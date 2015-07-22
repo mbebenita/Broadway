@@ -46,7 +46,7 @@ var p = new Player({
   // Decode in a worker thread, or the main thread?
   useWorker: <boolean>,
   
-  // Path to Decoder.js. Only necessary when useWorker is true. This defaults to "Decoder.js".
+  // Path to Decoder.js. Only necessary when useWorker is true. Defaults to "Decoder.js".
   workerFile: <string>,
   
   // Use WebGL? This defaults to "auto".
@@ -86,5 +86,12 @@ p.onPictureDecoded = function(bin, width, height) {
 
 p.decode(<binary h264 data>); // Feed the decoder with H.264 stream data.
 ```
+
+##decode()
+
+The `decode` function in both Player and Decoder takes a single paramater of type Uint8Array.
+This can either be a single (unframed) NAL unit without the start code, or a sequence of NAL
+units with framing start code prefixes. You may repeatedly call this function with subsequent
+NAL units.
 
 #[Real World Uses of Broadway.js](https://github.com/mbebenita/Broadway/wiki/Real-World-Uses)
