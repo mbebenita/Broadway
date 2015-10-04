@@ -414,7 +414,7 @@ var MP4Reader = (function reader() {
         case 'avcC':
           box.name = "AVC Configuration Box";
           box.configurationVersion = stream.readU8();
-          box.avcProfileIndicaation = stream.readU8();
+          box.avcProfileIndication = stream.readU8();
           box.profileCompatibility = stream.readU8();
           box.avcLevelIndication = stream.readU8();
           box.lengthSizeMinusOne = stream.readU8() & 3;
