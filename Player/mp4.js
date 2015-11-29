@@ -580,7 +580,7 @@ var Track = (function track () {
         var row = table[0];
         assert (row.firstChunk === 1);
         return {
-          index: sample / row.samplesPerChunk,
+          index: Math.floor(sample / row.samplesPerChunk),
           offset: sample % row.samplesPerChunk
         };
       }
