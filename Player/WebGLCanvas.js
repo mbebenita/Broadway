@@ -41,10 +41,10 @@
 
 
 /**
- * This class can be used to render output pictures from an H264bsdDecoder to a canvas element.
+ * This class can be used to render output pictures from a video decoder to a canvas element.
  * If available the content is rendered using WebGL.
  */
-  function H264bsdCanvas(canvas, forceNoGL, contextOptions) {
+  function WebGLCanvas(canvas, forceNoGL, contextOptions) {
     this.canvasElement = canvas;
     this.contextOptions = contextOptions;
 
@@ -60,14 +60,14 @@
 /**
  * Returns true if the canvas supports WebGL
  */
-H264bsdCanvas.prototype.isWebGL = function() {
+WebGLCanvas.prototype.isWebGL = function() {
     return this.contextGL;
 };
 
 /**
  * Create the GL context from the canvas element
  */
-  H264bsdCanvas.prototype.initContextGL = function() {
+  WebGLCanvas.prototype.initContextGL = function() {
     var canvas = this.canvasElement;
     var gl = null;
 
@@ -100,7 +100,7 @@ H264bsdCanvas.prototype.isWebGL = function() {
 /**
  * Initialize GL shader program
  */
-H264bsdCanvas.prototype.initProgram = function() {
+WebGLCanvas.prototype.initProgram = function() {
     var gl = this.contextGL;
 
     var vertexShaderScript = [
@@ -167,7 +167,7 @@ H264bsdCanvas.prototype.initProgram = function() {
 /**
  * Initialize vertex buffers and attach to shader program
  */
-H264bsdCanvas.prototype.initBuffers = function() {
+WebGLCanvas.prototype.initBuffers = function() {
     var gl = this.contextGL;
     var program = this.shaderProgram;
 
@@ -193,7 +193,7 @@ H264bsdCanvas.prototype.initBuffers = function() {
 /**
  * Initialize GL textures and attach to shader program
  */
-H264bsdCanvas.prototype.initTextures = function() {
+WebGLCanvas.prototype.initTextures = function() {
     var gl = this.contextGL;
     var program = this.shaderProgram;
 
@@ -216,7 +216,7 @@ H264bsdCanvas.prototype.initTextures = function() {
 /**
  * Create and configure a single texture
  */
-H264bsdCanvas.prototype.initTexture = function() {
+WebGLCanvas.prototype.initTexture = function() {
     var gl = this.contextGL;
 
     var textureRef = gl.createTexture();
@@ -235,7 +235,7 @@ H264bsdCanvas.prototype.initTexture = function() {
  * If this object is using WebGL, the data must be an I420 formatted ArrayBuffer,
  * Otherwise, data must be an RGBA formatted ArrayBuffer.
  */
-H264bsdCanvas.prototype.drawNextOutputPicture = function(width, height, croppingParams, data) {
+WebGLCanvas.prototype.drawNextOutputPicture = function(width, height, croppingParams, data) {
     var gl = this.contextGL;
 
     if(gl) {
@@ -248,7 +248,7 @@ H264bsdCanvas.prototype.drawNextOutputPicture = function(width, height, cropping
 /**
  * Draw the next output picture using WebGL
  */
-H264bsdCanvas.prototype.drawNextOuptutPictureGL = function(width, height, croppingParams, data) {
+WebGLCanvas.prototype.drawNextOuptutPictureGL = function(width, height, croppingParams, data) {
     var gl = this.contextGL;
     var texturePosBuffer = this.texturePosBuffer;
     var yTextureRef = this.yTextureRef;
@@ -296,7 +296,7 @@ H264bsdCanvas.prototype.drawNextOuptutPictureGL = function(width, height, croppi
 /**
  * Draw next output picture using ARGB data on a 2d canvas.
  */
-H264bsdCanvas.prototype.drawNextOuptutPictureRGBA = function(width, height, croppingParams, data) {
+WebGLCanvas.prototype.drawNextOuptutPictureRGBA = function(width, height, croppingParams, data) {
     var canvas = this.canvasElement;
 
     var croppingParams = null;
@@ -314,6 +314,6 @@ H264bsdCanvas.prototype.drawNextOuptutPictureRGBA = function(width, height, crop
     }
 };
   
-  return H264bsdCanvas;
+  return WebGLCanvas;
   
 }));
