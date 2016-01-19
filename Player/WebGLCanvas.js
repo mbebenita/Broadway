@@ -136,6 +136,11 @@ H264bsdCanvas.prototype.initProgram = function() {
             'gl_FragColor = vec4(y, u, v, 1) * YUV2RGB;',
         '}'
         ].join('\n');
+    
+    var precisionFormat = gl.getShaderPrecisionFormat(gl.FRAGMENT_SHADER, gl.HIGH_FLOAT);
+    if(precisionFormat.precision <= 0) {
+        fragmentShaderScript.replace(/highp/g, 'mediump');   
+    }
 
     var vertexShader = gl.createShader(gl.VERTEX_SHADER);
     gl.shaderSource(vertexShader, vertexShaderScript);
