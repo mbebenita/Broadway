@@ -19,8 +19,6 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "SDL/SDL.h"
-
 /*------------------------------------------------------------------------------
     Module defines
 ------------------------------------------------------------------------------*/
@@ -48,10 +46,6 @@ u8 *streamStop = NULL;
 u32 packetize = 0;
 u32 nalUnitStream = 0;
 FILE *foutput = NULL;
-
-#define RENDER 1
-void DrawOutput(u8 *data, u32 picWidth, u32 picHeight);
-SDL_Surface* screen = NULL;
 
 #ifdef SOC_DESIGNER
 
@@ -86,11 +80,8 @@ int $Sub$$main(char argc, char * argv[])
 
 ------------------------------------------------------------------------------*/
 
-#ifdef LINUX
-int main(int argc, char **argv) {
-#else
-int SDL_main(int argc, char **argv) {
-#endif
+int main(int argc, char **argv)
+{
 
     u32 i, tmp;
     u32 maxNumPics = 0;
@@ -213,10 +204,6 @@ int SDL_main(int argc, char **argv) {
         return -1;
     }
 
-#if RENDER
-    SDL_Init(SDL_INIT_VIDEO);
-#endif
-
     /* initialize H264SwDecDecode() input structure */
     streamStop = byteStrmStart + strmLen;
     decInput.pStream = byteStrmStart;
@@ -253,13 +240,6 @@ int SDL_main(int argc, char **argv) {
 
                 DEBUG(("Width %d Height %d\n",
                     decInfo.picWidth, decInfo.picHeight));
-
-#if RENDER
-                if (!screen) {
-                    screen = SDL_SetVideoMode(decInfo.picWidth, decInfo.picHeight, 32, SDL_HWSURFACE | SDL_RESIZABLE);
-                }
-                SDL_LockSurface(screen);
-#endif
 
                 if (cropDisplay && decInfo.croppingFlag)
                 {
@@ -366,7 +346,6 @@ int SDL_main(int argc, char **argv) {
                     else
                     {
                         WriteOutput(outFileName, imageData, picSize);
-                        DrawOutput(imageData, decInfo.picWidth, decInfo.picHeight);
                     }
                 }
 
@@ -429,10 +408,6 @@ int SDL_main(int argc, char **argv) {
         }
     }
 
-#if RENDER
-        SDL_Quit();
-#endif
-
     /* release decoder instance */
     H264SwDecRelease(decInst);
 
@@ -453,35 +428,6 @@ int SDL_main(int argc, char **argv) {
     }
 
     return 0;
-}
-
-void paint(u8 *luma, u8 *cb, u8 *cr, int width, int height) {
-    int chromaWidth = width >> 1;
-    u32 *dst = (u32 *)screen->pixels;
-    int x, y = 0;
-    for (y = 0; y < height; y++) {
-        int lineOffLuma = y * width;
-        int lineOffChroma = (y >> 1) * chromaWidth;
-        for (x = 0; x < width; x++) {
-            int c = luma[lineOffLuma + x] - 16;
-            int d = cb[lineOffChroma + (x >> 1)] - 128;
-            int e = cr[lineOffChroma + (x >> 1)] - 128;
-
-            int red = (298 * c + 409 * e + 128) >> 8;
-            red = red < 0 ? 0 : (red > 255 ? 255 : red);
-            int green = (298 * c - 100 * d - 208 * e + 128) >> 8;
-            green = green < 0 ? 0 : (green > 255 ? 255 : green);
-            int blue = (298 * c + 516 * d + 128) >> 8;
-            blue = blue < 0 ? 0 : (blue > 255 ? 255 : blue);
-            int alpha = 255;
-            dst[lineOffLuma + x] = SDL_MapRGB(screen->format, red & 0xff, green & 0xff, blue & 0xff);
-        }
-    }
-}
-
-void DrawOutput(u8 *data, u32 picWidth, u32 picHeight) {
-    u32 size = picWidth * picHeight;
-    // paint(data, data + size, data + size + (size >> 2), picWidth, picHeight);
 }
 
 /*------------------------------------------------------------------------------
@@ -516,11 +462,6 @@ void WriteOutput(char *filename, u8 *data, u32 picSize)
 
     if (foutput && data)
         fwrite(data, 1, picSize, foutput);
-
-#if RENDER
-        SDL_UnlockSurface(screen);
-        SDL_Flip(screen);
-#endif
 }
 
 /*------------------------------------------------------------------------------

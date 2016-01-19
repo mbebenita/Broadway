@@ -52,6 +52,8 @@
 
 ------------------------------------------------------------------------------*/
 
+#include "opttarget.h"
+
 /*------------------------------------------------------------------------------
     1. Include headers
 ------------------------------------------------------------------------------*/
@@ -154,10 +156,6 @@ const u8 h264bsdClip[1280] =
     255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,
     255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255
 };
-
-u8 *get_h264bsdClip() {
-    return h264bsdClip;
-}
 
 #ifndef H264DEC_OMXDL
 /*------------------------------------------------------------------------------
@@ -522,8 +520,10 @@ u32 h264bsdIntraPrediction(mbStorage_t *pMb, macroblockLayer_t *mbLayer,
 
     /* if decoded flag > 1 -> mb has already been successfully decoded and
      * written to output -> do not write again */
+#ifndef OPTIMIZE_NO_DECODED_FLAG
     if (pMb->decoded > 1)
         return HANTRO_OK;
+#endif
 
     h264bsdWriteMacroblock(image, data);
 
@@ -1114,7 +1114,7 @@ void Intra16x16PlanePrediction(u8 *data, u8 *above, u8 *left)
 
 /* Variables */
 
-    u32 i, j;
+    i32 i, j;
     i32 a, b, c;
     i32 tmp;
 
@@ -1127,20 +1127,20 @@ void Intra16x16PlanePrediction(u8 *data, u8 *above, u8 *left)
     a = 16 * (above[15] + left[15]);
 
     for (i = 0, b = 0; i < 8; i++)
-        b += ((i32)i + 1) * (above[8+i] - above[6-i]);
+        b += (i + 1) * (above[8+i] - above[6-i]);
     b = (5 * b + 32) >> 6;
 
     for (i = 0, c = 0; i < 7; i++)
-        c += ((i32)i + 1) * (left[8+i] - left[6-i]);
+        c += (i + 1) * (left[8+i] - left[6-i]);
     /* p[-1,-1] has to be accessed through above pointer */
-    c += ((i32)i + 1) * (left[8+i] - above[-1]);
+    c += (i + 1) * (left[8+i] - above[-1]);
     c = (5 * c + 32) >> 6;
 
     for (i = 0; i < 16; i++)
     {
         for (j = 0; j < 16; j++)
         {
-            tmp = (a + b * ((i32)j - 7) + c * ((i32)i - 7) + 16) >> 5;
+            tmp = (a + b * (j - 7) + c * (i - 7) + 16) >> 5;
             data[i*16+j] = (u8)CLIP1(tmp);
         }
     }

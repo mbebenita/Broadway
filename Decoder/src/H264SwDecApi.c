@@ -36,11 +36,14 @@
     1. Include headers
 ------------------------------------------------------------------------------*/
 #include <stdlib.h>
+#include <string.h>
 #include "basetype.h"
 #include "h264bsd_container.h"
 #include "H264SwDecApi.h"
 #include "h264bsd_decoder.h"
 #include "h264bsd_util.h"
+
+#define UNUSED(x) (void)(x)
 
 /*------------------------------------------------------------------------------
        Version Information
@@ -72,8 +75,8 @@ H264DEC_EVALUATION      Compile evaluation version, restricts number of frames
 #define H264DEC_EVALUATION_LIMIT   500
 #endif
 
-/*
 void H264SwDecTrace(char *string) {
+    UNUSED(string);
 }
 
 void* H264SwDecMalloc(u32 size) {
@@ -91,7 +94,7 @@ void H264SwDecMemcpy(void *dest, void *src, u32 count) {
 void H264SwDecMemset(void *ptr, i32 value, u32 count) {
     memset(ptr, value, count);
 }
-*/
+
 
 /*------------------------------------------------------------------------------
 

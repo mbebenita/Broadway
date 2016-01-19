@@ -29,6 +29,8 @@
 
 ------------------------------------------------------------------------------*/
 
+#include "opttarget.h"
+
 /*------------------------------------------------------------------------------
     1. Include headers
 ------------------------------------------------------------------------------*/
@@ -122,6 +124,7 @@ static void Transform(i32 *data);
 
 u32 h264bsdConceal(storage_t *pStorage, image_t *currImage, u32 sliceType)
 {
+#ifndef OPTIMIZE_NO_DECODED_FLAG
 
 /* Variables */
 
@@ -236,6 +239,7 @@ u32 h264bsdConceal(storage_t *pStorage, image_t *currImage, u32 sliceType)
             }
         }
     }
+#endif
 
     return(HANTRO_OK);
 }
@@ -253,7 +257,7 @@ u32 h264bsdConceal(storage_t *pStorage, image_t *currImage, u32 sliceType)
 u32 ConcealMb(mbStorage_t *pMb, image_t *currImage, u32 row, u32 col,
     u32 sliceType, u8 *refData)
 {
-
+#ifndef OPTIMIZE_NO_DECODED_FLAG
 /* Variables */
 
     u32 i, j, comp;
@@ -267,7 +271,7 @@ u32 ConcealMb(mbStorage_t *pMb, image_t *currImage, u32 row, u32 col,
     i32 firstPhase[16];
     i32 *pTmp;
     /* neighbours above, below, left and right */
-    i32 a[4], b[4], l[4], r[4];
+    i32 a[4] = { 0,0,0,0 }, b[4], l[4] = { 0,0,0,0 }, r[4];
     u32 A, B, L, R;
 #ifdef H264DEC_OMXDL
     u8 fillBuff[32*21 + 15 + 32];
@@ -568,6 +572,7 @@ u32 ConcealMb(mbStorage_t *pMb, image_t *currImage, u32 row, u32 col,
     }
 
     h264bsdWriteMacroblock(currImage, data);
+#endif
 
     return(HANTRO_OK);
 

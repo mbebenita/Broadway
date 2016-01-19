@@ -36,6 +36,7 @@
 ------------------------------------------------------------------------------*/
 
 #include "h264bsd_util.h"
+#include <string.h>
 
 /*------------------------------------------------------------------------------
     2. External compiler flags
@@ -186,7 +187,7 @@ u32 h264bsdMoreRbspData(strmData_t *pStrmData)
         return(HANTRO_FALSE);
 
     if ( (bits > 8) ||
-         ((h264bsdShowBits32(pStrmData)>>(32-bits)) != (1 << (bits-1))) )
+         ((h264bsdShowBits32(pStrmData)>>(32-bits)) != (1ul << (bits-1))) )
         return(HANTRO_TRUE);
     else
         return(HANTRO_FALSE);
@@ -220,7 +221,7 @@ u32 h264bsdNextMbAddress(u32 *pSliceGroupMap, u32 picSizeInMbs, u32 currMbAddr)
 
 /* Variables */
 
-    u32 i, sliceGroup, tmp;
+    u32 i, sliceGroup;
 
 /* Code */
 
@@ -231,11 +232,9 @@ u32 h264bsdNextMbAddress(u32 *pSliceGroupMap, u32 picSizeInMbs, u32 currMbAddr)
     sliceGroup = pSliceGroupMap[currMbAddr];
 
     i = currMbAddr + 1;
-    tmp = pSliceGroupMap[i];
-    while ((i < picSizeInMbs) && (tmp != sliceGroup))
+    while ((i < picSizeInMbs) && (pSliceGroupMap[i] != sliceGroup))
     {
         i++;
-        tmp = pSliceGroupMap[i];
     }
 
     if (i == picSizeInMbs)
@@ -283,10 +282,168 @@ void h264bsdSetCurrImageMbPointers(image_t *image, u32 mbNum)
     image->cr = (u8*)(image->cb + picSize * 64);
 }
 
-i32 abs(i32 a) {
-    return a < 0 ? -a : a;
+
+// useful to export slice information
+void h264bsdWriteSliceMbData(image_t *image, u32 firstMbNum, u32 lastMbNum, u32* pData)
+{
+    u32 width, height;
+    u32 picSize;
+    u32 tmp;
+
+    width = image->width;
+    height = image->height;
+    picSize = width * height;
+  
+    u32 firstRow = firstMbNum / width;
+    u32 firstCol = firstMbNum % width;
+  
+    u32 lastRow = lastMbNum / width;
+    u32 lastCol = lastMbNum % width;
+  
+  // number of cols per row
+  //u32 cols = width;
+  
+  u32 cb = picSize * 256;
+  u32 cr = cb + picSize * 64;
+
+  // len 6 + 3 = 18
+  
+  if (firstRow == lastRow){
+    tmp = firstRow * width;
+    *pData = (tmp * 256) + (firstCol * 16);
+    pData += 1;
+    
+    *pData = (tmp * 256) + (lastCol * 16) + 16; // + 16 to make it after last col
+    pData += 1;
+    
+    *pData = cb + (tmp * 64) + (firstCol * 8);
+    pData += 1;
+    
+    *pData = cb + (tmp * 64) + (lastCol * 8) + 8; // + 16 to make it after last col
+    pData += 1;
+    
+    *pData = cr + (tmp * 64) + (firstCol * 8);
+    pData += 1;
+    
+    *pData = cr + (tmp * 64) + (lastCol * 8) + 8; // + 16 to make it after last col
+    pData += 1;
+    
+    // rest
+    memset(pData, 0, 12 * 4);
+    
+    
+  }else{
+    tmp = firstRow * width;
+    if (firstCol > 0){
+      *pData = (tmp * 256) + (firstCol * 16);
+      pData += 1;
+      *pData = (tmp * 256) + (width * 16); // after last col
+      pData += 1;
+      
+      *pData = cb + (tmp * 64) + (firstCol * 8);
+      pData += 1;
+      *pData = cb + (tmp * 64) + (width * 8); // after last col
+      pData += 1;
+      
+      *pData = cr + (tmp * 64) + (firstCol * 8);
+      pData += 1;
+      *pData = cr + (tmp * 64) + (width * 8); // after last col
+      pData += 1;
+      
+      firstRow += 1;
+    }else{
+      *pData = 0;
+      pData += 1;
+      *pData = 0;
+      pData += 1;
+      
+      *pData = 0;
+      pData += 1;
+      *pData = 0;
+      pData += 1;
+      
+      *pData = 0;
+      pData += 1;
+      *pData = 0;
+      pData += 1;
+    };
+    
+    if (lastCol + 1 != width){
+      tmp = lastRow * width;
+      
+      *pData = (tmp * 256);
+      pData += 1;
+      *pData = (tmp * 256) + (lastCol * 16) + 16; // + 16 to make it after last col
+      pData += 1;
+      
+      *pData = cb + (tmp * 64);
+      pData += 1;
+      *pData = cb + (tmp * 64) + (lastCol * 8) + 8; // + 16 to make it after last col
+      pData += 1;
+      
+      *pData = cr + (tmp * 64);
+      pData += 1;
+      *pData = cr + (tmp * 64) + (lastCol * 8) + 8; // + 16 to make it after last col
+      pData += 1;
+      
+      lastRow -= 1;
+    }else{
+      *pData = 0;
+      pData += 1;
+      *pData = 0;
+      pData += 1;
+      
+      *pData = 0;
+      pData += 1;
+      *pData = 0;
+      pData += 1;
+      
+      *pData = 0;
+      pData += 1;
+      *pData = 0;
+      pData += 1;
+    };
+    
+    if (lastRow >= firstRow){
+      tmp = firstRow * width;
+      
+      *pData = (tmp * 256);
+      pData += 1;
+      
+      *pData = cb + (tmp * 64);
+      pData += 1;
+      
+      *pData = cr + (tmp * 64);
+      pData += 1;
+      
+      
+      tmp = (lastRow + 1) * width;
+      
+      *pData = (tmp * 256); // after last row
+      pData += 1;
+      
+      *pData = cb + (tmp * 64); // after last row
+      pData += 1;
+      
+      *pData = cr + (tmp * 64); // after last row
+      pData += 1;
+      
+    }else{
+      *pData = 0;
+      pData += 1;
+      *pData = 0;
+      pData += 1;
+      *pData = 0;
+      pData += 1;
+      *pData = 0;
+      pData += 1;
+      *pData = 0;
+      pData += 1;
+      *pData = 0;
+      pData += 1;
+    };
+    
+  };
+
 }
 
-i32 clip(i32 x, i32 y, i32 z) {
-    return z < x ? x : z > y ? y : z;
-}

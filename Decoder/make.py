@@ -9,20 +9,36 @@ sys.path.append(EMSCRIPTEN_ROOT)
 import tools.shared as emscripten
 
 emcc_args = [
-  '-m32',
+  #'-m32',
   '-O3',
+  #'-Dxxx2yyy'
   '--memory-init-file', '0',
   '--llvm-opts', '3',
-  '-s', 'CORRECT_SIGNS=1',
-  '-s', 'CORRECT_OVERFLOWS=1',
+  '--llvm-lto', '3',
+  '-s', 'NO_EXIT_RUNTIME=1',
+  '-s', 'NO_FILESYSTEM=1',
+  '-s', 'NO_BROWSER=1',
+  
+  #'-s', 'CORRECT_SIGNS=1',
+  #'-s', 'CORRECT_OVERFLOWS=1',
   '-s', 'TOTAL_MEMORY=' + str(50*1024*1024),
-  '-s', 'FAST_MEMORY=' + str(12*1024*1024),
+  #'-s', 'FAST_MEMORY=' + str(50*1024*1024),
+  #'-s', 'ALLOW_MEMORY_GROWTH=0',
   '-s', 'INVOKE_RUN=0',
-  '-s', 'RELOOP=1',
-  '-s', '''EXPORTED_FUNCTIONS=["HEAP8", "HEAP16", "HEAP32", "_get_h264bsdClip", "_main", "_broadwayGetMajorVersion", "_broadwayGetMinorVersion", "_broadwayInit", "_broadwayExit", "_broadwayCreateStream", "_broadwaySetStreamLength", "_broadwayPlayStream", "_broadwayOnHeadersDecoded", "_broadwayOnPictureDecoded"]''',
-  '--closure', '1',
+  #'-s', 'RELOOP=1',
+  #'-s', 'INLINING_LIMIT=50',
+  #'-s', 'OUTLINING_LIMIT=100',
+  '-s', 'DOUBLE_MODE=0',
+  '-s', 'PRECISE_I64_MATH=0',
+  #'-s', 'SIMD=1',
+  '-s', 'AGGRESSIVE_VARIABLE_ELIMINATION=1',
+  '-s', 'ALIASING_FUNCTION_POINTERS=1',
+  '-s', 'DISABLE_EXCEPTION_CATCHING=1',
+  #'-s', 'USE_CLOSURE_COMPILER=1',
+  #'-s', 'FORCE_ALIGNED_MEMORY=1', #why doesnt this work?
+  '-s', '''EXPORTED_FUNCTIONS=["HEAP8", "HEAP16", "HEAP32", "_broadwayGetMajorVersion", "_broadwayGetMinorVersion", "_broadwayInit", "_broadwayExit", "_broadwayCreateStream", "_broadwayPlayStream", "_broadwayOnHeadersDecoded", "_broadwayOnPictureDecoded"]''',
+  #'--closure', '1',
   '--js-library', 'library.js'
-  # '--js-transform', 'python appender.py'
 ]
   
 JS_DIR = "js"
@@ -63,6 +79,7 @@ source_files = [
   'h264bsd_pic_order_cnt.c',
   'h264bsd_decoder.c',
   'H264SwDecApi.c',
+  'extraFlags.c',
   'Decoder.c']
 
 for file in source_files:
@@ -92,10 +109,3 @@ f.write(jscont);
 f3 = open(os.path.join("..", "templates", 'DecoderPost.js'));
 f.write(f3.read());
 
-#Popen(['cat', os.path.join("..", "templates", 'DecoderPre.js'), ">", os.path.join('..','Player','Decoder.js')]).communicate()
-#Popen(['cat', os.path.join(JS_DIR, 'avc.js'), ">>", os.path.join('..','Player','Decoder.js')]).communicate()
-#Popen(['cat', os.path.join("..", "templates", 'DecoderPost.js'), ">>", os.path.join('..','Player','Decoder.js')]).communicate()
-#Popen(['cp', os.path.join(JS_DIR, 'avc.js'), os.path.join('..','Player','avc-codec.js')]).communicate()
-
-# print 'copying %s -> %s' % (os.path.join(JS_DIR, 'avc.js.mem'), os.path.join('..','Player','avc.js.mem'))
-# Popen(['cp', os.path.join(JS_DIR, 'avc.js.mem'), os.path.join('..','Player','avc.js.mem')]).communicate()

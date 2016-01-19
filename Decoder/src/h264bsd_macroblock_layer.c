@@ -984,7 +984,9 @@ u32 h264bsdDecodeMacroblock(mbStorage_t *pMb, macroblockLayer_t *pMbLayer,
     mbType = pMbLayer->mbType;
     pMb->mbType = mbType;
 
+#ifndef OPTIMIZE_NO_DECODED_FLAG
     pMb->decoded++;
+#endif
 
     h264bsdSetCurrImageMbPointers(currImage, mbNum);
 
@@ -1000,6 +1002,7 @@ u32 h264bsdDecodeMacroblock(mbStorage_t *pMb, macroblockLayer_t *pMbLayer,
 
         pMb->qpY = 0;
 
+#ifndef OPTIMIZE_NO_DECODED_FLAG
         /* if decoded flag > 1 -> mb has already been successfully decoded and
          * written to output -> do not write again */
         if (pMb->decoded > 1)
@@ -1008,7 +1011,8 @@ u32 h264bsdDecodeMacroblock(mbStorage_t *pMb, macroblockLayer_t *pMbLayer,
                 *tot++ = 16;
             return HANTRO_OK;
         }
-
+#endif
+      
         for (i = 24; i--;)
         {
             *tot++ = 16;

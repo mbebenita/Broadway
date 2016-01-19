@@ -1,7 +1,16 @@
-    var resultModule = window.Module || global.Module || Module;
+       return Module;
+    })();
+    
+    var resultModule = global.Module || Module;
+
+    resultModule._broadwayOnHeadersDecoded = par_broadwayOnHeadersDecoded;
+    resultModule._broadwayOnPictureDecoded = par_broadwayOnPictureDecoded;
     
     return resultModule;
   };
+
+  return (function(){
+    "use strict";
   
   
   var nowValue = function(){
@@ -17,7 +26,7 @@
   };
   
   
-  var Broadway = function(parOptions){
+  var Decoder = function(parOptions){
     this.options = parOptions || {};
     
     this.now = nowValue;
@@ -27,9 +36,7 @@
     var fakeWindow = {
     };
     
-    var Module = getModule.apply(fakeWindow, [function () {
-
-    }, function ($buffer, width, height) {
+    var onPicFun = function ($buffer, width, height) {
       var buffer = this.pictureBuffers[$buffer];
       if (!buffer) {
         buffer = this.pictureBuffers[$buffer] = toU8Array($buffer, (width * height * 3) / 2);
@@ -66,13 +73,57 @@
         infos[0].finishDecoding = nowValue();
       };
       this.onPictureDecoded(buffer, width, height, infos);
-    }.bind(this)]);
+    }.bind(this);
+    
+    var ignore = false;
+    
+    if (this.options.sliceMode){
+      onPicFun = function ($buffer, width, height, $sliceInfo) {
+        if (ignore){
+          return;
+        };
+        var buffer = this.pictureBuffers[$buffer];
+        if (!buffer) {
+          buffer = this.pictureBuffers[$buffer] = toU8Array($buffer, (width * height * 3) / 2);
+        };
+        var sliceInfo = this.pictureBuffers[$sliceInfo];
+        if (!sliceInfo) {
+          sliceInfo = this.pictureBuffers[$sliceInfo] = toU32Array($sliceInfo, 18);
+        };
+
+        var infos;
+        var doInfo = false;
+        if (this.infoAr.length){
+          doInfo = true;
+          infos = this.infoAr;
+        };
+        this.infoAr = [];
+
+        /*if (this.options.rgb){
+        
+        no rgb in slice mode
+
+        };*/
+
+        infos[0].finishDecoding = nowValue();
+        var sliceInfoAr = [];
+        for (var i = 0; i < 20; ++i){
+          sliceInfoAr.push(sliceInfo[i]);
+        };
+        infos[0].sliceInfoAr = sliceInfoAr;
+
+        this.onPictureDecoded(buffer, width, height, infos);
+      }.bind(this);
+    };
+    
+    var Module = getModule.apply(fakeWindow, [function () {
+    }, onPicFun]);
+    
 
     var HEAP8 = Module.HEAP8;
     var HEAPU8 = Module.HEAPU8;
     var HEAP16 = Module.HEAP16;
     var HEAP32 = Module.HEAP32;
-    var _h264bsdClip = Module._get_h264bsdClip();
 
     
     var MAX_STREAM_BUFFER_LENGTH = 1024 * 1024;
@@ -85,6 +136,10 @@
    */
     function toU8Array(ptr, length) {
       return HEAPU8.subarray(ptr, ptr + length);
+    };
+    function toU32Array(ptr, length) {
+      //var tmp = HEAPU8.subarray(ptr, ptr + (length * 4));
+      return new Uint32Array(HEAPU8.buffer, ptr, length);
     };
     this.streamBuffer = toU8Array(Module._broadwayCreateStream(MAX_STREAM_BUFFER_LENGTH), MAX_STREAM_BUFFER_LENGTH);
     this.pictureBuffers = {};
@@ -100,244 +155,104 @@
      * start code, or a sequence of NAL units with framing start code prefixes. This
      * function overwrites stream buffer allocated by the codec with the supplied buffer.
      */
-    this.decode = function decode(buffer, parInfo) {
-      // console.info("Decoding: " + buffer.length);
-      // collect infos
-      if (parInfo){
+    
+    var sliceNum = 0;
+    if (this.options.sliceMode){
+      sliceNum = this.options.sliceNum;
+      
+      this.decode = function decode(typedAr, parInfo, copyDoneFun) {
         this.infoAr.push(parInfo);
         parInfo.startDecoding = nowValue();
+        var nals = parInfo.nals;
+        var i;
+        if (!nals){
+          nals = [];
+          parInfo.nals = nals;
+          var l = typedAr.length;
+          var foundSomething = false;
+          var lastFound = 0;
+          var lastStart = 0;
+          for (i = 0; i < l; ++i){
+            if (typedAr[i] === 1){
+              if (
+                typedAr[i - 1] === 0 &&
+                typedAr[i - 2] === 0
+              ){
+                var startPos = i - 2;
+                if (typedAr[i - 3] === 0){
+                  startPos = i - 3;
+                };
+                // its a nal;
+                if (foundSomething){
+                  nals.push({
+                    offset: lastFound,
+                    end: startPos,
+                    type: typedAr[lastStart] & 31
+                  });
+                };
+                lastFound = startPos;
+                lastStart = startPos + 3;
+                if (typedAr[i - 3] === 0){
+                  lastStart = startPos + 4;
+                };
+                foundSomething = true;
+              };
+            };
+          };
+          if (foundSomething){
+            nals.push({
+              offset: lastFound,
+              end: i,
+              type: typedAr[lastStart] & 31
+            });
+          };
+        };
+        
+        var currentSlice = 0;
+        var playAr;
+        var offset = 0;
+        for (i = 0; i < nals.length; ++i){
+          if (nals[i].type === 1 || nals[i].type === 5){
+            if (currentSlice === sliceNum){
+              playAr = typedAr.subarray(nals[i].offset, nals[i].end);
+              this.streamBuffer[offset] = 0;
+              offset += 1;
+              this.streamBuffer.set(playAr, offset);
+              offset += playAr.length;
+            };
+            currentSlice += 1;
+          }else{
+            playAr = typedAr.subarray(nals[i].offset, nals[i].end);
+            this.streamBuffer[offset] = 0;
+            offset += 1;
+            this.streamBuffer.set(playAr, offset);
+            offset += playAr.length;
+            Module._broadwayPlayStream(offset);
+            offset = 0;
+          };
+        };
+        copyDoneFun();
+        Module._broadwayPlayStream(offset);
       };
       
-      this.streamBuffer.set(buffer);
-      Module._broadwaySetStreamLength(buffer.length);
-      Module._broadwayPlayStream();
+    }else{
+      this.decode = function decode(typedAr, parInfo) {
+        // console.info("Decoding: " + buffer.length);
+        // collect infos
+        if (parInfo){
+          this.infoAr.push(parInfo);
+          parInfo.startDecoding = nowValue();
+        };
+
+        this.streamBuffer.set(typedAr);
+        Module._broadwayPlayStream(typedAr.length);
+      };
     };
 
-
-    
-    function patchOptimizations(config, patches) { 
-      var scope = getGlobalScope();
-      for (var name in patches) {
-        var patch = patches[name];
-        if (patch) {
-          var option = config[name];
-          if (!option) option = "original";
-          console.info(name + ": " + option);
-          assert (option in patch.options);
-          var fn = patch.options[option].fn;
-          if (fn) {
-            scope[patch.original] = Module.patch(null, patch.name, fn);
-            console.info("Patching: " + patch.name + ", with: " + option);
-          }
-        }
-      }
-    };
-    
-    var patches = {
-      "filter": {
-        name: "_h264bsdFilterPicture",
-        display: "Filter Picture",
-        original: "Original_h264bsdFilterPicture",
-        options: {
-          none: {display: "None", fn: function () {}},
-          original: {display: "Original", fn: null},
-        }
-      },
-      "filterHorLuma": {
-        name: "_FilterHorLuma",
-        display: "Filter Hor Luma",
-        original: "OriginalFilterHorLuma",
-        options: {
-          none: {display: "None", fn: function () {}},
-          original: {display: "Original", fn: null},
-          optimized: {display: "Optimized", fn: OptimizedFilterHorLuma}
-        }
-      },
-      "filterVerLumaEdge": {
-        name: "_FilterVerLumaEdge",
-        display: "Filter Ver Luma Edge",
-        original: "OriginalFilterVerLumaEdge",
-        options: {
-          none: {display: "None", fn: function () {}},
-          original: {display: "Original", fn: null},
-          optimized: {display: "Optimized", fn: OptimizedFilterVerLumaEdge}
-        }
-      },
-      "getBoundaryStrengthsA": {
-        name: "_GetBoundaryStrengthsA",
-        display: "Get Boundary Strengths",
-        original: "OriginalGetBoundaryStrengthsA",
-        options: {
-          none: {display: "None", fn: function () {}},
-          original: {display: "Original", fn: null},
-          optimized: {display: "Optimized", fn: OptimizedGetBoundaryStrengthsA}
-        }
-      }
-    };
-    function getGlobalScope() {
-      return function () { return this; }.call(null);
-    };
-    
-    /* Optimizations */
-
-    function clip(x, y, z) {
-      return z < x ? x : (z > y ? y : z);
-    }
-
-    function OptimizedGetBoundaryStrengthsA($mb, $bS) {
-      var $totalCoeff = $mb + 28;
-
-      var tc0 = HEAP16[$totalCoeff + 0 >> 1];
-      var tc1 = HEAP16[$totalCoeff + 2 >> 1];
-      var tc2 = HEAP16[$totalCoeff + 4 >> 1];
-      var tc3 = HEAP16[$totalCoeff + 6 >> 1];
-      var tc4 = HEAP16[$totalCoeff + 8 >> 1];
-      var tc5 = HEAP16[$totalCoeff + 10 >> 1];
-      var tc6 = HEAP16[$totalCoeff + 12 >> 1];
-      var tc7 = HEAP16[$totalCoeff + 14 >> 1];
-      var tc8 = HEAP16[$totalCoeff + 16 >> 1];
-      var tc9 = HEAP16[$totalCoeff + 18 >> 1];
-      var tc10 = HEAP16[$totalCoeff + 20 >> 1];
-      var tc11 = HEAP16[$totalCoeff + 22 >> 1];
-      var tc12 = HEAP16[$totalCoeff + 24 >> 1];
-      var tc13 = HEAP16[$totalCoeff + 26 >> 1];
-      var tc14 = HEAP16[$totalCoeff + 28 >> 1];
-      var tc15 = HEAP16[$totalCoeff + 30 >> 1];
-
-      HEAP32[$bS + 32 >> 2] = tc2 || tc0 ? 2 : 0;
-      HEAP32[$bS + 40 >> 2] = tc3 || tc1 ? 2 : 0;
-      HEAP32[$bS + 48 >> 2] = tc6 || tc4 ? 2 : 0;
-      HEAP32[$bS + 56 >> 2] = tc7 || tc5 ? 2 : 0;
-      HEAP32[$bS + 64 >> 2] = tc8 || tc2 ? 2 : 0;
-      HEAP32[$bS + 72 >> 2] = tc9 || tc3 ? 2 : 0;
-      HEAP32[$bS + 80 >> 2] = tc12 || tc6 ? 2 : 0;
-      HEAP32[$bS + 88 >> 2] = tc13 || tc7 ? 2 : 0;
-      HEAP32[$bS + 96 >> 2] = tc10 || tc8 ? 2 : 0;
-      HEAP32[$bS + 104 >> 2] = tc11 || tc9 ? 2 : 0;
-      HEAP32[$bS + 112 >> 2] = tc14 || tc12 ? 2 : 0;
-      HEAP32[$bS + 120 >> 2] = tc15 || tc13 ? 2 : 0;
-
-      HEAP32[$bS + 12 >> 2] = tc1 || tc0 ? 2 : 0;
-      HEAP32[$bS + 20 >> 2] = tc4 || tc1 ? 2 : 0;
-      HEAP32[$bS + 28 >> 2] = tc5 || tc4 ? 2 : 0;
-      HEAP32[$bS + 44 >> 2] = tc3 || tc2 ? 2 : 0;
-      HEAP32[$bS + 52 >> 2] = tc6 || tc3 ? 2 : 0;
-      HEAP32[$bS + 60 >> 2] = tc7 || tc6 ? 2 : 0;
-      HEAP32[$bS + 76 >> 2] = tc9 || tc8 ? 2 : 0;
-      HEAP32[$bS + 84 >> 2] = tc12 || tc9 ? 2 : 0;
-      HEAP32[$bS + 92 >> 2] = tc13 || tc12 ? 2 : 0;
-      HEAP32[$bS + 108 >> 2] = tc11 || tc10 ? 2 : 0;
-      HEAP32[$bS + 116 >> 2] = tc14 || tc11 ? 2 : 0;
-      HEAP32[$bS + 124 >> 2] = tc15 || tc14 ? 2 : 0;
-    }
-
-    function OptimizedFilterVerLumaEdge ($data, bS, $thresholds, imageWidth) {
-      var delta, tc, tmp;
-      var p0, q0, p1, q1, p2, q2;
-      var tmpFlag;
-      var $clp = _h264bsdClip + 512;
-      var alpha = HEAP32[$thresholds + 4 >> 2];
-      var beta = HEAP32[$thresholds + 8 >> 2];
-      var val;
-
-      if (bS < 4) {
-        tmp = tc = HEAPU8[HEAP32[$thresholds >> 2] + (bS - 1)] & 255;
-        for (var i = 4; i > 0; i--) {
-          p1 = HEAPU8[$data + -2] & 255;
-          p0 = HEAPU8[$data + -1] & 255;
-          q0 = HEAPU8[$data] & 255;
-          q1 = HEAPU8[$data + 1] & 255;
-          if ((Math.abs(p0 - q0) < alpha) && (Math.abs(p1 - p0) < beta) && (Math.abs(q1 - q0) < beta)) {
-            p2 = HEAPU8[$data - 3] & 255;
-            if (Math.abs(p2 - p0) < beta) {
-              val = (p2 + ((p0 + q0 + 1) >> 1) - (p1 << 1)) >> 1;
-              HEAP8[$data - 2] = p1 + clip(-tc, tc, val);
-              tmp++;
-            }
-
-            q2 = HEAPU8[$data + 2] & 255;
-            if (Math.abs(q2 - q0) < beta) {
-              val = (q2 + ((p0 + q0 + 1) >> 1) - (q1 << 1)) >> 1;
-              HEAP8[$data + 1] = (q1 + clip(-tc, tc, val));
-              tmp++;
-            }
-
-            val = ((((q0 - p0) << 2) + (p1 - q1) + 4) >> 3);
-            delta = clip(-tmp, tmp, val);
-
-            p0 = HEAPU8[$clp + (p0 + delta)] & 255;
-            q0 = HEAPU8[$clp + (q0 - delta)] & 255;
-            tmp = tc;
-            HEAP8[$data - 1] = p0;
-            HEAP8[$data] = q0;
-
-            $data += imageWidth;
-          }
-        }
-      } else {
-        OriginalFilterVerLumaEdge($data, bS, $thresholds, imageWidth);
-      }
-    }
-
-    /**
- * Filter all four successive horizontal 4-pixel luma edges. This can be done when bS is equal to all four edges.
- */
-    function OptimizedFilterHorLuma ($data, bS, $thresholds, imageWidth) {
-      var delta, tc, tmp;
-      var p0, q0, p1, q1, p2, q2;
-      var tmpFlag;
-      var $clp = _h264bsdClip + 512;
-      var alpha = HEAP32[$thresholds + 4 >> 2];
-      var beta = HEAP32[$thresholds + 8 >> 2];
-      var val;
-
-      if (bS < 4) {
-        tmp = tc = HEAPU8[HEAP32[$thresholds >> 2] + (bS - 1)] & 255;
-        for (var i = 16; i > 0; i--) {
-          p1 = HEAPU8[$data + (-imageWidth << 1)] & 255;
-          p0 = HEAPU8[$data + -imageWidth] & 255;
-          q0 = HEAPU8[$data] & 255;
-          q1 = HEAPU8[$data + imageWidth] & 255;
-
-          if ((Math.abs(p0 - q0) < alpha) && (Math.abs(p1 - p0) < beta) && (Math.abs(q1 - q0) < beta)) {
-            p2 = HEAPU8[$data + (-imageWidth * 3)] & 255;
-            if (Math.abs(p2 - p0) < beta) {
-              val = (p2 + ((p0 + q0 + 1) >> 1) - (p1 << 1)) >> 1;
-              HEAP8[$data + (-imageWidth << 1)] = p1 + clip(-tc, tc, val);
-              tmp++;
-            }
-
-            q2 = HEAPU8[$data + (imageWidth << 2)] & 255;
-            if (Math.abs(q2 - q0) < beta) {
-              val = (q2 + ((p0 + q0 + 1) >> 1) - (q1 << 1)) >> 1;
-              HEAP8[$data + imageWidth] = (q1 + clip(-tc, tc, val));
-              tmp++;
-            }
-
-            val = ((((q0 - p0) << 2) + (p1 - q1) + 4) >> 3);
-            delta = clip(-tmp, tmp, val);
-
-            p0 = HEAPU8[$clp + (p0 + delta)] & 255;
-            q0 = HEAPU8[$clp + (q0 - delta)] & 255;
-            tmp = tc;
-            HEAP8[$data - imageWidth] = p0;
-            HEAP8[$data] = q0;
-
-            $data ++;
-          }
-        }
-      } else {
-        OriginalFilterHorLuma($data, bS, $thresholds, imageWidth);
-      }
-    }
   };
 
   
-  Broadway.prototype = {
-    configure: function (config) {
-      // patchOptimizations(config, patches);
-      console.info("Broadway Configured: " + JSON.stringify(config));
-    }
+  Decoder.prototype = {
     
   };
   
@@ -615,6 +530,17 @@
     var isWorker = false;
     var decoder;
     var reuseMemory = false;
+    var sliceMode = false;
+    var sliceNum = 0;
+    var sliceCnt = 0;
+    var lastSliceNum = 0;
+    var sliceInfoAr;
+    var lastBuf;
+    var awaiting = 0;
+    var pile = [];
+    var startDecoding;
+    var finishDecoding;
+    var timeDecoding;
     
     var memAr = [];
     var getMem = function(length){
@@ -630,6 +556,66 @@
       return new ArrayBuffer(length);
     }; 
     
+    var copySlice = function(source, target, infoAr, width, height){
+      
+      var length = width * height;
+      var length4 = length / 4
+      var plane2 = length;
+      var plane3 = length + length4;
+      
+      var copy16 = function(parBegin, parEnd){
+        var i = 0;
+        for (i = 0; i < 16; ++i){
+          var begin = parBegin + (width * i);
+          var end = parEnd + (width * i)
+          target.set(source.subarray(begin, end), begin);
+        };
+      };
+      var copy8 = function(parBegin, parEnd){
+        var i = 0;
+        for (i = 0; i < 8; ++i){
+          var begin = parBegin + ((width / 2) * i);
+          var end = parEnd + ((width / 2) * i)
+          target.set(source.subarray(begin, end), begin);
+        };
+      };
+      var copyChunk = function(begin, end){
+        target.set(source.subarray(begin, end), begin);
+      };
+      
+      var begin = infoAr[0];
+      var end = infoAr[1];
+      if (end > 0){
+        copy16(begin, end);
+        copy8(infoAr[2], infoAr[3]);
+        copy8(infoAr[4], infoAr[5]);
+      };
+      begin = infoAr[6];
+      end = infoAr[7];
+      if (end > 0){
+        copy16(begin, end);
+        copy8(infoAr[8], infoAr[9]);
+        copy8(infoAr[10], infoAr[11]);
+      };
+      
+      begin = infoAr[12];
+      end = infoAr[15];
+      if (end > 0){
+        copyChunk(begin, end);
+        copyChunk(infoAr[13], infoAr[16]);
+        copyChunk(infoAr[14], infoAr[17]);
+      };
+      
+    };
+    
+    var sliceMsgFun = function(){};
+    
+    var setSliceCnt = function(parSliceCnt){
+      sliceCnt = parSliceCnt;
+      lastSliceNum = sliceCnt - 1;
+    };
+    
+    
     self.addEventListener('message', function(e) {
       
       if (isWorker){
@@ -639,20 +625,101 @@
           };
         };
         if (e.data.buf){
-          decoder.decode(new Uint8Array(e.data.buf, e.data.offset || 0, e.data.length), e.data.info);
+          if (sliceMode && awaiting !== 0){
+            pile.push(e.data);
+          }else{
+            decoder.decode(
+              new Uint8Array(e.data.buf, e.data.offset || 0, e.data.length), 
+              e.data.info, 
+              function(){
+                if (sliceMode && sliceNum !== lastSliceNum){
+                  postMessage(e.data, [e.data.buf]);
+                };
+              }
+            );
+          };
+          return;
+        };
+        
+        if (e.data.slice){
+          // update ref pic
+          var copyStart = nowValue();
+          copySlice(new Uint8Array(e.data.slice), lastBuf, e.data.infos[0].sliceInfoAr, e.data.width, e.data.height);
+          // is it the one? then we need to update it
+          if (e.data.theOne){
+            copySlice(lastBuf, new Uint8Array(e.data.slice), sliceInfoAr, e.data.width, e.data.height);
+            if (timeDecoding > e.data.infos[0].timeDecoding){
+              e.data.infos[0].timeDecoding = timeDecoding;
+            };
+            e.data.infos[0].timeCopy += (nowValue() - copyStart);
+          };
+          // move on
+          postMessage(e.data, [e.data.slice]);
+          
+          // next frame in the pipe?
+          awaiting -= 1;
+          if (awaiting === 0 && pile.length){
+            var data = pile.shift();
+            decoder.decode(
+              new Uint8Array(data.buf, data.offset || 0, data.length), 
+              data.info, 
+              function(){
+                if (sliceMode && sliceNum !== lastSliceNum){
+                  postMessage(data, [data.buf]);
+                };
+              }
+            );
+          };
+          return;
+        };
+        
+        if (e.data.setSliceCnt){
+          setSliceCnt(e.data.sliceCnt);
+          return;
         };
         
       }else{
         if (e.data && e.data.type === "Broadway.js - Worker init"){
           isWorker = true;
-          decoder = new Broadway(e.data.options);
+          decoder = new Decoder(e.data.options);
           
-          if (e.data.options.reuseMemory){
+          if (e.data.options.sliceMode){
+            reuseMemory = true;
+            sliceMode = true;
+            sliceNum = e.data.options.sliceNum;
+            setSliceCnt(e.data.options.sliceCnt);
+
+            decoder.onPictureDecoded = function (buffer, width, height, infos) {
+              
+              // buffer needs to be copied because we give up ownership
+              var copyU8 = new Uint8Array(getMem(buffer.length));
+              copySlice(buffer, copyU8, infos[0].sliceInfoAr, width, height);
+              
+              startDecoding = infos[0].startDecoding;
+              finishDecoding = infos[0].finishDecoding;
+              timeDecoding = finishDecoding - startDecoding;
+              infos[0].timeDecoding = timeDecoding;
+              infos[0].timeCopy = 0;
+              
+              postMessage({
+                slice: copyU8.buffer,
+                sliceNum: sliceNum,
+                width: width, 
+                height: height, 
+                infos: infos
+              }, [copyU8.buffer]); // 2nd parameter is used to indicate transfer of ownership
+              
+              awaiting = sliceCnt - 1;
+              
+              lastBuf = buffer;
+              sliceInfoAr = infos[0].sliceInfoAr;
+
+            };
+            
+          }else if (e.data.options.reuseMemory){
             reuseMemory = true;
             decoder.onPictureDecoded = function (buffer, width, height, infos) {
               
-              //var buf = getMem();
-
               // buffer needs to be copied because we give up ownership
               var copyU8 = new Uint8Array(getMem(buffer.length));
               copyU8.set( buffer, 0, buffer.length );
@@ -695,9 +762,9 @@
     }, false);
   };
   
-  Broadway.nowValue = nowValue;
+  Decoder.nowValue = nowValue;
   
-  return Broadway;
+  return Decoder;
   
   })();
   

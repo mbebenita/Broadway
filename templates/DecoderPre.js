@@ -42,24 +42,13 @@
   };
   
   
-  return (function(){
-    "use strict";
-
-
-
-  
-  var getModule = function(_broadwayOnHeadersDecoded, _broadwayOnPictureDecoded){
+  var getModule = function(par_broadwayOnHeadersDecoded, par_broadwayOnPictureDecoded){
     
-    var window = this;
-    //console.log(typeof window);
     
-    window._broadwayOnHeadersDecoded = _broadwayOnHeadersDecoded;
-    window._broadwayOnPictureDecoded = _broadwayOnPictureDecoded;
-    
-    var Module = {
+    /*var ModuleX = {
       'print': function(text) { console.log('stdout: ' + text); },
       'printErr': function(text) { console.log('stderr: ' + text); }
-    };
+    };*/
     
     
     /*
@@ -68,4 +57,6 @@
       you can integrate the file into your build system and provide the original file to be loaded into a worker.
     
     */
+    
+    var Module = (function(){
     

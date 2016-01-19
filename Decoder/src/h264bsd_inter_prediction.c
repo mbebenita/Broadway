@@ -35,6 +35,8 @@
 
 ------------------------------------------------------------------------------*/
 
+#include "opttarget.h"
+
 /*------------------------------------------------------------------------------
     1. Include headers
 ------------------------------------------------------------------------------*/
@@ -322,8 +324,10 @@ u32 h264bsdInterPrediction(mbStorage_t *pMb, macroblockLayer_t *pMbLayer,
 
     /* if decoded flag > 1 -> mb has already been successfully decoded and
      * written to output -> do not write again */
+#ifndef OPTIMIZE_NO_DECODED_FLAG
     if (pMb->decoded > 1)
         return HANTRO_OK;
+#endif
 
     return(HANTRO_OK);
 }
@@ -462,10 +466,12 @@ u32 h264bsdInterPrediction(mbStorage_t *pMb, macroblockLayer_t *pMbLayer,
             break;
     }
 
+#ifndef OPTIMIZE_NO_DECODED_FLAG
     /* if decoded flag > 1 -> mb has already been successfully decoded and
      * written to output -> do not write again */
     if (pMb->decoded > 1)
         return HANTRO_OK;
+#endif
 
     if (pMb->mbType != P_Skip)
     {

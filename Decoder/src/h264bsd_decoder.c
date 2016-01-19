@@ -38,6 +38,10 @@
 
 ------------------------------------------------------------------------------*/
 
+#include "opttarget.h"
+#include "extraFlags.h"
+
+
 /*------------------------------------------------------------------------------
     1. Include headers
 ------------------------------------------------------------------------------*/
@@ -54,6 +58,12 @@
 #include "h264bsd_dpb.h"
 #include "h264bsd_deblocking.h"
 #include "h264bsd_conceal.h"
+
+#ifdef EMIT_IMAGE_ASAP
+u32 sliceData[18] = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
+extern void extern_emit_image(u8 *buffer, u32 width, u32 height, u32* sliceData);
+#endif     
+
 
 /*------------------------------------------------------------------------------
     2. External compiler flags
@@ -148,6 +158,7 @@ u32 h264bsdInit(storage_t *pStorage, u32 noOutputReordering)
 
 ------------------------------------------------------------------------------*/
 
+
 u32 h264bsdDecode(storage_t *pStorage, u8 *byteStrm, u32 len, u32 picId,
     u32 *readBytes)
 {
@@ -165,10 +176,10 @@ u32 h264bsdDecode(storage_t *pStorage, u8 *byteStrm, u32 len, u32 picId,
 
 /* Code */
 
-    ASSERT(pStorage);
+    /*ASSERT(pStorage);
     ASSERT(byteStrm);
     ASSERT(len);
-    ASSERT(readBytes);
+    ASSERT(readBytes);*/
 
     /* if previous buffer was not finished and same pointer given -> skip NAL
      * unit extraction */
@@ -201,13 +212,13 @@ u32 h264bsdDecode(storage_t *pStorage, u8 *byteStrm, u32 len, u32 picId,
         return(H264BSD_ERROR);
     }
 
+#ifndef SINGLE_SLICE
     /* Discard unspecified, reserved, SPS extension and auxiliary picture slices */
     if(nalUnit.nalUnitType == 0 || nalUnit.nalUnitType >= 13)
     {
         DEBUG(("DISCARDED NAL (UNSPECIFIED, REGISTERED, SPS ext or AUX slice)\n"));
         return(H264BSD_RDY);
     }
-
     tmp = h264bsdCheckAccessUnitBoundary(
       &strm,
       &nalUnit,
@@ -221,7 +232,7 @@ u32 h264bsdDecode(storage_t *pStorage, u8 *byteStrm, u32 len, u32 picId,
         else
             return(H264BSD_ERROR);
     }
-
+  
     if ( accessUnitBoundaryFlag )
     {
         DEBUG(("Access unit boundary\n"));
@@ -263,6 +274,7 @@ u32 h264bsdDecode(storage_t *pStorage, u8 *byteStrm, u32 len, u32 picId,
         }
         pStorage->skipRedundantSlices = HANTRO_FALSE;
     }
+#endif
 
     if (!picReady)
     {
@@ -445,19 +457,24 @@ u32 h264bsdDecode(storage_t *pStorage, u8 *byteStrm, u32 len, u32 picId,
                         pStorage->sliceHeader->firstMbInSlice));
                 tmp = h264bsdDecodeSliceData(&strm, pStorage,
                     pStorage->currImage, pStorage->sliceHeader);
+          // in single slice mode every slice is a ready picture
+#ifndef SINGLE_SLICE
                 if (tmp != HANTRO_OK)
                 {
                     EPRINT("SLICE_DATA");
                     h264bsdMarkSliceCorrupted(pStorage,
                         pStorage->sliceHeader->firstMbInSlice);
                     return(H264BSD_ERROR);
-                }
+                };
 
                 if (h264bsdIsEndOfPicture(pStorage))
                 {
+#endif
                     picReady = HANTRO_TRUE;
+#ifndef SINGLE_SLICE
                     pStorage->skipRedundantSlices = HANTRO_TRUE;
-                }
+                };
+#endif
                 break;
 
             case NAL_SEI:
@@ -472,10 +489,39 @@ u32 h264bsdDecode(storage_t *pStorage, u8 *byteStrm, u32 len, u32 picId,
     if (picReady)
     {
         h264bsdFilterPicture(pStorage->currImage, pStorage->mb);
+      
+#ifdef EMIT_IMAGE_ASAP
+
+      /*if (gLastSlice == 1){
+        h264bsdWriteSliceMbData(
+          pStorage->currImage, 
+          pStorage->sliceHeader->firstMbInSlice, 
+          (pStorage->currImage->width * pStorage->currImage->height) - 1,
+          sliceData
+        );
+      }else{*/
+      h264bsdWriteSliceMbData(
+        pStorage->currImage, 
+        pStorage->sliceHeader->firstMbInSlice, 
+        pStorage->sliceHeader->firstMbInSlice + pStorage->slice->numDecodedMbs - 1,
+        sliceData
+      );
+      //};
+      
+      //sliceData[18] = pStorage->sliceHeader->firstMbInSlice;
+      //sliceData[19] = pStorage->sliceHeader->firstMbInSlice + pStorage->slice->numDecodedMbs - 1;
+
+      extern_emit_image(
+        pStorage->currImage->data, 
+        pStorage->currImage->width * 16, 
+        pStorage->currImage->height * 16, 
+        sliceData
+      );
+#endif      
 
         h264bsdResetStorage(pStorage);
 
-         picOrderCnt = h264bsdDecodePicOrderCnt(pStorage->poc,
+        picOrderCnt = h264bsdDecodePicOrderCnt(pStorage->poc,
             pStorage->activeSps, pStorage->sliceHeader, pStorage->prevNalUnit);
 
         if (pStorage->validSliceInAccessUnit)

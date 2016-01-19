@@ -28,6 +28,8 @@
 #ifndef H264SWDEC_MACROBLOCK_LAYER_H
 #define H264SWDEC_MACROBLOCK_LAYER_H
 
+#include "opttarget.h"
+
 /*------------------------------------------------------------------------------
     1. Include headers
 ------------------------------------------------------------------------------*/
@@ -176,7 +178,9 @@ typedef struct mbStorage
     u32 refPic[4];
     u8* refAddr[4];
     mv_t mv[16];
+#ifndef OPTIMIZE_NO_DECODED_FLAG
     u32 decoded;
+#endif
     struct mbStorage *mbA;
     struct mbStorage *mbB;
     struct mbStorage *mbC;

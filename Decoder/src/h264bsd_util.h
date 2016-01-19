@@ -42,6 +42,7 @@
 #include <stdio.h>
 #endif
 
+#include <stdint.h>
 #include "basetype.h"
 #include "h264bsd_stream.h"
 #include "h264bsd_image.h"
@@ -129,12 +130,10 @@
 #define MAX(a, b) (((a) > (b)) ? (a) : (b))
 
 /* macro to get absolute value */
-// #define ABS(a) (((a) < 0) ? -(a) : (a))
-#define ABS(a) (abs(a))
+#define ABS(a) (((a) < 0) ? -(a) : (a))
 
 /* macro to clip a value z, so that x <= z =< y */
-// #define CLIP3(x,y,z) (((z) < (x)) ? (x) : (((z) > (y)) ? (y) : (z)))
-#define CLIP3(x,y,z) (clip(x,y,z))
+#define CLIP3(x,y,z) (((z) < (x)) ? (x) : (((z) > (y)) ? (y) : (z)))
 
 /* macro to clip a value z, so that 0 <= z =< 255 */
 #define CLIP1(z) (((z) < 0) ? 0 : (((z) > 255) ? 255 : (z)))
@@ -152,7 +151,7 @@
 }
 
 #define ALIGN(ptr, bytePos) \
-        (ptr + ( ((bytePos - (int)ptr) & (bytePos - 1)) / sizeof(*ptr) ))
+        (ptr + ( ((bytePos - (uintptr_t)ptr) & (bytePos - 1)) / sizeof(*ptr) ))
 
 extern const u32 h264bsdQpC[52];
 
@@ -176,8 +175,7 @@ u32 h264bsdNextMbAddress(u32 *pSliceGroupMap, u32 picSizeInMbs, u32 currMbAddr);
 
 void h264bsdSetCurrImageMbPointers(image_t *image, u32 mbNum);
 
-i32 abs(i32 a);
-i32 clip(i32 x, i32 y, i32 z);
+void h264bsdWriteSliceMbData(image_t *image, u32 firstMbNum, u32 lastMbNum, u32* pData);
 
 #endif /* #ifdef H264SWDEC_UTIL_H */
 

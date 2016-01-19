@@ -37,6 +37,8 @@
 
 ------------------------------------------------------------------------------*/
 
+#include "opttarget.h"
+
 /*------------------------------------------------------------------------------
     1. Include headers
 ------------------------------------------------------------------------------*/
@@ -454,7 +456,9 @@ void h264bsdResetStorage(storage_t *pStorage)
     for (i = 0; i < pStorage->picSizeInMbs; i++)
     {
         pStorage->mb[i].sliceId = 0;
+#ifndef OPTIMIZE_NO_DECODED_FLAG
         pStorage->mb[i].decoded = 0;
+#endif
     }
 
 }
@@ -526,6 +530,9 @@ u32 h264bsdIsStartOfPicture(storage_t *pStorage)
 
 u32 h264bsdIsEndOfPicture(storage_t *pStorage)
 {
+#ifdef SINGLE_SLICE
+  return(HANTRO_TRUE);
+#else
 
 /* Variables */
 
@@ -549,7 +556,7 @@ u32 h264bsdIsEndOfPicture(storage_t *pStorage)
     }
 
     return(HANTRO_FALSE);
-
+#endif
 }
 
 /*------------------------------------------------------------------------------
