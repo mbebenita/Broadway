@@ -89,7 +89,7 @@ H264bsdCanvas.prototype.isWebGL = function() {
 
       if(!gl || typeof gl.getParameter !== "function") {
         gl = null;
-      }    
+      }
 
       ++nameIndex;
     };
@@ -128,7 +128,7 @@ H264bsdCanvas.prototype.initProgram = function() {
             '1.1643828125, 2.017234375, 0, -1.081390625,',
             '0, 0, 0, 1',
         ');',
-      
+
         'void main(void) {',
             'highp float y = texture2D(ySampler,  textureCoord).r;',
             'highp float u = texture2D(uSampler,  textureCoord).r;',
@@ -136,6 +136,11 @@ H264bsdCanvas.prototype.initProgram = function() {
             'gl_FragColor = vec4(y, u, v, 1) * YUV2RGB;',
         '}'
         ].join('\n');
+
+    var precisionFormat = gl.getShaderPrecisionFormat(gl.FRAGMENT_SHADER, gl.HIGH_FLOAT);
+    if(precisionFormat.precision <= 0) {
+        fragmentShaderScript = fragmentShaderScript.replace(/highp/g, 'mediump');
+    }
 
     var vertexShader = gl.createShader(gl.VERTEX_SHADER);
     gl.shaderSource(vertexShader, vertexShaderScript);
@@ -160,7 +165,7 @@ H264bsdCanvas.prototype.initProgram = function() {
     }
 
     gl.useProgram(program);
-    
+
     this.shaderProgram = program;
 };
 
@@ -253,7 +258,7 @@ H264bsdCanvas.prototype.drawNextOuptutPictureGL = function(width, height, croppi
     var texturePosBuffer = this.texturePosBuffer;
     var yTextureRef = this.yTextureRef;
     var uTextureRef = this.uTextureRef;
-    var vTextureRef = this.vTextureRef;    
+    var vTextureRef = this.vTextureRef;
 
     if(croppingParams === null) {
         gl.viewport(0, 0, width, height);
@@ -290,7 +295,7 @@ H264bsdCanvas.prototype.drawNextOuptutPictureGL = function(width, height, croppi
     gl.bindTexture(gl.TEXTURE_2D, vTextureRef);
     gl.texImage2D(gl.TEXTURE_2D, 0, gl.LUMINANCE, width/2, height/2, 0, gl.LUMINANCE, gl.UNSIGNED_BYTE, crData);
 
-    gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4); 
+    gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
 };
 
 /**
@@ -313,7 +318,7 @@ H264bsdCanvas.prototype.drawNextOuptutPictureRGBA = function(width, height, crop
         ctx.putImageData(imageData, -croppingParams.left, -croppingParams.top, 0, 0, croppingParams.width, croppingParams.height);
     }
 };
-  
+
   return H264bsdCanvas;
-  
+
 }));
