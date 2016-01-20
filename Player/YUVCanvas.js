@@ -53,6 +53,8 @@
     
     this.customYUV444 = parOptions.customYUV444;
     
+    this.conversionType = parOptions.conversionType || "rec601";
+
     this.width = parOptions.width || 640;
     this.height = parOptions.height || 320;
     
@@ -69,8 +71,8 @@
       this.initTextures();
     };
     
-    
-    /**
+
+/**
  * Draw the next output picture using WebGL
  */
     if (this.type === "yuv420"){
@@ -268,13 +270,7 @@ YUVCanvas.prototype.initProgram = function() {
       'uniform sampler2D ySampler;',
       'uniform sampler2D uSampler;',
       'uniform sampler2D vSampler;',
-      'const mat4 YUV2RGB = mat4',
-      '(',
-      '  1.1643828125, 0, 1.59602734375, -.87078515625,',
-      '  1.1643828125, -.39176171875, -.81296875, .52959375,',
-      '  1.1643828125, 2.017234375, 0, -1.081390625,',
-      '  0, 0, 0, 1',
-      ');',
+      'uniform mat4 YUV2RGB;',
 
       'void main(void) {',
       '  highp float y = texture2D(ySampler,  textureCoord).r;',
@@ -302,13 +298,7 @@ YUVCanvas.prototype.initProgram = function() {
       'varying highp vec2 textureCoord;',
       'uniform sampler2D sampler;',
       'uniform highp vec2 resolution;',
-      'const mat4 YUV2RGB = mat4',
-      '(',
-      '  1.1643828125, 0, 1.59602734375, -.87078515625,',
-      '  1.1643828125, -.39176171875, -.81296875, .52959375,',
-      '  1.1643828125, 2.017234375, 0, -1.081390625,',
-      '  0, 0, 0, 1',
-      ');',
+      'uniform mat4 YUV2RGB;',
 
       'void main(void) {',
       
@@ -328,6 +318,25 @@ YUVCanvas.prototype.initProgram = function() {
     ].join('\n');
   };
 
+  var YUV2RGB = [];
+
+  if (this.conversionType == "rec709") {
+      // ITU-T Rec. 709
+      YUV2RGB = [
+          1.16438,  0.00000,  1.79274, -0.97295,
+          1.16438, -0.21325, -0.53291,  0.30148,
+          1.16438,  2.11240,  0.00000, -1.13340,
+          0, 0, 0, 1,
+      ];
+  } else {
+      // assume ITU-T Rec. 601
+      YUV2RGB = [
+          1.16438,  0.00000,  1.59603, -0.87079,
+          1.16438, -0.39176, -0.81297,  0.52959,
+          1.16438,  2.01723,  0.00000, -1.08139,
+          0, 0, 0, 1
+      ];
+  };
 
   var vertexShader = gl.createShader(gl.VERTEX_SHADER);
   gl.shaderSource(vertexShader, vertexShaderScript);
@@ -352,6 +361,9 @@ YUVCanvas.prototype.initProgram = function() {
   }
 
   gl.useProgram(program);
+
+  var YUV2RGBRef = gl.getUniformLocation(program, 'YUV2RGB');
+  gl.uniformMatrix4fv(YUV2RGBRef, false, YUV2RGB);
 
   this.shaderProgram = program;
 };
