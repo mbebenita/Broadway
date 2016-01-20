@@ -42,7 +42,7 @@
  * This class can be used to render output pictures from an H264bsdDecoder to a canvas element.
  * If available the content is rendered using WebGL.
  */
-  function H264bsdCanvas(parOptions) {
+  function YUVCanvas(parOptions) {
     
     parOptions = parOptions || {};
     
@@ -53,6 +53,8 @@
     
     this.customYUV444 = parOptions.customYUV444;
     
+    this.conversionType = parOptions.conversionType || "rec601";
+
     this.width = parOptions.width || 640;
     this.height = parOptions.height || 320;
     
@@ -69,8 +71,8 @@
       this.initTextures();
     };
     
-    
-    /**
+
+/**
  * Draw the next output picture using WebGL
  */
     if (this.type === "yuv420"){
@@ -193,14 +195,14 @@
   /**
  * Returns true if the canvas supports WebGL
  */
-  H264bsdCanvas.prototype.isWebGL = function() {
+  YUVCanvas.prototype.isWebGL = function() {
     return this.contextGL;
   };
 
   /**
  * Create the GL context from the canvas element
  */
-  H264bsdCanvas.prototype.initContextGL = function() {
+  YUVCanvas.prototype.initContextGL = function() {
     var canvas = this.canvasElement;
     var gl = null;
 
@@ -233,7 +235,7 @@
 /**
  * Initialize GL shader program
  */
-H264bsdCanvas.prototype.initProgram = function() {
+YUVCanvas.prototype.initProgram = function() {
     var gl = this.contextGL;
 
   // vertex shader is the same for all types
@@ -268,13 +270,7 @@ H264bsdCanvas.prototype.initProgram = function() {
       'uniform sampler2D ySampler;',
       'uniform sampler2D uSampler;',
       'uniform sampler2D vSampler;',
-      'const mat4 YUV2RGB = mat4',
-      '(',
-      '  1.1643828125, 0, 1.59602734375, -.87078515625,',
-      '  1.1643828125, -.39176171875, -.81296875, .52959375,',
-      '  1.1643828125, 2.017234375, 0, -1.081390625,',
-      '  0, 0, 0, 1',
-      ');',
+      'uniform mat4 YUV2RGB;',
 
       'void main(void) {',
       '  highp float y = texture2D(ySampler,  textureCoord).r;',
@@ -302,13 +298,7 @@ H264bsdCanvas.prototype.initProgram = function() {
       'varying highp vec2 textureCoord;',
       'uniform sampler2D sampler;',
       'uniform highp vec2 resolution;',
-      'const mat4 YUV2RGB = mat4',
-      '(',
-      '  1.1643828125, 0, 1.59602734375, -.87078515625,',
-      '  1.1643828125, -.39176171875, -.81296875, .52959375,',
-      '  1.1643828125, 2.017234375, 0, -1.081390625,',
-      '  0, 0, 0, 1',
-      ');',
+      'uniform mat4 YUV2RGB;',
 
       'void main(void) {',
       
@@ -328,6 +318,25 @@ H264bsdCanvas.prototype.initProgram = function() {
     ].join('\n');
   };
 
+  var YUV2RGB = [];
+
+  if (this.conversionType == "rec709") {
+      // ITU-T Rec. 709
+      YUV2RGB = [
+          1.16438,  0.00000,  1.79274, -0.97295,
+          1.16438, -0.21325, -0.53291,  0.30148,
+          1.16438,  2.11240,  0.00000, -1.13340,
+          0, 0, 0, 1,
+      ];
+  } else {
+      // assume ITU-T Rec. 601
+      YUV2RGB = [
+          1.16438,  0.00000,  1.59603, -0.87079,
+          1.16438, -0.39176, -0.81297,  0.52959,
+          1.16438,  2.01723,  0.00000, -1.08139,
+          0, 0, 0, 1
+      ];
+  };
 
   var vertexShader = gl.createShader(gl.VERTEX_SHADER);
   gl.shaderSource(vertexShader, vertexShaderScript);
@@ -353,13 +362,16 @@ H264bsdCanvas.prototype.initProgram = function() {
 
   gl.useProgram(program);
 
+  var YUV2RGBRef = gl.getUniformLocation(program, 'YUV2RGB');
+  gl.uniformMatrix4fv(YUV2RGBRef, false, YUV2RGB);
+
   this.shaderProgram = program;
 };
 
 /**
  * Initialize vertex buffers and attach to shader program
  */
-H264bsdCanvas.prototype.initBuffers = function() {
+YUVCanvas.prototype.initBuffers = function() {
   var gl = this.contextGL;
   var program = this.shaderProgram;
 
@@ -448,7 +460,7 @@ H264bsdCanvas.prototype.initBuffers = function() {
 /**
  * Initialize GL textures and attach to shader program
  */
-H264bsdCanvas.prototype.initTextures = function() {
+YUVCanvas.prototype.initTextures = function() {
   var gl = this.contextGL;
   var program = this.shaderProgram;
 
@@ -482,7 +494,7 @@ H264bsdCanvas.prototype.initTextures = function() {
 /**
  * Create and configure a single texture
  */
-H264bsdCanvas.prototype.initTexture = function() {
+YUVCanvas.prototype.initTexture = function() {
     var gl = this.contextGL;
 
     var textureRef = gl.createTexture();
@@ -501,7 +513,7 @@ H264bsdCanvas.prototype.initTexture = function() {
  * If this object is using WebGL, the data must be an I420 formatted ArrayBuffer,
  * Otherwise, data must be an RGBA formatted ArrayBuffer.
  */
-H264bsdCanvas.prototype.drawNextOutputPicture = function(width, height, croppingParams, data) {
+YUVCanvas.prototype.drawNextOutputPicture = function(width, height, croppingParams, data) {
     var gl = this.contextGL;
 
     if(gl) {
@@ -516,7 +528,7 @@ H264bsdCanvas.prototype.drawNextOutputPicture = function(width, height, cropping
 /**
  * Draw next output picture using ARGB data on a 2d canvas.
  */
-H264bsdCanvas.prototype.drawNextOuptutPictureRGBA = function(width, height, croppingParams, data) {
+YUVCanvas.prototype.drawNextOuptutPictureRGBA = function(width, height, croppingParams, data) {
     var canvas = this.canvasElement;
 
     var croppingParams = null;
@@ -534,6 +546,6 @@ H264bsdCanvas.prototype.drawNextOuptutPictureRGBA = function(width, height, crop
     }
 };
   
-  return H264bsdCanvas;
+  return YUVCanvas;
   
 }));
