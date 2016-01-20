@@ -42,7 +42,7 @@
  * This class can be used to render output pictures from an H264bsdDecoder to a canvas element.
  * If available the content is rendered using WebGL.
  */
-  function H264bsdCanvas(parOptions) {
+  function YUVCanvas(parOptions) {
     
     parOptions = parOptions || {};
     
@@ -193,14 +193,14 @@
   /**
  * Returns true if the canvas supports WebGL
  */
-  H264bsdCanvas.prototype.isWebGL = function() {
+  YUVCanvas.prototype.isWebGL = function() {
     return this.contextGL;
   };
 
   /**
  * Create the GL context from the canvas element
  */
-  H264bsdCanvas.prototype.initContextGL = function() {
+  YUVCanvas.prototype.initContextGL = function() {
     var canvas = this.canvasElement;
     var gl = null;
 
@@ -233,7 +233,7 @@
 /**
  * Initialize GL shader program
  */
-H264bsdCanvas.prototype.initProgram = function() {
+YUVCanvas.prototype.initProgram = function() {
     var gl = this.contextGL;
 
   // vertex shader is the same for all types
@@ -359,7 +359,7 @@ H264bsdCanvas.prototype.initProgram = function() {
 /**
  * Initialize vertex buffers and attach to shader program
  */
-H264bsdCanvas.prototype.initBuffers = function() {
+YUVCanvas.prototype.initBuffers = function() {
   var gl = this.contextGL;
   var program = this.shaderProgram;
 
@@ -448,7 +448,7 @@ H264bsdCanvas.prototype.initBuffers = function() {
 /**
  * Initialize GL textures and attach to shader program
  */
-H264bsdCanvas.prototype.initTextures = function() {
+YUVCanvas.prototype.initTextures = function() {
   var gl = this.contextGL;
   var program = this.shaderProgram;
 
@@ -482,7 +482,7 @@ H264bsdCanvas.prototype.initTextures = function() {
 /**
  * Create and configure a single texture
  */
-H264bsdCanvas.prototype.initTexture = function() {
+YUVCanvas.prototype.initTexture = function() {
     var gl = this.contextGL;
 
     var textureRef = gl.createTexture();
@@ -501,7 +501,7 @@ H264bsdCanvas.prototype.initTexture = function() {
  * If this object is using WebGL, the data must be an I420 formatted ArrayBuffer,
  * Otherwise, data must be an RGBA formatted ArrayBuffer.
  */
-H264bsdCanvas.prototype.drawNextOutputPicture = function(width, height, croppingParams, data) {
+YUVCanvas.prototype.drawNextOutputPicture = function(width, height, croppingParams, data) {
     var gl = this.contextGL;
 
     if(gl) {
@@ -516,7 +516,7 @@ H264bsdCanvas.prototype.drawNextOutputPicture = function(width, height, cropping
 /**
  * Draw next output picture using ARGB data on a 2d canvas.
  */
-H264bsdCanvas.prototype.drawNextOuptutPictureRGBA = function(width, height, croppingParams, data) {
+YUVCanvas.prototype.drawNextOuptutPictureRGBA = function(width, height, croppingParams, data) {
     var canvas = this.canvasElement;
 
     var croppingParams = null;
@@ -534,6 +534,6 @@ H264bsdCanvas.prototype.drawNextOuptutPictureRGBA = function(width, height, crop
     }
 };
   
-  return H264bsdCanvas;
+  return YUVCanvas;
   
 }));
