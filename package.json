@@ -1,6 +1,6 @@
 {
   "name": "broadway-player",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "A JavaScript H.264 decoder.",
   "main": "index.js",
   "scripts": {
