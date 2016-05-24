@@ -517,7 +517,16 @@ YUVCanvas.prototype.drawNextOutputPicture = function(width, height, croppingPara
     var gl = this.contextGL;
 
     if(gl) {
-        this.drawNextOuptutPictureGL(width, height, croppingParams, data);
+        var ylen = width * height;
+        var uvlen = (width / 2) * (height / 2);
+
+        var typed = new Uint8Array(data);
+
+        this.drawNextOuptutPictureGL({
+            yData: typed.subarray(0, ylen),
+            uData: typed.subarray(ylen, ylen + uvlen),
+            vData: typed.subarray(ylen + uvlen, ylen + uvlen + uvlen)
+        });
     } else {
         this.drawNextOuptutPictureRGBA(width, height, croppingParams, data);
     }
