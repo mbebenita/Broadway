@@ -136,8 +136,10 @@ p.decode(<binary>);
     this._config.size.width = this._config.size.width || 200;
     this._config.size.height = this._config.size.height || 200;
     
+    var worker;
+    
     if (this._config.useWorker){
-      var worker = new Worker(this._config.workerFile);
+      worker = new Worker(this._config.workerFile);
       this.worker = worker;
       worker.addEventListener('message', function(e) {
         var data = e.data;
@@ -182,7 +184,7 @@ p.decode(<binary>);
           worker.postMessage({reuse: parArray.buffer}, [parArray.buffer]); // Send data to our worker.
           //this.afterRecycle();
         };
-      }
+      };
       
     }else{
       
@@ -204,6 +206,13 @@ p.decode(<binary>);
         contextOptions: this._config.contextOptions
       });
       this.canvas = this.canvasObj.canvas;
+      
+      if (worker && this.canvasObj.offscreen){
+        worker.postMessage({
+          offscreen: this.canvasObj.offscreen
+        }, [this.canvasObj.offscreen]);
+      };
+      
     };
 
     this.domNode = this.canvas;
@@ -258,7 +267,18 @@ p.decode(<binary>);
       obj.canvas.width = width;
       obj.canvas.height = height;
       obj.canvas.style.backgroundColor = "#0D0E1B";
-      
+      try{
+        if (this._config.useWorker){
+          obj.offscreen = obj.canvas.transferControlToOffscreen();
+          this.worker.postMessage({
+            type: "offscreen", 
+            offscreen: obj.offscreen
+          }, [obj.offscreen]);
+        };
+      }catch(e){
+      };
+      if (!obj.offscreen){
+      };
       
       return obj;
     },
