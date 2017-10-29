@@ -53,7 +53,7 @@ p.canvas; // the canvas - put it where you want it
 p.decode(<h264 data>);
 ```
 
-##options:  
+## options:  
 
 useWorker true / false  
 decode in a worker thread  
@@ -74,14 +74,14 @@ domNode
 
 refers to the canvas element.  
 
-##methods:  
+## methods:  
 
 decode (<bin>)
 
 feed the decoder with h264 stream data.  
 
 
-#Decoder.js:  
+# Decoder.js:  
 
 ```
 var p = new Decoder({
@@ -93,22 +93,22 @@ p.onPictureDecoded; // override with a callback function
 p.decode(<h264 data>);
 ```
 
-##options:  
+## options:  
 
 rgb true / false  
 if true will convert the image to rgb. sligtly slower.  
 
-##properties:  
+## properties:  
 
 onPictureDecoded  callback function(<bin>, width, height)
 
 will be called for each frame.
 
-##methods:  
+## methods:  
 
 decode (<bin>)
 
 feed the decoder with h264 stream data.  
 
 
-#[Real World Uses of Broadway.js](https://github.com/mbebenita/Broadway/wiki/Real-World-Uses)
+# [Real World Uses of Broadway.js](https://github.com/mbebenita/Broadway/wiki/Real-World-Uses)
