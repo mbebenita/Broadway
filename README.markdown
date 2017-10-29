@@ -41,7 +41,7 @@ API
 Player.js, Decoder.js and YUVWebGLCanvas.js all have a unified module definition.  
 You can use them as plain js files or with common.js / AMD  
 
-#Player.js:  
+# Player.js:  
 
 ```
 var p = new Player({
@@ -67,7 +67,7 @@ use webgl. defaults to "auto"
 size { width: <num>, height: <num> }  
 initial size of the canvas. canvas will resize after video starts streaming.  
 
-##properties:  
+## properties:  
 
 canvas  
 domNode  
