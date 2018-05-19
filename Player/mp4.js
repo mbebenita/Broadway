@@ -887,7 +887,7 @@ var MP4Player = (function reader() {
 
 var Broadway = (function broadway() {
   function constructor(div) {
-    var src = div.attributes.src ? div.attributes.src.value : undefined;
+    var src = div.attributes.src ? div.attributes.src.value : (div.dataset.src ? div.dataset.src : undefined);
     var width = div.attributes.width ? div.attributes.width.value : 640;
     var height = div.attributes.height ? div.attributes.height.value : 480;
 
