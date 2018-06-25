@@ -12,7 +12,7 @@ emcc_args = [
   #'-m32',
   '-O3',
   #'-Dxxx2yyy'
-  '--memory-init-file', '0',
+  '--memory-init-file', '1',
   '--llvm-opts', '3',
   '--llvm-lto', '3',
   '-s', 'NO_EXIT_RUNTIME=1',
@@ -109,3 +109,6 @@ f.write(jscont);
 f3 = open(os.path.join("..", "templates", 'DecoderPost.js'));
 f.write(f3.read());
 
+asmfile = open(os.path.join('..','Player','avc.wasm'), "w")
+amsfilein = open(os.path.join(JS_DIR, 'avc.wasm'));
+asmfile.write(amsfilein.read());

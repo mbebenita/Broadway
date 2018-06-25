@@ -1,12 +1,38 @@
-       return Module;
-    })();
+    //   return Module;
+    //})();
     
-    var resultModule = global.Module || Module;
+    var resultModule;
+    if (typeof global !== "undefined"){
+      if (global.Module){
+        resultModule = global.Module;
+      };
+    };
+    if (typeof Module != "undefined"){
+      resultModule = Module;
+    };
 
     resultModule._broadwayOnHeadersDecoded = par_broadwayOnHeadersDecoded;
     resultModule._broadwayOnPictureDecoded = par_broadwayOnPictureDecoded;
     
-    return resultModule;
+    var moduleIsReady = false;
+    var cbFun;
+    var moduleReady = function(){
+      moduleIsReady = true;
+      if (cbFun){
+        cbFun(resultModule);
+      }
+    };
+    
+    resultModule.onRuntimeInitialized = function(){
+      moduleReady(resultModule);
+    };
+    return function(callback){
+      if (moduleIsReady){
+        callback(resultModule);
+      }else{
+        cbFun = callback;
+      };
+    };
   };
 
   return (function(){
@@ -35,6 +61,9 @@
     
     var fakeWindow = {
     };
+    
+    var toU8Array;
+    var toU32Array;
     
     var onPicFun = function ($buffer, width, height) {
       var buffer = this.pictureBuffers[$buffer];
@@ -116,138 +145,158 @@
       }.bind(this);
     };
     
-    var Module = getModule.apply(fakeWindow, [function () {
+    var ModuleCallback = getModule.apply(fakeWindow, [function () {
     }, onPicFun]);
     
 
-    var HEAP8 = Module.HEAP8;
-    var HEAPU8 = Module.HEAPU8;
-    var HEAP16 = Module.HEAP16;
-    var HEAP32 = Module.HEAP32;
-
-    
     var MAX_STREAM_BUFFER_LENGTH = 1024 * 1024;
-  
-    // from old constructor
-    Module._broadwayInit();
     
-    /**
-   * Creates a typed array from a HEAP8 pointer. 
-   */
-    function toU8Array(ptr, length) {
-      return HEAPU8.subarray(ptr, ptr + length);
-    };
-    function toU32Array(ptr, length) {
-      //var tmp = HEAPU8.subarray(ptr, ptr + (length * 4));
-      return new Uint32Array(HEAPU8.buffer, ptr, length);
-    };
-    this.streamBuffer = toU8Array(Module._broadwayCreateStream(MAX_STREAM_BUFFER_LENGTH), MAX_STREAM_BUFFER_LENGTH);
-    this.pictureBuffers = {};
-    // collect extra infos that are provided with the nal units
-    this.infoAr = [];
-    
+    var instance = this;
     this.onPictureDecoded = function (buffer, width, height, infos) {
-      
+
     };
     
-    /**
+    this.onDecoderReady = function(){};
+    
+    var bufferedCalls = [];
+    this.decode = function decode(typedAr, parInfo, copyDoneFun) {
+      bufferedCalls.push([typedAr, parInfo, copyDoneFun]);
+    };
+    
+    ModuleCallback(function(Module){
+      var HEAP8 = Module.HEAP8;
+      var HEAPU8 = Module.HEAPU8;
+      var HEAP16 = Module.HEAP16;
+      var HEAP32 = Module.HEAP32;
+      // from old constructor
+      Module._broadwayInit();
+      
+      /**
+     * Creates a typed array from a HEAP8 pointer. 
+     */
+      toU8Array = function(ptr, length) {
+        return HEAPU8.subarray(ptr, ptr + length);
+      };
+      toU32Array = function(ptr, length) {
+        //var tmp = HEAPU8.subarray(ptr, ptr + (length * 4));
+        return new Uint32Array(HEAPU8.buffer, ptr, length);
+      };
+      instance.streamBuffer = toU8Array(Module._broadwayCreateStream(MAX_STREAM_BUFFER_LENGTH), MAX_STREAM_BUFFER_LENGTH);
+      instance.pictureBuffers = {};
+      // collect extra infos that are provided with the nal units
+      instance.infoAr = [];
+
+      /**
      * Decodes a stream buffer. This may be one single (unframed) NAL unit without the
      * start code, or a sequence of NAL units with framing start code prefixes. This
      * function overwrites stream buffer allocated by the codec with the supplied buffer.
      */
-    
-    var sliceNum = 0;
-    if (this.options.sliceMode){
-      sliceNum = this.options.sliceNum;
-      
-      this.decode = function decode(typedAr, parInfo, copyDoneFun) {
-        this.infoAr.push(parInfo);
-        parInfo.startDecoding = nowValue();
-        var nals = parInfo.nals;
-        var i;
-        if (!nals){
-          nals = [];
-          parInfo.nals = nals;
-          var l = typedAr.length;
-          var foundSomething = false;
-          var lastFound = 0;
-          var lastStart = 0;
-          for (i = 0; i < l; ++i){
-            if (typedAr[i] === 1){
-              if (
-                typedAr[i - 1] === 0 &&
-                typedAr[i - 2] === 0
-              ){
-                var startPos = i - 2;
-                if (typedAr[i - 3] === 0){
-                  startPos = i - 3;
+
+      var sliceNum = 0;
+      if (instance.options.sliceMode){
+        sliceNum = instance.options.sliceNum;
+
+        instance.decode = function decode(typedAr, parInfo, copyDoneFun) {
+          instance.infoAr.push(parInfo);
+          parInfo.startDecoding = nowValue();
+          var nals = parInfo.nals;
+          var i;
+          if (!nals){
+            nals = [];
+            parInfo.nals = nals;
+            var l = typedAr.length;
+            var foundSomething = false;
+            var lastFound = 0;
+            var lastStart = 0;
+            for (i = 0; i < l; ++i){
+              if (typedAr[i] === 1){
+                if (
+                  typedAr[i - 1] === 0 &&
+                  typedAr[i - 2] === 0
+                ){
+                  var startPos = i - 2;
+                  if (typedAr[i - 3] === 0){
+                    startPos = i - 3;
+                  };
+                  // its a nal;
+                  if (foundSomething){
+                    nals.push({
+                      offset: lastFound,
+                      end: startPos,
+                      type: typedAr[lastStart] & 31
+                    });
+                  };
+                  lastFound = startPos;
+                  lastStart = startPos + 3;
+                  if (typedAr[i - 3] === 0){
+                    lastStart = startPos + 4;
+                  };
+                  foundSomething = true;
                 };
-                // its a nal;
-                if (foundSomething){
-                  nals.push({
-                    offset: lastFound,
-                    end: startPos,
-                    type: typedAr[lastStart] & 31
-                  });
-                };
-                lastFound = startPos;
-                lastStart = startPos + 3;
-                if (typedAr[i - 3] === 0){
-                  lastStart = startPos + 4;
-                };
-                foundSomething = true;
               };
             };
-          };
-          if (foundSomething){
-            nals.push({
-              offset: lastFound,
-              end: i,
-              type: typedAr[lastStart] & 31
-            });
-          };
-        };
-        
-        var currentSlice = 0;
-        var playAr;
-        var offset = 0;
-        for (i = 0; i < nals.length; ++i){
-          if (nals[i].type === 1 || nals[i].type === 5){
-            if (currentSlice === sliceNum){
-              playAr = typedAr.subarray(nals[i].offset, nals[i].end);
-              this.streamBuffer[offset] = 0;
-              offset += 1;
-              this.streamBuffer.set(playAr, offset);
-              offset += playAr.length;
+            if (foundSomething){
+              nals.push({
+                offset: lastFound,
+                end: i,
+                type: typedAr[lastStart] & 31
+              });
             };
-            currentSlice += 1;
-          }else{
-            playAr = typedAr.subarray(nals[i].offset, nals[i].end);
-            this.streamBuffer[offset] = 0;
-            offset += 1;
-            this.streamBuffer.set(playAr, offset);
-            offset += playAr.length;
-            Module._broadwayPlayStream(offset);
-            offset = 0;
           };
-        };
-        copyDoneFun();
-        Module._broadwayPlayStream(offset);
-      };
-      
-    }else{
-      this.decode = function decode(typedAr, parInfo) {
-        // console.info("Decoding: " + buffer.length);
-        // collect infos
-        if (parInfo){
-          this.infoAr.push(parInfo);
-          parInfo.startDecoding = nowValue();
+
+          var currentSlice = 0;
+          var playAr;
+          var offset = 0;
+          for (i = 0; i < nals.length; ++i){
+            if (nals[i].type === 1 || nals[i].type === 5){
+              if (currentSlice === sliceNum){
+                playAr = typedAr.subarray(nals[i].offset, nals[i].end);
+                instance.streamBuffer[offset] = 0;
+                offset += 1;
+                instance.streamBuffer.set(playAr, offset);
+                offset += playAr.length;
+              };
+              currentSlice += 1;
+            }else{
+              playAr = typedAr.subarray(nals[i].offset, nals[i].end);
+              instance.streamBuffer[offset] = 0;
+              offset += 1;
+              instance.streamBuffer.set(playAr, offset);
+              offset += playAr.length;
+              Module._broadwayPlayStream(offset);
+              offset = 0;
+            };
+          };
+          copyDoneFun();
+          Module._broadwayPlayStream(offset);
         };
 
-        this.streamBuffer.set(typedAr);
-        Module._broadwayPlayStream(typedAr.length);
+      }else{
+        instance.decode = function decode(typedAr, parInfo) {
+          // console.info("Decoding: " + buffer.length);
+          // collect infos
+          if (parInfo){
+            instance.infoAr.push(parInfo);
+            parInfo.startDecoding = nowValue();
+          };
+
+          instance.streamBuffer.set(typedAr);
+          Module._broadwayPlayStream(typedAr.length);
+        };
       };
-    };
+      
+      if (bufferedCalls.length){
+        var bi = 0;
+        for (bi = 0; bi < bufferedCalls.length; ++bi){
+          instance.decode(bufferedCalls[bi][0], bufferedCalls[bi][1], bufferedCalls[bi][2]);
+        };
+        bufferedCalls = [];
+      };
+      
+      instance.onDecoderReady(instance);
+
+    });
+  
 
   };
 

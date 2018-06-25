@@ -71,6 +71,7 @@ void broadwayPlayStream(u32 length) {
 
 
 u32 broadwayInit() {
+  
   H264SwDecRet ret;
 #ifdef DISABLE_OUTPUT_REORDERING
   u32 disableOutputReordering = 1;
@@ -87,6 +88,7 @@ u32 broadwayInit() {
   }
 
   picDecodeNumber = picDisplayNumber = 1;
+
   return 0;
 }
 

@@ -42,6 +42,8 @@
   };
   
   
+  
+  
   var getModule = function(par_broadwayOnHeadersDecoded, par_broadwayOnPictureDecoded){
     
     
@@ -58,5 +60,6 @@
     
     */
     
-    var Module = (function(){
+    //var Module = (function(){
+    
     
