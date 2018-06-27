@@ -1,0 +1,19 @@
+{
+  "name": "broadway-player",
+  "version": "0.1.1",
+  "description": "A JavaScript H.264 decoder.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/emersion/Broadway.git"
+  },
+  "author": "Michael Bebenita <mbebenita@gmail.com>",
+  "license": "BSD-3-Clause",
+  "bugs": {
+    "url": "https://github.com/emersion/Broadway/issues"
+  },
+  "homepage": "https://github.com/emersion/Broadway#readme"
+}
