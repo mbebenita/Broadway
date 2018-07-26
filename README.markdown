@@ -124,6 +124,8 @@ A good way to use it is in response to a 'resize' event for your browser window.
 
 If the new width and height do not match the aspect ratio of the decoded video stream, Broadway sets the canvas size to fill your desired width and height, but keeping the video aspect ratio.  It will place the canvas to the left, or to the top, of your containerDiv.
 
+If you are accustomed to using pure CSS to your web pages responsive, this way of handling the size of the video canvas may seem complex.  It is necessary because canvas objects cannot be resized with CSS, and because WebGL canvases require some initializing before they can be used.
+
 ### `setSourceDimensions (rect)`
 
 Use this method if the dimensions of your video source (for example a webcam) are not an even multiple of 16x16. H.264 inherently works on 16x16 *macroblocks*, and is not capable of handling partial macroblocks.
