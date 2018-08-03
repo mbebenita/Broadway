@@ -8,7 +8,7 @@ http://mbebenita.github.io/Broadway/foxDemo.html
 http://mbebenita.github.io/Broadway/storyDemo.html  
 http://mbebenita.github.io/Broadway/treeDemo.html  
 
-These demo video players first need to download the entire video before the can start playing. So they seem to be slow at first, so have patience. You can start the video by clicking on each player. The top left player runs on the main thread, and the remaining players run in background worker threads.
+These demo video players first need to download the entire video before they can start playing, thus appearing to be a bit slow at first, so have patience. You can start the video by clicking on each player. The top left player runs on the main thread, the remaining players run in background worker threads.
 
 Use a example node app as template:  
 https://github.com/soliton4/BroadwayStream  
@@ -27,9 +27,9 @@ The code for the demo is in the Decoder folder, to build it run the make.py pyth
 
 ## Encoding Video:
 
-Decoder.js expects H.264 NALUs. It does not support weighted prediction for P-frames and CABAC (arithmetic) entropy encoding. To meet these limitations, Encode your video with the H.264 Baseline Profile and CAVLC (Huffman-style) entropy encoding. 
+Decoder.js expects H.264 NALUs. It does not support weighted prediction for P-frames and CABAC (arithmetic) entropy encoding. To meet these limitations, your H.264 should be encoded with the Baseline Profile and CAVLC (Huffman-style) entropy encoding. 
   
-The demo includes both a browser-based planer and a node.js web server app. The server expects mp4 files containing H.264. It uses ffmpeg and x264 to convert mp4 files into streams of NALUs for Decoder.js. It uses the following command line options:
+The demo expects mp4 files containing H.264. The demo's node.js web server app uses ffmpeg and x264 to convert mp4 files into streams of NALUs for Decoder.js. It uses the following command line options:
 
 ```
 ffmpeg -y -i sourceFile -r 30000/1001 -b:a 2M -bt 4M -vcodec libx264 -pass 1 -coder 0 -bf 0 -flags -loop -wpredp 0 -an targetFile.mp4
@@ -70,6 +70,7 @@ p.decode(<h264 data>);
 * `workerFile`: 
 path to Decoder.js. Only neccessary when using worker. defaults to `Decoder.js`
 * `webgl` (true / "auto" / false)  Use WebGL to render video. Defaults to "auto"  
+* `isScalable` (true / false)  
 * `size { width: w, height: h }`: an object containing the initial size of the canvas. The canvas resizes after video starts streaming to match the dimensions of the video.  
 * `render`: (true / false) If this is false Broadway decodes but does not render the video stream. Defaults to true.
 * `targetScalable`: (true / false) If true, the video is scaled (magnified or shrunk) to a target size  on screen. If false, the video is drawn pixel-for-pixel at tbe actual size of the encoded video. Drawing preserves the aspect ratio (for example 16:9) of the encoded stream. Defaults to false.
@@ -78,8 +79,8 @@ path to Decoder.js. Only neccessary when using worker. defaults to `Decoder.js`
 
 ## properties:  
 
-* `domNode`: the canvas object.  
-Refers to the canvas element.  
+* `domNode`: the `<canvas />` created by the Player
+* `webgl`: true if WebGL-accelerated rendering is in use 
 
 ## methods:  
 
@@ -93,7 +94,7 @@ Each buffer you pass to `decode()` must contain either
 
 Notice that `decode()` cannot process partial NALUs. 
 
-The optional `info` parameter is an object containing a Javascript `timestamp`. For example you can pass a timestamp using `Player.decode(buffer,  {timestamp:myTimestamp});
+The optional `info` parameter is an object containing a `timestamp` value, a Javascript timestamp. For example you can pass a timestamp using `Player.decode(buffer,  {timestamp:myTimestamp});
 `
 Broadway does not do anything with your timestamps except pass them to event handlers.
 
@@ -107,7 +108,7 @@ Invoke it with the width and height you want for the canvas on your page. This i
  
      player.setTargetDimensions({width: newWidth, height: newHeight});
  
-A good way to use it is in response to a 'resize' event for your browser window. In this example, when a user resizes a page, the event handler is called. The event handler looks at the dimensions of `containerDiv`, a part of the DOM that changes size responsively. It  passes the (new) wwidth and height to `setTargetDimensions()`.
+A good way to use it is in response to a 'resize' event for your browser window. In this example, when a user resizes a page, the event handler is called. The event handler looks at the dimensions of `containerDiv`, a part of the DOM that changes size and contains `player.domNode`. It  passes the (new) width and height to `setTargetDimensions()`.
 
 ```js
     var containerDiv = window.getElementById('video_container');
@@ -118,25 +119,24 @@ A good way to use it is in response to a 'resize' event for your browser window.
     function resizeBroadway (event) {
       player.setTargetDimensions( containerDiv.getBoundingClientRect() );
     }
-    ...
-    window.addEventListener('resize', resizeBroadway)
+    window.addEventListener('resize', resizeBroadway);
 ```
 
-If the new width and height do not match the aspect ratio of the decoded video stream, Broadway sets the canvas size to fill your desired width and height while preserving video aspect ratio.  It will place the canvas to the left, or to the top, of your containerDiv.
+If the new width and height do not match the aspect ratio of the decoded video stream, Broadway sets the canvas size to fill your desired width and height while preserving the video aspect ratio.  It places the canvas to the left, or to the top, of your containerDiv.
 
-If you are accustomed to using pure CSS to make your web pages responsive, this way of handling the size of the video canvas may seem complex.  It is necessary because canvas objects cannot be resized with CSS, and because WebGL canvases require some initializing before they can be used.
+If you are accustomed to using pure CSS to make your web pages responsive, this way of handling the size of the video canvas may seem complex.  It is necessary because canvas objects cannot be resized with CSS, and because WebGL canvases require initializing before they can be used.
 
 ### `setSourceDimensions (rect)`
 
 Use this method if the dimensions of your video source (for example a webcam) are not an even multiple of 16x16. H.264 codecs inherently works on 16x16 *macroblocks*, and are not capable of handling partial macroblocks.
 
-For example, a webcam may capture video at a resolution of 292x230 pixels. In order for H.264 to handle those dimensions, it must pad them to 304x240, or 19x15 whole macroblocks.  That video stream, when decoded, contains a 12 pixel wide green bar at the right, and a 10 pxiel wide bar at the bottom, showing that the encoder has padded the source video.
+For example, a webcam may capture video at a resolution of 292x230 pixels. In order for H.264 to handle those dimensions, it must pad them to 304x240, or 19x15 whole macroblocks.  That video stream, when decoded, contains a 12 pixel wide green bar at the right, and a 10 pixel wide bar at the bottom, showing that the encoder has padded the source video.
 
 If you know the actual size of the bitstream without the padding, you can invoke `setSourceDimensions()`. Then Broadway will conceal the padding when it renders the video.
 
 For this example, use
 
-    player.setSourceDimensions({width:192, height:330);
+    player.setSourceDimensions({width:292, height:230);
     
 These video source dimensions are not available from the H.264 stream of NALUs and must be obtained some other way  They do appear in mp4 and webm video container formats.
 

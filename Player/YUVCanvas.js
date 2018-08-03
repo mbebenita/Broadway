@@ -336,18 +336,18 @@
     if (this.conversionType == "rec709") {
       // ITU-T Rec. 709
       YUV2RGB = [
-          1.16438,  0.00000,  1.79274, -0.97295,
-          1.16438, -0.21325, -0.53291,  0.30148,
-          1.16438,  2.11240,  0.00000, -1.13340,
-          0, 0, 0, 1,
+        1.16438,  0.00000,  1.79274, -0.97295,
+        1.16438, -0.21325, -0.53291,  0.30148,
+        1.16438,  2.11240,  0.00000, -1.13340,
+        0, 0, 0, 1,
       ];
-  } else {
+    } else {
       // assume ITU-T Rec. 601
       YUV2RGB = [
-          1.16438,  0.00000,  1.59603, -0.87079,
-          1.16438, -0.39176, -0.81297,  0.52959,
-          1.16438,  2.01723,  0.00000, -1.08139,
-          0, 0, 0, 1
+        1.16438,  0.00000,  1.59603, -0.87079,
+        1.16438, -0.39176, -0.81297,  0.52959,
+        1.16438,  2.01723,  0.00000, -1.08139,
+        0, 0, 0, 1
       ];
     }
     var vertexShader = gl.createShader(gl.VERTEX_SHADER);
@@ -479,7 +479,7 @@
     var gl = this.contextGL;
     var program = this.shaderProgram;
 
-  if (this.type === "yuv420"){
+    if (this.type === "yuv420"){
 
       var yTextureRef = this.initTexture();
       var ySamplerRef = gl.getUniformLocation(program, 'ySampler');
@@ -514,8 +514,8 @@
 
     var textureRef = gl.createTexture();
     gl.bindTexture(gl.TEXTURE_2D, textureRef);
-    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
-    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
     gl.bindTexture(gl.TEXTURE_2D, null);
