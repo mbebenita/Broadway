@@ -15,6 +15,7 @@
 }(this, function () {
   
   var global;
+  var print = function(){};
   
   function initglobal(){
     global = this;
