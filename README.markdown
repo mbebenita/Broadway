@@ -8,9 +8,9 @@ http://mbebenita.github.io/Broadway/foxDemo.html
 http://mbebenita.github.io/Broadway/storyDemo.html  
 http://mbebenita.github.io/Broadway/treeDemo.html  
 
-The video player first needs to download the entire video before it can start playing, thus appearing to be a bit slow at first, so have patience. You can start the video by clicking on each player. The top left player runs on the main thread, the remaining players run in background worker threads.
+The video player first needs to download the entire video before it can start playing, thus appearing to be a bit slow at first, so have patience. You can start the video by clicking on each player. The top left player runs on the main thread, while the remaining players run in background worker threads.
 
-Use a example node app as template:  
+Use an example node app as template:  
 https://github.com/soliton4/BroadwayStream  
 
 Technical info
@@ -53,21 +53,21 @@ p.canvas; // the canvas - put it where you want it
 p.decode(<h264 data>);
 ```
 
-## options:  
+## Options:  
 
 useWorker true / false  
-decode in a worker thread  
+Decode in a worker thread  
 
 workerFile <string>  
-path to Decoder.js. Only neccessary when using worker. defaults to "Decoder.js"  
+Path to Decoder.js. Only neccessary when using worker. Defaults to "Decoder.js"  
 
 webgl true / "auto" / false  
-use webgl. defaults to "auto"  
+Use webgl. defaults to "auto"  
 
 size { width: <num>, height: <num> }  
-initial size of the canvas. canvas will resize after video starts streaming.  
+Initial size of the canvas. Canvas will resize after video starts streaming.  
 
-## properties:  
+## Properties:  
 
 canvas  
 domNode  
@@ -78,7 +78,7 @@ refers to the canvas element.
 
 decode (<bin>)
 
-feed the decoder with h264 stream data.  
+Feed the decoder with h264 stream data.  
 
 
 # Decoder.js:  
@@ -96,19 +96,19 @@ p.decode(<h264 data>);
 ## options:  
 
 rgb true / false  
-if true will convert the image to rgb. sligtly slower.  
+If true will convert the image to rgb. sligtly slower.  
 
 ## properties:  
 
 onPictureDecoded  callback function(<bin>, width, height)
 
-will be called for each frame.
+Will be called for each frame.
 
 ## methods:  
 
 decode (<bin>)
 
-feed the decoder with h264 stream data.  
+Feed the decoder with h264 stream data.  
 
 
 # [Real World Uses of Broadway.js](https://github.com/mbebenita/Broadway/wiki/Real-World-Uses)
