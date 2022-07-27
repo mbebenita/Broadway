@@ -875,7 +875,7 @@ var MP4Player = (function reader() {
           avc.decode(nal);
         });
         pic ++;
-        if (pic < 3000) {
+        if (pic < video.getSampleCount()) {
           setTimeout(foo.bind(this), 1);
         };
       }.bind(this), 1);
