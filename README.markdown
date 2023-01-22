@@ -1,114 +1,116 @@
-Broadway.js
-===========
-A JavaScript H.264 decoder.
+# Broadway.js
 
+Broadway is a JavaScript H.264 decoder, built from the [Android's H.264
+decoder](https://android.googlesource.com/platform/frameworks/av/+/master/media/libstagefright/codecs/on2/h264dec/)
+compiled with [emscripten](https://emscripten.org) to JavaScript, then further optimized
+with [Google's JavaScript closure
+compiler](https://developers.google.com/closure/compiler) and further optimized by hand to
+use WebGL.
 
-View a Live Demo:  
-http://mbebenita.github.io/Broadway/foxDemo.html  
-http://mbebenita.github.io/Broadway/storyDemo.html  
-http://mbebenita.github.io/Broadway/treeDemo.html  
+## Demos
 
-The video player first needs to download the entire video before it can start playing, thus appearing to be a bit slow at first, so have patience. You can start the video by clicking on each player. The top left player runs on the main thread, while the remaining players run in background worker threads.
+View some live demos:
+* http://mbebenita.github.io/Broadway/foxDemo.html
+* http://mbebenita.github.io/Broadway/storyDemo.html
+* http://mbebenita.github.io/Broadway/treeDemo.html
 
-Use an example node app as template:  
-https://github.com/soliton4/BroadwayStream  
+The video player first needs to download the entire video before it can start playing,
+thus appearing to be a bit slow at first, so have patience. You can start the video by
+clicking on each player. The top left player runs on the main thread, while the remaining
+players run in background worker threads.
 
-Technical info
-==============
+You can also use the [BroadwayStream](https://github.com/soliton4/BroadwayStream)
+[node](https://nodejs.org) app as a template.
 
-The demo is Android's H.264 decoder compiled with Emscripten to JavaScript, then further optimized with
-Google's JavaScript closure compiler and further optimized by hand to use WebGL.
+## Build
 
-Building the demo:
+Install and configure [emscripten](https://emscripten.org/).
 
-Install and configure Emscripten (https://github.com/kripken/emscripten)  
-The current version of Broadway was built with emscripten 1.35.12  
+The best way to install and use it these days is through the
+[emsdk](https://emscripten.org/docs/getting_started/downloads.html).
 
-The code for the demo is in the Decoder folder, to build it run the make.py python script. (Requires at least python 2.7)
+The code for the demo is in the [Decoder](Decoder) folder, to build it run the
+[make.py](Decoder/make.py) python script.
 
-Encoding Video
-==============
+## Supported video format
 
-The decoder expects an .mp4 file and does not support weighted prediction for P-frames and CABAC entropy encoding. To create such bitstreams use ffmpeg and x264 with the following command line options:
+The decoder expects an H.264 base profile bitstream and does not support weighted
+prediction for P-frames and CABAC entropy encoding.
 
+To create such bitstreams you can use [ffmpeg](https://ffmpeg.org) and
+[x264](https://www.videolan.org/developers/x264.html) with the following command line
+options:
 ```
 ffmpeg -y -i sourceFile -r 30000/1001 -b:a 2M -bt 4M -vcodec libx264 -pass 1 -coder 0 -bf 0 -flags -loop -wpredp 0 -an targetFile.mp4
 ```
 
-API
-===
+## API
 
-Player.js, Decoder.js and YUVWebGLCanvas.js all have a unified module definition.  
-You can use them as plain js files or with common.js / AMD  
+Player.js, Decoder.js and YUVWebGLCanvas.js all have a unified module definition.
+You can use them as plain js files or with common.js / AMD.
 
-# Player.js:  
+### Player.js
 
+Example:
 ```
-var p = new Player({
+var player = new Player({
   <options>
 });
 
-p.canvas; // the canvas - put it where you want it
+player.canvas; // the canvas - put it where you want it
 
-p.decode(<h264 data>);
+player.decode(<h264 data>);
 ```
 
-## Options:  
+#### Options
 
-useWorker true / false  
-Decode in a worker thread  
+* `useWorker` `true` / `false`: decode in a worker thread
 
-workerFile <string>  
-Path to Decoder.js. Only neccessary when using worker. Defaults to "Decoder.js"  
+* `workerFile` `STRING`: path to `Decoder.js`, only neccessary when using worker, defaults
+  to `Decoder.js`
 
-webgl true / "auto" / false  
-Use webgl. defaults to "auto"  
+* `webgl` `true` / `auto` / `false`: use webgl, defaults to `auto`
 
-size { width: <num>, height: <num> }  
-Initial size of the canvas. Canvas will resize after video starts streaming.  
+* `size`: { width: <num>, height: <num> }: initial size of the canvas, canvas will resize
+  after video starts streaming
 
-## Properties:  
+#### Properties
 
-canvas  
-domNode  
+* `canvas`
+* `domNode`: refers to the canvas element
 
-refers to the canvas element.  
+#### Methods
 
-## methods:  
-
-decode (<bin>)
-
-Feed the decoder with h264 stream data.  
+* `decode` (<bin>): feed the decoder with h264 stream data
 
 
-# Decoder.js:  
+### Decoder.js
 
+Example:
 ```
-var p = new Decoder({
+var decoder = new Decoder({
   <options>
 });
 
-p.onPictureDecoded; // override with a callback function
-
-p.decode(<h264 data>);
+decoder.onPictureDecoded = customOnPictureDecoder; // override with a callback function
+decoder.decode(<h264 data>);
 ```
 
-## options:  
+#### Options
 
-rgb true / false  
-If true will convert the image to rgb. sligtly slower.  
+* `rgb` `true` / `false`: if `true` will convert the image to rgb (sligtly slower)
 
-## properties:  
+#### Properties
 
-onPictureDecoded  callback function(<bin>, width, height)
+* `onPictureDecoded`: callback in the form `function(<bin>, width, height)`, will be called
+for each decoded frame
 
-Will be called for each frame.
+#### Methods
 
-## methods:  
-
-decode (<bin>)
-
-Feed the decoder with h264 stream data.  
+* `decode`(<bin>): feed the decoder with h264 stream data
 
 
-# [Real World Uses of Broadway.js](https://github.com/mbebenita/Broadway/wiki/Real-World-Uses)
+## References
+
+* [Real World Uses of
+  Broadway.js](https://github.com/mbebenita/Broadway/wiki/Real-World-Uses)
