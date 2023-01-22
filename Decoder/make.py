@@ -104,11 +104,8 @@ def main():
         '-O3',
         #'-Dxxx2yyy'
         '--memory-init-file', '1',
-        '--llvm-opts', '3',
-        '--llvm-lto', '3',
         '-s', 'NO_EXIT_RUNTIME=1',
         '-s', 'NO_FILESYSTEM=1',
-        '-s', 'NO_BROWSER=1',
         #'-s', 'CORRECT_SIGNS=1',
         #'-s', 'CORRECT_OVERFLOWS=1',
         '-s', 'TOTAL_MEMORY=' + str(50*1024*1024),
@@ -119,14 +116,13 @@ def main():
         #'-s', 'INLINING_LIMIT=50',
         #'-s', 'OUTLINING_LIMIT=100',
         '-s', 'DOUBLE_MODE=0',
-        '-s', 'PRECISE_I64_MATH=0',
         #'-s', 'SIMD=1',
         '-s', 'AGGRESSIVE_VARIABLE_ELIMINATION=1',
         '-s', 'ALIASING_FUNCTION_POINTERS=1',
         '-s', 'DISABLE_EXCEPTION_CATCHING=1',
         #'-s', 'USE_CLOSURE_COMPILER=1',
         #'-s', 'FORCE_ALIGNED_MEMORY=1', #why doesnt this work?
-        '-s', '''EXPORTED_FUNCTIONS=["HEAP8", "HEAP16", "HEAP32", "_broadwayGetMajorVersion", "_broadwayGetMinorVersion", "_broadwayInit", "_broadwayExit", "_broadwayCreateStream", "_broadwayPlayStream", "_broadwayOnHeadersDecoded", "_broadwayOnPictureDecoded"]''',
+        '-s', '''EXPORTED_FUNCTIONS=["_broadwayGetMajorVersion", "_broadwayGetMinorVersion", "_broadwayInit", "_broadwayExit", "_broadwayCreateStream", "_broadwayPlayStream", "_broadwayOnHeadersDecoded", "_broadwayOnPictureDecoded"]''',
         #'--closure', '1',
         '--js-library', 'library.js'
     ]
